@@ -1,0 +1,11 @@
+import { Meta, StoryObj } from '@storybook/react';
+import { default as ITLoader } from './loader';
+declare const meta: Meta<typeof ITLoader>;
+export default meta;
+type Story = StoryObj<typeof ITLoader>;
+export declare const Spinner: Story;
+export declare const Dots: Story;
+export declare const Pulse: Story;
+export declare const Bar: Story;
+export declare const AllColors: Story;
+export declare const AllVariants: Story;
