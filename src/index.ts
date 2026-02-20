@@ -16,6 +16,7 @@ import ITNavbar from "./components/navbar/navbar";
 import ITText from "./components/text/text";
 import ITImage from "./components/image/image";
 import ITBadget from "./components/badget/badget";
+import ITPagination from "./components/pagination/pagination";
 
 // PROPS
 import type { ITButtonProps } from "./components/button/button.props";
@@ -32,6 +33,8 @@ import type { ITToastProps } from "./components/toast/toast.props";
 import type { ITNavbarProps } from "./components/navbar/navbar.props";
 import type { ITTableProps, Column } from "./components/table/table.props";
 import type { ITBadgetProps } from "./components/badget/badget.props";
+import type { ITPaginationProps } from "./components/pagination/pagination.props";
+
 // UTILS
 import { createValidationSchema } from "./types/yup.types";
 import ITLoader from "./components/loader/loader";
@@ -64,6 +67,7 @@ export {
   ITTimePicker,
   ITDropfile,
   ITStepper,
+  ITPagination,
   createValidationSchema,
 };
 

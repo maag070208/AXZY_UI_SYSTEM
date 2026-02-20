@@ -3,7 +3,7 @@ import ITCalendar from './calendar';
 import { addHours, format, startOfDay, addDays } from 'date-fns';
 
 const meta = {
-  title: 'Components/ITCalendar',
+  title: 'Components/Data Display/ITCalendar',
   component: ITCalendar,
   parameters: {
     layout: 'padded',

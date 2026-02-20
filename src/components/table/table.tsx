@@ -1,18 +1,16 @@
+import { sizeStyles, variantStyles } from "@/types/table.types";
 import clsx from "clsx";
 import React, { useState } from "react";
 import {
-  FaArrowLeft,
-  FaArrowRight,
   FaCheck,
-  FaTimes,
   FaSpinner,
+  FaTimes
 } from "react-icons/fa";
 import { MdOutlineSwapVert } from "react-icons/md";
-import ITButton from "../button/button";
 import ITInput from "../input/input";
-import { Column, ITTableProps } from "./table.props";
-import { sizeStyles, variantStyles } from "@/types/table.types";
+import ITPagination from "../pagination/pagination";
 import ITSelect from "../select/select";
+import { Column, ITTableProps } from "./table.props";
 
 const getNestedValue = (obj: unknown, path: string) => {
   return path.split(".").reduce((acc, part) => acc && acc[part], obj);
@@ -394,61 +392,17 @@ export default function ITTable<T extends Record<string, unknown>>({
 
 
       {/* Pagination */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-secondary-200">
-        <div className="flex items-center gap-4 text-sm text-secondary-500">
-          <div className="flex items-center gap-2 bg-secondary-50 px-3 py-1 rounded-lg border border-secondary-200">
-            <span className="text-xs font-medium">Mostrar</span>
-            <ITSelect
-              name="itemsPerPage"
-              options={itemsPerPageOptions.map((option) => ({
-                value: String(option),
-                label: String(option),
-              }))}
-              value={String(itemsPerPage)}
-              onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-              onBlur={() => {}}
-              size="small"
-              className="!w-14 !h-6 !text-xs !py-0 !px-1! !border-none !bg-transparent !ring-0 focus:!ring-0 cursor-pointer font-bold text-secondary-700"
-              placeholder=""
-            />
-          </div>
-          <span className="text-secondary-400">|</span>
-          <span className="text-xs">
-            <span className="font-semibold text-secondary-700">{Math.min((currentPage - 1) * itemsPerPage + 1, filteredData.length)}</span> - <span className="font-semibold text-secondary-700">{Math.min(currentPage * itemsPerPage, filteredData.length)}</span> de <span className="font-semibold text-secondary-900">{filteredData.length}</span>
-          </span>
-        </div>
-
-         <div className="flex items-center gap-2">
-           <ITButton
-             color="secondary"
-             size="small"
-             variant="text"
-             onClick={() => goToPage(currentPage - 1)}
-             disabled={currentPage === 1}
-             className="!p-2 hover:bg-secondary-100 rounded-full text-secondary-600 disabled:opacity-30 transition-all"
-             ariaLabel="Página anterior"
-           >
-             <FaArrowLeft aria-hidden="true" className="w-3.5 h-3.5" />
-           </ITButton>
-
-           <div className="flex items-center mx-1 text-sm font-medium text-secondary-600 bg-secondary-50 px-3 py-1 rounded-lg border border-secondary-200 min-w-[3rem] justify-center">
-             {currentPage}
-           </div>
-           
-           <span className="text-xs text-secondary-400">de {totalPages || 1}</span>
-
-           <ITButton
-             size="small"
-             color="secondary"
-             variant="text"
-             onClick={() => goToPage(currentPage + 1)}
-             disabled={currentPage === totalPages || totalPages === 0}
-             className="!p-2 hover:bg-secondary-100 rounded-full text-secondary-600 disabled:opacity-30 transition-all"
-             ariaLabel="Página siguiente"
-           >
-             <FaArrowRight aria-hidden="true" className="w-3.5 h-3.5" />
-           </ITButton>
-         </div>
+      <div className="bg-white rounded-b-xl border-t border-secondary-200 px-6 py-4">
+        <ITPagination
+          currentPage={currentPage}
+          totalPages={totalPages || 1}
+          onPageChange={goToPage}
+          color="primary"
+          itemsPerPageOptions={itemsPerPageOptions}
+          itemsPerPage={itemsPerPage}
+          onItemsPerPageChange={handleItemsPerPageChange}
+          totalItems={filteredData.length}
+        />
       </div>
     </div>
   );

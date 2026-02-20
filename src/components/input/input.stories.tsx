@@ -3,7 +3,7 @@ import ITInput from './input';
 import { FaUser, FaLock, FaEnvelope } from 'react-icons/fa';
 
 const meta = {
-  title: 'Components/ITInput',
+  title: 'Components/Form Elements/ITInput',
   component: ITInput,
   parameters: {
     layout: 'centered',

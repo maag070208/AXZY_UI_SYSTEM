@@ -3,7 +3,7 @@ import ITSelect from "./select";
 import { useState } from "react";
 
 const meta: Meta<typeof ITSelect> = {
-  title: "Components/ITSelect",
+  title: "Components/Form Elements/ITSelect",
   component: ITSelect,
   parameters: {
     layout: "centered",

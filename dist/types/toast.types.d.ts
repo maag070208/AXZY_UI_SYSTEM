@@ -1,9 +1,3 @@
-export declare const toastStyles: {
-    success: string;
-    error: string;
-    warning: string;
-    info: string;
-};
 export declare const positionStyles: {
     "top-right": string;
     "top-center": string;

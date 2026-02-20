@@ -1,27 +1,9 @@
 import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
-
-type IconType = React.ReactNode;
-
-interface Step {
-  label: string;
-  content: React.ReactNode;
-  icon?: IconType;
-}
-
-interface ITStepperProps {
-  steps: Step[];
-  currentStep: number;
-  onFinish?: () => void;
-  onStepChange?: (step: number) => void;
-  allowClickToJump?: boolean;
-  useIcons?: boolean;
-  disableNext?: boolean;
-  containerClassName?: string;
-  stepClassName?: string;
-  scrollableContent?: boolean;
-  maxContentHeight?: string;
-}
+import { ITStepperProps, Step } from "./stepper.props";
+import { theme } from "@/theme/theme";
+import ITButton from "../button/button";
+import { FaChevronLeft, FaChevronRight, FaCheck } from "react-icons/fa";
 
 export default function ITStepper({
   steps,
@@ -35,10 +17,17 @@ export default function ITStepper({
   stepClassName,
   scrollableContent = false,
   maxContentHeight = "400px",
+  color = "primary",
 }: ITStepperProps) {
   const [direction, setDirection] = useState<"next" | "prev">("next");
   const contentRef = useRef<HTMLDivElement | null>(null);
   const progressRef = useRef<HTMLDivElement | null>(null);
+
+  // Resolve theme color
+  const isThemeColor = color in theme.colors;
+  const resolvedColor = isThemeColor
+    ? theme.colors[color as keyof typeof theme.colors][500]
+    : color;
 
   // Effect for notifying parent of step change
   useEffect(() => {
@@ -51,6 +40,7 @@ export default function ITStepper({
 
     if (progressRef.current) {
       progressRef.current.style.width = `${pct}%`;
+      progressRef.current.style.backgroundColor = resolvedColor;
     }
 
     if (contentRef.current) {
@@ -67,19 +57,15 @@ export default function ITStepper({
       });
     }
 
-    // Only focus if the step strictly changed, to avoid stealing focus from inputs on re-renders
-    // We check if we are NOT in the initial render ideally, but here we just rely on deps.
-    // However, to be safe against prop updates (like steps changing internal content), we should be careful.
-    // The previous issue was onStepChange triggering this. Now it's removed from deps.
     contentRef.current?.focus();
-  }, [currentStep, direction, steps.length]);
+  }, [currentStep, direction, steps.length, resolvedColor]);
 
 
   const nextStep = () => {
     if (disableNext) return;
     if (currentStep < steps.length - 1) {
       setDirection("next");
-      onStepChange?.(currentStep + 1); // 👈 Notificar al padre
+      onStepChange?.(currentStep + 1);
     } else {
       onFinish?.();
     }
@@ -88,7 +74,7 @@ export default function ITStepper({
   const prevStep = () => {
     if (currentStep > 0) {
       setDirection("prev");
-      onStepChange?.(currentStep - 1); // 👈 Notificar al padre
+      onStepChange?.(currentStep - 1);
     }
   };
 
@@ -96,7 +82,7 @@ export default function ITStepper({
     if (!allowClickToJump) return;
     if (index <= currentStep) {
       setDirection(index > currentStep ? "next" : "prev");
-      onStepChange?.(index); // 👈 Notificar al padre
+      onStepChange?.(index);
     }
   };
 
@@ -108,21 +94,7 @@ export default function ITStepper({
     const step = steps[index];
 
     if (isCompleted) {
-      return (
-        <svg
-          className="w-5 h-5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-        >
-          <path
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M5 13l4 4L19 7"
-          />
-        </svg>
-      );
+      return <FaCheck className="w-4 h-4" />;
     }
 
     if (step.icon && useIcons) {
@@ -145,7 +117,7 @@ export default function ITStepper({
         />
         <div
           ref={progressRef}
-          className="absolute left-6 top-5 h-1 bg-slate-400 rounded-full z-10 transition-all duration-500 ease-in-out"
+          className="absolute left-6 top-5 h-1 rounded-full z-10 transition-all duration-500 ease-in-out"
           aria-hidden
         />
 
@@ -168,25 +140,24 @@ export default function ITStepper({
               >
                 <div className="flex flex-col items-center">
                   <div
-                    className={`flex items-center justify-center w-11 h-11 rounded-full border-2 transition-all duration-300 transform ${
-                      isCompleted
-                        ? "bg-slate-400 border-slate-400 text-white scale-100 shadow"
-                        : isActive
-                        ? "bg-teal-500 border-teal-500 text-white scale-110 shadow-lg"
-                        : "bg-white border-gray-300 text-gray-400"
-                    } ${hasIcon ? "p-2" : ""}`}
+                    className={clsx(
+                      "flex items-center justify-center w-11 h-11 rounded-full border-2 transition-all duration-300 transform",
+                      hasIcon && "p-2",
+                      isCompleted && "bg-slate-400 border-slate-400 text-white scale-100 shadow",
+                      isActive && "text-white scale-110 shadow-lg",
+                      !isActive && !isCompleted && "bg-white border-gray-300 text-gray-400"
+                    )}
+                    style={isActive ? { backgroundColor: resolvedColor, borderColor: resolvedColor } : undefined}
                   >
                     {renderStepContent(idx, isCompleted, isActive)}
                   </div>
 
                   <span
-                    className={`mt-2 text-xs sm:text-sm font-medium transition-colors text-center ${
-                      isActive
-                        ? "text-teal-500"
-                        : isCompleted
-                        ? "text-slate-400"
-                        : "text-gray-400"
-                    }`}
+                    className={clsx(
+                      "mt-2 text-xs sm:text-sm font-medium transition-colors text-center",
+                      isCompleted ? "text-slate-400" : !isActive && "text-gray-400"
+                    )}
+                    style={isActive ? { color: resolvedColor } : undefined}
                   >
                     {step.label}
                   </span>
@@ -205,7 +176,7 @@ export default function ITStepper({
         aria-labelledby={`step-${currentStep}`}
         className={clsx(
           stepClassName,
-          "bg-white border border-gray-100 rounded-2xl shadow-lg min-h-[280px] transition-transform duration-400 no-scrollbar",
+          "bg-white border border-gray-100 rounded-2xl shadow-lg min-h-[280px] transition-transform duration-400 no-scrollbar p-6",
           scrollableContent && "overflow-y-auto hide-scrollbar"
         )}
         style={
@@ -218,83 +189,35 @@ export default function ITStepper({
       </div>
 
       {/* --- BOTONES DE CONTROL --- */}
-      <div className="flex justify-between mt-6">
-        <button
-          onClick={prevStep}
-          type="button"
+      <div className="flex justify-between items-center mt-6">
+        <ITButton
+          variant="outlined"
+          color="secondary"
           disabled={currentStep === 0}
-          className={`px-5 py-2 rounded-xl text-sm font-medium border transition-all duration-200 flex items-center ${
-            currentStep === 0
-              ? "border-gray-200 text-gray-400 cursor-not-allowed opacity-60"
-              : "border-gray-300 text-gray-700 hover:bg-gray-50 hover:shadow-sm"
-          }`}
+          onClick={prevStep}
         >
-          <svg
-            className="w-4 h-4 mr-2"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-          >
-            <path
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          Atrás
-        </button>
+          <div className="flex items-center gap-2">
+            <FaChevronLeft />
+            Atrás
+          </div>
+        </ITButton>
 
         <div className="flex items-center gap-3">
           <div className="text-sm text-gray-500 mr-2 hidden sm:block">
             Paso {currentStep + 1} de {steps.length}
           </div>
-          <button
-            onClick={nextStep}
-            type="button"
+          
+          <ITButton
+            variant="solid"
+            color={color as any}
             disabled={disableNext}
-            className={`px-6 py-2 rounded-xl text-sm font-medium flex items-center transition-all duration-200 ${
-              disableNext
-                ? "bg-gray-300 text-gray-600 cursor-not-allowed opacity-70"
-                : "bg-gradient-to-r from-teal-500 to-slate-400 text-white hover:shadow-lg transform hover:scale-[1.02]"
-            }`}
+            onClick={nextStep}
           >
-            {currentStep === steps.length - 1 ? (
-              <>
-                Finalizar
-                <svg
-                  className="w-4 h-4 ml-2"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-              </>
-            ) : (
-              <>
-                Siguiente
-                <svg
-                  className="w-4 h-4 ml-2"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </>
-            )}
-          </button>
+            <div className="flex items-center gap-2">
+              {currentStep === steps.length - 1 ? "Finalizar" : "Siguiente"}
+              {currentStep === steps.length - 1 ? <FaCheck /> : <FaChevronRight />}
+            </div>
+          </ITButton>
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import ITDropfile, { FileTypeEnum, UploadStatus } from './dropfile';
 import { useState } from 'react';
 
 const meta = {
-  title: 'Components/ITDropfile',
+  title: 'Components/Actions/ITDropfile',
   component: ITDropfile,
   parameters: {
     layout: 'centered',

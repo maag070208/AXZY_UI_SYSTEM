@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FaBars, FaChevronDown } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaChevronDown } from "react-icons/fa";
 import { ITNavigationItem, ITSidebarProps } from "./sidebar.props";
 import { theme } from "@/theme/theme";
 
@@ -12,33 +12,20 @@ export default function ITSidebar({
 }: ITSidebarProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [isHovering, setIsHovering] = useState(false);
-  const [autoCollapsed, setAutoCollapsed] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const leaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Efecto para manejar el auto-colapso al perder el hover
   useEffect(() => {
     const handleMouseEnter = () => {
-      if (hoverTimeoutRef.current) {
-        clearTimeout(hoverTimeoutRef.current);
-      }
-      if (leaveTimeoutRef.current) {
-        clearTimeout(leaveTimeoutRef.current);
-      }
-      
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+      if (leaveTimeoutRef.current) clearTimeout(leaveTimeoutRef.current);
       setIsHovering(true);
-      setAutoCollapsed(false);
     };
 
     const handleMouseLeave = () => {
-      // Pequeña demora antes de colapsar para evitar parpadeos
       leaveTimeoutRef.current = setTimeout(() => {
         setIsHovering(false);
-        // Solo auto-colapsar si el usuario no ha forzado el estado expandido
-        if (!isCollapsed) {
-          setAutoCollapsed(true);
-        }
       }, 300);
     };
 
@@ -47,7 +34,6 @@ export default function ITSidebar({
       sidebar.addEventListener("mouseenter", handleMouseEnter);
       sidebar.addEventListener("mouseleave", handleMouseLeave);
     }
-
     return () => {
       if (sidebar) {
         sidebar.removeEventListener("mouseenter", handleMouseEnter);
@@ -59,104 +45,120 @@ export default function ITSidebar({
   }, [isCollapsed]);
 
   const toggleExpanded = (itemId: string) => {
-    if (autoCollapsed) return;
-
     const newExpanded = new Set(expandedItems);
-    if (newExpanded.has(itemId)) {
-      newExpanded.delete(itemId);
-    } else {
-      newExpanded.add(itemId);
-    }
+    if (newExpanded.has(itemId)) newExpanded.delete(itemId);
+    else newExpanded.add(itemId);
     setExpandedItems(newExpanded);
   };
 
   const handleItemClick = (item: ITNavigationItem) => {
     if (item.subitems && item.subitems.length > 0) {
-      if (autoCollapsed || isCollapsed) {
-        // Si está colapsado, primero expandir sidebar
-        setIsHovering(true);
-        setAutoCollapsed(false);
-        onToggleCollapse?.();
-        setExpandedItems(new Set([item.id]));
-      } else {
-        toggleExpanded(item.id);
-      }
+      toggleExpanded(item.id);
     } else if (item.action) {
       item.action();
     }
   };
 
-  const isSidebarCollapsed = autoCollapsed || isCollapsed;
-  const sidebarWidth = isSidebarCollapsed ? "w-20" : "w-72";
+  // If visibleOnMobile is true, it's inside the mobile drawer and should ALWAYS be fully expanded
+  // Otherwise, it expands if hovering, or uses the isCollapsed prop
+  const isSidebarCollapsed = visibleOnMobile ? false : (!isHovering && isCollapsed);
+  const sidebarWidth = isSidebarCollapsed ? "w-[88px]" : "w-[280px]";
 
   return (
     <aside
       ref={sidebarRef}
       className={`
-        relative 
-        shadow-xl flex flex-col transition-all duration-300 ease-in-out
+        relative flex flex-col 
+        transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)]
         ${sidebarWidth}
         ${className}
         ${!visibleOnMobile ? "hidden lg:flex" : "flex"}
-        border-none
+        shadow-[4px_0_24px_rgba(0,0,0,0.02)]
       `}
       style={{
         zIndex: 50,
-        backgroundColor: theme.sidebar?.backgroundColor || '#1e261c', // Fallback to safe dark color
+        backgroundColor: theme.sidebar?.backgroundColor || 'rgba(255, 255, 255, 0.90)',
+        borderRight: `1px solid ${theme.sidebar?.borderColor || '#e2e8f0'}`,
+        WebkitBackdropFilter: 'blur(12px)',
+        backdropFilter: 'blur(12px)',
       }}
     >
-      {/* Menu Header */}
-      <div className="p-6 flex items-center justify-between border-b border-white/10">
+      {/* Menu Header with Modern Collapse Toggle */}
+      <div className={`p-6 flex items-center ${isSidebarCollapsed ? "justify-center px-4" : "justify-end px-6"} relative h-[72px]`} style={{ borderBottom: `1px solid ${theme.sidebar?.borderColor || '#e2e8f0'}` }}>
           <button
             onClick={onToggleCollapse}
-            className={`p-2 rounded-lg transition-all duration-200 group relative ${isSidebarCollapsed ? "mx-auto" : ""}`}
-            style={{ color: theme.sidebar?.icon?.color || '#54e073' }}
-            title={isSidebarCollapsed ? "Expandir sidebar" : "Colapsar sidebar"}
+            className={`
+              flex items-center justify-center
+              w-8 h-8 rounded-full 
+              border shadow-sm
+              transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)]
+              group relative z-10
+            `}
+            style={{ 
+              color: theme.sidebar?.icon?.color || '#64748b',
+              backgroundColor: '#ffffff',
+              borderColor: theme.sidebar?.borderColor || '#e2e8f0'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = theme.sidebar?.hover?.backgroundColor || '#f1f5f9';
+              e.currentTarget.style.color = theme.sidebar?.active?.color || '#0f172a';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#ffffff';
+              e.currentTarget.style.color = theme.sidebar?.icon?.color || '#64748b';
+            }}
+            title={isCollapsed ? "Fijar panel" : "Ocultar panel"}
           >
-            <FaBars className="w-5 h-5" />
-            
-            {/* Tooltip for collapse button */}
-            {isSidebarCollapsed && (
-             <div className="absolute left-full top-1/2 transform -translate-y-1/2 ml-3 bg-white text-zinc-900 text-xs font-semibold rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap shadow-lg border border-zinc-100 z-50">
-               Expandir
-             </div>
+            {isCollapsed ? (
+              <FaChevronRight className="w-3.5 h-3.5 translate-x-0.5" />
+            ) : (
+              <FaChevronLeft className="w-3.5 h-3.5 -translate-x-0.5" />
             )}
           </button>
       </div>
 
       {/* Navigation Items */}
-      <nav className="flex-1 py-6 overflow-y-auto overflow-x-hidden custom-scrollbar px-3">
-        <ul className="space-y-1.5">
+      <nav className="flex-1 py-6 overflow-y-auto overflow-x-hidden custom-scrollbar px-4">
+        <ul className="space-y-2">
           {navigationItems.map((item) => (
-            <li key={item.id} className="relative">
+            <li key={item.id} className="relative group/navitem">
               <div
-                className={`group relative flex items-center cursor-pointer 
-                  transition-all duration-200 rounded-xl overflow-hidden
-                  ${isSidebarCollapsed ? "justify-center p-3" : "justify-between px-4 py-3"}
-                  ${
-                    item.isActive
-                      ? "bg-white/10 shadow-sm"
-                      : "hover:bg-white/5"
-                  }`}
+                className={`flex items-center cursor-pointer 
+                  transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)]
+                  rounded-xl relative overflow-visible
+                  ${isSidebarCollapsed ? "justify-center p-2.5 mb-2" : "justify-between px-3.5 py-3 mb-1"}
+                `}
+                style={{
+                  backgroundColor: item.isActive ? (theme.sidebar?.active?.backgroundColor || '#f8fafc') : 'transparent',
+                  boxShadow: item.isActive ? '0 1px 2px 0 rgba(0, 0, 0, 0.05)' : 'none',
+                  border: item.isActive ? `1px solid ${theme.sidebar?.borderColor || '#e2e8f0'}` : '1px solid transparent'
+                }}
+                onMouseEnter={(e) => {
+                  if (!item.isActive) e.currentTarget.style.backgroundColor = theme.sidebar?.hover?.backgroundColor || '#f1f5f9';
+                }}
+                onMouseLeave={(e) => {
+                  if (!item.isActive) e.currentTarget.style.backgroundColor = 'transparent';
+                }}
                 onClick={() => handleItemClick(item)}
               >
-               {/* Active Indicator Strip */}
+                {/* Modern Active Indicator: Glow or strip */}
                 {item.isActive && !isSidebarCollapsed && (
                     <div 
-                      className="absolute left-0 top-0 bottom-0 w-1 rounded-l-md"
-                      style={{ backgroundColor: theme.sidebar?.icon?.color || '#54e073' }}
-                    ></div>
+                      className="absolute left-0 top-1/4 bottom-1/4 w-[3px] rounded-r-full transition-all"
+                      style={{ backgroundColor: theme.sidebar?.active?.iconColor || '#10b981', boxShadow: `0 0 10px ${theme.sidebar?.active?.iconColor || '#10b981'}` }}
+                    />
                 )}
                 
-                <div className={`flex items-center ${!isSidebarCollapsed ? "gap-3" : ""} relative z-10`}>
+                <div className={`flex items-center ${!isSidebarCollapsed ? "gap-3.5" : ""} relative z-10 w-full`}>
                   {/* Icon */}
                   {item.icon && (
                     <div 
-                      className={`transition-colors duration-200 flex-shrink-0 flex items-center justify-center`}
+                      className={`transition-all duration-300 flex-shrink-0 flex items-center justify-center`}
                       style={{ 
-                        color: item.isActive ? (theme.sidebar?.icon?.color || '#54e073') : (theme.sidebar?.icon?.color || '#54e073'), // Icon color is usually consistent or dimmed
-                        opacity: item.isActive ? 1 : 0.7,
-                        fontSize: theme.sidebar?.icon?.size || '1.25rem'
+                        color: item.isActive ? (theme.sidebar?.active?.iconColor || '#10b981') : (theme.sidebar?.icon?.color || '#9ca3af'),
+                        opacity: item.isActive ? 1 : 0.8,
+                        fontSize: item.isActive ? '1.35rem' : (theme.sidebar?.icon?.size || '1.25rem'),
+                        filter: item.isActive ? 'drop-shadow(0 0 8px rgba(255,255,255,0.2))' : 'none'
                       }}
                     >
                       {item.icon}
@@ -166,10 +168,10 @@ export default function ITSidebar({
                   {/* Label - hidden when collapsed */}
                   {!isSidebarCollapsed && (
                     <span 
-                      className={`transition-colors truncate`}
+                      className={`transition-all duration-300 truncate tracking-wide`}
                       style={{
-                         color: theme.sidebar?.label?.color || '#ffffff',
-                         fontSize: theme.sidebar?.label?.size || '0.875rem',
+                         color: item.isActive ? (theme.sidebar?.active?.color || '#ffffff') : (theme.sidebar?.label?.color || '#d1d5db'),
+                         fontSize: theme.sidebar?.label?.size || '0.9rem',
                          fontWeight: item.isActive ? '600' : (theme.sidebar?.label?.weight || '500')
                       }}
                     >
@@ -180,69 +182,97 @@ export default function ITSidebar({
 
                 {/* Chevron for expandable items - hidden when collapsed */}
                 {!isSidebarCollapsed && item.subitems && item.subitems.length > 0 && (
-                  <div className={`flex-shrink-0 transition-transform duration-200 ${expandedItems.has(item.id) ? "rotate-180" : ""}`}
-                       style={{ color: theme.sidebar?.label?.color || '#ffffff', opacity: 0.5 }}>
+                  <div className={`flex-shrink-0 transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${expandedItems.has(item.id) ? "rotate-180" : ""}`}
+                       style={{ color: item.isActive ? (theme.sidebar?.active?.color || '#0f172a') : (theme.sidebar?.icon?.color || '#64748b'), opacity: 0.7 }}>
                     <FaChevronDown className="w-3 h-3" />
                   </div>
                 )}
 
-                {/* Badge para notificaciones */}
+                {/* Modern Badge */}
                 {item.badge && (
-                  <span className={`
-                    absolute bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2
-                    ${isSidebarCollapsed ? "top-2 right-2 min-w-[14px] h-[14px]" : "right-3 top-1/2 transform -translate-y-1/2 min-w-[18px] h-[18px] px-1"}
-                  `} style={{ borderColor: theme.sidebar?.backgroundColor || '#1e261c' }}>
+                  <span 
+                    className={`
+                      absolute flex items-center justify-center font-bold shadow-md
+                      ${isSidebarCollapsed 
+                        ? "top-1 right-1 w-2.5 h-2.5 rounded-full ring-2" 
+                        : "right-3 top-1/2 transform -translate-y-1/2 px-2 py-0.5 text-[10px] rounded-full backdrop-blur-sm"}
+                    `}
+                    style={{
+                      backgroundColor: theme.sidebar?.badge?.backgroundColor || theme.sidebar?.active?.iconColor || '#10b981',
+                      color: theme.sidebar?.badge?.color || '#ffffff',
+                      boxShadow: isSidebarCollapsed ? `0 0 0 2px ${theme.sidebar?.backgroundColor || '#111827'}` : 'none'
+                    }}
+                  >
                     {isSidebarCollapsed ? "" : item.badge}
                   </span>
                 )}
               </div>
 
-              {/* Collapsed tooltip */}
+              {/* Glassmorphism Collapsed Tooltip / Submenu */}
               {isSidebarCollapsed && (
-                <div className="absolute left-full top-0 ml-3 bg-white text-zinc-800 text-sm rounded-xl p-0 opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-50 whitespace-nowrap shadow-xl border border-zinc-100 min-w-[200px] overflow-hidden">
-                  <div className="bg-zinc-50 px-4 py-3 border-b border-zinc-100 flex items-center gap-2 font-semibold text-zinc-900">
-                    {item.icon && <span style={{ color: theme.sidebar?.icon?.color }} className="text-lg">{item.icon}</span>}
-                    {item.label}
+                <div 
+                  className="absolute left-full top-0 ml-4 rounded-2xl opacity-0 invisible group-hover/navitem:opacity-100 group-hover/navitem:visible transition-all duration-300 pointer-events-none z-50 min-w-[220px] overflow-hidden -translate-x-2 group-hover/navitem:translate-x-0 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)]"
+                  style={{ 
+                    backgroundColor: theme.sidebar?.backgroundColor || '#ffffff',
+                    border: `1px solid ${theme.sidebar?.borderColor || '#e2e8f0'}`,
+                    WebkitBackdropFilter: 'blur(16px)',
+                    backdropFilter: 'blur(16px)',
+                  }}
+                >
+                  <div className="px-5 py-4 flex items-center gap-3 font-semibold border-b" style={{ borderColor: theme.sidebar?.borderColor || '#e2e8f0', color: theme.sidebar?.active?.color || '#0f172a' }}>
+                    {item.icon && <span style={{ color: theme.sidebar?.active?.iconColor || '#10b981' }} className="text-xl drop-shadow-sm">{item.icon}</span>}
+                    <span className="tracking-wide text-[15px]">{item.label}</span>
                   </div>
                   
                   {item.subitems && item.subitems.length > 0 ? (
-                    <div className="py-1">
+                    <div className="py-2">
                       {item.subitems.map((subitem) => (
                         <div 
                           key={subitem.id} 
-                          className={`px-4 py-2 text-xs flex items-center gap-2`}
+                          className={`px-5 py-2.5 text-sm flex items-center gap-3 transition-colors`}
                         >
-                          <span className={`w-1.5 h-1.5 rounded-full`} style={{ backgroundColor: subitem.isActive ? theme.sidebar?.icon?.color : '#cbd5e1' }}></span>
-                          <span style={{ color: subitem.isActive ? '#000' : '#64748b', fontWeight: subitem.isActive ? 600 : 400 }}>{subitem.label}</span>
+                          <span className={`w-1.5 h-1.5 rounded-full transition-all ${subitem.isActive ? "scale-125" : ""}`} style={{ backgroundColor: subitem.isActive ? (theme.sidebar?.active?.iconColor || '#10b981') : (theme.sidebar?.icon?.color || '#94a3b8') }}></span>
+                          <span style={{ color: subitem.isActive ? (theme.sidebar?.active?.color || '#0f172a') : (theme.sidebar?.label?.color || '#475569'), fontWeight: subitem.isActive ? 600 : 500 }}>{subitem.label}</span>
                         </div>
                       ))}
                     </div>
                   ) : (
-                      <div className="px-4 py-2 text-xs text-zinc-500 italic">No hay submenú</div>
+                      <div className="px-5 py-3 text-sm text-zinc-500 italic">No hay submenú</div>
                   )}
                 </div>
               )}
 
-              {/* Submenu - only show when not collapsed */}
-              {!isSidebarCollapsed &&
-                item.subitems &&
-                item.subitems.length > 0 &&
-                expandedItems.has(item.id) && (
-                  <ul className="mt-1 ml-4 pl-4 border-l border-white/10 space-y-1 animate-fade-in">
+              {/* Submenu - smooth height/opacity when not collapsed */}
+              {!isSidebarCollapsed && item.subitems && item.subitems.length > 0 && (
+                <div className={`overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] ${expandedItems.has(item.id) ? "max-h-[500px] opacity-100 mt-1" : "max-h-0 opacity-0"}`}>
+                  <ul className="ml-5 pl-4 space-y-1 py-1" style={{ borderLeft: `2px solid ${theme.sidebar?.borderColor || '#e2e8f0'}` }}>
                     {item.subitems.map((subitem) => (
-                      <li key={subitem.id}>
+                      <li key={subitem.id} className="relative">
+                        {/* Connecting line for active subitem */}
+                        {subitem.isActive && (
+                           <div className="absolute -left-[18px] top-1/2 -translate-y-1/2 w-4 h-[2px] rounded-r-full" style={{ backgroundColor: theme.sidebar?.active?.iconColor || '#10b981' }} />
+                        )}
                         <button
                           onClick={subitem.action}
-                          className={`block w-full text-left px-4 py-2.5 rounded-lg transition-all duration-200
-                            ${
-                              subitem.isActive
-                                ? "bg-white/5"
-                                : "hover:bg-white/5"
-                            }`}
+                          className={`block w-full text-left px-4 py-2 rounded-xl transition-all duration-300`}
                           style={{
-                             color: subitem.isActive ? (theme.sidebar?.icon?.color || '#54e073') : (theme.sidebar?.label?.color || '#ffffff'),
-                             fontSize: '0.8125rem', // 13px
-                             fontWeight: subitem.isActive ? 500 : 400
+                             color: subitem.isActive ? (theme.sidebar?.active?.color || '#0f172a') : (theme.sidebar?.label?.color || '#475569'),
+                             backgroundColor: subitem.isActive ? (theme.sidebar?.active?.backgroundColor || '#f8fafc') : 'transparent',
+                             fontSize: '0.85rem',
+                             fontWeight: subitem.isActive ? 600 : 500,
+                             letterSpacing: '0.01em'
+                          }}
+                          onMouseEnter={(e) => {
+                             if (!subitem.isActive) {
+                               e.currentTarget.style.backgroundColor = theme.sidebar?.hover?.backgroundColor || '#f1f5f9';
+                               e.currentTarget.style.transform = 'translateX(4px)';
+                             }
+                          }}
+                          onMouseLeave={(e) => {
+                             if (!subitem.isActive) {
+                               e.currentTarget.style.backgroundColor = 'transparent';
+                               e.currentTarget.style.transform = 'translateX(0)';
+                             }
                           }}
                         >
                           {subitem.label}
@@ -250,7 +280,8 @@ export default function ITSidebar({
                       </li>
                     ))}
                   </ul>
-                )}
+                </div>
+              )}
             </li>
           ))}
         </ul>

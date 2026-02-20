@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import ITBadget from './badget';
 
 const meta = {
-  title: 'Components/ITBadget',
+  title: 'Components/Data Display/ITBadge',
   component: ITBadget,
   parameters: {
     layout: 'centered',

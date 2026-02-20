@@ -3,7 +3,7 @@ import ITDatePicker from './datePicker';
 import { useState } from 'react';
 
 const meta = {
-  title: 'Components/ITDatePicker',
+  title: 'Components/Form Elements/ITDatePicker',
   component: ITDatePicker,
   parameters: {
     layout: 'padded',

@@ -1,0 +1,11 @@
+import { Meta, StoryObj } from '@storybook/react';
+import { default as ITTimePicker } from './timePicker';
+declare const meta: Meta<typeof ITTimePicker>;
+export default meta;
+type Story = StoryObj<typeof ITTimePicker>;
+export declare const Default: Story;
+export declare const WithPredefinedValue: Story;
+export declare const Disabled: Story;
+export declare const Validation: Story;
+export declare const Sizes: Story;
+export declare const Colors: Story;

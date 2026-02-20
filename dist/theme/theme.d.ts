@@ -233,8 +233,33 @@ export declare const semanticColors: {
  * 3. Tokens de componentes (heredan de semantic)
  */
 export declare const components: {
+    layout: {
+        backgroundColor: string;
+        contentPadding: string;
+    };
+    topbar: {
+        backgroundColor: string;
+        borderColor: string;
+        iconColor: string;
+        iconHoverColor: string;
+        shadow: string;
+        textColor: string;
+        textHoverColor: string;
+        userMenu: {
+            backgroundColor: string;
+            hoverBackground: string;
+            textColor: string;
+            subtitleColor: string;
+            dropdown: {
+                backgroundColor: string;
+                borderColor: string;
+                itemHoverBackground: string;
+            };
+        };
+    };
     sidebar: {
         backgroundColor: string;
+        borderColor: string;
         label: {
             color: string;
             size: string;
@@ -249,7 +274,12 @@ export declare const components: {
         };
         active: {
             backgroundColor: string;
-            borderLeft: string;
+            color: string;
+            iconColor: string;
+        };
+        badge: {
+            backgroundColor: string;
+            color: string;
         };
     };
     button: {
@@ -518,8 +548,33 @@ export declare const typography: {
  * 5. Theme final exportado
  */
 export declare const theme: {
+    layout: {
+        backgroundColor: string;
+        contentPadding: string;
+    };
+    topbar: {
+        backgroundColor: string;
+        borderColor: string;
+        iconColor: string;
+        iconHoverColor: string;
+        shadow: string;
+        textColor: string;
+        textHoverColor: string;
+        userMenu: {
+            backgroundColor: string;
+            hoverBackground: string;
+            textColor: string;
+            subtitleColor: string;
+            dropdown: {
+                backgroundColor: string;
+                borderColor: string;
+                itemHoverBackground: string;
+            };
+        };
+    };
     sidebar: {
         backgroundColor: string;
+        borderColor: string;
         label: {
             color: string;
             size: string;
@@ -534,7 +589,12 @@ export declare const theme: {
         };
         active: {
             backgroundColor: string;
-            borderLeft: string;
+            color: string;
+            iconColor: string;
+        };
+        badge: {
+            backgroundColor: string;
+            color: string;
         };
     };
     button: {

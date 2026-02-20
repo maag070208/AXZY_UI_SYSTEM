@@ -6,7 +6,7 @@ import { useState } from "react";
 import { FieldConfig } from "@/types/field.types";
 
 const meta: Meta<typeof ITFormBuilder> = {
-  title: "Form/FormBuilder",
+  title: "Components/Form Elements/FormBuilder",
   component: ITFormBuilder,
   parameters: {
     layout: "centered",

@@ -73,27 +73,53 @@ export const semanticColors = {
  * 3. Tokens de componentes (heredan de semantic)
  */
 export const components = {
+  layout: {
+    backgroundColor: semanticColors.gray[50], // Very light gray background for the main content area
+    contentPadding: '1.5rem', // p-6
+  },
+  topbar: {
+    backgroundColor: 'rgba(255, 255, 255, 0.90)', // Glassmorphism base
+    borderColor: semanticColors.gray[200],
+    iconColor: semanticColors.gray[500],
+    iconHoverColor: semanticColors.gray[700],
+    shadow: '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.025)',
+    textColor: semanticColors.gray[700],
+    textHoverColor: semanticColors.gray[900],
+    userMenu: {
+      backgroundColor: semanticColors.gray[50],
+      hoverBackground: semanticColors.gray[100],
+      textColor: semanticColors.gray[900],
+      subtitleColor: semanticColors.gray[500],
+      dropdown: {
+        backgroundColor: '#ffffff',
+        borderColor: semanticColors.gray[200],
+        itemHoverBackground: semanticColors.gray[50],
+      }
+    }
+  },
   sidebar: {
-    backgroundColor: semanticColors.primary[900], // Azul oscuro elegante
-
+    backgroundColor: 'rgba(255, 255, 255, 0.90)', // Glassmorphism base like topbar
+    borderColor: semanticColors.gray[200],
     label: {
-      color: semanticColors.gray[100],
-      size: '0.875rem', // 14px
+      color: semanticColors.gray[700],
+      size: '0.9rem',
       weight: '500',
     },
-
     icon: {
-      color: semanticColors.primary[300], // Azul claro para iconos
-      size: '1.25rem', // 20px
+      color: semanticColors.gray[500],
+      size: '1.25rem',
     },
-    
     hover: {
-      backgroundColor: semanticColors.primary[800],
+      backgroundColor: semanticColors.gray[100],
     },
-    
     active: {
-      backgroundColor: semanticColors.primary[700],
-      borderLeft: `4px solid ${semanticColors.primary[400]}`,
+      backgroundColor: semanticColors.gray[50], // Very subtle active bg in light mode
+      color: semanticColors.gray[900],
+      iconColor: '#10b981', // Emerald green
+    },
+    badge: {
+      backgroundColor: '#10b981', 
+      color: '#ffffff',
     },
   },
 

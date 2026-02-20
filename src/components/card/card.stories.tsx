@@ -3,7 +3,7 @@ import ITCard from './card';
 import ITButton from '../button/button';
 
 const meta = {
-  title: 'Components/ITCard',
+  title: 'Components/Layout & Navigation/ITCard',
   component: ITCard,
   parameters: {
     layout: 'centered',

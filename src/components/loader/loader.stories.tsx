@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import ITLoader from "./loader";
 
 const meta: Meta<typeof ITLoader> = {
-  title: "Components/Feedback/Loader",
+  title: "Components/Feedback/ITLoader",
   component: ITLoader,
   parameters: {
     layout: "centered",

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import ITButton from '../button/button';
 
 const meta = {
-  title: 'Components/ITDialog',
+  title: 'Components/Feedback/ITDialog',
   component: ITDialog,
   parameters: {
     layout: 'centered',
