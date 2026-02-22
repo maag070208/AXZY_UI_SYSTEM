@@ -1,8 +1,7 @@
-import { StoryObj } from '@storybook/react';
 import { UploadStatus } from './dropfile';
 declare const meta: {
     title: string;
-    component: import('../../../node_modules/react').FC<import('./dropfile').ITDropfileProps>;
+    component: import('react').FC<import('./dropfile').ITDropfileProps>;
     parameters: {
         layout: string;
     };
@@ -27,8 +26,7 @@ declare const meta: {
     };
 };
 export default meta;
-type Story = StoryObj<typeof meta>;
-export declare const Default: Story;
-export declare const WithImage: Story;
-export declare const Uploading: Story;
-export declare const ErrorState: Story;
+export declare const Default: any;
+export declare const WithImage: any;
+export declare const Uploading: any;
+export declare const ErrorState: any;

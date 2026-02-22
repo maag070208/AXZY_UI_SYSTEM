@@ -22,14 +22,14 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const Default: any = {
   args: {
     name: 'default-input',
     placeholder: 'Type something...',
   },
 };
 
-export const WithLabel: Story = {
+export const WithLabel: any = {
   args: {
     name: 'labeled-input',
     label: 'Username',
@@ -37,7 +37,7 @@ export const WithLabel: Story = {
   },
 };
 
-export const WithIcons: Story = {
+export const WithIcons: any = {
   args: {
     name: 'icon-input',
     label: 'Email',
@@ -47,7 +47,7 @@ export const WithIcons: Story = {
   },
 };
 
-export const ClickableIcons: Story = {
+export const ClickableIcons: any = {
   args: {
     name: 'search-input',
     label: 'Search',
@@ -63,7 +63,7 @@ export const ClickableIcons: Story = {
   },
 };
 
-export const Password: Story = {
+export const Password: any = {
   args: {
     name: 'password-input',
     label: 'Password',
@@ -73,7 +73,7 @@ export const Password: Story = {
   },
 };
 
-export const WithError: Story = {
+export const WithError: any = {
   args: {
     name: 'error-input',
     label: 'Email',
@@ -84,7 +84,7 @@ export const WithError: Story = {
   },
 };
 
-export const Disabled: Story = {
+export const Disabled: any = {
   args: {
     name: 'disabled-input',
     label: 'Disabled Input',
@@ -93,7 +93,7 @@ export const Disabled: Story = {
   },
 };
 
-export const TextArea: Story = {
+export const TextArea: any = {
   args: {
     name: 'textarea',
     label: 'Description',
@@ -103,7 +103,7 @@ export const TextArea: Story = {
   },
 };
 
-export const NumberInput: Story = {
+export const NumberInput: any = {
   args: {
     name: 'number-input',
     label: 'Quantity',

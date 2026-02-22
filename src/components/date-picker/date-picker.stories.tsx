@@ -38,30 +38,30 @@ const DatePickerWrapper = (args: any) => {
   return <ITDatePicker {...args} value={date} onChange={handleChange} />;
 };
 
-export const Default: Story = {
+export const Default: any = {
   render: (args) => <DatePickerWrapper {...args} />,
   args: {
     name: 'birthdate',
     label: 'Select Date',
     placeholder: 'DD/MM/YYYY',
-  },
+  } as any,
 };
 
-export const WithError: Story = {
+export const WithError: any = {
   render: (args) => <DatePickerWrapper {...args} />,
   args: {
     name: 'error_date',
     label: 'Invalid Date',
     error: 'This field is required',
     touched: true,
-  },
+  } as any,
 };
 
-export const Disabled: Story = {
+export const Disabled: any = {
   args: {
     name: 'disabled_date',
     label: 'Disabled Input',
     value: new Date(),
     disabled: true,
-  },
+  } as any,
 };

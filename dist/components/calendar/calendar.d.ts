@@ -1,4 +1,4 @@
-import { default as React } from '../../../node_modules/react';
+import { default as React } from 'react';
 import { ITCalendarProps } from './calendar.props';
 export declare const ITCalendar: React.FC<ITCalendarProps>;
 export default ITCalendar;

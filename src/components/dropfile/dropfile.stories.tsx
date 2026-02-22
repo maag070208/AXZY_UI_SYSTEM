@@ -29,7 +29,7 @@ const DropfileWrapper = (args: any) => {
     return <ITDropfile {...args} className="w-[500px]" />;
 }
 
-export const Default: Story = {
+export const Default: any = {
   render: (args) => <DropfileWrapper {...args} />,
   args: {
     showStatusBadge: true,
@@ -37,7 +37,7 @@ export const Default: Story = {
   },
 };
 
-export const WithImage: Story = {
+export const WithImage: any = {
   render: (args) => <DropfileWrapper {...args} />,
   args: {
     showStatusBadge: true,
@@ -54,7 +54,7 @@ export const WithImage: Story = {
     }
 };
 
-export const Uploading: Story = {
+export const Uploading: any = {
   render: (args) => <DropfileWrapper {...args} />,
   args: {
     showStatusBadge: true,
@@ -64,7 +64,7 @@ export const Uploading: Story = {
   },
 };
 
-export const ErrorState: Story = {
+export const ErrorState: any = {
   render: (args) => <DropfileWrapper {...args} />,
   args: {
     showStatusBadge: true,

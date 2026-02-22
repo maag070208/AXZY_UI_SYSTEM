@@ -3,8 +3,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaClock } from "react-icons/fa";
 import ITInput from "../input/input";
 import ITButton from "../button/button";
-import { ITTimePickerProps } from "./timePicker.props";
+import useClickOutside from "@/hooks/useClickOutside";
 import { theme } from "@/theme/theme";
+import { ITTimePickerProps } from "./timePicker.props";
 
 export default function ITTimePicker({
   name,
@@ -25,10 +26,19 @@ export default function ITTimePicker({
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState(value || "");
   const [isValidTime, setIsValidTime] = useState(true);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
 
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const hoursRef = useRef<HTMLDivElement>(null);
   const minutesRef = useRef<HTMLDivElement>(null);
+
+  useClickOutside(dropdownRef, () => {
+    // Only close if it's currently open to avoid setting state unnecessarily
+    if (isOpen) {
+      setIsOpen(false);
+    }
+  });
 
   // Resolve theme color for the dropdown highlight
   const isThemeColor = color in theme.colors;
@@ -44,19 +54,23 @@ export default function ITTimePicker({
     setInputValue(value || "");
   }, [value]);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
+  const calculateDropdownPosition = () => {
+    if (wrapperRef.current) {
+      const inputRect = wrapperRef.current.getBoundingClientRect();
+      const dropdownHeight = 280; // approximate height of the time picker dropdown
+      const viewportHeight = window.innerHeight;
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+      let top = inputRect.bottom + 4;
+      if (inputRect.bottom + dropdownHeight > viewportHeight) {
+        top = inputRect.top - dropdownHeight - 4;
+      }
+
+      setDropdownPosition({
+        top,
+        left: inputRect.left,
+      });
+    }
+  };
 
   const validateTime = (timeString: string) => {
     const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
@@ -169,10 +183,15 @@ export default function ITTimePicker({
         variant={variant}
         size={size}
         touched={touched}
-        error={!isValidTime ? "Hora inválida" : error}
+        error={!isValidTime ? "Hora inválida" : typeof error === 'string' ? error : undefined}
         iconRight={
           <FaClock
-            onClick={() => !disabled && setIsOpen(!isOpen)}
+            onClick={() => {
+              if (!disabled) {
+                calculateDropdownPosition();
+                setIsOpen(!isOpen);
+              }
+            }}
             className={clsx(
               "cursor-pointer transition-colors",
               disabled
@@ -184,7 +203,14 @@ export default function ITTimePicker({
       />
 
       {isOpen && !disabled && (
-        <div className="absolute z-[9999] bg-white border border-gray-100 shadow-xl rounded-xl mt-2 w-64 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 origin-top">
+        <div 
+          ref={dropdownRef}
+          className="fixed z-[9999] bg-white border border-gray-100 shadow-xl rounded-xl w-64 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 origin-top it-timepicker-dropdown"
+          style={{
+            top: `${dropdownPosition.top}px`,
+            left: `${dropdownPosition.left}px`,
+          }}
+        >
           <div className="flex bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
             <div className="flex-1 text-center py-2 border-r border-gray-100">
               Horas

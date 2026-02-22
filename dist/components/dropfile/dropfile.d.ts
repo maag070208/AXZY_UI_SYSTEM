@@ -1,4 +1,4 @@
-import { default as React } from '../../../node_modules/react';
+import { default as React } from 'react';
 /** Enum con tipos de archivo permitidos */
 export declare enum FileTypeEnum {
     PDF = "application/pdf",

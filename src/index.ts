@@ -6,7 +6,7 @@ import ITCalendar from "./components/calendar/calendar";
 import ITCard from "./components/card/card";
 import ITDatePicker from "./components/date-picker/datePicker";
 import ITDialog from "./components/dialog/dialog";
-import ITFormBuilder from "./components/form/form";
+import ITFormBuilder from "./components/form-builder/formBuilder";
 import ITInput from "./components/input/input";
 import ITSelect from "./components/select/select";
 import ITSlideToggle from "./components/slide/slide";
@@ -24,11 +24,11 @@ import type { ITCalendarProps } from "./components/calendar/calendar.props";
 import type { ITCardProps } from "./components/card/card.props";
 import type { ITDatePickerProps } from "./components/date-picker/date-picker.props";
 import type { ITDialogProps } from "./components/dialog/dialog.props";
-import type { ITFormBuilderProps } from "./components/form/form.props";
+import type { ITFormBuilderProps } from "./components/form-builder/formBuilder.props";
 import type { ITInputProps } from "./components/input/input.props";
 import type { ITSelectProps } from "./components/select/select.props";
 import type { ITSlideToggleProps } from "./components/slide/slide.props";
-import type { FieldConfig } from "./types/field.types";
+import type { FieldConfig, FieldConfigV2 } from "./types/field.types";
 import type { ITToastProps } from "./components/toast/toast.props";
 import type { ITNavbarProps } from "./components/navbar/navbar.props";
 import type { ITTableProps, Column } from "./components/table/table.props";
@@ -40,9 +40,8 @@ import { createValidationSchema } from "./types/yup.types";
 import ITLoader from "./components/loader/loader";
 import ITLayout from "./components/layout/layout";
 import { ITLayoutProps } from "./components/layout/layout.props";
-import ITTimePicker, {
-  ITTimePickerProps,
-} from "./components/time-picker/timePicker";
+import ITTimePicker from "./components/time-picker/timePicker";
+import type { ITTimePickerProps } from "./components/time-picker/timePicker.props";
 import ITDropfile from "./components/dropfile/dropfile";
 import ITStepper from "./components/stepper/stepper";
 
@@ -89,4 +88,5 @@ export type {
   ITLayoutProps,
   ITTimePickerProps,
   FieldConfig,
+  FieldConfigV2,
 };

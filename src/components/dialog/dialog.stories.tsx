@@ -35,17 +35,17 @@ const DialogWrapper = (args: any) => {
   );
 };
 
-export const Default: Story = {
+export const Default: any = {
   render: (args) => <DialogWrapper {...args} />,
   args: {
     title: 'Basic Dialog',
     children: <p className="text-gray-600">This is a simple dialog usage standard headers.</p>,
     useFormHeader: false,
     className: 'w-96',
-  },
+  } as any,
 };
 
-export const WithFormHeader: Story = {
+export const WithFormHeader: any = {
   render: (args) => <DialogWrapper {...args} />,
   args: {
     title: 'Form Header Dialog',
@@ -59,10 +59,10 @@ export const WithFormHeader: Story = {
     ),
     useFormHeader: true,
     className: 'w-[500px]',
-  },
+  } as any,
 };
 
-export const LongContent: Story = {
+export const LongContent: any = {
   render: (args) => <DialogWrapper {...args} />,
   args: {
     title: 'Terms of Service',
@@ -76,5 +76,5 @@ export const LongContent: Story = {
     ),
     useFormHeader: true,
     className: 'w-[600px]',
-  },
+  } as any,
 };

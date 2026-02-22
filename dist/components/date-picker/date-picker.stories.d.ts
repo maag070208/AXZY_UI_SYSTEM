@@ -1,4 +1,3 @@
-import { StoryObj } from '@storybook/react';
 import { default as ITDatePicker } from './datePicker';
 declare const meta: {
     title: string;
@@ -32,7 +31,6 @@ declare const meta: {
     };
 };
 export default meta;
-type Story = StoryObj<typeof meta>;
-export declare const Default: Story;
-export declare const WithError: Story;
-export declare const Disabled: Story;
+export declare const Default: any;
+export declare const WithError: any;
+export declare const Disabled: any;

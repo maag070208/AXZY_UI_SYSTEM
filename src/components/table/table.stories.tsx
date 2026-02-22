@@ -124,7 +124,7 @@ export const Default: Story = {
     columns: basicColumns,
     data: mockData.slice(0, 5), // Just a few
     title: "Basic Users Table",
-  },
+  } as any,
 };
 
 export const WithPagination: Story = {
@@ -134,7 +134,7 @@ export const WithPagination: Story = {
     title: "Paginated Table",
     defaultItemsPerPage: 5,
     itemsPerPageOptions: [5, 10, 20],
-  },
+  } as any,
 };
 
 export const WithSortingAndFiltering: Story = {
@@ -142,7 +142,7 @@ export const WithSortingAndFiltering: Story = {
       columns: advancedColumns.map(col => ({ ...col, render: undefined })), // Remove custom render to show raw formatting
       data: mockData,
       title: "Data Management (Sort & Filter)",
-    },
+    } as any,
 };
 
 export const CustomRendering: Story = {
@@ -150,7 +150,7 @@ export const CustomRendering: Story = {
       columns: advancedColumns,
       data: mockData,
       title: "Custom Rendering (Badges & Catalogs)",
-    },
+    } as any,
 };
 
 // Wrapper for interactive actions
@@ -177,7 +177,7 @@ export const WithActions: Story = {
     render: (args) => <ActionsTableWrapper {...args} />,
     args: {
       title: "Table with Actions",
-    },
+    } as any,
 };
 
 export const EmptyState: Story = {
@@ -185,5 +185,5 @@ export const EmptyState: Story = {
       columns: basicColumns,
       data: [],
       title: "No Data Available",
-    },
+    } as any,
 };

@@ -1,6 +1,6 @@
 import { ColorsTypes } from '../../types/colors.types';
 import { SizesTypes } from '../../types/sizes.types';
-import { ReactNode } from '../../../node_modules/react';
+import { ReactNode } from 'react';
 export interface ITInputProps {
     name: string;
     type?: "text" | "password" | "number" | "email" | "checkbox" | "radio" | "textarea";

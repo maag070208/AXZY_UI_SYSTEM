@@ -1,4 +1,3 @@
-import { StoryObj } from '@storybook/react';
 import { default as ITDialog } from './dialog';
 declare const meta: {
     title: string;
@@ -23,7 +22,6 @@ declare const meta: {
     };
 };
 export default meta;
-type Story = StoryObj<typeof meta>;
-export declare const Default: Story;
-export declare const WithFormHeader: Story;
-export declare const LongContent: Story;
+export declare const Default: any;
+export declare const WithFormHeader: any;
+export declare const LongContent: any;

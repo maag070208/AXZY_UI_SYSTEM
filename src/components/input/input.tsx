@@ -42,6 +42,7 @@ export default function ITInput({
   const [displayValue, setDisplayValue] = useState<string>("");
   const [isFocused, setIsFocused] = useState(false);
   const [hasSelectedAll, setHasSelectedAll] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -112,7 +113,7 @@ export default function ITInput({
       if (currencyFormat) {
         return num.toLocaleString("es-MX", {
           minimumFractionDigits: 2,
-          maximumFractionDigits: 10,
+          maximumFractionDigits: 2,
         });
       }
 
@@ -163,6 +164,7 @@ useEffect(() => {
       "Delete",
       "Home",
       "End",
+      "Unidentified" // mobile keyboards
     ];
     if (allowedKeys.includes(key) || ctrlKey || metaKey) {
       return;
@@ -178,12 +180,18 @@ useEffect(() => {
       (key === "." || key === ",") &&
       currentValue.includes(".")
     ) {
-      e.preventDefault();
-      return;
+      // Check if the current dot is within the selected range (it will be overwritten)
+      const dotIndex = currentValue.indexOf(".");
+      const replacingDot = selectionStart !== null && selectionEnd !== null && selectionStart <= dotIndex && dotIndex < selectionEnd;
+      if (!replacingDot) {
+        e.preventDefault();
+        return;
+      }
     }
 
     const allowedCharsRegex = currencyFormat ? /^[0-9.,]$/ : /^[0-9]$/;
-    if (!allowedCharsRegex.test(key)) {
+    // If it's a mobile key event like Unidentified, we bypass the regex check safely
+    if (key !== "Unidentified" && !allowedCharsRegex.test(key)) {
       e.preventDefault();
       return;
     }
@@ -215,11 +223,18 @@ const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   let cleanedValue = "";
 
   if (currencyFormat) {
-    rawValue = rawValue.replace(/,/g, "");
+    if (rawValue.includes(",") && rawValue.includes(".")) {
+      rawValue = rawValue.replace(/,/g, ""); 
+    } else if (rawValue.includes(",")) {
+      rawValue = rawValue.replace(/,/g, ".");
+    }
+
     cleanedValue = rawValue.replace(/[^0-9.]/g, "");
     const parts = cleanedValue.split(".");
-    if (parts.length > 2) {
-      cleanedValue = parts[0] + "." + parts.slice(1).join("");
+    if (parts.length > 1) {
+      // Keep only first dot, and restrict decimals to 2 digits
+      const decimals = parts.slice(1).join("").substring(0, 2);
+      cleanedValue = parts[0] + "." + decimals;
     }
   } else {
     cleanedValue = rawValue.replace(/[^0-9]/g, "");
@@ -230,19 +245,19 @@ const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   if (onChange) {
     let valueToSend: number | string = cleanedValue;
 
-    // Cambio importante aquí: evitar parsing cuando formatNumber es false
     if (!formatNumber) {
-      valueToSend = cleanedValue; // Mantener como string
+      valueToSend = cleanedValue; 
     } else if (cleanedValue !== "") {
       if (currencyFormat) {
         const numericValue = parseFloat(cleanedValue);
         if (!isNaN(numericValue)) {
-          valueToSend = numericValue;
+          // ALWAYS send string representation to avoid dropping trailing decimals
+          valueToSend = cleanedValue;
         }
       } else {
         const numericValue = parseInt(cleanedValue, 10);
         if (!isNaN(numericValue)) {
-          valueToSend = numericValue;
+          valueToSend = cleanedValue;
         }
       }
     }
@@ -463,54 +478,80 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                     style={getStyle()}
                   />
                 ) : (
-                  <input
-                    ref={inputRef}
-                    name={name}
-                    id={name}
-                    type={isNumberType ? "text" : type}
-                    inputMode={
-                      isNumberType
-                        ? currencyFormat
-                          ? "decimal"
-                          : "numeric"
-                        : undefined
-                    }
-                    placeholder={placeholder}
-                    value={isNumberType ? displayValue : String(value ?? "")}
-                    // checked not needed here
-                    onChange={isNumberType ? handleNumberChange : handleTextChange}
-                    onFocus={isNumberType ? handleFocus : () => setIsFocused(true)}
-                    onBlur={
-                      isNumberType
-                        ? handleBlur
-                        : (e) => {
-                            setIsFocused(false);
-                            onBlur?.(e);
-                          }
-                    }
-                    onKeyDown={isNumberType ? handleKeyDown : undefined}
-                    readOnly={readOnly}
-                    maxLength={isNumberType && !currencyFormat ? maxLength : undefined}
-                    minLength={minLength}
-                    min={min}
-                    max={max}
-                    disabled={disabled}
-                    required={required}
-                    autoFocus={autoFocus}
-                    onClick={focusContent ? handleClick : onClick}
-                    className={clsx(
-                      "peer",
-                      "focus:outline-none w-full",
-                      className,
-                      { "cursor-not-allowed": disabled },
-                      { "pl-10": iconLeft },
-                      { "pr-10": iconRight }
+                  <>
+                    <input
+                      ref={inputRef}
+                      name={name}
+                      id={name}
+                      type={
+                        isNumberType
+                          ? "text"
+                          : type === "password"
+                          ? showPassword
+                            ? "text"
+                            : "password"
+                          : type
+                      }
+                      inputMode={
+                        isNumberType
+                          ? currencyFormat
+                            ? "decimal"
+                            : "numeric"
+                          : undefined
+                      }
+                      placeholder={placeholder}
+                      value={isNumberType ? displayValue : String(value ?? "")}
+                      // checked not needed here
+                      onChange={isNumberType ? handleNumberChange : handleTextChange}
+                      onFocus={isNumberType ? handleFocus : () => setIsFocused(true)}
+                      onBlur={
+                        isNumberType
+                          ? handleBlur
+                          : (e) => {
+                              setIsFocused(false);
+                              onBlur?.(e);
+                            }
+                      }
+                      onKeyDown={isNumberType ? handleKeyDown : undefined}
+                      readOnly={readOnly}
+                      maxLength={isNumberType && !currencyFormat ? maxLength : undefined}
+                      minLength={minLength}
+                      min={min}
+                      max={max}
+                      disabled={disabled}
+                      required={required}
+                      autoFocus={autoFocus}
+                      onClick={focusContent ? handleClick : onClick}
+                      className={clsx(
+                        "peer",
+                        "focus:outline-none w-full",
+                        className,
+                        { "cursor-not-allowed": disabled },
+                        { "pl-10": iconLeft },
+                        { "pr-10": iconRight || type === "password" }
+                      )}
+                      style={getStyle()}
+                    />
+                    
+                    {/* Password Toggle Button */}
+                    {type === "password" && (
+                      <button
+                        type="button"
+                        className="absolute inset-y-0 right-0 flex items-center pr-3 z-10 text-gray-400 hover:text-gray-600 focus:outline-none"
+                        onClick={() => setShowPassword(!showPassword)}
+                        tabIndex={-1} // Don't allow tabbing into the eye icon
+                      >
+                        {showPassword ? (
+                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+                        ) : (
+                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        )}
+                      </button>
                     )}
-                    style={getStyle()}
-                  />
+                  </>
                 )}
 
-                {iconRight && (
+                {iconRight && type !== "password" && (
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 z-10">
                     {iconRight}
                   </div>

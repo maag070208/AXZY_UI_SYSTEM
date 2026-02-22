@@ -1,0 +1,1 @@
+import{r}from"./iframe-Dr0sZusW.js";const u=(e,t)=>{r.useEffect(()=>{const n=o=>{e.current&&!e.current.contains(o.target)&&t()};return document.addEventListener("mousedown",n),()=>{document.removeEventListener("mousedown",n)}},[e,t])};export{u};

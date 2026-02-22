@@ -83,40 +83,6 @@ export default function ITSidebar({
         backdropFilter: 'blur(12px)',
       }}
     >
-      {/* Menu Header with Modern Collapse Toggle */}
-      <div className={`p-6 flex items-center ${isSidebarCollapsed ? "justify-center px-4" : "justify-end px-6"} relative h-[72px]`} style={{ borderBottom: `1px solid ${theme.sidebar?.borderColor || '#e2e8f0'}` }}>
-          <button
-            onClick={onToggleCollapse}
-            className={`
-              flex items-center justify-center
-              w-8 h-8 rounded-full 
-              border shadow-sm
-              transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)]
-              group relative z-10
-            `}
-            style={{ 
-              color: theme.sidebar?.icon?.color || '#64748b',
-              backgroundColor: '#ffffff',
-              borderColor: theme.sidebar?.borderColor || '#e2e8f0'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = theme.sidebar?.hover?.backgroundColor || '#f1f5f9';
-              e.currentTarget.style.color = theme.sidebar?.active?.color || '#0f172a';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#ffffff';
-              e.currentTarget.style.color = theme.sidebar?.icon?.color || '#64748b';
-            }}
-            title={isCollapsed ? "Fijar panel" : "Ocultar panel"}
-          >
-            {isCollapsed ? (
-              <FaChevronRight className="w-3.5 h-3.5 translate-x-0.5" />
-            ) : (
-              <FaChevronLeft className="w-3.5 h-3.5 -translate-x-0.5" />
-            )}
-          </button>
-      </div>
-
       {/* Navigation Items */}
       <nav className="flex-1 py-6 overflow-y-auto overflow-x-hidden custom-scrollbar px-4">
         <ul className="space-y-2">
@@ -149,7 +115,7 @@ export default function ITSidebar({
                     />
                 )}
                 
-                <div className={`flex items-center ${!isSidebarCollapsed ? "gap-3.5" : ""} relative z-10 w-full`}>
+                <div className={`flex items-center ${!isSidebarCollapsed ? "gap-3.5" : "justify-center"} relative z-10 w-full`}>
                   {/* Icon */}
                   {item.icon && (
                     <div 

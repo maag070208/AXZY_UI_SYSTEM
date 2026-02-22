@@ -1,7 +1,7 @@
 import { StoryObj } from '@storybook/react';
 declare const meta: {
     title: string;
-    component: import('../../../node_modules/react').FC<import('./calendar.props').ITCalendarProps>;
+    component: import('react').FC<import('./calendar.props').ITCalendarProps>;
     parameters: {
         layout: string;
     };
