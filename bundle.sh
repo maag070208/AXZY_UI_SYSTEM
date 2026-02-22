@@ -15,11 +15,8 @@ yarn pack
 
 echo "Versión actualizada y cambios subidos exitosamente."
 
-echo "Moviendo al directorio de destino..."
-mv *.tgz ~/DEV/AXZY/CHECK/WEB
-echo "Bundle creado y movido al directorio de destino."
-echo "Limpiando archivos temporales..."
-rm -rf *.tgz
-echo "Archivos temporales eliminados."
+echo "Copiando al directorio de destino..."
+cp *.tgz ~/DEV/AXZY/CHECK/WEB
+echo "Bundle copiado a destino, y mantenido localmente."
+
 echo "Proceso completado exitosamente."
-# End of script

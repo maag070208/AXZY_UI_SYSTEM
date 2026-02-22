@@ -1,2 +1,0 @@
-import { ITInputProps } from './input.props';
-export default function ITInput({ name, type, label, placeholder, value, onChange, onBlur, disabled, className, containerClassName, labelClassName, touched, error, formatNumber, required, autoFocus, onClick, iconLeft, iconRight, maxLength, minLength, checked, showHintLength, currencyFormat, rows, min, max, readOnly, focusContent }: ITInputProps): import("react/jsx-runtime").JSX.Element;
