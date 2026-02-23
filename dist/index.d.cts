@@ -4,9 +4,6 @@ import * as Yup from 'yup';
 
 declare const buttonVariants: Record<string, string>;
 
-/**
- * 2. Colores semánticos (qué representa cada color)
- */
 declare const semanticColors: {
     primary: {
         50: string;
@@ -35,43 +32,43 @@ declare const semanticColors: {
         950: string;
     };
     success: {
-        '50': "#ecfdf5";
-        '100': "#d1fae5";
-        '200': "#a7f3d0";
-        '300': "#6ee7b7";
-        '400': "#34d399";
-        '500': "#10b981";
-        '600': "#059669";
-        '700': "#047857";
-        '800': "#065f46";
-        '900': "#064e3b";
-        '950': "#022c22";
+        50: string;
+        100: string;
+        200: string;
+        300: string;
+        400: string;
+        500: string;
+        600: string;
+        700: string;
+        800: string;
+        900: string;
+        950: string;
     };
     danger: {
-        '50': "#fff1f2";
-        '100': "#ffe4e6";
-        '200': "#fecdd3";
-        '300': "#fda4af";
-        '400': "#fb7185";
-        '500': "#f43f5e";
-        '600': "#e11d48";
-        '700': "#be123c";
-        '800': "#9f1239";
-        '900': "#881337";
-        '950': "#4c0519";
+        50: string;
+        100: string;
+        200: string;
+        300: string;
+        400: string;
+        500: string;
+        600: string;
+        700: string;
+        800: string;
+        900: string;
+        950: string;
     };
     warning: {
-        '50': "#fffbeb";
-        '100': "#fef3c7";
-        '200': "#fde68a";
-        '300': "#fcd34d";
-        '400': "#fbbf24";
-        '500': "#f59e0b";
-        '600': "#d97706";
-        '700': "#b45309";
-        '800': "#92400e";
-        '900': "#78350f";
-        '950': "#451a03";
+        50: string;
+        100: string;
+        200: string;
+        300: string;
+        400: string;
+        500: string;
+        600: string;
+        700: string;
+        800: string;
+        900: string;
+        950: string;
     };
     info: {
         50: string;
@@ -87,30 +84,30 @@ declare const semanticColors: {
         950: string;
     };
     purple: {
-        '50': "#f5f3ff";
-        '100': "#ede9fe";
-        '200': "#ddd6fe";
-        '300': "#c4b5fd";
-        '400': "#a78bfa";
-        '500': "#8b5cf6";
-        '600': "#7c3aed";
-        '700': "#6d28d9";
-        '800': "#5b21b6";
-        '900': "#4c1d95";
-        '950': "#2e1065";
+        50: string;
+        100: string;
+        200: string;
+        300: string;
+        400: string;
+        500: string;
+        600: string;
+        700: string;
+        800: string;
+        900: string;
+        950: string;
     };
     error: {
-        '50': "#fff1f2";
-        '100': "#ffe4e6";
-        '200': "#fecdd3";
-        '300': "#fda4af";
-        '400': "#fb7185";
-        '500': "#f43f5e";
-        '600': "#e11d48";
-        '700': "#be123c";
-        '800': "#9f1239";
-        '900': "#881337";
-        '950': "#4c0519";
+        50: string;
+        100: string;
+        200: string;
+        300: string;
+        400: string;
+        500: string;
+        600: string;
+        700: string;
+        800: string;
+        900: string;
+        950: string;
     };
     gray: {
         50: string;
@@ -766,4 +763,41 @@ interface ITStepperProps {
 
 declare function ITStepper({ steps, currentStep, onFinish, onStepChange, allowClickToJump, useIcons, disableNext, containerClassName, stepClassName, scrollableContent, maxContentHeight, color, }: ITStepperProps): react_jsx_runtime.JSX.Element;
 
-export { type Column, type FieldConfig, type FieldConfigV2, ITBadget, type ITBadgetProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDropfile, ITFormBuilder, type ITFormBuilderProps, ITImage, ITInput, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, ITNavbar, type ITNavbarProps, ITPagination, ITSelect, type ITSelectProps, ITSlideToggle, type ITSlideToggleProps, ITStepper, ITTable, type ITTableProps, ITText, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, createValidationSchema };
+type ColorScale = {
+    50: string;
+    100: string;
+    200: string;
+    300: string;
+    400: string;
+    500: string;
+    600: string;
+    700: string;
+    800: string;
+    900: string;
+    950?: string;
+};
+type SemanticThemeColors = {
+    primary?: ColorScale;
+    secondary?: ColorScale;
+    success?: ColorScale;
+    danger?: ColorScale;
+    warning?: ColorScale;
+    info?: ColorScale;
+    purple?: ColorScale;
+};
+interface ITThemeConfig {
+    colors: SemanticThemeColors;
+    layout?: {
+        backgroundColor?: string;
+        contentPadding?: string;
+    };
+}
+
+interface ITThemeProviderProps {
+    theme?: Partial<ITThemeConfig>;
+    children: React.ReactNode;
+}
+
+declare function ITThemeProvider({ theme, children }: ITThemeProviderProps): react_jsx_runtime.JSX.Element;
+
+export { type Column, type FieldConfig, type FieldConfigV2, ITBadget, type ITBadgetProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDropfile, ITFormBuilder, type ITFormBuilderProps, ITImage, ITInput, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, ITNavbar, type ITNavbarProps, ITPagination, ITSelect, type ITSelectProps, ITSlideToggle, type ITSlideToggleProps, ITStepper, ITTable, type ITTableProps, ITText, type ITThemeConfig, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, createValidationSchema };

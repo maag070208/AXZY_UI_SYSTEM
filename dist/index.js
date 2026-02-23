@@ -61,35 +61,45 @@ var palette = {
     900: "#0f172a",
     950: "#020617"
   },
-  // Mantenemos los colores de estado pero actualizamos a tonos más suaves
   success: colors.emerald,
   danger: colors.rose,
   warning: colors.amber,
   purple: colors.violet,
   info: colors.sky
 };
+var createColorVar = (name) => ({
+  50: `var(--color-${name}-50)`,
+  100: `var(--color-${name}-100)`,
+  200: `var(--color-${name}-200)`,
+  300: `var(--color-${name}-300)`,
+  400: `var(--color-${name}-400)`,
+  500: `var(--color-${name}-500)`,
+  600: `var(--color-${name}-600)`,
+  700: `var(--color-${name}-700)`,
+  800: `var(--color-${name}-800)`,
+  900: `var(--color-${name}-900)`,
+  950: `var(--color-${name}-950)`
+});
 var semanticColors = {
-  primary: palette.blue,
-  secondary: palette.gray,
-  success: palette.success,
-  danger: palette.danger,
-  warning: palette.warning,
-  info: palette.cyan,
-  // Usamos cyan para info en lugar de sky
-  purple: palette.purple,
-  error: palette.danger,
-  gray: palette.gray
+  primary: createColorVar("primary"),
+  secondary: createColorVar("secondary"),
+  success: createColorVar("success"),
+  danger: createColorVar("danger"),
+  warning: createColorVar("warning"),
+  info: createColorVar("info"),
+  purple: createColorVar("purple"),
+  error: createColorVar("danger"),
+  // Alias
+  gray: createColorVar("secondary")
+  // Secondary as Gray
 };
 var components = {
   layout: {
     backgroundColor: semanticColors.gray[50],
-    // Very light gray background for the main content area
     contentPadding: "1.5rem"
-    // p-6
   },
   topbar: {
     backgroundColor: "rgba(255, 255, 255, 0.90)",
-    // Glassmorphism base
     borderColor: semanticColors.gray[200],
     iconColor: semanticColors.gray[500],
     iconHoverColor: semanticColors.gray[700],
@@ -110,7 +120,6 @@ var components = {
   },
   sidebar: {
     backgroundColor: "rgba(255, 255, 255, 0.90)",
-    // Glassmorphism base like topbar
     borderColor: semanticColors.gray[200],
     label: {
       color: semanticColors.gray[700],
@@ -126,95 +135,75 @@ var components = {
     },
     active: {
       backgroundColor: semanticColors.gray[50],
-      // Very subtle active bg in light mode
       color: semanticColors.gray[900],
-      iconColor: "#10b981"
-      // Emerald green
+      iconColor: semanticColors.primary[500]
     },
     badge: {
-      backgroundColor: "#10b981",
+      backgroundColor: semanticColors.primary[500],
       color: "#ffffff"
     }
   },
   button: {
     primary: {
-      backgroundColor: "#06b6d4",
-      // Cyan-500
+      backgroundColor: semanticColors.primary[500],
       color: "#ffffff",
-      hover: "#0891b2",
-      // Cyan-600
-      active: "#0e7490",
-      // Cyan-700
-      focus: "0 0 0 2px #a5f3fc",
-      // Cyan-200
+      hover: semanticColors.primary[600],
+      active: semanticColors.primary[700],
+      focus: `0 0 0 2px ${semanticColors.primary[200]}`,
       borderRadius: "0.375rem",
-      // 6px - rounded-md
       padding: "0.5rem 1rem",
       fontSize: "0.875rem",
       fontWeight: "600",
       transition: "all 150ms ease-in-out"
     },
     secondary: {
-      backgroundColor: "#64748b",
-      // Slate-500
+      backgroundColor: semanticColors.secondary[500],
       color: "#ffffff",
-      // Text white for filled secondary per screenshot
-      hover: "#475569",
-      // Slate-600
-      focus: "0 0 0 2px #e2e8f0",
+      hover: semanticColors.secondary[600],
+      focus: `0 0 0 2px ${semanticColors.secondary[200]}`,
       borderRadius: "0.375rem",
       padding: "0.5rem 1rem",
       fontSize: "0.875rem",
       fontWeight: "600"
     },
     success: {
-      backgroundColor: "#22c55e",
-      // Green-500
+      backgroundColor: semanticColors.success[500],
       color: "#ffffff",
-      hover: "#16a34a",
-      // Green-600
+      hover: semanticColors.success[600],
       focus: `0 0 0 2px ${semanticColors.success[200]}`,
       borderRadius: "0.375rem"
     },
     danger: {
-      backgroundColor: "#ef4444",
-      // Red-500
+      backgroundColor: semanticColors.danger[500],
       color: "#ffffff",
-      hover: "#dc2626",
-      // Red-600
+      hover: semanticColors.danger[600],
       focus: `0 0 0 2px ${semanticColors.danger[200]}`,
       borderRadius: "0.375rem"
     },
     error: {
-      backgroundColor: "#ef4444",
+      backgroundColor: semanticColors.danger[500],
       color: "#ffffff",
-      hover: "#dc2626",
+      hover: semanticColors.danger[600],
       borderRadius: "0.375rem"
     },
     warning: {
-      backgroundColor: "#f97316",
-      // Orange-500
+      backgroundColor: semanticColors.warning[500],
       color: "#ffffff",
-      hover: "#ea580c",
-      // Orange-600
+      hover: semanticColors.warning[600],
       focus: `0 0 0 2px ${semanticColors.warning[200]}`,
       borderRadius: "0.375rem"
     },
     info: {
-      backgroundColor: "#0ea5e9",
-      // Sky-500
+      backgroundColor: semanticColors.info[500],
       color: "#ffffff",
-      hover: "#0284c7",
-      // Sky-600
+      hover: semanticColors.info[600],
       focus: `0 0 0 2px ${semanticColors.info[200]}`,
       borderRadius: "0.375rem"
     },
     purple: {
-      backgroundColor: "#8b5cf6",
-      // Violet-500
+      backgroundColor: semanticColors.purple[500],
       color: "#ffffff",
-      hover: "#7c3aed",
-      // Violet-600
+      hover: semanticColors.purple[600],
       focus: `0 0 0 2px ${semanticColors.purple[200]}`,
       borderRadius: "0.375rem"
     },
@@ -223,7 +212,6 @@ var components = {
       color: semanticColors.primary[600],
       borderColor: semanticColors.primary[600],
       borderWidth: "2px",
-      // Slightly thicker for modern look
       hover: semanticColors.primary[50],
       borderRadius: "0.375rem"
     }
@@ -284,7 +272,6 @@ var components = {
   card: {
     backgroundColor: "#ffffff",
     borderRadius: "1rem",
-    // 16px - más moderno
     borderColor: semanticColors.gray[200],
     borderWidth: "1px",
     shadow: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
@@ -293,7 +280,7 @@ var components = {
     },
     header: {
       backgroundColor: semanticColors.gray[50],
-      borderBottom: `1px solid ${semanticColors.gray[200]}`,
+      borderBottom: `1px solid var(--color-secondary-200)`,
       padding: "1rem 1.5rem",
       borderTopLeftRadius: "1rem",
       borderTopRightRadius: "1rem"
@@ -333,7 +320,7 @@ var components = {
     },
     row: {
       hover: semanticColors.primary[50],
-      borderBottom: `1px solid ${semanticColors.gray[200]}`
+      borderBottom: `1px solid var(--color-secondary-200)`
     },
     cell: {
       padding: "1rem 1.5rem"
@@ -368,7 +355,6 @@ var components = {
   modal: {
     overlay: {
       backgroundColor: "rgba(15, 23, 42, 0.75)"
-      // gray[900] con opacidad
     },
     content: {
       backgroundColor: "#ffffff",
@@ -377,14 +363,14 @@ var components = {
     },
     header: {
       padding: "1.5rem 1.5rem 0.5rem 1.5rem",
-      borderBottom: `1px solid ${semanticColors.gray[200]}`
+      borderBottom: `1px solid var(--color-secondary-200)`
     },
     body: {
       padding: "1.5rem"
     },
     footer: {
       padding: "1rem 1.5rem",
-      borderTop: `1px solid ${semanticColors.gray[200]}`,
+      borderTop: `1px solid var(--color-secondary-200)`,
       backgroundColor: semanticColors.gray[50]
     }
   }
@@ -4621,6 +4607,39 @@ function ITStepper({
     ] })
   ] });
 }
+
+// src/components/theme-provider/themeProvider.tsx
+import { useMemo as useMemo4 } from "react";
+import { Fragment as Fragment5, jsx as jsx27, jsxs as jsxs19 } from "react/jsx-runtime";
+function ITThemeProvider({ theme: theme2, children }) {
+  const activeThemeContext = useMemo4(() => {
+    return {
+      colors: {
+        ...theme.colors,
+        ...theme2?.colors
+      },
+      layout: {
+        ...theme.layout,
+        ...theme2?.layout
+      }
+    };
+  }, [theme2]);
+  const cssVariables = useMemo4(() => {
+    let variablesString = "";
+    Object.entries(activeThemeContext.colors).forEach(([colorName, scale]) => {
+      Object.entries(scale).forEach(([shade, hexValue]) => {
+        variablesString += `--color-${colorName}-${shade}: ${hexValue};
+`;
+      });
+    });
+    return `:root {
+${variablesString}}`;
+  }, [activeThemeContext]);
+  return /* @__PURE__ */ jsxs19(Fragment5, { children: [
+    /* @__PURE__ */ jsx27("style", { suppressHydrationWarning: true, children: cssVariables }),
+    children
+  ] });
+}
 export {
   ITBadget,
   ITButton,
@@ -4641,6 +4660,7 @@ export {
   ITStepper,
   ITTable,
   ITText,
+  ITThemeProvider,
   ITTimePicker,
   ITToast,
   createValidationSchema
