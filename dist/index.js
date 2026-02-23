@@ -4613,9 +4613,18 @@ import { useMemo as useMemo4 } from "react";
 import { Fragment as Fragment5, jsx as jsx27, jsxs as jsxs19 } from "react/jsx-runtime";
 function ITThemeProvider({ theme: theme2, children }) {
   const activeThemeContext = useMemo4(() => {
+    const baseColors = {
+      primary: palette.blue,
+      secondary: palette.gray,
+      success: palette.success,
+      danger: palette.danger,
+      warning: palette.warning,
+      info: palette.cyan,
+      purple: palette.purple
+    };
     return {
       colors: {
-        ...theme.colors,
+        ...baseColors,
         ...theme2?.colors
       },
       layout: {

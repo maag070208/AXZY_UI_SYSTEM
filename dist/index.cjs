@@ -4648,9 +4648,18 @@ var import_react25 = require("react");
 var import_jsx_runtime27 = require("react/jsx-runtime");
 function ITThemeProvider({ theme: theme2, children }) {
   const activeThemeContext = (0, import_react25.useMemo)(() => {
+    const baseColors = {
+      primary: palette.blue,
+      secondary: palette.gray,
+      success: palette.success,
+      danger: palette.danger,
+      warning: palette.warning,
+      info: palette.cyan,
+      purple: palette.purple
+    };
     return {
       colors: {
-        ...theme.colors,
+        ...baseColors,
         ...theme2?.colors
       },
       layout: {
