@@ -765,6 +765,9 @@ video {
 .min-h-\[280px\] {
   min-height: 280px;
 }
+.min-h-\[calc\(100vh-100px\)\] {
+  min-height: calc(100vh - 100px);
+}
 .\!w-14 {
   width: 3.5rem !important;
 }
