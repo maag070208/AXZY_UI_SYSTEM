@@ -1,10 +1,12 @@
+import React, { useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from "yup";
-import { FieldConfigV2, ITFormBuilder, ITButton, ITCard } from './index';
-import { FaUser, FaEnvelope, FaSearch, FaLock, FaCalculator, FaCommentDots } from 'react-icons/fa';
+import { FieldConfigV2, ITFormBuilder, ITButton, ITCard, ITLayout } from './index';
+import { FaUser, FaEnvelope, FaSearch, FaLock, FaCalculator, FaCommentDots, FaHome, FaChartBar, FaCog, FaBell } from 'react-icons/fa';
 import "./index.css";
 
 function App() {
+  const [activeNav, setActiveNav] = useState("home");
   const formConfig: FieldConfigV2[] = [
     // --- ICONOS E INPUT BÁSICO ---
     {
@@ -156,69 +158,109 @@ function App() {
     comments: Yup.string().max(200, "Máximo 200 caracteres")
   });
 
+  const sidebarProps = {
+    navigationItems: [
+      { id: "home", label: "Dashboard", icon: <FaHome />, isActive: activeNav === "home", action: () => setActiveNav("home") },
+      { id: "analytics", label: "Analytics", icon: <FaChartBar />, isActive: activeNav === "analytics", action: () => setActiveNav("analytics"), badge: "New" },
+      { 
+        id: "settings", 
+        label: "Settings", 
+        icon: <FaCog />, 
+        isActive: activeNav === "settings", 
+        subitems: [
+          { id: "profile", label: "Profile", action: () => setActiveNav("settings") },
+          { id: "billing", label: "Billing", action: () => setActiveNav("settings") }
+        ]
+      },
+    ]
+  };
+
+  const topBarProps = {
+    logoText: "AXZY Admin Platform",
+    userMenu: {
+      userName: "Admin User",
+      userEmail: "admin@axzy.dev",
+      userImage: "https://i.pravatar.cc/150",
+      menuItems: [
+        { label: "Profile", onClick: () => alert("Profile Clicked") },
+        { label: "Logout", onClick: () => alert("Logout Clicked") }
+      ]
+    },
+    navItems: [
+      {
+        id: "notifications",
+        label: "Notificaciones",
+        icon: <FaBell />,
+        action: () => alert("Notificaciones")
+      }
+    ]
+  };
+
   return (
-   <div className='flex justify-center items-center h-screen bg-gray-50'>
-     <ITCard className="flex flex-col gap-4 p-8 w-full max-w-6xl shadow-xl border border-gray-100 overflow-y-auto max-h-[90vh]">
-      
-      <div className="mb-4">
-        <h2 className="text-2xl font-bold text-gray-800">ITFormBuilder V2: Showcase Completo</h2>
-        <p className="text-gray-500 mt-1">Demostrando estados de validación, renderizado condicional, `disabled`, `readOnly`, componentes de hora/fecha, y acciones `onChange` todo bajo el diseño limpio de cuadrícula V1.</p>
-      </div>
+   <ITLayout sidebar={sidebarProps} topBar={topBarProps}>
+     <div className='flex justify-center items-center min-h-[calc(100vh-100px)]'>
+       <ITCard className="flex flex-col gap-4 p-8 w-full max-w-6xl shadow-xl border border-gray-100 overflow-y-auto max-h-[90vh]">
+        
+        <div className="mb-4">
+          <h2 className="text-2xl font-bold text-gray-800">ITFormBuilder V2: Showcase Completo</h2>
+          <p className="text-gray-500 mt-1">Demostrando estados de validación, renderizado condicional, `disabled`, `readOnly`, componentes de hora/fecha, y acciones `onChange` todo bajo el diseño limpio de cuadrícula V1.</p>
+        </div>
 
-      <Formik 
-        initialValues={{
-          username: '',
-          promoCode: '',
-          email: '',
-          password: '',
-          subtotal: '',
-          iva: '',
-          total: '',
-          country: '',
-          rfc: '',
-          date: null,
-          time: '',
-          comments: ''
-        }} 
-        validationSchema={validationSchema} 
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            console.log("Valores Formulario:", values);
-            alert("Exito! Revisa la consola para el JSON de datos.");
-            setSubmitting(false);
-          }, 1000);
-        }}
-      >
-        {({values, handleChange, handleBlur, touched, errors, setFieldValue, setFieldTouched, setFieldError, isSubmitting, handleSubmit}) => (
-          <Form onSubmit={handleSubmit} className="w-full">
-            <ITFormBuilder
-              config={formConfig}
-              columns={12}
-              values={values}
-              handleChange={handleChange}
-              handleBlur={handleBlur}
-              touched={touched}
-              errors={errors}
-              setFieldValue={setFieldValue}
-              setFieldTouched={setFieldTouched}
-              setFieldError={setFieldError}
-              isSubmitting={isSubmitting}
-            />
+        <Formik 
+          initialValues={{
+            username: '',
+            promoCode: '',
+            email: '',
+            password: '',
+            subtotal: '',
+            iva: '',
+            total: '',
+            country: '',
+            rfc: '',
+            date: null,
+            time: '',
+            comments: ''
+          }} 
+          validationSchema={validationSchema} 
+          onSubmit={(values, { setSubmitting }) => {
+            setTimeout(() => {
+              console.log("Valores Formulario:", values);
+              alert("Exito! Revisa la consola para el JSON de datos.");
+              setSubmitting(false);
+            }, 1000);
+          }}
+        >
+          {({values, handleChange, handleBlur, touched, errors, setFieldValue, setFieldTouched, setFieldError, isSubmitting, handleSubmit}) => (
+            <Form onSubmit={handleSubmit} className="w-full">
+              <ITFormBuilder
+                config={formConfig}
+                columns={12}
+                values={values}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+                touched={touched}
+                errors={errors}
+                setFieldValue={setFieldValue}
+                setFieldTouched={setFieldTouched}
+                setFieldError={setFieldError}
+                isSubmitting={isSubmitting}
+              />
 
-            <div className="flex justify-end pt-6 mt-6 border-t border-gray-100">
-               <ITButton
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-8 py-2 font-semibold"
-               >
-                  Enviar Formulario
-               </ITButton>
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </ITCard>
-   </div>
+              <div className="flex justify-end pt-6 mt-6 border-t border-gray-100">
+                 <ITButton
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="px-8 py-2 font-semibold"
+                 >
+                    Enviar Formulario
+                 </ITButton>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ITCard>
+     </div>
+   </ITLayout>
   );
 }
 
