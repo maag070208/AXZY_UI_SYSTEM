@@ -3,7 +3,7 @@
   "author": "axzydev <aamaro@axzy.dev>",
   "private": false,
   "license": "MIT",
-  "version": "1.0.158",
+  "version": "1.0.159",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
