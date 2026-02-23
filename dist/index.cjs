@@ -3142,63 +3142,61 @@ function ITTable({
         return value;
     }
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: (0, import_clsx12.default)("space-y-4 w-full", containerClassName), children: [
-    /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "bg-white rounded-xl shadow-sm border border-secondary-200 overflow-hidden", children: [
-      title && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: "bg-white px-6 py-5 border-b border-secondary-100", children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("h2", { className: "text-xl font-bold text-secondary-900 leading-tight", children: title }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: "overflow-x-auto", children: /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(
-        "table",
-        {
-          className: (0, import_clsx12.default)(
-            "min-w-max w-full text-sm text-left text-secondary-600",
-            variantStyles[variant],
-            sizeStyles[size]
-          ),
-          children: [
-            /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("tr", { className: "bg-secondary-50 border-b border-secondary-200 text-xs uppercase tracking-wider font-semibold text-secondary-500", children: columns.map((col) => /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
-              "th",
-              {
-                scope: "col",
-                className: (0, import_clsx12.default)("px-4 py-4 align-top", col.className),
-                children: /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "flex flex-col gap-3 min-w-[150px]", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "flex items-center justify-between gap-2", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("span", { className: "text-secondary-700 font-bold", children: col.label }),
-                    col.sortable && col.type !== "actions" && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
-                      "button",
-                      {
-                        onClick: () => handleSort(col.key),
-                        className: `p-1 rounded-md transition-colors ${sortConfig?.key === col.key ? "bg-secondary-200 text-secondary-900" : "hover:bg-secondary-200 text-secondary-400 hover:text-secondary-700"}`,
-                        title: `Ordenar por ${col.label}`,
-                        children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(import_md.MdOutlineSwapVert, { className: "w-4 h-4", "aria-hidden": "true" })
-                      }
-                    )
-                  ] }),
-                  /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: "w-full", children: col.filter ? renderFilterInput(col) : null })
-                ] })
-              },
-              col.key
-            )) }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("tbody", { className: "divide-y divide-secondary-100", children: currentData.length > 0 ? currentData.map((row, rowIndex) => /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
-              "tr",
-              {
-                className: "hover:bg-secondary-50/50 transition-colors duration-150 group",
-                children: columns.map((col) => /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
-                  "td",
-                  {
-                    className: (0, import_clsx12.default)("px-4 py-3 align-middle", col.className),
-                    children: col.type === "actions" ? /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: "flex items-center justify-center gap-2", children: renderCellContent(col, row) }) : /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: "text-secondary-700 font-medium", children: renderCellContent(col, row) })
-                  },
-                  `${rowIndex}-${col.key}`
-                ))
-              },
-              rowIndex
-            )) : /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("td", { colSpan: columns.length, className: "px-6 py-12 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "flex flex-col items-center justify-center text-secondary-400", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("span", { className: "text-lg", children: "No se encontraron resultados" }),
-              /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("span", { className: "text-sm mt-1", children: "Intenta ajustar los filtros" })
-            ] }) }) }) })
-          ]
-        }
-      ) })
-    ] }),
+  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: (0, import_clsx12.default)("space-y-4 w-full", containerClassName), children: /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "bg-white rounded-xl shadow-sm border border-secondary-200 overflow-hidden", children: [
+    title && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: "bg-white px-6 py-5 border-b border-secondary-100", children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("h2", { className: "text-xl font-bold text-secondary-900 leading-tight", children: title }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: "overflow-x-auto", children: /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(
+      "table",
+      {
+        className: (0, import_clsx12.default)(
+          "min-w-max w-full text-sm text-left text-secondary-600",
+          variantStyles[variant],
+          sizeStyles[size]
+        ),
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("tr", { className: "bg-secondary-50 border-b border-secondary-200 text-xs uppercase tracking-wider font-semibold text-secondary-500", children: columns.map((col) => /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+            "th",
+            {
+              scope: "col",
+              className: (0, import_clsx12.default)("px-4 py-4 align-top", col.className),
+              children: /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "flex flex-col gap-3 min-w-[150px]", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "flex items-center justify-between gap-2", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("span", { className: "text-secondary-700 font-bold", children: col.label }),
+                  col.sortable && col.type !== "actions" && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+                    "button",
+                    {
+                      onClick: () => handleSort(col.key),
+                      className: `p-1 rounded-md transition-colors ${sortConfig?.key === col.key ? "bg-secondary-200 text-secondary-900" : "hover:bg-secondary-200 text-secondary-400 hover:text-secondary-700"}`,
+                      title: `Ordenar por ${col.label}`,
+                      children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(import_md.MdOutlineSwapVert, { className: "w-4 h-4", "aria-hidden": "true" })
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: "w-full", children: col.filter ? renderFilterInput(col) : null })
+              ] })
+            },
+            col.key
+          )) }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("tbody", { className: "divide-y divide-secondary-100", children: currentData.length > 0 ? currentData.map((row, rowIndex) => /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+            "tr",
+            {
+              className: "hover:bg-secondary-50/50 transition-colors duration-150 group",
+              children: columns.map((col) => /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+                "td",
+                {
+                  className: (0, import_clsx12.default)("px-4 py-3 align-middle", col.className),
+                  children: col.type === "actions" ? /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: "flex items-center justify-center gap-2", children: renderCellContent(col, row) }) : /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: "text-secondary-700 font-medium", children: renderCellContent(col, row) })
+                },
+                `${rowIndex}-${col.key}`
+              ))
+            },
+            rowIndex
+          )) : /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("td", { colSpan: columns.length, className: "px-6 py-12 text-center", children: /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "flex flex-col items-center justify-center text-secondary-400", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("span", { className: "text-lg", children: "No se encontraron resultados" }),
+            /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("span", { className: "text-sm mt-1", children: "Intenta ajustar los filtros" })
+          ] }) }) }) })
+        ]
+      }
+    ) }),
     /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: "bg-white rounded-b-xl border-t border-secondary-200 px-6 py-4", children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
       ITPagination,
       {
@@ -3212,7 +3210,7 @@ function ITTable({
         totalItems: filteredData.length
       }
     ) })
-  ] });
+  ] }) });
 }
 
 // src/types/toast.types.ts
