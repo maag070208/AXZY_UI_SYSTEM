@@ -1,13 +1,24 @@
 import React, { useMemo } from 'react';
 import { ITThemeProviderProps } from './themeProvider.props';
-import { theme as defaultThemeConfig } from '../../theme/theme';
+import { palette, theme as defaultThemeConfig } from '../../theme/theme';
 
 export default function ITThemeProvider({ theme, children }: ITThemeProviderProps) {
-  // Merge the provided theme over the default theme to ensure we always have values
+  // Merge the provided theme over the default HEX palette to ensure we always have values
   const activeThemeContext = useMemo(() => {
+    // Reconstruct the default semantic mapping using RAW HEX codes
+    const baseColors = {
+      primary: palette.blue,
+      secondary: palette.gray,
+      success: palette.success,
+      danger: palette.danger,
+      warning: palette.warning,
+      info: palette.cyan,
+      purple: palette.purple,
+    };
+
     return {
       colors: {
-        ...defaultThemeConfig.colors,
+        ...baseColors,
         ...theme?.colors,
       },
       layout: {

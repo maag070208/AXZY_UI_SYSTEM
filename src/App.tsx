@@ -1,8 +1,26 @@
-import React, { useState } from 'react';
-import { Formik, Form } from 'formik';
+import React, { useState } from "react";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { FieldConfigV2, ITFormBuilder, ITButton, ITCard, ITLayout, ITThemeProvider } from './index';
-import { FaUser, FaEnvelope, FaSearch, FaLock, FaCalculator, FaCommentDots, FaHome, FaChartBar, FaCog, FaBell } from 'react-icons/fa';
+import {
+  FieldConfigV2,
+  ITFormBuilder,
+  ITButton,
+  ITCard,
+  ITLayout,
+  ITThemeProvider,
+} from "./index";
+import {
+  FaUser,
+  FaEnvelope,
+  FaSearch,
+  FaLock,
+  FaCalculator,
+  FaCommentDots,
+  FaHome,
+  FaChartBar,
+  FaCog,
+  FaBell,
+} from "react-icons/fa";
 import "./index.css";
 
 function App() {
@@ -33,8 +51,8 @@ function App() {
       type: "text",
       placeholder: "Ingresa código...",
       rightIcon: (
-        <button 
-          type="button" 
+        <button
+          type="button"
           onClick={() => alert("¡Disparando búsqueda de código promocional!")}
           className="text-primary-600 hover:text-primary-800 transition px-2"
         >
@@ -54,38 +72,37 @@ function App() {
       leftIcon: <FaEnvelope className="text-gray-400" />,
       column: { sm: 12, md: 6 },
     },
-    
 
     // --- EVENTOS AL ESCRIBIR & ESTADOS BLOQUEADOS ---
     {
-       name: "subtotal",
-       label: "Subtotal (Dispara OnChange)",
-       type: "number",
-       required: true,
-       currencyFormat: true,
-       leftIcon: <FaCalculator className="text-gray-400" />,
-       column: { sm: 12, md: 4 },
-       onChangeAction: (val, { setFieldValue }) => {
-          const num = parseFloat(val) || 0;
-          setFieldValue("iva", (num * 0.16).toFixed(2));
-          setFieldValue("total", (num * 1.16).toFixed(2));
-       }
+      name: "subtotal",
+      label: "Subtotal (Dispara OnChange)",
+      type: "number",
+      required: true,
+      currencyFormat: true,
+      leftIcon: <FaCalculator className="text-gray-400" />,
+      column: { sm: 12, md: 4 },
+      onChangeAction: (val, { setFieldValue }) => {
+        const num = parseFloat(val) || 0;
+        setFieldValue("iva", (num * 0.16).toFixed(2));
+        setFieldValue("total", (num * 1.16).toFixed(2));
+      },
     },
     {
-       name: "iva",
-       label: "IVA (Read-Only)",
-       type: "number",
-       currencyFormat: true,
-       readOnly: true, // Bloqueado, pero con color de texto normal y se envía
-       column: { sm: 12, md: 4 },
+      name: "iva",
+      label: "IVA (Read-Only)",
+      type: "number",
+      currencyFormat: true,
+      readOnly: true, // Bloqueado, pero con color de texto normal y se envía
+      column: { sm: 12, md: 4 },
     },
     {
-       name: "total",
-       label: "Total (Disabled)",
-       type: "number",
-       currencyFormat: true,
-       disabled: true, // Completamente bloqueado e ignora focus, con estilo gris
-       column: { sm: 12, md: 4 },
+      name: "total",
+      label: "Total (Disabled)",
+      type: "number",
+      currencyFormat: true,
+      disabled: true, // Completamente bloqueado e ignora focus, con estilo gris
+      column: { sm: 12, md: 4 },
     },
 
     // --- DEPENDENCIA DINÁMICA DE RENDERIZADO ---
@@ -98,7 +115,7 @@ function App() {
         { value: "", label: "Selecciona país..." },
         { value: "MX", label: "México" },
         { value: "US", label: "Estados Unidos" },
-        { value: "OTHER", label: "Otro" }
+        { value: "OTHER", label: "Otro" },
       ],
       column: { sm: 12, md: 6 },
     },
@@ -125,7 +142,7 @@ function App() {
     {
       name: "time",
       label: "Selector de Hora",
-      type: "time" as any, 
+      type: "time" as any,
       required: true,
       column: { sm: 12, md: 4 },
     },
@@ -138,41 +155,72 @@ function App() {
       maxLength: 200,
       leftIcon: <FaCommentDots className="text-gray-400" />,
       column: { sm: 12, md: 4 },
-    }
+    },
   ];
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().required("El nombre de usuario es requerido"),
     promoCode: Yup.string(),
-    email: Yup.string().email("Formato de correo inválido").required("El correo es requerido"),
-    password: Yup.string().min(8, "Mínimo 8 caracteres").required("La contraseña es requerida"),
-    subtotal: Yup.number().typeError("Debe ser un número").required("Requerido").min(1, "Mayor a 0"),
+    email: Yup.string()
+      .email("Formato de correo inválido")
+      .required("El correo es requerido"),
+    password: Yup.string()
+      .min(8, "Mínimo 8 caracteres")
+      .required("La contraseña es requerida"),
+    subtotal: Yup.number()
+      .typeError("Debe ser un número")
+      .required("Requerido")
+      .min(1, "Mayor a 0"),
     country: Yup.string().required("Selecciona un país"),
-    rfc: Yup.string().when('country', {
-       is: 'MX',
-       then: (schema) => schema.length(13, "Debe tener 13 caracteres exactos").required("El RFC es obligatorio para MX"),
-       otherwise: (schema) => schema.notRequired()
+    rfc: Yup.string().when("country", {
+      is: "MX",
+      then: (schema) =>
+        schema
+          .length(13, "Debe tener 13 caracteres exactos")
+          .required("El RFC es obligatorio para MX"),
+      otherwise: (schema) => schema.notRequired(),
     }),
     date: Yup.date().required("Fecha requerida"),
     time: Yup.string().required("Hora requerida"),
-    comments: Yup.string().max(200, "Máximo 200 caracteres")
+    comments: Yup.string().max(200, "Máximo 200 caracteres"),
   });
 
   const sidebarProps = {
     navigationItems: [
-      { id: "home", label: "Dashboard", icon: <FaHome />, isActive: activeNav === "home", action: () => setActiveNav("home") },
-      { id: "analytics", label: "Analytics", icon: <FaChartBar />, isActive: activeNav === "analytics", action: () => setActiveNav("analytics"), badge: "New" },
-      { 
-        id: "settings", 
-        label: "Settings", 
-        icon: <FaCog />, 
-        isActive: activeNav === "settings", 
-        subitems: [
-          { id: "profile", label: "Profile", action: () => setActiveNav("settings") },
-          { id: "billing", label: "Billing", action: () => setActiveNav("settings") }
-        ]
+      {
+        id: "home",
+        label: "Dashboard",
+        icon: <FaHome />,
+        isActive: activeNav === "home",
+        action: () => setActiveNav("home"),
       },
-    ]
+      {
+        id: "analytics",
+        label: "Analytics",
+        icon: <FaChartBar />,
+        isActive: activeNav === "analytics",
+        action: () => setActiveNav("analytics"),
+        badge: "New",
+      },
+      {
+        id: "settings",
+        label: "Settings",
+        icon: <FaCog />,
+        isActive: activeNav === "settings",
+        subitems: [
+          {
+            id: "profile",
+            label: "Profile",
+            action: () => setActiveNav("settings"),
+          },
+          {
+            id: "billing",
+            label: "Billing",
+            action: () => setActiveNav("settings"),
+          },
+        ],
+      },
+    ],
   };
 
   const topBarProps = {
@@ -183,8 +231,8 @@ function App() {
       userImage: "https://i.pravatar.cc/150",
       menuItems: [
         { label: "Profile", onClick: () => alert("Profile Clicked") },
-        { label: "Logout", onClick: () => alert("Logout Clicked") }
-      ]
+        { label: "Logout", onClick: () => alert("Logout Clicked") },
+      ],
     },
     userProfile: {
       name: "Admin User",
@@ -192,105 +240,134 @@ function App() {
       avatarUrl: "https://i.pravatar.cc/150",
       actions: [
         { label: "Profile", onClick: () => {} },
-        { label: "Logout", onClick: () => {} }
-      ]
+        { label: "Logout", onClick: () => {} },
+      ],
     },
     navItems: [
       {
         id: "notifications",
         label: "Notificaciones",
         icon: <FaBell />,
-        action: () => alert("Notificaciones")
-      }
-    ]
+        action: () => alert("Notificaciones"),
+      },
+    ],
   };
 
   // Fake custom brand theme injected by consumer
   const customTheme = {
     colors: {
       primary: {
-        50: '#f0fdf4',
-        100: '#dcfce7',
-        200: '#bbf7d0',
-        300: '#86efac',
-        400: '#4ade80',
-        500: '#22c55e', // Emerald 500
-        600: '#16a34a',
-        700: '#15803d',
-        800: '#166534',
-        900: '#14532d',
-        950: '#052e16',
-      }
-    }
+        50: "#fef2f2",
+        100: "#fee2e2",
+        200: "#fecaca",
+        300: "#fca5a5",
+        400: "#f87171",
+        500: "#ef4444", // Red 500
+        600: "#dc2626",
+        700: "#b91c1c",
+        800: "#991b1b",
+        900: "#7f1d1d",
+        950: "#450a0a",
+      },
+      secondary: {
+        50: "#f9fafb",
+        100: "#f3f4f6",
+        200: "#e5e7eb",
+        300: "#d1d5db",
+        400: "#9ca3af",
+        500: "#6b7280", // Gray 500
+        600: "#525b6b",
+        700: "#404a59",
+        800: "#262f3d",
+        900: "#1e293b",
+        950: "#0f172a",
+      },
+    },
   };
 
   return (
-   <ITThemeProvider theme={customTheme}>
-    <ITLayout sidebar={sidebarProps} topBar={topBarProps}>
-     <div className='flex justify-center items-center min-h-[calc(100vh-100px)]'>
-       <ITCard className="flex flex-col gap-4 p-8 w-full max-w-6xl shadow-xl border border-gray-100 overflow-y-auto max-h-[90vh]">
-        
-        <div className="mb-4">
-          <h2 className="text-2xl font-bold text-gray-800">ITFormBuilder V2: Showcase Completo</h2>
-          <p className="text-gray-500 mt-1">Demostrando estados de validación, renderizado condicional, `disabled`, `readOnly`, componentes de hora/fecha, y acciones `onChange` todo bajo el diseño limpio de cuadrícula V1.</p>
+    <ITThemeProvider theme={customTheme}>
+      <ITLayout sidebar={sidebarProps} topBar={topBarProps}>
+        <div className="flex justify-center items-center min-h-[calc(100vh-100px)]">
+          <ITCard className="flex flex-col gap-4 p-8 w-full max-w-6xl shadow-xl border border-gray-100 overflow-y-auto max-h-[90vh]">
+            <div className="mb-4">
+              <h2 className="text-2xl font-bold text-gray-800">
+                ITFormBuilder V2: Showcase Completo
+              </h2>
+              <p className="text-gray-500 mt-1">
+                Demostrando estados de validación, renderizado condicional,
+                `disabled`, `readOnly`, componentes de hora/fecha, y acciones
+                `onChange` todo bajo el diseño limpio de cuadrícula V1.
+              </p>
+            </div>
+
+            <Formik
+              initialValues={{
+                username: "",
+                promoCode: "",
+                email: "",
+                password: "",
+                subtotal: "",
+                iva: "",
+                total: "",
+                country: "",
+                rfc: "",
+                date: null,
+                time: "",
+                comments: "",
+              }}
+              validationSchema={validationSchema}
+              onSubmit={(values, { setSubmitting }) => {
+                setTimeout(() => {
+                  console.log("Valores Formulario:", values);
+                  alert("Exito! Revisa la consola para el JSON de datos.");
+                  setSubmitting(false);
+                }, 1000);
+              }}
+            >
+              {({
+                values,
+                handleChange,
+                handleBlur,
+                touched,
+                errors,
+                setFieldValue,
+                setFieldTouched,
+                setFieldError,
+                isSubmitting,
+                handleSubmit,
+              }) => (
+                <Form onSubmit={handleSubmit} className="w-full">
+                  <ITFormBuilder
+                    config={formConfig}
+                    columns={12}
+                    values={values}
+                    handleChange={handleChange}
+                    handleBlur={handleBlur}
+                    touched={touched}
+                    errors={errors}
+                    setFieldValue={setFieldValue}
+                    setFieldTouched={setFieldTouched}
+                    setFieldError={setFieldError}
+                    isSubmitting={isSubmitting}
+                  />
+
+                  <div className="flex justify-end pt-6 mt-6 border-t border-gray-100">
+                    <ITButton
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="px-8 py-2 font-semibold"
+                    >
+                      Enviar Formulario
+                    </ITButton>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </ITCard>
         </div>
-
-        <Formik 
-          initialValues={{
-            username: '',
-            promoCode: '',
-            email: '',
-            password: '',
-            subtotal: '',
-            iva: '',
-            total: '',
-            country: '',
-            rfc: '',
-            date: null,
-            time: '',
-            comments: ''
-          }} 
-          validationSchema={validationSchema} 
-          onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              console.log("Valores Formulario:", values);
-              alert("Exito! Revisa la consola para el JSON de datos.");
-              setSubmitting(false);
-            }, 1000);
-          }}
-        >
-          {({values, handleChange, handleBlur, touched, errors, setFieldValue, setFieldTouched, setFieldError, isSubmitting, handleSubmit}) => (
-            <Form onSubmit={handleSubmit} className="w-full">
-              <ITFormBuilder
-                config={formConfig}
-                columns={12}
-                values={values}
-                handleChange={handleChange}
-                handleBlur={handleBlur}
-                touched={touched}
-                errors={errors}
-                setFieldValue={setFieldValue}
-                setFieldTouched={setFieldTouched}
-                setFieldError={setFieldError}
-                isSubmitting={isSubmitting}
-              />
-
-              <div className="flex justify-end pt-6 mt-6 border-t border-gray-100">
-                 <ITButton
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="px-8 py-2 font-semibold"
-                 >
-                    Enviar Formulario
-                 </ITButton>
-              </div>
-            </Form>
-          )}
-        </Formik>
-      </ITCard>
-     </div>
-    </ITLayout>
-   </ITThemeProvider>
+      </ITLayout>
+    </ITThemeProvider>
   );
 }
 

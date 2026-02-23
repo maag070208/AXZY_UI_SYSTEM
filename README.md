@@ -1,50 +1,74 @@
-# React + TypeScript + Vite
+# AXZY UI System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, enterprise-ready React component library powered by Tailwind CSS. Built specifically for high-density data applications, hospital management software, and complex dashboards.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+npm install @axzydev/axzy_ui_system
+```
 
-## Expanding the ESLint configuration
+## Basic Setup
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Then, you must tell your own `tailwind.config.ts` to scan the library for its dynamic classes:
 
-- Configure the top-level `parserOptions` property like this:
+```ts
+// tailwind.config.ts
+import type { Config } from 'tailwindcss'
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@axzydev/axzy_ui_system/dist/**/*.{js,ts,jsx,tsx}" // <--- ADD THIS LINE
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+
+---
+
+## Dynamic Theming (ITThemeProvider)
+
+`AXZY_UI_SYSTEM` uses a powerful CSS Variables engine under the hood. You can override the entire color palette of all components instantly without recompiling the library by using the `<ITThemeProvider>`.
+
+Wrap your application root with the provider and pass your custom brand JSON object:
+
+```tsx
+import React from 'react';
+import { ITThemeProvider } from '@axzydev/axzy_ui_system';
+import App from './App';
+
+// Define your custom brand palette mapping
+const myEnterpriseTheme = {
+  colors: {
+    primary: {
+      50: "#fef2f2",
+      100: "#fee2e2",
+      200: "#fecaca",
+      300: "#fca5a5",
+      400: "#f87171",
+      500: "#ef4444", // Your Main Brand Color
+      600: "#dc2626",
+      700: "#b91c1c",
+      800: "#991b1b",
+      900: "#7f1d1d",
+      950: "#450a0a",
     },
-  },
-})
+    // You can optionally override secondary, success, danger, warning, purple, info
+  }
+};
+
+export default function Main() {
+  return (
+    <ITThemeProvider theme={myEnterpriseTheme}>
+      <App />
+    </ITThemeProvider>
+  );
+}
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+> **Note:** You do not need to provide all colors. Only provide the scales (e.g., `primary`) that you wish to override. Unprovided scales will gracefully fallback to the default AXZY palette.
