@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from "yup";
-import { FieldConfigV2, ITFormBuilder, ITButton, ITCard, ITLayout } from './index';
+import { FieldConfigV2, ITFormBuilder, ITButton, ITCard, ITLayout, ITThemeProvider } from './index';
 import { FaUser, FaEnvelope, FaSearch, FaLock, FaCalculator, FaCommentDots, FaHome, FaChartBar, FaCog, FaBell } from 'react-icons/fa';
 import "./index.css";
 
@@ -186,6 +186,15 @@ function App() {
         { label: "Logout", onClick: () => alert("Logout Clicked") }
       ]
     },
+    userProfile: {
+      name: "Admin User",
+      role: "Super Admin",
+      avatarUrl: "https://i.pravatar.cc/150",
+      actions: [
+        { label: "Profile", onClick: () => {} },
+        { label: "Logout", onClick: () => {} }
+      ]
+    },
     navItems: [
       {
         id: "notifications",
@@ -196,8 +205,28 @@ function App() {
     ]
   };
 
+  // Fake custom brand theme injected by consumer
+  const customTheme = {
+    colors: {
+      primary: {
+        50: '#f0fdf4',
+        100: '#dcfce7',
+        200: '#bbf7d0',
+        300: '#86efac',
+        400: '#4ade80',
+        500: '#22c55e', // Emerald 500
+        600: '#16a34a',
+        700: '#15803d',
+        800: '#166534',
+        900: '#14532d',
+        950: '#052e16',
+      }
+    }
+  };
+
   return (
-   <ITLayout sidebar={sidebarProps} topBar={topBarProps}>
+   <ITThemeProvider theme={customTheme}>
+    <ITLayout sidebar={sidebarProps} topBar={topBarProps}>
      <div className='flex justify-center items-center min-h-[calc(100vh-100px)]'>
        <ITCard className="flex flex-col gap-4 p-8 w-full max-w-6xl shadow-xl border border-gray-100 overflow-y-auto max-h-[90vh]">
         
@@ -260,7 +289,8 @@ function App() {
         </Formik>
       </ITCard>
      </div>
-   </ITLayout>
+    </ITLayout>
+   </ITThemeProvider>
   );
 }
 

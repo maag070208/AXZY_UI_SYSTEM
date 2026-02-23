@@ -1,7 +1,7 @@
 import colors from "tailwindcss/colors";
 
 /**
- * 1. Paleta base (colores crudos) - Actualizada a tonos azules
+ * 1. Paleta base (Raw HEX values - Default Theme Fallback)
  */
 export const palette = {
   blue: {
@@ -17,7 +17,6 @@ export const palette = {
     900: '#1e3a8a',
     950: '#172554',
   },
-
   cyan: {
     50: '#ecfeff',
     100: '#cffafe',
@@ -31,7 +30,6 @@ export const palette = {
     900: '#164e63',
     950: '#083344',
   },
-
   gray: {
     50: '#f8fafc',
     100: '#f1f5f9',
@@ -45,8 +43,6 @@ export const palette = {
     900: '#0f172a',
     950: '#020617',
   },
-
-  // Mantenemos los colores de estado pero actualizamos a tonos más suaves
   success: colors.emerald,
   danger: colors.rose,
   warning: colors.amber,
@@ -55,30 +51,46 @@ export const palette = {
 };
 
 /**
- * 2. Colores semánticos (qué representa cada color)
+ * 2. Mapeo Dinámico a Variables CSS
+ * Esta es la magia estructural: en lugar de acoplar la UI a un Hex estático, 
+ * todo apunta a var(--color-[name]-[shade])
  */
+const createColorVar = (name: string) => ({
+  50: `var(--color-${name}-50)`,
+  100: `var(--color-${name}-100)`,
+  200: `var(--color-${name}-200)`,
+  300: `var(--color-${name}-300)`,
+  400: `var(--color-${name}-400)`,
+  500: `var(--color-${name}-500)`,
+  600: `var(--color-${name}-600)`,
+  700: `var(--color-${name}-700)`,
+  800: `var(--color-${name}-800)`,
+  900: `var(--color-${name}-900)`,
+  950: `var(--color-${name}-950)`,
+});
+
 export const semanticColors = {
-  primary: palette.blue,
-  secondary: palette.gray,
-  success: palette.success,
-  danger: palette.danger,
-  warning: palette.warning,
-  info: palette.cyan, // Usamos cyan para info en lugar de sky
-  purple: palette.purple,
-  error: palette.danger,
-  gray: palette.gray,
+  primary: createColorVar('primary'),
+  secondary: createColorVar('secondary'),
+  success: createColorVar('success'),
+  danger: createColorVar('danger'),
+  warning: createColorVar('warning'),
+  info: createColorVar('info'), 
+  purple: createColorVar('purple'),
+  error: createColorVar('danger'), // Alias
+  gray: createColorVar('secondary'), // Secondary as Gray
 };
 
 /**
- * 3. Tokens de componentes (heredan de semantic)
+ * 3. Tokens de componentes (heredan de las Vbles CSS semanticColors)
  */
 export const components = {
   layout: {
-    backgroundColor: semanticColors.gray[50], // Very light gray background for the main content area
-    contentPadding: '1.5rem', // p-6
+    backgroundColor: semanticColors.gray[50],
+    contentPadding: '1.5rem',
   },
   topbar: {
-    backgroundColor: 'rgba(255, 255, 255, 0.90)', // Glassmorphism base
+    backgroundColor: 'rgba(255, 255, 255, 0.90)', 
     borderColor: semanticColors.gray[200],
     iconColor: semanticColors.gray[500],
     iconHoverColor: semanticColors.gray[700],
@@ -98,7 +110,7 @@ export const components = {
     }
   },
   sidebar: {
-    backgroundColor: 'rgba(255, 255, 255, 0.90)', // Glassmorphism base like topbar
+    backgroundColor: 'rgba(255, 255, 255, 0.90)',
     borderColor: semanticColors.gray[200],
     label: {
       color: semanticColors.gray[700],
@@ -113,24 +125,24 @@ export const components = {
       backgroundColor: semanticColors.gray[100],
     },
     active: {
-      backgroundColor: semanticColors.gray[50], // Very subtle active bg in light mode
+      backgroundColor: semanticColors.gray[50],
       color: semanticColors.gray[900],
-      iconColor: '#10b981', // Emerald green
+      iconColor: semanticColors.primary[500], 
     },
     badge: {
-      backgroundColor: '#10b981', 
+      backgroundColor: semanticColors.primary[500], 
       color: '#ffffff',
     },
   },
 
   button: {
     primary: {
-      backgroundColor: '#06b6d4', // Cyan-500
+      backgroundColor: semanticColors.primary[500],
       color: '#ffffff',
-      hover: '#0891b2', // Cyan-600
-      active: '#0e7490', // Cyan-700
-      focus: '0 0 0 2px #a5f3fc', // Cyan-200
-      borderRadius: '0.375rem', // 6px - rounded-md
+      hover: semanticColors.primary[600],
+      active: semanticColors.primary[700],
+      focus: `0 0 0 2px ${semanticColors.primary[200]}`,
+      borderRadius: '0.375rem', 
       padding: '0.5rem 1rem',
       fontSize: '0.875rem',
       fontWeight: '600',
@@ -138,10 +150,10 @@ export const components = {
     },
 
     secondary: {
-      backgroundColor: '#64748b', // Slate-500
-      color: '#ffffff', // Text white for filled secondary per screenshot
-      hover: '#475569', // Slate-600
-      focus: '0 0 0 2px #e2e8f0',
+      backgroundColor: semanticColors.secondary[500],
+      color: '#ffffff',
+      hover: semanticColors.secondary[600],
+      focus: `0 0 0 2px ${semanticColors.secondary[200]}`,
       borderRadius: '0.375rem',
       padding: '0.5rem 1rem',
       fontSize: '0.875rem',
@@ -149,48 +161,48 @@ export const components = {
     },
 
     success: {
-      backgroundColor: '#22c55e', // Green-500
+      backgroundColor: semanticColors.success[500],
       color: '#ffffff',
-      hover: '#16a34a', // Green-600
+      hover: semanticColors.success[600],
       focus: `0 0 0 2px ${semanticColors.success[200]}`,
       borderRadius: '0.375rem',
     },
 
     danger: {
-      backgroundColor: '#ef4444', // Red-500
+      backgroundColor: semanticColors.danger[500],
       color: '#ffffff',
-      hover: '#dc2626', // Red-600
+      hover: semanticColors.danger[600],
       focus: `0 0 0 2px ${semanticColors.danger[200]}`,
       borderRadius: '0.375rem',
     },
 
     error: {
-      backgroundColor: '#ef4444',
+      backgroundColor: semanticColors.danger[500],
       color: '#ffffff',
-      hover: '#dc2626',
+      hover: semanticColors.danger[600],
       borderRadius: '0.375rem',
     },
 
     warning: {
-      backgroundColor: '#f97316', // Orange-500
+      backgroundColor: semanticColors.warning[500],
       color: '#ffffff',
-      hover: '#ea580c', // Orange-600
+      hover: semanticColors.warning[600],
       focus: `0 0 0 2px ${semanticColors.warning[200]}`,
       borderRadius: '0.375rem',
     },
 
     info: {
-      backgroundColor: '#0ea5e9', // Sky-500
+      backgroundColor: semanticColors.info[500],
       color: '#ffffff',
-      hover: '#0284c7', // Sky-600
+      hover: semanticColors.info[600],
       focus: `0 0 0 2px ${semanticColors.info[200]}`,
       borderRadius: '0.375rem',
     },
 
     purple: {
-      backgroundColor: '#8b5cf6', // Violet-500
+      backgroundColor: semanticColors.purple[500],
       color: '#ffffff',
-      hover: '#7c3aed', // Violet-600
+      hover: semanticColors.purple[600],
       focus: `0 0 0 2px ${semanticColors.purple[200]}`,
       borderRadius: '0.375rem',
     },
@@ -199,7 +211,7 @@ export const components = {
       backgroundColor: 'transparent',
       color: semanticColors.primary[600],
       borderColor: semanticColors.primary[600],
-      borderWidth: '2px', // Slightly thicker for modern look
+      borderWidth: '2px', 
       hover: semanticColors.primary[50],
       borderRadius: '0.375rem',
     },
@@ -261,7 +273,7 @@ export const components = {
 
   card: {
     backgroundColor: '#ffffff',
-    borderRadius: '1rem', // 16px - más moderno
+    borderRadius: '1rem',
     borderColor: semanticColors.gray[200],
     borderWidth: '1px',
     shadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
@@ -270,7 +282,7 @@ export const components = {
     },
     header: {
       backgroundColor: semanticColors.gray[50],
-      borderBottom: `1px solid ${semanticColors.gray[200]}`,
+      borderBottom: `1px solid var(--color-secondary-200)`,
       padding: '1rem 1.5rem',
       borderTopLeftRadius: '1rem',
       borderTopRightRadius: '1rem',
@@ -312,7 +324,7 @@ export const components = {
     },
     row: {
       hover: semanticColors.primary[50],
-      borderBottom: `1px solid ${semanticColors.gray[200]}`,
+      borderBottom: `1px solid var(--color-secondary-200)`,
     },
     cell: {
       padding: '1rem 1.5rem',
@@ -348,7 +360,7 @@ export const components = {
 
   modal: {
     overlay: {
-      backgroundColor: 'rgba(15, 23, 42, 0.75)', // gray[900] con opacidad
+      backgroundColor: 'rgba(15, 23, 42, 0.75)',
     },
     content: {
       backgroundColor: '#ffffff',
@@ -357,14 +369,14 @@ export const components = {
     },
     header: {
       padding: '1.5rem 1.5rem 0.5rem 1.5rem',
-      borderBottom: `1px solid ${semanticColors.gray[200]}`,
+      borderBottom: `1px solid var(--color-secondary-200)`,
     },
     body: {
       padding: '1.5rem',
     },
     footer: {
       padding: '1rem 1.5rem',
-      borderTop: `1px solid ${semanticColors.gray[200]}`,
+      borderTop: `1px solid var(--color-secondary-200)`,
       backgroundColor: semanticColors.gray[50],
     },
   },
@@ -405,7 +417,7 @@ export const typography = {
  * 5. Theme final exportado
  */
 export const theme = {
-  palette,
+  palette, 
   colors: semanticColors,
   typography,
   ...components,

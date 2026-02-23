@@ -44,6 +44,9 @@ import ITTimePicker from "./components/time-picker/timePicker";
 import type { ITTimePickerProps } from "./components/time-picker/timePicker.props";
 import ITDropfile from "./components/dropfile/dropfile";
 import ITStepper from "./components/stepper/stepper";
+import ITThemeProvider from "./components/theme-provider/themeProvider";
+import type { ITThemeProviderProps } from "./components/theme-provider/themeProvider.props";
+import type { ITThemeConfig } from "./theme/theme.types";
 
 export {
   ITButton,
@@ -67,6 +70,7 @@ export {
   ITDropfile,
   ITStepper,
   ITPagination,
+  ITThemeProvider,
   createValidationSchema,
 };
 
@@ -87,6 +91,8 @@ export type {
   ITNavbarProps,
   ITLayoutProps,
   ITTimePickerProps,
+  ITThemeProviderProps,
+  ITThemeConfig,
   FieldConfig,
   FieldConfigV2,
 };

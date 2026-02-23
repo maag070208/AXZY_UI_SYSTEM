@@ -27,6 +27,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "bundle": "tsup src/index.ts",
+    "watch": "tsup src/index.ts --watch",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
