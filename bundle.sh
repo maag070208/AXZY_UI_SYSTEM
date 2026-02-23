@@ -15,8 +15,8 @@ yarn pack
 
 echo "Versión actualizada y cambios subidos exitosamente."
 
-echo "Copiando al directorio de destino..."
-cp *.tgz ~/DEV/AXZY/CHECK/WEB
+# echo "Copiando al directorio de destino..."
+# cp *.tgz ~/DEV/AXZY/CHECK/WEB
 echo "Bundle copiado a destino, y mantenido localmente."
 
 echo "Proceso completado exitosamente."

@@ -23,7 +23,7 @@ export const formatCurrencyMX = (value: number) => {
 };
 export default function ITTable<T extends Record<string, unknown>>({
   columns,
-  data,
+  data = [],
   containerClassName,
   className,
   variant = "default",
@@ -43,9 +43,10 @@ export default function ITTable<T extends Record<string, unknown>>({
   } | null>(null);
 
   const sortedData = React.useMemo(() => {
-    if (!sortConfig) return data;
+    const safeData = Array.isArray(data) ? data : [];
+    if (!sortConfig) return safeData;
 
-    return [...data].sort((a, b) => {
+    return [...safeData].sort((a, b) => {
       const aValue = getNestedValue(a, sortConfig.key);
       const bValue = getNestedValue(b, sortConfig.key);
 
