@@ -2911,7 +2911,7 @@ var formatCurrencyMX = (value) => {
 };
 function ITTable({
   columns,
-  data,
+  data = [],
   containerClassName,
   className,
   variant = "default",
@@ -2925,8 +2925,9 @@ function ITTable({
   const [filters, setFilters] = (0, import_react16.useState)({});
   const [sortConfig, setSortConfig] = (0, import_react16.useState)(null);
   const sortedData = import_react16.default.useMemo(() => {
-    if (!sortConfig) return data;
-    return [...data].sort((a, b) => {
+    const safeData = Array.isArray(data) ? data : [];
+    if (!sortConfig) return safeData;
+    return [...safeData].sort((a, b) => {
       const aValue = getNestedValue(a, sortConfig.key);
       const bValue = getNestedValue(b, sortConfig.key);
       if (aValue == null || bValue == null) return 0;

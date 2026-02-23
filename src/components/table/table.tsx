@@ -389,7 +389,6 @@ export default function ITTable<T extends Record<string, unknown>>({
           </tbody>
         </table>
       </div>
-      </div>
 
 
       {/* Pagination */}
@@ -406,5 +405,6 @@ export default function ITTable<T extends Record<string, unknown>>({
         />
       </div>
     </div>
+</div>
   );
 }

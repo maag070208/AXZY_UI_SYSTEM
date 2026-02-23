@@ -2876,7 +2876,7 @@ var formatCurrencyMX = (value) => {
 };
 function ITTable({
   columns,
-  data,
+  data = [],
   containerClassName,
   className,
   variant = "default",
@@ -2890,8 +2890,9 @@ function ITTable({
   const [filters, setFilters] = useState12({});
   const [sortConfig, setSortConfig] = useState12(null);
   const sortedData = React7.useMemo(() => {
-    if (!sortConfig) return data;
-    return [...data].sort((a, b) => {
+    const safeData = Array.isArray(data) ? data : [];
+    if (!sortConfig) return safeData;
+    return [...safeData].sort((a, b) => {
       const aValue = getNestedValue(a, sortConfig.key);
       const bValue = getNestedValue(b, sortConfig.key);
       if (aValue == null || bValue == null) return 0;
