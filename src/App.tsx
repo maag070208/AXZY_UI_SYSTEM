@@ -8,6 +8,8 @@ import {
   ITCard,
   ITLayout,
   ITThemeProvider,
+  ITBadget,
+  ITTable,
 } from "./index";
 import {
   FaUser,
@@ -285,85 +287,131 @@ function App() {
     },
   };
 
+
+  const data = [
+  {
+    "id": 1,
+    "username": "admin",
+    "password": "$2a$10$EHcagMcHk7QY3h/DGPBDv.l94pa0Aw3FL3AgKOxd62si3UzoNSTdW",
+    "name": "Admin",
+    "lastName": "Principal",
+    "role": "ADMIN",
+    "isActive": true,
+    "createdAt": "2026-02-23T06:23:09.193Z",
+    "updatedAt": "2026-02-23T06:23:09.193Z"
+  },
+  {
+    "id": 2,
+    "username": "asael",
+    "password": "$2a$10$EHcagMcHk7QY3h/DGPBDv.l94pa0Aw3FL3AgKOxd62si3UzoNSTdW",
+    "name": "Asael",
+    "lastName": "Cajero 1",
+    "role": "CAJERO",
+    "isActive": true,
+    "createdAt": "2026-02-23T06:23:09.370Z",
+    "updatedAt": "2026-02-23T06:23:09.370Z"
+  },
+  {
+    "id": 3,
+    "username": "karla",
+    "password": "$2a$10$EHcagMcHk7QY3h/DGPBDv.l94pa0Aw3FL3AgKOxd62si3UzoNSTdW",
+    "name": "Karla",
+    "lastName": "Cajero 2",
+    "role": "CAJERO",
+    "isActive": true,
+    "createdAt": "2026-02-23T06:23:09.456Z",
+    "updatedAt": "2026-02-23T06:23:09.456Z"
+  },
+  {
+    "id": 4,
+    "username": "marco",
+    "password": "$2a$10$EHcagMcHk7QY3h/DGPBDv.l94pa0Aw3FL3AgKOxd62si3UzoNSTdW",
+    "name": "Marco",
+    "lastName": "Técnico",
+    "role": "TECNICO",
+    "isActive": true,
+    "createdAt": "2026-02-23T06:23:09.542Z",
+    "updatedAt": "2026-02-23T06:23:09.542Z"
+  },
+  {
+    "id": 5,
+    "username": "supervisor",
+    "password": "$2a$10$EHcagMcHk7QY3h/DGPBDv.l94pa0Aw3FL3AgKOxd62si3UzoNSTdW",
+    "name": "Karla Sup",
+    "lastName": "Supervisora",
+    "role": "SUPERVISOR",
+    "isActive": true,
+    "createdAt": "2026-02-23T06:23:09.629Z",
+    "updatedAt": "2026-02-23T06:23:09.629Z"
+  }
+]
+
   return (
     <ITThemeProvider theme={customTheme}>
       <ITLayout sidebar={sidebarProps} topBar={topBarProps}>
-        <div className="flex justify-center items-center min-h-[calc(100vh-100px)]">
-          <ITCard className="flex flex-col gap-4 p-8 w-full max-w-6xl shadow-xl border border-gray-100 overflow-y-auto max-h-[90vh]">
+        <div className="flex justify-center items-center py-10 px-4 w-full">
+          <ITCard className="flex flex-col gap-4 p-8 w-full max-w-6xl shadow-xl border border-gray-100">
             <div className="mb-4">
               <h2 className="text-2xl font-bold text-gray-800">
-                ITFormBuilder V2: Showcase Completo
+                Data Table Showcase
               </h2>
               <p className="text-gray-500 mt-1">
-                Demostrando estados de validación, renderizado condicional,
-                `disabled`, `readOnly`, componentes de hora/fecha, y acciones
-                `onChange` todo bajo el diseño limpio de cuadrícula V1.
+                Tabla con ordenamiento fluido, paginación dinámica, filtrado condicional por columna y celdas renderizadas custom.
               </p>
             </div>
-
-            <Formik
-              initialValues={{
-                username: "",
-                promoCode: "",
-                email: "",
-                password: "",
-                subtotal: "",
-                iva: "",
-                total: "",
-                country: "",
-                rfc: "",
-                date: null,
-                time: "",
-                comments: "",
-              }}
-              validationSchema={validationSchema}
-              onSubmit={(values, { setSubmitting }) => {
-                setTimeout(() => {
-                  console.log("Valores Formulario:", values);
-                  alert("Exito! Revisa la consola para el JSON de datos.");
-                  setSubmitting(false);
-                }, 1000);
-              }}
-            >
-              {({
-                values,
-                handleChange,
-                handleBlur,
-                touched,
-                errors,
-                setFieldValue,
-                setFieldTouched,
-                setFieldError,
-                isSubmitting,
-                handleSubmit,
-              }) => (
-                <Form onSubmit={handleSubmit} className="w-full">
-                  <ITFormBuilder
-                    config={formConfig}
-                    columns={12}
-                    values={values}
-                    handleChange={handleChange}
-                    handleBlur={handleBlur}
-                    touched={touched}
-                    errors={errors}
-                    setFieldValue={setFieldValue}
-                    setFieldTouched={setFieldTouched}
-                    setFieldError={setFieldError}
-                    isSubmitting={isSubmitting}
-                  />
-
-                  <div className="flex justify-end pt-6 mt-6 border-t border-gray-100">
-                    <ITButton
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="px-8 py-2 font-semibold"
-                    >
-                      Enviar Formulario
-                    </ITButton>
-                  </div>
-                </Form>
-              )}
-            </Formik>
+            <ITTable
+              columns={[
+                {
+                  key: "username",
+                  label: "Usuario",
+                  type: "string",
+                  filter: true,
+                },
+                {
+                  key: "name",
+                  label: "Nombre",
+                  type: "string",
+                  filter: true,
+                },
+                {
+                  key: "lastName",
+                  label: "Apellido",
+                  type: "string",
+                  filter: true,
+                },
+                {
+                  key: "role",
+                  label: "Rol",
+                  type: "string",
+                  filter: true,
+                  render: (row: any) => {
+                    return (
+                      <ITBadget
+                        color={
+                          row.role === "ADMIN"
+                            ? "primary"
+                            : row.role === "CAJERO"
+                            ? "success"
+                            : row.role === "TECNICO"
+                            ? "warning"
+                            : "secondary"
+                        }
+                        label={row.role}
+                      />
+                    );
+                  },
+                },
+                {
+                  key: "isActive",
+                  label: "Activo",
+                  type: "boolean",
+                  filter: true,
+                },
+              ]}
+              data={data}
+              defaultItemsPerPage={5}
+              itemsPerPageOptions={[5, 10, 20]}
+            />
           </ITCard>
         </div>
       </ITLayout>

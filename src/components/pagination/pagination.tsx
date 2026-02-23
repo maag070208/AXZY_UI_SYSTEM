@@ -91,8 +91,8 @@ export default function ITPagination({
     siblingCount,
   });
 
-  // If there are less than 2 pages in pagination range we shall not render the component
-  if (currentPage === 0 || (paginationRange && paginationRange.length < 2)) {
+  // If there are less than 2 pages and no items per page options, we can hide the component
+  if (currentPage === 0 || (!itemsPerPageOptions && paginationRange && paginationRange.length < 2)) {
     return null;
   }
 
