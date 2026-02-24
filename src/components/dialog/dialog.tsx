@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { theme } from "@/theme/theme";
 import { useEffect, useRef } from "react";
 import { FaRegTimesCircle } from "react-icons/fa";
@@ -34,9 +35,10 @@ export default function ITDialog({
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
+  if (typeof document === "undefined") return null;
 
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+  const content = (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]">
       <div
         ref={modalRef}
         className={`overflow-hidden relative ${className} ${
@@ -46,7 +48,6 @@ export default function ITDialog({
              backgroundColor: theme.card.backgroundColor,
              borderRadius: theme.card.borderRadius,
              boxShadow: theme.card.shadow,
-             // Border? theme.card.borderWidth?
              borderWidth: theme.card.borderWidth,
              borderColor: theme.card.borderColor,
              borderStyle: 'solid',
@@ -72,4 +73,6 @@ export default function ITDialog({
       </div>
     </div>
   );
+
+  return createPortal(content, document.body);
 }

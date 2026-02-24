@@ -10,6 +10,7 @@ import {
   ITThemeProvider,
   ITBadget,
   ITTable,
+  ITDialog,
 } from "./index";
 import {
   FaUser,
@@ -27,6 +28,7 @@ import "./index.css";
 
 function App() {
   const [activeNav, setActiveNav] = useState("home");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const formConfig: FieldConfigV2[] = [
     // --- ICONOS E INPUT BÁSICO ---
     {
@@ -351,13 +353,18 @@ function App() {
       <ITLayout sidebar={sidebarProps} topBar={topBarProps}>
         <div className="flex justify-center items-center py-10 px-4 w-full">
           <ITCard className="flex flex-col gap-4 p-8 w-full max-w-6xl shadow-xl border border-gray-100">
-            <div className="mb-4">
-              <h2 className="text-2xl font-bold text-gray-800">
-                Data Table Showcase
-              </h2>
-              <p className="text-gray-500 mt-1">
-                Tabla con ordenamiento fluido, paginación dinámica, filtrado condicional por columna y celdas renderizadas custom.
-              </p>
+            <div className="mb-4 flex flex-row items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-800">
+                  Data Table Showcase
+                </h2>
+                <p className="text-gray-500 mt-1">
+                  Tabla con ordenamiento fluido, paginación dinámica, filtrado condicional por columna y celdas renderizadas custom.
+                </p>
+              </div>
+              <ITButton onClick={() => setIsDialogOpen(true)} color="primary">
+                Test Dialog Overlay
+              </ITButton>
             </div>
             <ITTable
               columns={[
@@ -415,6 +422,35 @@ function App() {
           </ITCard>
         </div>
       </ITLayout>
+
+      <ITDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        title="Z-Index Test Overlay"
+        useFormHeader={true}
+      >
+        <div className="flex flex-col gap-4">
+          <p className="text-gray-600">
+            Este diálogo ahora se renderiza a través de un Portal directamente
+            en el body (`document.body`).
+          </p>
+          <p className="text-gray-600">
+            Como puedes ver, bloquea completamente el Header y el Sidebar, sin
+            importar que estén envueltos dentro del ITLayout con altos
+            z-indexes, porque el Portal salta fuera de esa jerarquía HTML.
+          </p>
+          <div className="flex justify-end pt-4">
+            <ITButton
+              onClick={() => setIsDialogOpen(false)}
+              color="danger"
+              className="px-6"
+            >
+              Cerrar Prueba
+            </ITButton>
+          </div>
+        </div>
+      </ITDialog>
+
     </ITThemeProvider>
   );
 }

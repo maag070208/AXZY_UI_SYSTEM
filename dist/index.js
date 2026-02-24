@@ -2748,7 +2748,7 @@ function ITPagination({
     totalPages,
     siblingCount
   });
-  if (currentPage === 0 || paginationRange && paginationRange.length < 2) {
+  if (currentPage === 0 || !itemsPerPageOptions && paginationRange && paginationRange.length < 2) {
     return null;
   }
   const isSemantic = color in theme.colors;
