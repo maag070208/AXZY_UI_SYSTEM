@@ -1616,6 +1616,7 @@ function ITDatePicker({
 }
 
 // src/components/dialog/dialog.tsx
+import { createPortal } from "react-dom";
 import { useEffect as useEffect5, useRef as useRef3 } from "react";
 import { FaRegTimesCircle } from "react-icons/fa";
 
@@ -1684,7 +1685,8 @@ function ITDialog({
     };
   }, [isOpen, onClose]);
   if (!isOpen) return null;
-  return /* @__PURE__ */ jsx7("div", { className: "fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50", children: /* @__PURE__ */ jsx7(
+  if (typeof document === "undefined") return null;
+  const content = /* @__PURE__ */ jsx7("div", { className: "fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]", children: /* @__PURE__ */ jsx7(
     "div",
     {
       ref: modalRef,
@@ -1693,7 +1695,6 @@ function ITDialog({
         backgroundColor: theme.card.backgroundColor,
         borderRadius: theme.card.borderRadius,
         boxShadow: theme.card.shadow,
-        // Border? theme.card.borderWidth?
         borderWidth: theme.card.borderWidth,
         borderColor: theme.card.borderColor,
         borderStyle: "solid"
@@ -1715,6 +1716,7 @@ function ITDialog({
       ] })
     }
   ) });
+  return createPortal(content, document.body);
 }
 
 // src/components/form-builder/formBuilder.tsx

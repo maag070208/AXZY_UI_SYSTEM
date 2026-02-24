@@ -1655,6 +1655,7 @@ function ITDatePicker({
 }
 
 // src/components/dialog/dialog.tsx
+var import_react_dom = require("react-dom");
 var import_react7 = require("react");
 var import_fa4 = require("react-icons/fa");
 
@@ -1723,7 +1724,8 @@ function ITDialog({
     };
   }, [isOpen, onClose]);
   if (!isOpen) return null;
-  return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+  if (typeof document === "undefined") return null;
+  const content = /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
     "div",
     {
       ref: modalRef,
@@ -1732,7 +1734,6 @@ function ITDialog({
         backgroundColor: theme.card.backgroundColor,
         borderRadius: theme.card.borderRadius,
         boxShadow: theme.card.shadow,
-        // Border? theme.card.borderWidth?
         borderWidth: theme.card.borderWidth,
         borderColor: theme.card.borderColor,
         borderStyle: "solid"
@@ -1754,6 +1755,7 @@ function ITDialog({
       ] })
     }
   ) });
+  return (0, import_react_dom.createPortal)(content, document.body);
 }
 
 // src/components/form-builder/formBuilder.tsx

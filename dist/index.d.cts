@@ -1,5 +1,6 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import React$1, { ReactNode } from 'react';
+import * as React$1 from 'react';
+import React__default, { ReactNode } from 'react';
 import * as Yup from 'yup';
 
 declare const buttonVariants: Record<string, string>;
@@ -167,7 +168,7 @@ interface ITCalendarProps {
     disabled?: boolean;
 }
 
-declare const ITCalendar: React$1.FC<ITCalendarProps>;
+declare const ITCalendar: React__default.FC<ITCalendarProps>;
 
 interface ITCardProps {
     onClick?: () => void;
@@ -228,7 +229,7 @@ interface ITDialogProps {
     useFormHeader?: boolean;
 }
 
-declare function ITDialog({ isOpen, onClose, children, className, title, useFormHeader, }: ITDialogProps): react_jsx_runtime.JSX.Element;
+declare function ITDialog({ isOpen, onClose, children, className, title, useFormHeader, }: ITDialogProps): React$1.ReactPortal;
 
 interface FieldConfig {
     name: string;
@@ -244,8 +245,8 @@ interface FieldConfig {
         value: string;
         label: string;
     }[];
-    rightIcon?: React$1.ReactNode;
-    leftIcon?: React$1.ReactNode;
+    rightIcon?: React__default.ReactNode;
+    leftIcon?: React__default.ReactNode;
     valueField?: string;
     showHintLength?: boolean;
     labelField?: string;
@@ -294,9 +295,9 @@ interface FieldConfigV2 {
     }[]>);
     valueField?: string;
     labelField?: string;
-    leftIcon?: React$1.ReactNode;
-    rightIcon?: React$1.ReactNode;
-    component?: React$1.ComponentType<any>;
+    leftIcon?: React__default.ReactNode;
+    rightIcon?: React__default.ReactNode;
+    component?: React__default.ComponentType<any>;
     className?: string;
     currencyFormat?: boolean;
     showHintLength?: boolean;
@@ -734,12 +735,12 @@ interface ITDropfileProps {
     onStatusChange?: (status: UploadStatus) => void;
     initialPreviewUrl?: string | null;
 }
-declare const ITDropfile: React$1.FC<ITDropfileProps>;
+declare const ITDropfile: React__default.FC<ITDropfileProps>;
 
-type IconType = React$1.ReactNode;
+type IconType = React__default.ReactNode;
 interface Step {
     label: string;
-    content: React$1.ReactNode;
+    content: React__default.ReactNode;
     icon?: IconType;
 }
 interface ITStepperProps {
