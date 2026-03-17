@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import { FaCalendarAlt } from "react-icons/fa";
+import { isBefore } from "date-fns";
 import ITCalendar from "../calendar/calendar";
 import ITInput from "../input/input";
 import { ITDatePickerProps } from "./date-picker.props";
@@ -23,28 +24,46 @@ export default function ITDatePicker({
   placeholder,
   minDate,
   maxDate,
+  range = false,
 }: ITDatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [isValidDate, setIsValidDate] = useState(true);
-  const [lastValidDate, setLastValidDate] = useState<Date>(new Date(value));
+  
+  // For range selection, we'll keep track of the internal state if not provided
+  const [internalRange, setInternalRange] = useState<[Date | null, Date | null]>([null, null]);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
 
-  const dateValue = React.useMemo(
-    () => (typeof value === "string" ? new Date(value) : value),
-    [value]
-  );
+  // Normalize single vs range values
+  const dateRange = React.useMemo(() => {
+    if (range) {
+      if (Array.isArray(value)) return value;
+      return internalRange;
+    }
+    return [value instanceof Date ? value : null, null] as [Date | null, Date | null];
+  }, [value, range, internalRange]);
+
+  const [startDate, endDate] = dateRange;
 
   useEffect(() => {
-    if (dateValue instanceof Date && !isNaN(dateValue.getTime())) {
-      setInputValue(formatDate(dateValue));
-      setLastValidDate(dateValue);
+    if (range) {
+      if (startDate && endDate) {
+        setInputValue(`${formatDate(startDate)} - ${formatDate(endDate)}`);
+      } else if (startDate) {
+        setInputValue(`${formatDate(startDate)} - ...`);
+      } else {
+        setInputValue("");
+      }
     } else {
-      setInputValue("");
+      if (startDate instanceof Date && !isNaN(startDate.getTime())) {
+        setInputValue(formatDate(startDate));
+      } else {
+        setInputValue("");
+      }
     }
-  }, [dateValue]);
+  }, [startDate, endDate, range]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -78,16 +97,52 @@ export default function ITDatePicker({
   };
 
   const handleDateChange = (date: Date) => {
-    const event = {
-      target: {
-        name,
-        value: date,
-      },
-    };
-    onChange(event);
-    setLastValidDate(date);
-    setInputValue(formatDate(date));
-    setIsOpen(false);
+    if (range) {
+      let newRange: [Date | null, Date | null];
+      
+      if (!startDate || (startDate && endDate)) {
+        // Start a new range
+        newRange = [date, null];
+      } else {
+        // Closing a range
+        if (isBefore(date, startDate)) {
+          newRange = [date, startDate];
+        } else {
+          newRange = [startDate, date];
+        }
+      }
+      
+      setInternalRange(newRange);
+      
+      // If range is complete, notify parent and close
+      if (newRange[0] && newRange[1]) {
+        onChange({
+          target: {
+            name,
+            value: newRange,
+          },
+        });
+        setIsOpen(false);
+      } else {
+        // Just notify start (optional, but good for reactivity)
+        onChange({
+          target: {
+            name,
+            value: newRange,
+          },
+        });
+      }
+    } else {
+      const event = {
+        target: {
+          name,
+          value: date,
+        },
+      };
+      onChange(event);
+      setInputValue(formatDate(date));
+      setIsOpen(false);
+    }
   };
 
   const handleIconClick = () => {
@@ -145,7 +200,7 @@ export default function ITDatePicker({
         },
       };
       onChange(event);
-      setLastValidDate(date);
+      onChange(event);
       setIsValidDate(true);
     } else {
       setIsValidDate(false);
@@ -153,6 +208,12 @@ export default function ITDatePicker({
   };
 
   const handleInputBlur = () => {
+    if (range) {
+      // For range, simple text input is harder to validate without complex logic
+      // We'll rely on calendar for now to avoid breaking the UX
+      return;
+    }
+    
     if (!validateDate(inputValue)) {
       // Si la fecha no es válida, usar la fecha de hoy
       const today = new Date();
@@ -171,7 +232,7 @@ export default function ITDatePicker({
       const date = new Date(year, month - 1, day);
 
       if (!isNaN(date.getTime())) {
-        onBlur({ target: { name, value: date } });
+        onBlur?.({ target: { name, value: date } });
       } else {
         // fallback a hoy por seguridad
         const today = new Date();
@@ -213,7 +274,8 @@ export default function ITDatePicker({
         <div
           className={clsx(
             "fixed z-[9999]",
-            calendarClassName
+            calendarClassName,
+            range ? "w-[320px]" : "w-[280px]"
           )}
           style={{
             top: `${calendarPosition.top}px`,
@@ -224,11 +286,14 @@ export default function ITDatePicker({
              borderStyle: 'solid',
              borderRadius: theme.card.borderRadius,
              boxShadow: theme.card.shadow,
-             padding: '0.5rem', // Added a bit of padding for the calendar inside
+             padding: '0.5rem',
           }}
         >
           <ITCalendar
-            value={dateValue}
+            value={!range ? (startDate as Date) : undefined}
+            startDate={startDate as Date}
+            endDate={endDate as Date}
+            selectionMode={range ? 'range' : 'single'}
             onChange={handleDateChange}
             minDate={minDate}
             maxDate={maxDate}

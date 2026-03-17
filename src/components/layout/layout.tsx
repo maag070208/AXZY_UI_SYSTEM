@@ -9,6 +9,7 @@ export default function ITLayout({
   sidebar,
   children,
   className = "",
+  contentClassName = "",
 }: ITLayoutProps) {
 
   // Desktop states
@@ -69,7 +70,7 @@ export default function ITLayout({
         {/* MAIN CONTENT AREA */}
         <main className="flex-1 overflow-y-auto w-full custom-scrollbar relative z-0">
           <div 
-             className="mx-auto w-full h-full"
+             className={`mx-auto w-full h-full ${contentClassName}`}
              style={{ padding: theme.layout?.contentPadding || '1.5rem' }}
           >
              {children}

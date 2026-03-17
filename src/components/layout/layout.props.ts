@@ -6,4 +6,5 @@ export interface ITLayoutProps {
   sidebar: ITSidebarProps;
   children: React.ReactNode;
   className?: string;
+  contentClassName?: string;
 } 

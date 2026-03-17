@@ -86,52 +86,52 @@ export const semanticColors = {
  */
 export const components = {
   layout: {
-    backgroundColor: semanticColors.gray[50],
-    contentPadding: '1.5rem',
+    backgroundColor: `var(--layout-bg, ${semanticColors.gray[50]})`,
+    contentPadding: 'var(--layout-padding, 1.5rem)',
   },
   topbar: {
-    backgroundColor: 'rgba(255, 255, 255, 0.90)', 
-    borderColor: semanticColors.gray[200],
-    iconColor: semanticColors.gray[500],
-    iconHoverColor: semanticColors.gray[700],
-    shadow: '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.025)',
-    textColor: semanticColors.gray[700],
-    textHoverColor: semanticColors.gray[900],
+    backgroundColor: 'var(--topbar-bg, rgba(255, 255, 255, 0.90))', 
+    borderColor: `var(--topbar-border, ${semanticColors.gray[200]})`,
+    iconColor: `var(--topbar-icon, ${semanticColors.gray[500]})`,
+    iconHoverColor: `var(--topbar-icon-hover, ${semanticColors.gray[700]})`,
+    shadow: 'var(--topbar-shadow, 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.025))',
+    textColor: `var(--topbar-text, ${semanticColors.gray[700]})`,
+    textHoverColor: `var(--topbar-text-hover, ${semanticColors.gray[900]})`,
     userMenu: {
-      backgroundColor: semanticColors.gray[50],
-      hoverBackground: semanticColors.gray[100],
-      textColor: semanticColors.gray[900],
-      subtitleColor: semanticColors.gray[500],
+      backgroundColor: `var(--topbar-user-bg, ${semanticColors.gray[50]})`,
+      hoverBackground: `var(--topbar-user-hover, ${semanticColors.gray[100]})`,
+      textColor: `var(--topbar-user-text, ${semanticColors.gray[900]})`,
+      subtitleColor: `var(--topbar-user-subtitle, ${semanticColors.gray[500]})`,
       dropdown: {
-        backgroundColor: '#ffffff',
-        borderColor: semanticColors.gray[200],
-        itemHoverBackground: semanticColors.gray[50],
+        backgroundColor: 'var(--topbar-user-dropdown-bg, #ffffff)',
+        borderColor: `var(--topbar-user-dropdown-border, ${semanticColors.gray[200]})`,
+        itemHoverBackground: `var(--topbar-user-item-hover, ${semanticColors.gray[50]})`,
       }
     }
   },
   sidebar: {
-    backgroundColor: 'rgba(255, 255, 255, 0.90)',
-    borderColor: semanticColors.gray[200],
+    backgroundColor: 'var(--sidebar-bg, rgba(255, 255, 255, 0.90))',
+    borderColor: `var(--sidebar-border, ${semanticColors.gray[200]})`,
     label: {
-      color: semanticColors.gray[700],
-      size: '0.9rem',
-      weight: '500',
+      color: `var(--sidebar-label-color, ${semanticColors.gray[700]})`,
+      size: 'var(--sidebar-label-size, 0.9rem)',
+      weight: 'var(--sidebar-label-weight, 500)',
     },
     icon: {
-      color: semanticColors.gray[500],
-      size: '1.25rem',
+      color: `var(--sidebar-icon-color, ${semanticColors.gray[500]})`,
+      size: 'var(--sidebar-icon-size, 1.25rem)',
     },
     hover: {
-      backgroundColor: semanticColors.gray[100],
+      backgroundColor: `var(--sidebar-hover-bg, ${semanticColors.gray[100]})`,
     },
     active: {
-      backgroundColor: semanticColors.gray[50],
-      color: semanticColors.gray[900],
-      iconColor: semanticColors.primary[500], 
+      backgroundColor: `var(--sidebar-active-bg, ${semanticColors.gray[50]})`,
+      color: `var(--sidebar-active-color, ${semanticColors.gray[900]})`,
+      iconColor: `var(--sidebar-active-icon, ${semanticColors.primary[500]})`, 
     },
     badge: {
-      backgroundColor: semanticColors.primary[500], 
-      color: '#ffffff',
+      backgroundColor: `var(--sidebar-badge-bg, ${semanticColors.primary[500]})`, 
+      color: 'var(--sidebar-badge-color, #ffffff)',
     },
   },
 
@@ -378,6 +378,27 @@ export const components = {
       padding: '1rem 1.5rem',
       borderTop: `1px solid var(--color-secondary-200)`,
       backgroundColor: semanticColors.gray[50],
+    },
+  },
+
+  calendar: {
+    backgroundColor: 'var(--calendar-bg, #ffffff)',
+    borderColor: `var(--calendar-border, ${semanticColors.gray[200]})`,
+    header: {
+      textColor: `var(--calendar-header-text, ${semanticColors.gray[800]})`,
+      hoverBackground: `var(--calendar-header-hover, ${semanticColors.gray[100]})`,
+    },
+    days: {
+      textColor: `var(--calendar-days-text, ${semanticColors.gray[700]})`,
+      weekendColor: `var(--calendar-days-weekend, ${semanticColors.gray[500]})`,
+      outsideMonthColor: `var(--calendar-days-outside, ${semanticColors.gray[300]})`,
+    },
+    selection: {
+      selectedColor: 'var(--calendar-selected-text, #ffffff)',
+      selectedBackground: `var(--calendar-selected-bg, ${semanticColors.primary[600]})`,
+      rangeBackground: `var(--calendar-range-bg, ${semanticColors.primary[50]})`,
+      todayBackground: `var(--calendar-today-bg, ${semanticColors.primary[50]})`,
+      todayColor: `var(--calendar-today-text, ${semanticColors.primary[600]})`,
     },
   },
 };

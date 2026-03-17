@@ -1,0 +1,28 @@
+Actúa como un dev Full-Stack experto.
+
+Tengo un componente de tabla lado-cliente llamado `ITDataTable` en React. Funciona del lado del servidor. Dame el código del Backend (API/Controller) y la función conectora del Frontend.
+
+### CONTRATO ESPERADO (Payload enviado por Frontend):
+```typescript
+export interface ITDataTableFetchParams {
+  page: number; // Página actual. Inicio en 1.
+  limit: number; // Items per page
+  filters: Record<string, string | number | boolean>; // Ej: { username: "pepe" }
+  sort?: {
+    key: string; 
+    direction: "asc" | "desc";
+  };
+}
+```
+
+### RESPUESTA ESPERADA POR EL FRONTEND:
+```typescript
+export interface ITDataTableResponse<T> {
+  data: T[]; // El arreglo paginado
+  total: number; // El COUNT global sin límite para la paginación visual
+}
+```
+
+### REQUERIMIENTOS:
+1. BACKEND: Controlador POST genérico (NestJS o Express + ORM) que atrape este body, arme el query (WHERE filters, ORDER BY sort, LIMIT limit OFFSET page), y retorne la data.
+2. FRONTEND: Función async `fetchData(params)` con fetch/axios que conecte el componente con la API devolviendo una promesa con el tipado exacto.

@@ -19,6 +19,9 @@ export interface ITCalendarProps {
   // Picker Props (Legacy/DatePicker support)
   value?: Date;
   onChange?: (date: Date) => void;
+  selectionMode?: 'single' | 'range';
+  startDate?: Date;
+  endDate?: Date;
   minDate?: Date;
   maxDate?: Date;
 

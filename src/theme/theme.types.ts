@@ -29,4 +29,69 @@ export interface ITThemeConfig {
     backgroundColor?: string;
     contentPadding?: string;
   };
+  topbar?: {
+    backgroundColor?: string;
+    borderColor?: string;
+    iconColor?: string;
+    iconHoverColor?: string;
+    shadow?: string;
+    textColor?: string;
+    textHoverColor?: string;
+    userMenu?: {
+      backgroundColor?: string;
+      hoverBackground?: string;
+      textColor?: string;
+      subtitleColor?: string;
+      dropdown?: {
+        backgroundColor?: string;
+        borderColor?: string;
+        itemHoverBackground?: string;
+      };
+    };
+  };
+  sidebar?: {
+    backgroundColor?: string;
+    borderColor?: string;
+    label?: {
+      color?: string;
+      size?: string;
+      weight?: string;
+    };
+    icon?: {
+      color?: string;
+      size?: string;
+    };
+    hover?: {
+      backgroundColor?: string;
+    };
+    active?: {
+      backgroundColor?: string;
+      color?: string;
+      iconColor?: string;
+    };
+    badge?: {
+      backgroundColor?: string;
+      color?: string;
+    };
+  };
+  calendar?: {
+    backgroundColor?: string;
+    borderColor?: string;
+    header?: {
+       textColor?: string;
+       hoverBackground?: string;
+    };
+    days?: {
+      textColor?: string;
+      weekendColor?: string;
+      outsideMonthColor?: string;
+    };
+    selection?: {
+      selectedColor?: string;
+      selectedBackground?: string;
+      rangeBackground?: string;
+      todayBackground?: string;
+      todayColor?: string;
+    };
+  };
 }

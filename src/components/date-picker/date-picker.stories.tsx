@@ -65,3 +65,26 @@ export const Disabled: any = {
     disabled: true,
   } as any,
 };
+
+// Wrapper for range state
+const RangePickerWrapper = (args: any) => {
+  const [range, setRange] = useState<[Date | null, Date | null]>([null, null]);
+  
+  return (
+    <ITDatePicker 
+      {...args} 
+      value={range} 
+      onChange={(e: any) => setRange(e.target.value)} 
+    />
+  );
+};
+
+export const Range: any = {
+  render: (args) => <RangePickerWrapper {...args} />,
+  args: {
+    range: true,
+    name: 'audit_range',
+    label: 'Select Date Range',
+    placeholder: 'DD/MM/YYYY - DD/MM/YYYY',
+  } as any,
+};

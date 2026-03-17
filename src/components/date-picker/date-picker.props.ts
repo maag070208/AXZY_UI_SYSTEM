@@ -3,17 +3,18 @@ import { SizesTypes } from "@/types/sizes.types";
 
 export interface ITDatePickerProps {
   name: string;
-  value?: Date;
+  value?: Date | [Date | null, Date | null];
   onChange: (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | { target: { name: string; value: Date } }
+      | { target: { name: string; value: Date | [Date | null, Date | null] } }
   ) => void;
   onBlur?: (
     event:
       | React.FocusEvent<HTMLInputElement>
-      | { target: { name: string; value: Date } }
+      | { target: { name: string; value: Date | [Date | null, Date | null] } }
   ) => void;
+  range?: boolean;
   variant?: ColorsTypes;
   size?: SizesTypes;
   className?: string;

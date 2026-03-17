@@ -52,6 +52,9 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
   onSelectRange,
   value,
   onChange,
+  selectionMode = 'single',
+  startDate,
+  endDate,
   minDate,
   maxDate,
   className,
@@ -227,7 +230,11 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
 
   return (
     <div 
-        className={cn("flex flex-col h-full bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden select-none", className)}
+        className={cn("flex flex-col h-full rounded-lg shadow-sm overflow-hidden select-none", className)}
+        style={{
+          backgroundColor: 'var(--calendar-bg, #ffffff)',
+          border: '1px solid var(--calendar-border, #e2e8f0)',
+        }}
         onMouseUp={handleMouseUp}
         onMouseLeave={() => {
             setDragStart(null);
@@ -236,10 +243,19 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
     >
       
       {/* Header */}
-      <div className="flex items-center justify-between px-2 py-2 border-b border-gray-200 bg-white">
+      <div className="flex items-center justify-between px-2 py-2 border-b border-gray-200" style={{ backgroundColor: 'var(--calendar-bg, #ffffff)' }}>
         <h2 
-            className="text-sm font-bold text-gray-800 capitalize cursor-pointer hover:text-primary-600 transition-colors select-none px-2 py-1 rounded hover:bg-gray-50 bg-transparent"
+            className="text-sm font-bold capitalize cursor-pointer transition-colors select-none px-2 py-1 rounded"
+            style={{ 
+              color: 'var(--calendar-header-text, #1e293b)',
+            }}
              onClick={() => setView(view === 'calendar' ? 'years' : 'calendar')}
+             onMouseEnter={(e) => {
+               e.currentTarget.style.backgroundColor = 'var(--calendar-header-hover, #f1f5f9)';
+             }}
+             onMouseLeave={(e) => {
+               e.currentTarget.style.backgroundColor = 'transparent';
+             }}
         >
           {view === 'years' 
             ? `${years[0]} - ${years[years.length - 1]}` 
@@ -298,31 +314,57 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                ))}
              </div>
              {/* Days Grid */}
-             <div className="grid grid-cols-7 gap-1">
-               {monthDays.map((day) => {
-                 const isDisabled = isDateDisabled(day);
-                 const isSelected = value && isSameDay(day, value);
-                 const isCurrentMonth = isSameMonth(day, currentDate);
-                 
-                 return (
-                   <button
-                     key={day.toISOString()}
-                     type="button"
-                     disabled={isDisabled}
-                     onClick={() => onChange && onChange(day)}
-                     className={cn(
-                       "h-10 w-full flex items-center justify-center rounded-md text-sm transition-colors relative",
-                       !isCurrentMonth && "text-gray-300",
-                       isDisabled && "opacity-50 cursor-not-allowed",
-                       isSelected ? "bg-primary-600 text-white font-medium hover:bg-primary-700" : "hover:bg-gray-100 text-gray-700",
-                       isToday(day) && !isSelected && "text-primary-600 font-bold bg-primary-50"
-                     )}
-                   >
-                     {format(day, 'd')}
-                   </button>
-                 );
-               })}
-             </div>
+              <div className="grid grid-cols-7 gap-1">
+                {monthDays.map((day) => {
+                  const isDisabled = isDateDisabled(day);
+                  const isCurrentMonth = isSameMonth(day, currentDate);
+                  
+                  // Selection logic
+                  const isSelected = selectionMode === 'single' && value && isSameDay(day, value);
+                  const isRangeStart = selectionMode === 'range' && startDate && isSameDay(day, startDate);
+                  const isRangeEnd = selectionMode === 'range' && endDate && isSameDay(day, endDate);
+                  const isInRange = selectionMode === 'range' && startDate && endDate && isAfter(day, startDate) && isBefore(day, endDate);
+                  
+                  return (
+                    <button
+                      key={day.toISOString()}
+                      type="button"
+                      disabled={isDisabled}
+                      onClick={() => onChange && onChange(day)}
+                      className={cn(
+                        "h-10 w-full flex items-center justify-center rounded-md text-sm transition-colors relative",
+                        !isCurrentMonth && "opacity-40",
+                        isDisabled && "opacity-20 cursor-not-allowed",
+                      )}
+                      style={{
+                        backgroundColor: isSelected || isRangeStart || isRangeEnd 
+                          ? 'var(--calendar-selected-bg, #2563eb)' 
+                          : isInRange 
+                            ? 'var(--calendar-range-bg, #eff6ff)'
+                            : isToday(day)
+                              ? 'var(--calendar-today-bg, #eff6ff)'
+                              : 'transparent',
+                        color: isSelected || isRangeStart || isRangeEnd
+                          ? 'var(--calendar-selected-text, #ffffff)'
+                          : isToday(day)
+                            ? 'var(--calendar-today-text, #2563eb)'
+                            : 'var(--calendar-days-text, #334155)',
+                        fontWeight: isSelected || isRangeStart || isRangeEnd || isToday(day) ? '700' : '400',
+                      }}
+                    >
+                      {format(day, 'd')}
+                      
+                      {/* Connection for range selection to make it look continuous */}
+                      {selectionMode === 'range' && isRangeStart && endDate && (
+                        <div className="absolute right-0 top-0 bottom-0 w-2 bg-primary-50 -z-10" />
+                      )}
+                      {selectionMode === 'range' && isRangeEnd && startDate && (
+                        <div className="absolute left-0 top-0 bottom-0 w-2 bg-primary-50 -z-10" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
            </div>
         ) : (
           /* Week/Day View (Scheduler) */
