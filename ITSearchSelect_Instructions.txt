@@ -1,0 +1,48 @@
+Actúa como un dev Full-Stack experto.
+
+Tengo un componente de búsqueda llamado `ITSearchSelect` en React que funciona como un Autocomplete (Input con buscador integrado). Permite escribir directamente en el campo para filtrar las opciones. Puede usarse de dos maneras:
+
+### 1. MODO ESTÁTICO (Filtrado local)
+Recibe la lista completa y el componente se encarga de filtrar las opciones según lo que el usuario escriba.
+
+```tsx
+<ITSearchSelect
+  label="Usuarios"
+  options={[
+    { label: "Juan Pérez", value: 1 },
+    { label: "María García", value: 2 },
+  ]}
+  value={selectedId}
+  onChange={(val) => setSelectedId(val)}
+/>
+```
+
+### 2. MODO API (Búsqueda remota)
+El componente emite un evento `onSearch` con el texto ingresado. El desarrollador debe conectar esto con su API.
+
+```tsx
+const [options, setOptions] = useState([]);
+const [loading, setLoading] = useState(false);
+
+const handleSearch = async (query) => {
+  setLoading(true);
+  const data = await myApi.search(query);
+  setOptions(data);
+  setLoading(false);
+};
+
+<ITSearchSelect
+  label="Buscar en Servidor"
+  options={options}
+  onSearch={handleSearch}
+  isLoading={loading}
+  onChange={(val) => setSelectedId(val)}
+/>
+```
+
+### PROPS PRINCIPALES:
+- `options`: Arreglo de `{ label: string, value: any }`.
+- `onSearch`: (Opcional) Función `(query: string) => void`. Activa el modo API.
+- `isLoading`: (Opcional) Muestra un spinner de carga.
+- `valueField` / `labelField`: Para mapear objetos con campos distintos a 'value' o 'label'.
+- `noResultsMessage`: Mensaje personalizable cuando no hay coincidencias.

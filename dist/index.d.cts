@@ -1,9 +1,7 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import * as React$1 from 'react';
-import React__default, { ReactNode } from 'react';
+import React__default, { ReactNode, FocusEvent } from 'react';
 import * as Yup from 'yup';
-
-declare const buttonVariants: Record<string, string>;
 
 declare const semanticColors: {
     primary: {
@@ -127,7 +125,25 @@ declare const semanticColors: {
 
 type ColorsTypes = keyof typeof semanticColors;
 
+declare const badgeVariants: {
+    readonly filled: "filled";
+    readonly outlined: "outlined";
+};
+
 type SizesTypes = "small" | "medium" | "large";
+
+interface ITBadgetProps {
+    label?: string;
+    children?: React.ReactNode;
+    color?: ColorsTypes;
+    size?: SizesTypes;
+    variant?: keyof typeof badgeVariants;
+    className?: string;
+}
+
+declare function ITBadget({ children, label, color, size, variant, className, }: ITBadgetProps): react_jsx_runtime.JSX.Element;
+
+declare const buttonVariants: Record<string, string>;
 
 interface ITButtonProps {
     label?: string;
@@ -162,6 +178,9 @@ interface ITCalendarProps {
     onSelectRange?: (start: Date, end: Date) => void;
     value?: Date;
     onChange?: (date: Date) => void;
+    selectionMode?: 'single' | 'range';
+    startDate?: Date;
+    endDate?: Date;
     minDate?: Date;
     maxDate?: Date;
     className?: string;
@@ -189,21 +208,122 @@ interface ITCardProps {
  */
 declare function ITCard({ title, image, alt, children, actions, className, imageClassName, titleClassName, contentClassName, actionClassName, onClick, }: ITCardProps): react_jsx_runtime.JSX.Element;
 
+type TableVariants = "default" | "striped" | "bordered";
+type TableSize = "sm" | "md" | "lg";
+
+type ColumnType = "string" | "date" | "number" | "boolean" | "actions" | "catalog";
+interface CatalogOption {
+    id: string | number;
+    name: string;
+}
+interface Column<T = any> {
+    key: string;
+    label: string;
+    className?: string;
+    currencyMX?: boolean;
+    actions?: (row: T) => React.ReactNode;
+    filter?: boolean | "catalog";
+    type: ColumnType;
+    sortable?: boolean;
+    render?: (row: T) => React.ReactNode;
+    editComponent?: (props: {
+        value: any;
+        onChange: (value: any) => void;
+        rowData: T;
+    }) => React.ReactNode;
+    catalogOptions?: {
+        data: CatalogOption[];
+        loading?: boolean;
+        error?: boolean;
+    };
+}
+interface ITTableProps<T> {
+    columns: Column<T>[];
+    containerClassName?: string;
+    data: T[];
+    variant?: TableVariants;
+    className?: string;
+    size?: TableSize;
+    itemsPerPageOptions?: Array<number>;
+    defaultItemsPerPage?: number;
+    title?: string;
+}
+
+interface ITDataTableFetchParams {
+    page: number;
+    limit: number;
+    filters: Record<string, string | number | boolean | Date>;
+    sort?: {
+        key: string;
+        direction: "asc" | "desc";
+    };
+}
+interface ITDataTableResponse<T> {
+    data: T[];
+    total: number;
+}
+interface ITDataTableProps<T extends Record<string, unknown>> {
+    /**
+     * The column configuration array matching ITTable but adapted for Server-Side processing
+     */
+    columns: Column<T>[];
+    /**
+     * Async callback that the component will trigger whenever pagination, filtering or sorting changes.
+     * It must return a Promise with `data` array and the `total` items matching the query.
+     */
+    fetchData: (params: ITDataTableFetchParams) => Promise<ITDataTableResponse<T>>;
+    /**
+     * The amount of milliseconds to wait after internal `filters` state changes
+     * before triggering `fetchData`. Helpful to avoid spamming the backend while typing.
+     * @default 400
+     */
+    debounceMs?: number;
+    /**
+     * Filters managed outside of the ITDataTable (e.g. a date range picker).
+     * These will be merged with the internal column filters before calling fetchData.
+     */
+    externalFilters?: Record<string, string | number | boolean | Date>;
+    /**
+     * Custom element to display instead of the default spinner while `isLoading` is true.
+     */
+    loadingIndicator?: ReactNode;
+    /**
+     * Re-fetches the table automatically upon mounting.
+     * @default true
+     */
+    fetchOnMount?: boolean;
+    /**
+     * External hook to force the component to re-fetch the current page.
+     * Example: trigger after a successful modal form submission.
+     */
+    reloadTrigger?: number | string | boolean;
+    containerClassName?: string;
+    className?: string;
+    variant?: "default" | "striped" | "bordered" | "minimal";
+    size?: "sm" | "md" | "lg";
+    itemsPerPageOptions?: number[];
+    defaultItemsPerPage?: number;
+    title?: string | ReactNode;
+}
+
+declare function ITDataTable<T extends Record<string, unknown>>({ columns, fetchData, debounceMs, externalFilters, loadingIndicator, fetchOnMount, reloadTrigger, containerClassName, className, variant, size, itemsPerPageOptions, defaultItemsPerPage, title, }: ITDataTableProps<T>): react_jsx_runtime.JSX.Element;
+
 interface ITDatePickerProps {
     name: string;
-    value?: Date;
+    value?: Date | [Date | null, Date | null];
     onChange: (event: React.ChangeEvent<HTMLInputElement> | {
         target: {
             name: string;
-            value: Date;
+            value: Date | [Date | null, Date | null];
         };
     }) => void;
     onBlur?: (event: React.FocusEvent<HTMLInputElement> | {
         target: {
             name: string;
-            value: Date;
+            value: Date | [Date | null, Date | null];
         };
     }) => void;
+    range?: boolean;
     variant?: ColorsTypes;
     size?: SizesTypes;
     className?: string;
@@ -218,7 +338,7 @@ interface ITDatePickerProps {
     maxDate?: Date;
 }
 
-declare function ITDatePicker({ name, value, onChange, onBlur, variant, size, className, calendarClassName, disabled, label, touched, error, required, placeholder, minDate, maxDate, }: ITDatePickerProps): react_jsx_runtime.JSX.Element;
+declare function ITDatePicker({ name, value, onChange, onBlur, variant, size, className, calendarClassName, disabled, label, touched, error, required, placeholder, minDate, maxDate, range, }: ITDatePickerProps): react_jsx_runtime.JSX.Element;
 
 interface ITDialogProps {
     isOpen: boolean;
@@ -335,6 +455,13 @@ interface ITFormBuilderProps {
 
 declare function ITFormBuilder({ fields, config, columns, values, handleChange, handleBlur, touched, errors, setFieldValue, setFieldTouched, setFieldError, isSubmitting, }: ITFormBuilderProps): react_jsx_runtime.JSX.Element;
 
+declare const ITImage: ({ src, alt, className, fallbackSrc, }: {
+    src: any;
+    alt: any;
+    className?: string;
+    fallbackSrc?: string;
+}) => react_jsx_runtime.JSX.Element;
+
 interface ITInputProps {
     name: string;
     type?: "text" | "password" | "number" | "email" | "checkbox" | "radio" | "textarea";
@@ -371,135 +498,6 @@ interface ITInputProps {
 
 declare function ITInput({ name, type, label, placeholder, value, onChange, onBlur, disabled, className, containerClassName, labelClassName, touched, error, formatNumber, required, autoFocus, onClick, iconLeft, iconRight, maxLength, minLength, checked, showHintLength, currencyFormat, rows, min, max, readOnly, focusContent }: ITInputProps): react_jsx_runtime.JSX.Element;
 
-interface OptionType {
-    [key: string]: string;
-}
-interface ITSelectProps {
-    name: string;
-    options: OptionType[];
-    valueField?: string;
-    labelField?: string;
-    label?: string;
-    placeholder?: string;
-    value?: string;
-    onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-    onBlur?: (event: React.FocusEvent<HTMLSelectElement>) => void;
-    variant?: ColorsTypes;
-    size?: SizesTypes;
-    disabled?: boolean;
-    className?: string;
-    touched?: boolean;
-    error?: string;
-    required?: boolean;
-    autoFocus?: boolean;
-    readOnly?: boolean;
-}
-
-/**
- * Componente de selección (select) con soporte para opciones personalizadas, validación y personalización de estilo.
- * Matches styles of ITInput.
- */
-declare function ITSelect({ name, options, label, placeholder, valueField, labelField, value, onChange, onBlur, disabled, className, touched, required, error, readOnly, }: ITSelectProps): react_jsx_runtime.JSX.Element;
-
-interface ITSlideToggleProps {
-    /**
-     * Callback executed when the switch is toggled. Receives the new state.
-     */
-    onToggle?: (value: boolean) => void;
-    /**
-     * Controlled state. Use this to completely control the component externally.
-     */
-    isOn?: boolean;
-    /**
-     * Initial state for uncontrolled usage.
-     * Default: false
-     */
-    initialState?: boolean;
-    /**
-     * Semantic theme color when activated (e.g., 'primary', 'success').
-     * Default: 'success'
-     */
-    activeColor?: string;
-    /**
-     * Semantic theme color or hex when deactivated.
-     * Default: '#9ca3af' (gray-400)
-     */
-    inactiveColor?: string;
-    /**
-     * Whether the switch is disabled.
-     */
-    disabled?: boolean;
-    /**
-     * Size of the switch: sm, md, lg.
-     * Default: md
-     */
-    size?: "sm" | "md" | "lg";
-    /**
-     * Additional container classes.
-     */
-    className?: string;
-}
-
-/**
- * Slide toggle switch component.
- * Supports fully controlled (`isOn`) or uncontrolled (`initialState`) modes.
- */
-declare function ITSlideToggle({ onToggle, isOn: controlledIsOn, initialState, activeColor, inactiveColor, // default gray-400
-disabled, size, className, }: ITSlideToggleProps): react_jsx_runtime.JSX.Element;
-
-type TableVariants = "default" | "striped" | "bordered";
-type TableSize = "sm" | "md" | "lg";
-
-type ColumnType = "string" | "date" | "number" | "boolean" | "actions" | "catalog";
-interface CatalogOption {
-    id: string | number;
-    name: string;
-}
-interface Column<T = any> {
-    key: string;
-    label: string;
-    className?: string;
-    currencyMX?: boolean;
-    actions?: (row: T) => React.ReactNode;
-    filter?: boolean | "catalog";
-    type: ColumnType;
-    sortable?: boolean;
-    render?: (row: T) => React.ReactNode;
-    editComponent?: (props: {
-        value: any;
-        onChange: (value: any) => void;
-        rowData: T;
-    }) => React.ReactNode;
-    catalogOptions?: {
-        data: CatalogOption[];
-        loading?: boolean;
-        error?: boolean;
-    };
-}
-interface ITTableProps<T> {
-    columns: Column<T>[];
-    containerClassName?: string;
-    data: T[];
-    variant?: TableVariants;
-    className?: string;
-    size?: TableSize;
-    itemsPerPageOptions?: Array<number>;
-    defaultItemsPerPage?: number;
-    title?: string;
-}
-
-declare function ITTable<T extends Record<string, unknown>>({ columns, data, containerClassName, className, variant, size, itemsPerPageOptions, defaultItemsPerPage, title, }: ITTableProps<T>): react_jsx_runtime.JSX.Element;
-
-interface ITToastProps {
-    message: string;
-    type?: "success" | "error" | "warning" | "info" | "primary" | "danger" | string;
-    duration?: number;
-    position?: "top-right" | "top-center" | "top-left" | "bottom-right" | "bottom-center" | "bottom-left";
-    onClose?: () => void;
-}
-
-declare function ITToast({ message, type, duration, position, onClose, }: ITToastProps): react_jsx_runtime.JSX.Element;
-
 interface ITNavigationItem$1 {
     id: string;
     label: string;
@@ -535,34 +533,6 @@ interface ITNavbarProps {
 }
 
 declare function ITNavbar({ logo, logoText, navigationItems, userMenu, children, navItems, showSidebar, showSidebarOnMobile, sidebarItems, }: ITNavbarProps): react_jsx_runtime.JSX.Element;
-
-declare function ITText({ children, className }: {
-    children: any;
-    className?: string;
-}): react_jsx_runtime.JSX.Element;
-
-declare const ITImage: ({ src, alt, className, fallbackSrc, }: {
-    src: any;
-    alt: any;
-    className?: string;
-    fallbackSrc?: string;
-}) => react_jsx_runtime.JSX.Element;
-
-declare const badgeVariants: {
-    readonly filled: "filled";
-    readonly outlined: "outlined";
-};
-
-interface ITBadgetProps {
-    label?: string;
-    children?: React.ReactNode;
-    color?: ColorsTypes;
-    size?: SizesTypes;
-    variant?: keyof typeof badgeVariants;
-    className?: string;
-}
-
-declare function ITBadget({ children, label, color, size, variant, className, }: ITBadgetProps): react_jsx_runtime.JSX.Element;
 
 interface ITPaginationProps {
     /**
@@ -611,24 +581,180 @@ interface ITPaginationProps {
 
 declare function ITPagination({ currentPage, totalPages, onPageChange, siblingCount, color, className, itemsPerPageOptions, itemsPerPage, onItemsPerPageChange, totalItems, }: ITPaginationProps): react_jsx_runtime.JSX.Element;
 
-declare const createValidationSchema: (fields: FieldConfig[]) => Yup.ObjectSchema<{
-    [x: string]: never;
-}, Yup.AnyObject, {
-    [x: string]: any;
-}, "">;
+interface OptionType {
+    [key: string]: string;
+}
+interface ITSelectProps {
+    name: string;
+    options: OptionType[];
+    valueField?: string;
+    labelField?: string;
+    label?: string;
+    placeholder?: string;
+    value?: string;
+    onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+    onBlur?: (event: React.FocusEvent<HTMLSelectElement>) => void;
+    variant?: ColorsTypes;
+    size?: SizesTypes;
+    disabled?: boolean;
+    className?: string;
+    touched?: boolean;
+    error?: string;
+    required?: boolean;
+    autoFocus?: boolean;
+    readOnly?: boolean;
+}
 
-type LoaderSize = "sm" | "md" | "lg" | "xl";
-type LoaderVariant = "spinner" | "dots" | "bar" | "pulse";
+/**
+ * Componente de selección (select) con soporte para opciones personalizadas, validación y personalización de estilo.
+ * Matches styles of ITInput.
+ */
+declare function ITSelect({ name, options, label, placeholder, valueField, labelField, value, onChange, onBlur, disabled, className, touched, required, error, readOnly, }: ITSelectProps): react_jsx_runtime.JSX.Element;
 
-interface LoaderProps {
-    size?: LoaderSize;
-    variant?: LoaderVariant;
-    color?: string;
+interface ITSearchSelectOption {
+    label: string;
+    value: string | number;
+    [key: string]: any;
+}
+interface ITSearchSelectProps {
+    /** Nombre del campo para integraciones con formularios */
+    name?: string;
+    /** Etiqueta que se muestra arriba del select */
+    label?: string;
+    /** Texto que se muestra cuando no hay nada seleccionado */
+    placeholder?: string;
+    /** Valor seleccionado */
+    value?: string | number;
+    /** Arreglo de opciones (Modo 1: Lista estática) */
+    options?: ITSearchSelectOption[];
+    /** Campo que se usará como valor (por defecto "value") */
+    valueField?: string;
+    /** Campo que se usará como etiqueta (por defecto "label") */
+    labelField?: string;
+    /** Callback cuando cambia el valor */
+    onChange?: (value: string | number, option?: ITSearchSelectOption) => void;
+    /** Callback cuando pierde el foco */
+    onBlur?: (e: FocusEvent<any>) => void;
+    /** Indica si el componente está deshabilitado */
+    disabled?: boolean;
+    /** Clase CSS adicional para el contenedor */
+    className?: string;
+    /** Indica si el campo ha sido tocado (para validaciones) */
+    touched?: boolean;
+    /** Indica si el campo es requerido */
+    required?: boolean;
+    /** Mensaje de error */
+    error?: string;
+    /** Indica si el campo es de solo lectura */
+    readOnly?: boolean;
+    /** Callback para búsqueda en servidor (Modo 2: Conexión con API) */
+    onSearch?: (query: string) => void;
+    /** Indica si se está cargando información desde la API */
+    isLoading?: boolean;
+    /** Mensaje cuando no hay resultados */
+    noResultsMessage?: string;
+}
+
+/**
+ * ITSearchSelect - Un componente de selección con buscador integrado.
+ * Soporta filtrado local y búsqueda remota via API.
+ */
+declare function ITSearchSelect({ name, options, label, placeholder, valueField, labelField, value, onChange, onBlur, disabled, className, touched, required, error, readOnly, onSearch, isLoading, noResultsMessage, }: ITSearchSelectProps): react_jsx_runtime.JSX.Element;
+
+interface ITSlideToggleProps {
+    /**
+     * Callback executed when the switch is toggled. Receives the new state.
+     */
+    onToggle?: (value: boolean) => void;
+    /**
+     * Controlled state. Use this to completely control the component externally.
+     */
+    isOn?: boolean;
+    /**
+     * Initial state for uncontrolled usage.
+     * Default: false
+     */
+    initialState?: boolean;
+    /**
+     * Semantic theme color when activated (e.g., 'primary', 'success').
+     * Default: 'success'
+     */
+    activeColor?: string;
+    /**
+     * Semantic theme color or hex when deactivated.
+     * Default: '#9ca3af' (gray-400)
+     */
+    inactiveColor?: string;
+    /**
+     * Whether the switch is disabled.
+     */
+    disabled?: boolean;
+    /**
+     * Size of the switch: sm, md, lg.
+     * Default: md
+     */
+    size?: "sm" | "md" | "lg";
+    /**
+     * Additional container classes.
+     */
     className?: string;
 }
 
-declare function ITLoader({ size, variant, color, // Default to semantic primary
-className, }: LoaderProps): react_jsx_runtime.JSX.Element;
+/**
+ * Slide toggle switch component.
+ * Supports fully controlled (`isOn`) or uncontrolled (`initialState`) modes.
+ */
+declare function ITSlideToggle({ onToggle, isOn: controlledIsOn, initialState, activeColor, inactiveColor, // default gray-400
+disabled, size, className, }: ITSlideToggleProps): react_jsx_runtime.JSX.Element;
+
+declare function ITTable<T extends Record<string, unknown>>({ columns, data, containerClassName, className, variant, size, itemsPerPageOptions, defaultItemsPerPage, title, }: ITTableProps<T>): react_jsx_runtime.JSX.Element;
+
+declare function ITText({ children, className }: {
+    children: any;
+    className?: string;
+}): react_jsx_runtime.JSX.Element;
+
+interface ITToastProps {
+    message: string;
+    type?: "success" | "error" | "warning" | "info" | "primary" | "danger" | string;
+    duration?: number;
+    position?: "top-right" | "top-center" | "top-left" | "bottom-right" | "bottom-center" | "bottom-left";
+    onClose?: () => void;
+}
+
+declare function ITToast({ message, type, duration, position, onClose, }: ITToastProps): react_jsx_runtime.JSX.Element;
+
+/** Enum con tipos de archivo permitidos */
+declare enum FileTypeEnum {
+    PDF = "application/pdf",
+    XLS = "application/vnd.ms-excel",
+    XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    CSV = "text/csv",
+    PNG = "image/png",
+    JPG = "image/jpg",
+    JPEG = "image/jpeg"
+}
+/** Enum para el estado de subida */
+declare enum UploadStatus {
+    PENDING = "pendiente",
+    UPLOADING = "subiendo",
+    UPLOADED = "subido",
+    ERROR = "error"
+}
+/** Props del componente */
+interface ITDropfileProps {
+    onFileSelect: (file: File | null) => void;
+    onCancel?: () => void;
+    onSubmit?: (file: File) => void;
+    acceptedFileTypes?: FileTypeEnum[];
+    contentClassName?: string;
+    containerClassName?: string;
+    showStatusBadge?: boolean;
+    uploadStatus?: UploadStatus;
+    onStatusChange?: (status: UploadStatus) => void;
+    initialPreviewUrl?: string | null;
+}
+declare const ITDropfile: React__default.FC<ITDropfileProps>;
 
 interface ITTopBarNavItem {
     id: string;
@@ -682,60 +808,23 @@ interface ITLayoutProps {
     sidebar: ITSidebarProps;
     children: React.ReactNode;
     className?: string;
-}
-
-declare function ITLayout({ topBar, sidebar, children, className, }: ITLayoutProps): react_jsx_runtime.JSX.Element;
-
-interface ITTimePickerProps {
-    name: string;
-    value?: string;
-    label?: string;
-    placeholder?: string;
-    onChange: (e: any) => void;
-    onBlur: (e: any) => void;
-    required?: boolean;
-    touched?: boolean;
-    error?: string | boolean;
-    disabled?: boolean;
-    className?: string;
-    size?: "small" | "medium" | "large";
-    variant?: "primary" | "secondary" | "danger" | "success" | "warning" | "info" | "purple";
-    color?: "primary" | "secondary" | "danger" | "success" | "warning" | "info" | "purple" | string;
-}
-
-declare function ITTimePicker({ name, value, label, placeholder, onChange, onBlur, required, touched, error, disabled, className, size, variant, color, }: ITTimePickerProps): react_jsx_runtime.JSX.Element;
-
-/** Enum con tipos de archivo permitidos */
-declare enum FileTypeEnum {
-    PDF = "application/pdf",
-    XLS = "application/vnd.ms-excel",
-    XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    CSV = "text/csv",
-    PNG = "image/png",
-    JPG = "image/jpg",
-    JPEG = "image/jpeg"
-}
-/** Enum para el estado de subida */
-declare enum UploadStatus {
-    PENDING = "pendiente",
-    UPLOADING = "subiendo",
-    UPLOADED = "subido",
-    ERROR = "error"
-}
-/** Props del componente */
-interface ITDropfileProps {
-    onFileSelect: (file: File | null) => void;
-    onCancel?: () => void;
-    onSubmit?: (file: File) => void;
-    acceptedFileTypes?: FileTypeEnum[];
     contentClassName?: string;
-    containerClassName?: string;
-    showStatusBadge?: boolean;
-    uploadStatus?: UploadStatus;
-    onStatusChange?: (status: UploadStatus) => void;
-    initialPreviewUrl?: string | null;
 }
-declare const ITDropfile: React__default.FC<ITDropfileProps>;
+
+declare function ITLayout({ topBar, sidebar, children, className, contentClassName, }: ITLayoutProps): react_jsx_runtime.JSX.Element;
+
+type LoaderSize = "sm" | "md" | "lg" | "xl";
+type LoaderVariant = "spinner" | "dots" | "bar" | "pulse";
+
+interface LoaderProps {
+    size?: LoaderSize;
+    variant?: LoaderVariant;
+    color?: string;
+    className?: string;
+}
+
+declare function ITLoader({ size, variant, color, // Default to semantic primary
+className, }: LoaderProps): react_jsx_runtime.JSX.Element;
 
 type IconType = React__default.ReactNode;
 interface Step {
@@ -792,6 +881,71 @@ interface ITThemeConfig {
         backgroundColor?: string;
         contentPadding?: string;
     };
+    topbar?: {
+        backgroundColor?: string;
+        borderColor?: string;
+        iconColor?: string;
+        iconHoverColor?: string;
+        shadow?: string;
+        textColor?: string;
+        textHoverColor?: string;
+        userMenu?: {
+            backgroundColor?: string;
+            hoverBackground?: string;
+            textColor?: string;
+            subtitleColor?: string;
+            dropdown?: {
+                backgroundColor?: string;
+                borderColor?: string;
+                itemHoverBackground?: string;
+            };
+        };
+    };
+    sidebar?: {
+        backgroundColor?: string;
+        borderColor?: string;
+        label?: {
+            color?: string;
+            size?: string;
+            weight?: string;
+        };
+        icon?: {
+            color?: string;
+            size?: string;
+        };
+        hover?: {
+            backgroundColor?: string;
+        };
+        active?: {
+            backgroundColor?: string;
+            color?: string;
+            iconColor?: string;
+        };
+        badge?: {
+            backgroundColor?: string;
+            color?: string;
+        };
+    };
+    calendar?: {
+        backgroundColor?: string;
+        borderColor?: string;
+        header?: {
+            textColor?: string;
+            hoverBackground?: string;
+        };
+        days?: {
+            textColor?: string;
+            weekendColor?: string;
+            outsideMonthColor?: string;
+        };
+        selection?: {
+            selectedColor?: string;
+            selectedBackground?: string;
+            rangeBackground?: string;
+            todayBackground?: string;
+            todayColor?: string;
+        };
+    };
 }
 
 interface ITThemeProviderProps {
@@ -801,4 +955,29 @@ interface ITThemeProviderProps {
 
 declare function ITThemeProvider({ theme, children }: ITThemeProviderProps): react_jsx_runtime.JSX.Element;
 
-export { type Column, type FieldConfig, type FieldConfigV2, ITBadget, type ITBadgetProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDropfile, ITFormBuilder, type ITFormBuilderProps, ITImage, ITInput, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, ITNavbar, type ITNavbarProps, ITPagination, ITSelect, type ITSelectProps, ITSlideToggle, type ITSlideToggleProps, ITStepper, ITTable, type ITTableProps, ITText, type ITThemeConfig, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, createValidationSchema };
+interface ITTimePickerProps {
+    name: string;
+    value?: string;
+    label?: string;
+    placeholder?: string;
+    onChange: (e: any) => void;
+    onBlur: (e: any) => void;
+    required?: boolean;
+    touched?: boolean;
+    error?: string | boolean;
+    disabled?: boolean;
+    className?: string;
+    size?: "small" | "medium" | "large";
+    variant?: "primary" | "secondary" | "danger" | "success" | "warning" | "info" | "purple";
+    color?: "primary" | "secondary" | "danger" | "success" | "warning" | "info" | "purple" | string;
+}
+
+declare function ITTimePicker({ name, value, label, placeholder, onChange, onBlur, required, touched, error, disabled, className, size, variant, color, }: ITTimePickerProps): react_jsx_runtime.JSX.Element;
+
+declare const createValidationSchema: (fields: FieldConfig[]) => Yup.ObjectSchema<{
+    [x: string]: never;
+}, Yup.AnyObject, {
+    [x: string]: any;
+}, "">;
+
+export { type Column, type FieldConfig, type FieldConfigV2, ITBadget, type ITBadgetProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDropfile, ITFormBuilder, type ITFormBuilderProps, ITImage, ITInput, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, ITNavbar, type ITNavbarProps, ITPagination, ITSearchSelect, type ITSearchSelectProps, ITSelect, type ITSelectProps, ITSlideToggle, type ITSlideToggleProps, ITStepper, ITTable, type ITTableProps, ITText, type ITThemeConfig, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, createValidationSchema };

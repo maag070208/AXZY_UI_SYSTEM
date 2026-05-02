@@ -1,23 +1,12 @@
-// src/types/button.types.ts
-var buttonVariants = {
-  filled: "border-transparent shadow-sm",
-  outlined: "bg-transparent border-2",
-  raised: "border-transparent shadow-md",
-  rounded: "border-transparent shadow-sm rounded-full",
-  text: "bg-transparent border-transparent shadow-none hover:bg-opacity-10",
-  "raised-text": "bg-white border border-gray-200 shadow-sm hover:shadow-md",
-  "icon-only": "p-2 aspect-square flex items-center justify-center border-transparent shadow-sm",
-  link: "bg-transparent border-transparent shadow-none hover:underline px-0"
-};
-var buttonSizes = {
-  small: "text-xs px-3 py-1.5",
-  medium: "text-sm px-5 py-2.5",
-  large: "text-lg px-6 py-3"
-};
-
-// src/components/button/button.tsx
+// src/components/badget/badget.tsx
 import clsx from "clsx";
-import { useState } from "react";
+
+// src/types/badget.types.ts
+var badgeSizes = {
+  small: "text-xs px-2 py-1",
+  medium: "text-sm px-3 py-1.5",
+  large: "text-base px-4 py-2"
+};
 
 // src/theme/theme.ts
 import colors from "tailwindcss/colors";
@@ -95,52 +84,52 @@ var semanticColors = {
 };
 var components = {
   layout: {
-    backgroundColor: semanticColors.gray[50],
-    contentPadding: "1.5rem"
+    backgroundColor: `var(--layout-bg, ${semanticColors.gray[50]})`,
+    contentPadding: "var(--layout-padding, 1.5rem)"
   },
   topbar: {
-    backgroundColor: "rgba(255, 255, 255, 0.90)",
-    borderColor: semanticColors.gray[200],
-    iconColor: semanticColors.gray[500],
-    iconHoverColor: semanticColors.gray[700],
-    shadow: "0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.025)",
-    textColor: semanticColors.gray[700],
-    textHoverColor: semanticColors.gray[900],
+    backgroundColor: "var(--topbar-bg, rgba(255, 255, 255, 0.90))",
+    borderColor: `var(--topbar-border, ${semanticColors.gray[200]})`,
+    iconColor: `var(--topbar-icon, ${semanticColors.gray[500]})`,
+    iconHoverColor: `var(--topbar-icon-hover, ${semanticColors.gray[700]})`,
+    shadow: "var(--topbar-shadow, 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.025))",
+    textColor: `var(--topbar-text, ${semanticColors.gray[700]})`,
+    textHoverColor: `var(--topbar-text-hover, ${semanticColors.gray[900]})`,
     userMenu: {
-      backgroundColor: semanticColors.gray[50],
-      hoverBackground: semanticColors.gray[100],
-      textColor: semanticColors.gray[900],
-      subtitleColor: semanticColors.gray[500],
+      backgroundColor: `var(--topbar-user-bg, ${semanticColors.gray[50]})`,
+      hoverBackground: `var(--topbar-user-hover, ${semanticColors.gray[100]})`,
+      textColor: `var(--topbar-user-text, ${semanticColors.gray[900]})`,
+      subtitleColor: `var(--topbar-user-subtitle, ${semanticColors.gray[500]})`,
       dropdown: {
-        backgroundColor: "#ffffff",
-        borderColor: semanticColors.gray[200],
-        itemHoverBackground: semanticColors.gray[50]
+        backgroundColor: "var(--topbar-user-dropdown-bg, #ffffff)",
+        borderColor: `var(--topbar-user-dropdown-border, ${semanticColors.gray[200]})`,
+        itemHoverBackground: `var(--topbar-user-item-hover, ${semanticColors.gray[50]})`
       }
     }
   },
   sidebar: {
-    backgroundColor: "rgba(255, 255, 255, 0.90)",
-    borderColor: semanticColors.gray[200],
+    backgroundColor: "var(--sidebar-bg, rgba(255, 255, 255, 0.90))",
+    borderColor: `var(--sidebar-border, ${semanticColors.gray[200]})`,
     label: {
-      color: semanticColors.gray[700],
-      size: "0.9rem",
-      weight: "500"
+      color: `var(--sidebar-label-color, ${semanticColors.gray[700]})`,
+      size: "var(--sidebar-label-size, 0.9rem)",
+      weight: "var(--sidebar-label-weight, 500)"
     },
     icon: {
-      color: semanticColors.gray[500],
-      size: "1.25rem"
+      color: `var(--sidebar-icon-color, ${semanticColors.gray[500]})`,
+      size: "var(--sidebar-icon-size, 1.25rem)"
     },
     hover: {
-      backgroundColor: semanticColors.gray[100]
+      backgroundColor: `var(--sidebar-hover-bg, ${semanticColors.gray[100]})`
     },
     active: {
-      backgroundColor: semanticColors.gray[50],
-      color: semanticColors.gray[900],
-      iconColor: semanticColors.primary[500]
+      backgroundColor: `var(--sidebar-active-bg, ${semanticColors.gray[50]})`,
+      color: `var(--sidebar-active-color, ${semanticColors.gray[900]})`,
+      iconColor: `var(--sidebar-active-icon, ${semanticColors.primary[500]})`
     },
     badge: {
-      backgroundColor: semanticColors.primary[500],
-      color: "#ffffff"
+      backgroundColor: `var(--sidebar-badge-bg, ${semanticColors.primary[500]})`,
+      color: "var(--sidebar-badge-color, #ffffff)"
     }
   },
   button: {
@@ -373,6 +362,26 @@ var components = {
       borderTop: `1px solid var(--color-secondary-200)`,
       backgroundColor: semanticColors.gray[50]
     }
+  },
+  calendar: {
+    backgroundColor: "var(--calendar-bg, #ffffff)",
+    borderColor: `var(--calendar-border, ${semanticColors.gray[200]})`,
+    header: {
+      textColor: `var(--calendar-header-text, ${semanticColors.gray[800]})`,
+      hoverBackground: `var(--calendar-header-hover, ${semanticColors.gray[100]})`
+    },
+    days: {
+      textColor: `var(--calendar-days-text, ${semanticColors.gray[700]})`,
+      weekendColor: `var(--calendar-days-weekend, ${semanticColors.gray[500]})`,
+      outsideMonthColor: `var(--calendar-days-outside, ${semanticColors.gray[300]})`
+    },
+    selection: {
+      selectedColor: "var(--calendar-selected-text, #ffffff)",
+      selectedBackground: `var(--calendar-selected-bg, ${semanticColors.primary[600]})`,
+      rangeBackground: `var(--calendar-range-bg, ${semanticColors.primary[50]})`,
+      todayBackground: `var(--calendar-today-bg, ${semanticColors.primary[50]})`,
+      todayColor: `var(--calendar-today-text, ${semanticColors.primary[600]})`
+    }
   }
 };
 var typography = {
@@ -409,8 +418,79 @@ var theme = {
   ...components
 };
 
-// src/components/button/button.tsx
+// src/components/badget/badget.tsx
 import { jsx } from "react/jsx-runtime";
+function ITBadget({
+  children,
+  label,
+  color = "primary",
+  size = "medium",
+  variant = "filled",
+  className
+}) {
+  const themeBadge = theme.badge || {};
+  const config = themeBadge[color] || themeBadge.primary || {};
+  const getStyle = () => {
+    const style = {
+      fontSize: config.fontSize,
+      fontWeight: config.fontWeight,
+      padding: config.padding,
+      borderRadius: config.borderRadius,
+      // '9999px' in theme
+      borderWidth: "1px",
+      // Default border width for consistency
+      borderStyle: "solid",
+      borderColor: "transparent",
+      // Default transparent
+      transition: "all 0.2s"
+    };
+    if (variant === "filled") {
+      style.backgroundColor = config.backgroundColor;
+      style.color = config.color;
+      style.borderColor = config.borderColor || "transparent";
+    } else if (variant === "outlined") {
+      style.backgroundColor = "transparent";
+      style.color = config.color;
+      style.borderColor = config.color;
+    }
+    return style;
+  };
+  return /* @__PURE__ */ jsx(
+    "span",
+    {
+      className: clsx(
+        "inline-flex items-center justify-center",
+        // Fallback size if theme doesn't have it (though theme does have it for primary)
+        !config.padding ? badgeSizes[size] : "",
+        className
+      ),
+      style: getStyle(),
+      children: children || /* @__PURE__ */ jsx("span", { className: clsx("font-semibold"), children: label })
+    }
+  );
+}
+
+// src/types/button.types.ts
+var buttonVariants = {
+  filled: "border-transparent shadow-sm",
+  outlined: "bg-transparent border-2",
+  raised: "border-transparent shadow-md",
+  rounded: "border-transparent shadow-sm rounded-full",
+  text: "bg-transparent border-transparent shadow-none hover:bg-opacity-10",
+  "raised-text": "bg-white border border-gray-200 shadow-sm hover:shadow-md",
+  "icon-only": "p-2 aspect-square flex items-center justify-center border-transparent shadow-sm",
+  link: "bg-transparent border-transparent shadow-none hover:underline px-0"
+};
+var buttonSizes = {
+  small: "text-xs px-3 py-1.5",
+  medium: "text-sm px-5 py-2.5",
+  large: "text-lg px-6 py-3"
+};
+
+// src/components/button/button.tsx
+import clsx2 from "clsx";
+import { useState } from "react";
+import { jsx as jsx2 } from "react/jsx-runtime";
 function ITButton({
   children,
   label,
@@ -472,11 +552,11 @@ function ITButton({
     }
     return style;
   };
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsx2(
     "button",
     {
       type,
-      className: clsx(
+      className: clsx2(
         "focus:outline-none",
         // Removed focus:ring-2 focus:ring-offset-2 to use theme style
         // Apply variant base styles (border, shadow, rounded-full)
@@ -495,7 +575,7 @@ function ITButton({
       disabled,
       "aria-label": ariaLabel || label,
       title: title || ariaLabel || label,
-      children: children || /* @__PURE__ */ jsx("span", { className: clsx("font-semibold", { "opacity-50": disabled }), children: label })
+      children: children || /* @__PURE__ */ jsx2("span", { className: clsx2("font-semibold", { "opacity-50": disabled }), children: label })
     }
   );
 }
@@ -522,12 +602,12 @@ import {
   isAfter
 } from "date-fns";
 import { es } from "date-fns/locale";
-import { clsx as clsx2 } from "clsx";
+import { clsx as clsx3 } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { jsx as jsx2, jsxs } from "react/jsx-runtime";
+import { jsx as jsx3, jsxs } from "react/jsx-runtime";
 function cn(...inputs) {
-  return twMerge(clsx2(inputs));
+  return twMerge(clsx3(inputs));
 }
 var START_HOUR = 6;
 var END_HOUR = 22;
@@ -542,6 +622,9 @@ var ITCalendar = ({
   onSelectRange,
   value,
   onChange,
+  selectionMode = "single",
+  startDate,
+  endDate,
   minDate,
   maxDate,
   className
@@ -663,29 +746,42 @@ var ITCalendar = ({
   return /* @__PURE__ */ jsxs(
     "div",
     {
-      className: cn("flex flex-col h-full bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden select-none", className),
+      className: cn("flex flex-col h-full rounded-lg shadow-sm overflow-hidden select-none", className),
+      style: {
+        backgroundColor: "var(--calendar-bg, #ffffff)",
+        border: "1px solid var(--calendar-border, #e2e8f0)"
+      },
       onMouseUp: handleMouseUp,
       onMouseLeave: () => {
         setDragStart(null);
         setDragCurrent(null);
       },
       children: [
-        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between px-2 py-2 border-b border-gray-200 bg-white", children: [
-          /* @__PURE__ */ jsx2(
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between px-2 py-2 border-b border-gray-200", style: { backgroundColor: "var(--calendar-bg, #ffffff)" }, children: [
+          /* @__PURE__ */ jsx3(
             "h2",
             {
-              className: "text-sm font-bold text-gray-800 capitalize cursor-pointer hover:text-primary-600 transition-colors select-none px-2 py-1 rounded hover:bg-gray-50 bg-transparent",
+              className: "text-sm font-bold capitalize cursor-pointer transition-colors select-none px-2 py-1 rounded",
+              style: {
+                color: "var(--calendar-header-text, #1e293b)"
+              },
               onClick: () => setView(view === "calendar" ? "years" : "calendar"),
+              onMouseEnter: (e) => {
+                e.currentTarget.style.backgroundColor = "var(--calendar-header-hover, #f1f5f9)";
+              },
+              onMouseLeave: (e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+              },
               children: view === "years" ? `${years[0]} - ${years[years.length - 1]}` : format(currentDate, "MMMM yyyy", { locale: es })
             }
           ),
           /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1", children: [
-            /* @__PURE__ */ jsx2("button", { onClick: handlePrev, type: "button", className: "p-1.5 hover:bg-gray-100 rounded-md transition-colors text-gray-600", children: /* @__PURE__ */ jsx2(FaChevronLeft, { size: 14 }) }),
-            /* @__PURE__ */ jsx2("button", { onClick: handleToday, type: "button", className: "text-sm font-medium text-gray-700 hover:bg-gray-100 px-3 py-1.5 rounded-md transition-colors", children: "Hoy" }),
-            /* @__PURE__ */ jsx2("button", { onClick: handleNext, type: "button", className: "p-1.5 hover:bg-gray-100 rounded-md transition-colors text-gray-600", children: /* @__PURE__ */ jsx2(FaChevronRight, { size: 14 }) })
+            /* @__PURE__ */ jsx3("button", { onClick: handlePrev, type: "button", className: "p-1.5 hover:bg-gray-100 rounded-md transition-colors text-gray-600", children: /* @__PURE__ */ jsx3(FaChevronLeft, { size: 14 }) }),
+            /* @__PURE__ */ jsx3("button", { onClick: handleToday, type: "button", className: "text-sm font-medium text-gray-700 hover:bg-gray-100 px-3 py-1.5 rounded-md transition-colors", children: "Hoy" }),
+            /* @__PURE__ */ jsx3("button", { onClick: handleNext, type: "button", className: "p-1.5 hover:bg-gray-100 rounded-md transition-colors text-gray-600", children: /* @__PURE__ */ jsx3(FaChevronRight, { size: 14 }) })
           ] })
         ] }),
-        /* @__PURE__ */ jsx2("div", { className: "flex-1 overflow-auto relative bg-white", children: view === "years" ? /* @__PURE__ */ jsx2("div", { className: "p-4 grid grid-cols-4 gap-2", children: years.map((year) => /* @__PURE__ */ jsx2(
+        /* @__PURE__ */ jsx3("div", { className: "flex-1 overflow-auto relative bg-white", children: view === "years" ? /* @__PURE__ */ jsx3("div", { className: "p-4 grid grid-cols-4 gap-2", children: years.map((year) => /* @__PURE__ */ jsx3(
           "button",
           {
             type: "button",
@@ -705,12 +801,15 @@ var ITCalendar = ({
           },
           year
         )) }) : mode === "month" ? /* @__PURE__ */ jsxs("div", { className: "p-4", children: [
-          /* @__PURE__ */ jsx2("div", { className: "grid grid-cols-7 mb-2", children: ["Lun", "Mar", "Mi\xE9", "Jue", "Vie", "S\xE1b", "Dom"].map((day) => /* @__PURE__ */ jsx2("div", { className: "text-center text-xs font-semibold text-gray-400 uppercase py-1", children: day }, day)) }),
-          /* @__PURE__ */ jsx2("div", { className: "grid grid-cols-7 gap-1", children: monthDays.map((day) => {
+          /* @__PURE__ */ jsx3("div", { className: "grid grid-cols-7 mb-2", children: ["Lun", "Mar", "Mi\xE9", "Jue", "Vie", "S\xE1b", "Dom"].map((day) => /* @__PURE__ */ jsx3("div", { className: "text-center text-xs font-semibold text-gray-400 uppercase py-1", children: day }, day)) }),
+          /* @__PURE__ */ jsx3("div", { className: "grid grid-cols-7 gap-1", children: monthDays.map((day) => {
             const isDisabled = isDateDisabled(day);
-            const isSelected = value && isSameDay(day, value);
             const isCurrentMonth = isSameMonth(day, currentDate);
-            return /* @__PURE__ */ jsx2(
+            const isSelected = selectionMode === "single" && value && isSameDay(day, value);
+            const isRangeStart = selectionMode === "range" && startDate && isSameDay(day, startDate);
+            const isRangeEnd = selectionMode === "range" && endDate && isSameDay(day, endDate);
+            const isInRange = selectionMode === "range" && startDate && endDate && isAfter(day, startDate) && isBefore(day, endDate);
+            return /* @__PURE__ */ jsxs(
               "button",
               {
                 type: "button",
@@ -718,12 +817,19 @@ var ITCalendar = ({
                 onClick: () => onChange && onChange(day),
                 className: cn(
                   "h-10 w-full flex items-center justify-center rounded-md text-sm transition-colors relative",
-                  !isCurrentMonth && "text-gray-300",
-                  isDisabled && "opacity-50 cursor-not-allowed",
-                  isSelected ? "bg-primary-600 text-white font-medium hover:bg-primary-700" : "hover:bg-gray-100 text-gray-700",
-                  isToday(day) && !isSelected && "text-primary-600 font-bold bg-primary-50"
+                  !isCurrentMonth && "opacity-40",
+                  isDisabled && "opacity-20 cursor-not-allowed"
                 ),
-                children: format(day, "d")
+                style: {
+                  backgroundColor: isSelected || isRangeStart || isRangeEnd ? "var(--calendar-selected-bg, #2563eb)" : isInRange ? "var(--calendar-range-bg, #eff6ff)" : isToday(day) ? "var(--calendar-today-bg, #eff6ff)" : "transparent",
+                  color: isSelected || isRangeStart || isRangeEnd ? "var(--calendar-selected-text, #ffffff)" : isToday(day) ? "var(--calendar-today-text, #2563eb)" : "var(--calendar-days-text, #334155)",
+                  fontWeight: isSelected || isRangeStart || isRangeEnd || isToday(day) ? "700" : "400"
+                },
+                children: [
+                  format(day, "d"),
+                  selectionMode === "range" && isRangeStart && endDate && /* @__PURE__ */ jsx3("div", { className: "absolute right-0 top-0 bottom-0 w-2 bg-primary-50 -z-10" }),
+                  selectionMode === "range" && isRangeEnd && startDate && /* @__PURE__ */ jsx3("div", { className: "absolute left-0 top-0 bottom-0 w-2 bg-primary-50 -z-10" })
+                ]
               },
               day.toISOString()
             );
@@ -731,14 +837,14 @@ var ITCalendar = ({
         ] }) : (
           /* Week/Day View (Scheduler) */
           /* @__PURE__ */ jsxs("div", { className: cn("flex h-full", mode === "week" ? "min-w-[800px]" : "w-full"), children: [
-            /* @__PURE__ */ jsx2("div", { className: "flex-none w-16 border-r border-gray-100 bg-gray-50 pt-10 select-none", children: TIME_SLOTS.map((hour) => hour < END_HOUR && /* @__PURE__ */ jsx2("div", { className: "h-20 relative text-right pr-2", children: /* @__PURE__ */ jsx2("span", { className: "text-xs text-gray-400 -mt-2 inline-block transform -translate-y-1/2", children: format((/* @__PURE__ */ new Date()).setHours(hour, 0), "HH:mm") }) }, hour)) }),
-            /* @__PURE__ */ jsx2("div", { className: "flex flex-1", children: viewDays.map((day) => /* @__PURE__ */ jsxs("div", { className: "flex-1 border-r border-gray-100 min-w-[120px] relative", children: [
+            /* @__PURE__ */ jsx3("div", { className: "flex-none w-16 border-r border-gray-100 bg-gray-50 pt-10 select-none", children: TIME_SLOTS.map((hour) => hour < END_HOUR && /* @__PURE__ */ jsx3("div", { className: "h-20 relative text-right pr-2", children: /* @__PURE__ */ jsx3("span", { className: "text-xs text-gray-400 -mt-2 inline-block transform -translate-y-1/2", children: format((/* @__PURE__ */ new Date()).setHours(hour, 0), "HH:mm") }) }, hour)) }),
+            /* @__PURE__ */ jsx3("div", { className: "flex flex-1", children: viewDays.map((day) => /* @__PURE__ */ jsxs("div", { className: "flex-1 border-r border-gray-100 min-w-[120px] relative", children: [
               /* @__PURE__ */ jsxs("div", { className: cn(
                 "h-10 border-b border-gray-200 flex flex-col items-center justify-center sticky top-0 bg-white z-10",
                 isToday(day) && "bg-primary-50"
               ), children: [
-                /* @__PURE__ */ jsx2("span", { className: cn("text-xs font-semibold uppercase", isToday(day) ? "text-primary-600" : "text-gray-500"), children: format(day, "EEE", { locale: es }) }),
-                /* @__PURE__ */ jsx2("span", { className: cn(
+                /* @__PURE__ */ jsx3("span", { className: cn("text-xs font-semibold uppercase", isToday(day) ? "text-primary-600" : "text-gray-500"), children: format(day, "EEE", { locale: es }) }),
+                /* @__PURE__ */ jsx3("span", { className: cn(
                   "text-sm font-bold w-6 h-6 flex items-center justify-center rounded-full mt-0.5",
                   isToday(day) ? "bg-primary-600 text-white" : "text-gray-800"
                 ), children: format(day, "d") })
@@ -749,7 +855,7 @@ var ITCalendar = ({
                   {
                     className: "h-20 border-b border-gray-100 border-dashed relative group",
                     children: [
-                      /* @__PURE__ */ jsx2(
+                      /* @__PURE__ */ jsx3(
                         "div",
                         {
                           className: "absolute inset-x-0 top-0 h-10 border-b border-transparent hover:border-primary-100 hover:bg-primary-50/30 transition-colors cursor-pointer z-0",
@@ -772,7 +878,7 @@ var ITCalendar = ({
                           }
                         }
                       ),
-                      /* @__PURE__ */ jsx2(
+                      /* @__PURE__ */ jsx3(
                         "div",
                         {
                           className: "absolute inset-x-0 bottom-0 h-10 hover:border-primary-100 hover:bg-primary-50/30 transition-colors cursor-pointer z-0",
@@ -809,7 +915,7 @@ var ITCalendar = ({
                   const duration = differenceInMinutes(finalEnd, start);
                   const top = (startMinutes - dayStartMinutes) / 60 * 80;
                   const height = duration / 60 * 80;
-                  return /* @__PURE__ */ jsx2(
+                  return /* @__PURE__ */ jsx3(
                     "div",
                     {
                       className: "absolute left-1 right-1 bg-primary-500/30 border border-primary-500 rounded z-10 pointer-events-none",
@@ -838,7 +944,7 @@ var ITCalendar = ({
                         onEventClick && onEventClick(event);
                       },
                       children: [
-                        /* @__PURE__ */ jsx2("div", { className: "font-semibold truncate", children: event.title }),
+                        /* @__PURE__ */ jsx3("div", { className: "font-semibold truncate", children: event.title }),
                         /* @__PURE__ */ jsxs("div", { className: "opacity-80 truncate", children: [
                           format(typeof event.start === "string" ? parseISO(event.start) : event.start, "HH:mm"),
                           " -",
@@ -850,14 +956,14 @@ var ITCalendar = ({
                   );
                 })
               ] }),
-              isToday(day) && /* @__PURE__ */ jsx2(
+              isToday(day) && /* @__PURE__ */ jsx3(
                 "div",
                 {
                   className: "absolute left-0 right-0 border-t-2 border-danger-500 z-30 pointer-events-none",
                   style: {
                     top: `${((/* @__PURE__ */ new Date()).getHours() * 60 + (/* @__PURE__ */ new Date()).getMinutes() - START_HOUR * 60) / 60 * 80}px`
                   },
-                  children: /* @__PURE__ */ jsx2("div", { className: "absolute -left-1.5 -top-1.5 w-3 h-3 bg-danger-500 rounded-full" })
+                  children: /* @__PURE__ */ jsx3("div", { className: "absolute -left-1.5 -top-1.5 w-3 h-3 bg-danger-500 rounded-full" })
                 }
               )
             ] }, day.toISOString())) })
@@ -870,9 +976,9 @@ var ITCalendar = ({
 var calendar_default = ITCalendar;
 
 // src/components/card/card.tsx
-import clsx3 from "clsx";
+import clsx4 from "clsx";
 import { useState as useState3 } from "react";
-import { jsx as jsx3, jsxs as jsxs2 } from "react/jsx-runtime";
+import { jsx as jsx4, jsxs as jsxs2 } from "react/jsx-runtime";
 function ITCard({
   title,
   image,
@@ -906,48 +1012,61 @@ function ITCard({
       onClick,
       onMouseEnter: () => onClick && setIsHovered(true),
       onMouseLeave: () => onClick && setIsHovered(false),
-      className: clsx3(
+      className: clsx4(
         "overflow-hidden flex flex-col",
         className
       ),
       style: containerStyle,
       children: [
-        image && /* @__PURE__ */ jsx3(
+        image && /* @__PURE__ */ jsx4(
           "img",
           {
             src: image,
             alt,
-            className: clsx3("w-full h-48 object-cover", imageClassName)
+            className: clsx4("w-full h-48 object-cover", imageClassName)
           }
         ),
-        /* @__PURE__ */ jsxs2("div", { className: clsx3(contentClassName), style: bodyStyle, children: [
-          title && /* @__PURE__ */ jsx3(
+        /* @__PURE__ */ jsxs2("div", { className: clsx4(contentClassName), style: bodyStyle, children: [
+          title && /* @__PURE__ */ jsx4(
             "h3",
             {
-              className: clsx3(
+              className: clsx4(
                 "text-xl font-semibold mb-2 text-gray-800",
                 titleClassName
               ),
               children: title
             }
           ),
-          /* @__PURE__ */ jsx3("div", { className: "text-gray-600", children })
+          /* @__PURE__ */ jsx4("div", { className: "text-gray-600", children })
         ] }),
-        actions && /* @__PURE__ */ jsx3("div", { className: clsx3("p-4 border-t border-gray-100 mt-auto", actionClassName), children: actions })
+        actions && /* @__PURE__ */ jsx4("div", { className: clsx4("p-4 border-t border-gray-100 mt-auto", actionClassName), children: actions })
       ]
     }
   );
 }
 
-// src/components/date-picker/datePicker.tsx
-import clsx5 from "clsx";
-import React2, { useEffect as useEffect3, useRef as useRef2, useState as useState5 } from "react";
-import { FaCalendarAlt } from "react-icons/fa";
+// src/types/table.types.ts
+var variantStyles = {
+  default: "",
+  striped: "divide-y divide-gray-200",
+  bordered: "border border-gray-200"
+};
+var sizeStyles = {
+  sm: "text-xs",
+  md: "text-sm",
+  lg: "text-lg"
+};
+
+// src/components/data-table/dataTable.tsx
+import clsx9 from "clsx";
+import { useState as useState7, useEffect as useEffect3, useCallback as useCallback2, useRef as useRef2 } from "react";
+import { FaCheck as FaCheck2, FaSpinner as FaSpinner2, FaTimes as FaTimes2 } from "react-icons/fa";
+import { MdOutlineSwapVert as MdOutlineSwapVert2 } from "react-icons/md";
 
 // src/components/input/input.tsx
-import clsx4 from "clsx";
+import clsx5 from "clsx";
 import { useState as useState4, useEffect as useEffect2, useRef, useCallback } from "react";
-import { Fragment, jsx as jsx4, jsxs as jsxs3 } from "react/jsx-runtime";
+import { Fragment, jsx as jsx5, jsxs as jsxs3 } from "react/jsx-runtime";
 function ITInput({
   name,
   type = "text",
@@ -1263,11 +1382,11 @@ function ITInput({
     onBlur?.(e);
   };
   const currentLength = isNumberType ? (currencyFormat ? displayValue.replace(/[.,]/g, "") : displayValue).length : typeof value === "string" ? value.length : String(value ?? "").length;
-  return /* @__PURE__ */ jsxs3("div", { className: clsx4("w-full", containerClassName), children: [
+  return /* @__PURE__ */ jsxs3("div", { className: clsx5("w-full", containerClassName), children: [
     isCheckboxOrRadio ? (
       // CHECKBOX / RADIO LAYOUT (Row)
       /* @__PURE__ */ jsxs3("div", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ jsx4(
+        /* @__PURE__ */ jsx5(
           "input",
           {
             ref: inputRef,
@@ -1278,7 +1397,7 @@ function ITInput({
             onChange: handleTextChange,
             disabled,
             required,
-            className: clsx4(
+            className: clsx5(
               "peer",
               "form-radio h-4 w-4 text-slate-600 focus:ring-slate-500 transition-all duration-200",
               type === "checkbox" && "form-checkbox rounded",
@@ -1291,7 +1410,7 @@ function ITInput({
         label && /* @__PURE__ */ jsxs3("label", { htmlFor: name, className: "text-sm text-gray-700 select-none", children: [
           label,
           " ",
-          required && /* @__PURE__ */ jsx4("span", { className: "text-red-500", children: "*" })
+          required && /* @__PURE__ */ jsx5("span", { className: "text-red-500", children: "*" })
         ] })
       ] })
     ) : (
@@ -1301,20 +1420,20 @@ function ITInput({
           "label",
           {
             htmlFor: name,
-            className: clsx4(
+            className: clsx5(
               "text-sm font-medium text-gray-700",
               { "text-red-500": touched && error },
               labelClassName
             ),
             children: [
               label,
-              required && /* @__PURE__ */ jsx4("span", { className: "text-red-500 ml-1", children: "*" })
+              required && /* @__PURE__ */ jsx5("span", { className: "text-red-500 ml-1", children: "*" })
             ]
           }
         ),
         /* @__PURE__ */ jsxs3("div", { className: "relative w-full", children: [
-          iconLeft && /* @__PURE__ */ jsx4("div", { className: "absolute inset-y-0 left-0 flex items-center pl-3 z-10", children: iconLeft }),
-          isTextArea ? /* @__PURE__ */ jsx4(
+          iconLeft && /* @__PURE__ */ jsx5("div", { className: "absolute inset-y-0 left-0 flex items-center pl-3 z-10", children: iconLeft }),
+          isTextArea ? /* @__PURE__ */ jsx5(
             "textarea",
             {
               name,
@@ -1331,7 +1450,7 @@ function ITInput({
               autoFocus,
               onClick,
               rows,
-              className: clsx4(
+              className: clsx5(
                 "peer",
                 "focus:outline-none w-full resize-none",
                 className,
@@ -1340,7 +1459,7 @@ function ITInput({
               style: getStyle()
             }
           ) : /* @__PURE__ */ jsxs3(Fragment, { children: [
-            /* @__PURE__ */ jsx4(
+            /* @__PURE__ */ jsx5(
               "input",
               {
                 ref: inputRef,
@@ -1366,7 +1485,7 @@ function ITInput({
                 required,
                 autoFocus,
                 onClick: focusContent ? handleClick : onClick,
-                className: clsx4(
+                className: clsx5(
                   "peer",
                   "focus:outline-none w-full",
                   className,
@@ -1377,7 +1496,7 @@ function ITInput({
                 style: getStyle()
               }
             ),
-            type === "password" && /* @__PURE__ */ jsx4(
+            type === "password" && /* @__PURE__ */ jsx5(
               "button",
               {
                 type: "button",
@@ -1385,348 +1504,40 @@ function ITInput({
                 onClick: () => setShowPassword(!showPassword),
                 tabIndex: -1,
                 children: showPassword ? /* @__PURE__ */ jsxs3("svg", { xmlns: "http://www.w3.org/2000/svg", width: "18", height: "18", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
-                  /* @__PURE__ */ jsx4("path", { d: "M9.88 9.88a3 3 0 1 0 4.24 4.24" }),
-                  /* @__PURE__ */ jsx4("path", { d: "M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" }),
-                  /* @__PURE__ */ jsx4("path", { d: "M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" }),
-                  /* @__PURE__ */ jsx4("line", { x1: "2", x2: "22", y1: "2", y2: "22" })
+                  /* @__PURE__ */ jsx5("path", { d: "M9.88 9.88a3 3 0 1 0 4.24 4.24" }),
+                  /* @__PURE__ */ jsx5("path", { d: "M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" }),
+                  /* @__PURE__ */ jsx5("path", { d: "M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" }),
+                  /* @__PURE__ */ jsx5("line", { x1: "2", x2: "22", y1: "2", y2: "22" })
                 ] }) : /* @__PURE__ */ jsxs3("svg", { xmlns: "http://www.w3.org/2000/svg", width: "18", height: "18", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
-                  /* @__PURE__ */ jsx4("path", { d: "M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" }),
-                  /* @__PURE__ */ jsx4("circle", { cx: "12", cy: "12", r: "3" })
+                  /* @__PURE__ */ jsx5("path", { d: "M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" }),
+                  /* @__PURE__ */ jsx5("circle", { cx: "12", cy: "12", r: "3" })
                 ] })
               }
             )
           ] }),
-          iconRight && type !== "password" && /* @__PURE__ */ jsx4("div", { className: "absolute inset-y-0 right-0 flex items-center pr-3 z-10", children: iconRight })
+          iconRight && type !== "password" && /* @__PURE__ */ jsx5("div", { className: "absolute inset-y-0 right-0 flex items-center pr-3 z-10", children: iconRight })
         ] })
       ] })
     ),
-    touched && error && !isCheckboxOrRadio && /* @__PURE__ */ jsx4("div", { className: "flex-shrink-0 min-w-[140px] flex items-center pt-3", children: /* @__PURE__ */ jsx4("p", { className: "text-red-500 text-xs", children: error }) }),
-    showHintLength && (minLength || maxLength) && !isCheckboxOrRadio && /* @__PURE__ */ jsx4("div", { className: "mt-1 text-xs", children: /* @__PURE__ */ jsxs3("p", { className: "text-gray-500", children: [
+    touched && error && !isCheckboxOrRadio && /* @__PURE__ */ jsx5("div", { className: "flex-shrink-0 min-w-[140px] flex items-center pt-3", children: /* @__PURE__ */ jsx5("p", { className: "text-red-500 text-xs", children: error }) }),
+    showHintLength && (minLength || maxLength) && !isCheckboxOrRadio && /* @__PURE__ */ jsx5("div", { className: "mt-1 text-xs", children: /* @__PURE__ */ jsxs3("p", { className: "text-gray-500", children: [
       currentLength,
       maxLength && `/${maxLength}`
     ] }) }),
-    isCheckboxOrRadio && touched && error && /* @__PURE__ */ jsx4("div", { className: "mt-1 text-xs", children: /* @__PURE__ */ jsx4("p", { className: "text-red-500", children: error }) })
+    isCheckboxOrRadio && touched && error && /* @__PURE__ */ jsx5("div", { className: "mt-1 text-xs", children: /* @__PURE__ */ jsx5("p", { className: "text-red-500", children: error }) })
   ] });
 }
 
-// src/components/date-picker/datePicker.tsx
-import { jsx as jsx5, jsxs as jsxs4 } from "react/jsx-runtime";
-function ITDatePicker({
-  name,
-  value,
-  onChange,
-  onBlur,
-  variant = "primary",
-  size = "medium",
-  className,
-  calendarClassName,
-  disabled = false,
-  label,
-  touched,
-  error,
-  required,
-  placeholder,
-  minDate,
-  maxDate
-}) {
-  const [isOpen, setIsOpen] = useState5(false);
-  const [inputValue, setInputValue] = useState5("");
-  const [isValidDate, setIsValidDate] = useState5(true);
-  const [lastValidDate, setLastValidDate] = useState5(new Date(value));
-  const wrapperRef = useRef2(null);
-  const [calendarPosition, setCalendarPosition] = useState5({ top: 0, left: 0 });
-  const dateValue = React2.useMemo(
-    () => typeof value === "string" ? new Date(value) : value,
-    [value]
-  );
-  useEffect3(() => {
-    if (dateValue instanceof Date && !isNaN(dateValue.getTime())) {
-      setInputValue(formatDate(dateValue));
-      setLastValidDate(dateValue);
-    } else {
-      setInputValue("");
-    }
-  }, [dateValue]);
-  useEffect3(() => {
-    const handleClickOutside = (event) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-  const calculateCalendarPosition = () => {
-    if (wrapperRef.current) {
-      const inputRect = wrapperRef.current.getBoundingClientRect();
-      const calendarHeight = 300;
-      const viewportHeight = window.innerHeight;
-      let top = inputRect.bottom + 4;
-      if (inputRect.bottom + calendarHeight > viewportHeight) {
-        top = inputRect.top - calendarHeight - 4;
-      }
-      setCalendarPosition({
-        top,
-        left: inputRect.left
-      });
-    }
-  };
-  const handleDateChange = (date) => {
-    const event = {
-      target: {
-        name,
-        value: date
-      }
-    };
-    onChange(event);
-    setLastValidDate(date);
-    setInputValue(formatDate(date));
-    setIsOpen(false);
-  };
-  const handleIconClick = () => {
-    if (!disabled) {
-      calculateCalendarPosition();
-      setIsOpen(!isOpen);
-    }
-  };
-  const formatDate = (date) => date.toLocaleDateString("es-ES", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric"
-  }).replace(/\//g, "/");
-  const validateDate = (dateString) => {
-    const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-    const match = dateString.match(regex);
-    if (!match) return false;
-    const day = parseInt(match[1], 10);
-    const month = parseInt(match[2], 10);
-    const year = parseInt(match[3], 10);
-    const date = new Date(year, month - 1, day);
-    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
-  };
-  const handleInputChange = (e) => {
-    let val = e.target.value.replace(/\D/g, "");
-    if (val.length > 8) val = val.slice(0, 8);
-    if (val.length > 4) {
-      val = `${val.slice(0, 2)}/${val.slice(2, 4)}/${val.slice(4)}`;
-    } else if (val.length > 2) {
-      val = `${val.slice(0, 2)}/${val.slice(2)}`;
-    }
-    setInputValue(val);
-    if (val.length === 10 && validateDate(val)) {
-      const [day, month, year] = val.split("/").map(Number);
-      const date = new Date(year, month - 1, day);
-      const event = {
-        target: {
-          name,
-          value: date
-        }
-      };
-      onChange(event);
-      setLastValidDate(date);
-      setIsValidDate(true);
-    } else {
-      setIsValidDate(false);
-    }
-  };
-  const handleInputBlur = () => {
-    if (!validateDate(inputValue)) {
-      const today = /* @__PURE__ */ new Date();
-      setInputValue(formatDate(today));
-      const event = {
-        target: {
-          name,
-          value: today
-        }
-      };
-      onChange(event);
-      setIsValidDate(true);
-    } else {
-      const [day, month, year] = inputValue.split("/").map(Number);
-      const date = new Date(year, month - 1, day);
-      if (!isNaN(date.getTime())) {
-        onBlur({ target: { name, value: date } });
-      } else {
-        const today = /* @__PURE__ */ new Date();
-        setInputValue(formatDate(today));
-        onChange({ target: { name, value: today } });
-      }
-    }
-  };
-  return /* @__PURE__ */ jsxs4("div", { ref: wrapperRef, className: clsx5("relative w-full", className), children: [
-    /* @__PURE__ */ jsx5(
-      ITInput,
-      {
-        name,
-        type: "text",
-        label,
-        placeholder,
-        value: inputValue,
-        onChange: handleInputChange,
-        onBlur: handleInputBlur,
-        maxLength: 10,
-        iconRight: /* @__PURE__ */ jsx5("span", { children: /* @__PURE__ */ jsx5(
-          FaCalendarAlt,
-          {
-            onClick: handleIconClick,
-            className: "text-slate-900 cursor-pointer"
-          }
-        ) }),
-        variant,
-        size,
-        disabled,
-        required,
-        touched,
-        error: !isValidDate ? "Fecha inv\xE1lida" : error,
-        onClick: handleIconClick
-      }
-    ),
-    isOpen && /* @__PURE__ */ jsx5(
-      "div",
-      {
-        className: clsx5(
-          "fixed z-[9999]",
-          calendarClassName
-        ),
-        style: {
-          top: `${calendarPosition.top}px`,
-          left: `${calendarPosition.left}px`,
-          backgroundColor: theme.card.backgroundColor,
-          borderColor: theme.card.borderColor,
-          borderWidth: "1px",
-          borderStyle: "solid",
-          borderRadius: theme.card.borderRadius,
-          boxShadow: theme.card.shadow,
-          padding: "0.5rem"
-          // Added a bit of padding for the calendar inside
-        },
-        children: /* @__PURE__ */ jsx5(
-          calendar_default,
-          {
-            value: dateValue,
-            onChange: handleDateChange,
-            minDate,
-            maxDate,
-            className: "h-auto border-none shadow-none w-full"
-          }
-        )
-      }
-    )
-  ] });
-}
-
-// src/components/dialog/dialog.tsx
-import { createPortal } from "react-dom";
-import { useEffect as useEffect5, useRef as useRef3 } from "react";
-import { FaRegTimesCircle } from "react-icons/fa";
-
-// src/hooks/useClickOutside.ts
-import { useEffect as useEffect4 } from "react";
-var useClickOutside = (ref, callback) => {
-  useEffect4(() => {
-    const handleClickOutside = (event) => {
-      if (ref.current && !ref.current.contains(event.target)) {
-        callback();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [ref, callback]);
-};
-var useClickOutside_default = useClickOutside;
-
-// src/components/form-header/form-header.tsx
-import { FaTimes } from "react-icons/fa";
-import { jsx as jsx6, jsxs as jsxs5 } from "react/jsx-runtime";
-function ITFormHeader({
-  title,
-  onClose,
-  className = ""
-}) {
-  return /* @__PURE__ */ jsxs5("div", { className: `bg-primary-500 text-white px-6 py-4 rounded-t-lg flex justify-center items-center relative ${className}`, children: [
-    /* @__PURE__ */ jsx6("h2", { className: "text-lg font-semibold text-center", children: title }),
-    onClose && /* @__PURE__ */ jsx6(
-      "button",
-      {
-        onClick: onClose,
-        className: "absolute right-4 text-white hover:text-gray-200 transition-colors duration-200 p-1 rounded-full hover:bg-primary-600",
-        "aria-label": "Cerrar",
-        children: /* @__PURE__ */ jsx6(FaTimes, { className: "w-4 h-4" })
-      }
-    )
-  ] });
-}
-
-// src/components/dialog/dialog.tsx
-import { Fragment as Fragment2, jsx as jsx7, jsxs as jsxs6 } from "react/jsx-runtime";
-function ITDialog({
-  isOpen,
-  onClose,
-  children,
-  className,
-  title,
-  useFormHeader = false
-}) {
-  const modalRef = useRef3(null);
-  useClickOutside_default(modalRef, onClose);
-  useEffect5(() => {
-    const handleEscape = (event) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscape);
-    }
-    return () => {
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [isOpen, onClose]);
-  if (!isOpen) return null;
-  if (typeof document === "undefined") return null;
-  const content = /* @__PURE__ */ jsx7("div", { className: "fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]", children: /* @__PURE__ */ jsx7(
-    "div",
-    {
-      ref: modalRef,
-      className: `overflow-hidden relative ${className} ${useFormHeader ? "p-0" : "p-6"}`,
-      style: {
-        backgroundColor: theme.card.backgroundColor,
-        borderRadius: theme.card.borderRadius,
-        boxShadow: theme.card.shadow,
-        borderWidth: theme.card.borderWidth,
-        borderColor: theme.card.borderColor,
-        borderStyle: "solid"
-      },
-      children: useFormHeader && title ? /* @__PURE__ */ jsxs6(Fragment2, { children: [
-        /* @__PURE__ */ jsx7(ITFormHeader, { title, onClose }),
-        /* @__PURE__ */ jsx7("div", { className: "p-6", children })
-      ] }) : /* @__PURE__ */ jsxs6(Fragment2, { children: [
-        /* @__PURE__ */ jsx7(
-          "button",
-          {
-            className: "absolute top-2 right-2 text-gray-600 hover:text-gray-900",
-            onClick: onClose,
-            children: /* @__PURE__ */ jsx7(FaRegTimesCircle, {})
-          }
-        ),
-        title && /* @__PURE__ */ jsx7("h2", { className: "text-xl font-semibold mb-4", children: title }),
-        /* @__PURE__ */ jsx7("div", { children })
-      ] })
-    }
-  ) });
-  return createPortal(content, document.body);
-}
-
-// src/components/form-builder/formBuilder.tsx
-import clsx9 from "clsx";
+// src/components/pagination/pagination.tsx
+import React2 from "react";
+import clsx7 from "clsx";
+import { FaChevronLeft as FaChevronLeft2, FaChevronRight as FaChevronRight2 } from "react-icons/fa";
 
 // src/components/select/select.tsx
 import clsx6 from "clsx";
 import { FaAngleDown } from "react-icons/fa";
-import { useState as useState6 } from "react";
-import { jsx as jsx8, jsxs as jsxs7 } from "react/jsx-runtime";
+import { useState as useState5 } from "react";
+import { jsx as jsx6, jsxs as jsxs4 } from "react/jsx-runtime";
 function ITSelect({
   name,
   options,
@@ -1744,7 +1555,7 @@ function ITSelect({
   error,
   readOnly = false
 }) {
-  const [isFocused, setIsFocused] = useState6(false);
+  const [isFocused, setIsFocused] = useState5(false);
   const inputTheme = theme.input || {};
   const getStyle = () => {
     const style = {
@@ -1775,10 +1586,10 @@ function ITSelect({
     }
     return style;
   };
-  return /* @__PURE__ */ jsx8("div", { className: "w-full", children: /* @__PURE__ */ jsxs7("div", { className: clsx6("relative", {
+  return /* @__PURE__ */ jsx6("div", { className: "w-full", children: /* @__PURE__ */ jsxs4("div", { className: clsx6("relative", {
     "flex flex-col gap-1.5": label
   }), children: [
-    label && /* @__PURE__ */ jsxs7(
+    label && /* @__PURE__ */ jsxs4(
       "label",
       {
         htmlFor: name,
@@ -1788,13 +1599,13 @@ function ITSelect({
         ),
         children: [
           label,
-          required && /* @__PURE__ */ jsx8("span", { className: "text-red-500 ml-1", children: "*" })
+          required && /* @__PURE__ */ jsx6("span", { className: "text-red-500 ml-1", children: "*" })
         ]
       }
     ),
-    /* @__PURE__ */ jsxs7("div", { className: "flex flex-col w-full", children: [
-      /* @__PURE__ */ jsxs7("div", { className: "relative flex-1", children: [
-        /* @__PURE__ */ jsxs7(
+    /* @__PURE__ */ jsxs4("div", { className: "flex flex-col w-full", children: [
+      /* @__PURE__ */ jsxs4("div", { className: "relative flex-1", children: [
+        /* @__PURE__ */ jsxs4(
           "select",
           {
             name,
@@ -1815,8 +1626,8 @@ function ITSelect({
             ),
             style: getStyle(),
             children: [
-              /* @__PURE__ */ jsx8("option", { value: "", children: placeholder || "Selecciona una opci\xF3n" }),
-              readOnly ? /* @__PURE__ */ jsx8("option", { value, disabled: true, children: options.find((option) => option[valueField] === value)?.[labelField] }) : options.map((option) => /* @__PURE__ */ jsx8(
+              /* @__PURE__ */ jsx6("option", { value: "", children: placeholder || "Selecciona una opci\xF3n" }),
+              readOnly ? /* @__PURE__ */ jsx6("option", { value, disabled: true, children: options.find((option) => option[valueField] === value)?.[labelField] }) : options.map((option) => /* @__PURE__ */ jsx6(
                 "option",
                 {
                   value: option[valueField],
@@ -1828,879 +1639,22 @@ function ITSelect({
             ]
           }
         ),
-        /* @__PURE__ */ jsx8("div", { className: "absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500", children: /* @__PURE__ */ jsx8(FaAngleDown, {}) })
+        /* @__PURE__ */ jsx6("div", { className: "absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500", children: /* @__PURE__ */ jsx6(FaAngleDown, {}) })
       ] }),
-      touched && error && /* @__PURE__ */ jsx8("div", { className: "flex-shrink-0 min-w-[140px] flex items-center pt-3", children: /* @__PURE__ */ jsx8("p", { className: "text-red-500 text-xs", children: error }) })
+      touched && error && /* @__PURE__ */ jsx6("div", { className: "flex-shrink-0 min-w-[140px] flex items-center pt-3", children: /* @__PURE__ */ jsx6("p", { className: "text-red-500 text-xs", children: error }) })
     ] })
   ] }) });
 }
 
-// src/components/form-builder/formBuilder.tsx
-import { useEffect as useEffect10, useState as useState10, useMemo as useMemo3 } from "react";
-
-// src/components/form-builder/formBuilder.context.tsx
-import React3, { createContext, useContext, useState as useState7 } from "react";
-import { jsx as jsx9 } from "react/jsx-runtime";
-var ITFormBuilderContext = createContext(void 0);
-var ITFormBuilderProvider = ({
-  children,
-  value
-}) => {
-  const [fieldRegistry, setFieldRegistry] = useState7({});
-  const registerField = React3.useCallback((name, config) => {
-    setFieldRegistry((prev) => ({ ...prev, [name]: config }));
-  }, []);
-  const unregisterField = React3.useCallback((name) => {
-    setFieldRegistry((prev) => {
-      const newRegistry = { ...prev };
-      delete newRegistry[name];
-      return newRegistry;
-    });
-  }, []);
-  const getFieldConfig = React3.useCallback((name) => {
-    return fieldRegistry[name];
-  }, [fieldRegistry]);
-  const contextValue = React3.useMemo(
-    () => ({
-      ...value,
-      registerField,
-      unregisterField,
-      getFieldConfig
-    }),
-    [value, registerField, unregisterField, getFieldConfig]
-  );
-  return /* @__PURE__ */ jsx9(ITFormBuilderContext.Provider, { value: contextValue, children });
-};
-var useITFormBuilderContext = () => {
-  const context = useContext(ITFormBuilderContext);
-  if (!context) {
-    throw new Error("useITFormBuilderContext must be used within an ITFormBuilderProvider");
-  }
-  return context;
-};
-
-// src/components/form-builder/fieldRenderer.tsx
-import { memo, useEffect as useEffect9 } from "react";
-import clsx8 from "clsx";
-
-// src/components/time-picker/timePicker.tsx
-import clsx7 from "clsx";
-import { useEffect as useEffect7, useRef as useRef4, useState as useState8 } from "react";
-import { FaClock } from "react-icons/fa";
-import { jsx as jsx10, jsxs as jsxs8 } from "react/jsx-runtime";
-function ITTimePicker({
-  name,
-  value,
-  label,
-  placeholder = "HH:MM",
-  onChange,
-  onBlur,
-  required,
-  touched,
-  error,
-  disabled,
-  className,
-  size = "medium",
-  variant = "primary",
-  color = "primary"
-}) {
-  const [isOpen, setIsOpen] = useState8(false);
-  const [inputValue, setInputValue] = useState8(value || "");
-  const [isValidTime, setIsValidTime] = useState8(true);
-  const [dropdownPosition, setDropdownPosition] = useState8({ top: 0, left: 0 });
-  const wrapperRef = useRef4(null);
-  const dropdownRef = useRef4(null);
-  const hoursRef = useRef4(null);
-  const minutesRef = useRef4(null);
-  useClickOutside_default(dropdownRef, () => {
-    if (isOpen) {
-      setIsOpen(false);
-    }
-  });
-  const isThemeColor = color in theme.colors;
-  const highlightColor = isThemeColor ? theme.colors[color][50] : "#f3f4f6";
-  const activeColor = isThemeColor ? theme.colors[color][100] : "#e5e7eb";
-  useEffect7(() => {
-    setInputValue(value || "");
-  }, [value]);
-  const calculateDropdownPosition = () => {
-    if (wrapperRef.current) {
-      const inputRect = wrapperRef.current.getBoundingClientRect();
-      const dropdownHeight = 280;
-      const viewportHeight = window.innerHeight;
-      let top = inputRect.bottom + 4;
-      if (inputRect.bottom + dropdownHeight > viewportHeight) {
-        top = inputRect.top - dropdownHeight - 4;
-      }
-      setDropdownPosition({
-        top,
-        left: inputRect.left
-      });
-    }
-  };
-  const validateTime = (timeString) => {
-    const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-    return regex.test(timeString);
-  };
-  const currentHour = validateTime(inputValue) ? inputValue.split(":")[0] : null;
-  const currentMinute = validateTime(inputValue) ? inputValue.split(":")[1] : null;
-  useEffect7(() => {
-    if (isOpen) {
-      setTimeout(() => {
-        if (hoursRef.current && currentHour) {
-          const selectedHourEl = hoursRef.current.querySelector(
-            `[data-value="${currentHour}"]`
-          );
-          if (selectedHourEl) {
-            hoursRef.current.scrollTop = selectedHourEl.offsetTop - hoursRef.current.clientHeight / 2 + selectedHourEl.clientHeight / 2;
-          }
-        }
-        if (minutesRef.current && currentMinute) {
-          const selectedMinuteEl = minutesRef.current.querySelector(
-            `[data-value="${currentMinute}"]`
-          );
-          if (selectedMinuteEl) {
-            minutesRef.current.scrollTop = selectedMinuteEl.offsetTop - minutesRef.current.clientHeight / 2 + selectedMinuteEl.clientHeight / 2;
-          }
-        }
-      }, 50);
-    }
-  }, [isOpen, currentHour, currentMinute]);
-  const handleInputChange = (e) => {
-    let val = e.target.value.replace(/\D/g, "");
-    if (val.length > 4) val = val.slice(0, 4);
-    if (val.length >= 3) {
-      val = `${val.slice(0, 2)}:${val.slice(2)}`;
-    }
-    setInputValue(val);
-    if (validateTime(val)) {
-      setIsValidTime(true);
-      onChange({ target: { name, value: val } });
-    } else {
-      setIsValidTime(false);
-    }
-  };
-  const handleBlurInput = () => {
-    if (!validateTime(inputValue)) {
-      setIsValidTime(false);
-      onBlur({ target: { name, value } });
-      return;
-    }
-    setIsValidTime(true);
-    onBlur({ target: { name, value: inputValue } });
-  };
-  const handleHourSelect = (h) => {
-    const min = currentMinute || "00";
-    const newVal = `${h}:${min}`;
-    setInputValue(newVal);
-    onChange({ target: { name, value: newVal } });
-    setIsValidTime(true);
-  };
-  const handleMinuteSelect = (m) => {
-    const hr = currentHour || "00";
-    const newVal = `${hr}:${m}`;
-    setInputValue(newVal);
-    onChange({ target: { name, value: newVal } });
-    setIsValidTime(true);
-  };
-  const handleConfirm = () => {
-    setIsOpen(false);
-  };
-  const hoursList = Array.from(
-    { length: 24 },
-    (_, i) => i.toString().padStart(2, "0")
-  );
-  const minutesList = Array.from(
-    { length: 60 },
-    (_, i) => i.toString().padStart(2, "0")
-  );
-  return /* @__PURE__ */ jsxs8("div", { ref: wrapperRef, className: clsx7("relative w-full", className), children: [
-    /* @__PURE__ */ jsx10(
-      ITInput,
-      {
-        name,
-        label,
-        placeholder,
-        type: "text",
-        value: inputValue,
-        onChange: handleInputChange,
-        onBlur: handleBlurInput,
-        maxLength: 5,
-        required,
-        disabled,
-        variant,
-        size,
-        touched,
-        error: !isValidTime ? "Hora inv\xE1lida" : typeof error === "string" ? error : void 0,
-        iconRight: /* @__PURE__ */ jsx10(
-          FaClock,
-          {
-            onClick: () => {
-              if (!disabled) {
-                calculateDropdownPosition();
-                setIsOpen(!isOpen);
-              }
-            },
-            className: clsx7(
-              "cursor-pointer transition-colors",
-              disabled ? "text-slate-400 cursor-not-allowed" : "text-slate-900 hover:text-slate-600"
-            )
-          }
-        )
-      }
-    ),
-    isOpen && !disabled && /* @__PURE__ */ jsxs8(
-      "div",
-      {
-        ref: dropdownRef,
-        className: "fixed z-[9999] bg-white border border-gray-100 shadow-xl rounded-xl w-64 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 origin-top it-timepicker-dropdown",
-        style: {
-          top: `${dropdownPosition.top}px`,
-          left: `${dropdownPosition.left}px`
-        },
-        children: [
-          /* @__PURE__ */ jsxs8("div", { className: "flex bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider", children: [
-            /* @__PURE__ */ jsx10("div", { className: "flex-1 text-center py-2 border-r border-gray-100", children: "Horas" }),
-            /* @__PURE__ */ jsx10("div", { className: "flex-1 text-center py-2", children: "Minutos" })
-          ] }),
-          /* @__PURE__ */ jsxs8("div", { className: "flex h-56 relative bg-white", children: [
-            /* @__PURE__ */ jsx10(
-              "div",
-              {
-                ref: hoursRef,
-                className: "flex-1 overflow-y-auto no-scrollbar border-r border-gray-50 scroll-smooth relative",
-                children: /* @__PURE__ */ jsx10("div", { className: "py-2", children: hoursList.map((h) => {
-                  const isSelected = currentHour === h;
-                  return /* @__PURE__ */ jsx10(
-                    "div",
-                    {
-                      "data-value": h,
-                      className: clsx7(
-                        "text-center py-2 cursor-pointer transition-all duration-200 text-sm font-medium mx-2 rounded-lg my-1",
-                        isSelected ? "text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
-                      ),
-                      style: {
-                        backgroundColor: isSelected ? activeColor : void 0
-                      },
-                      onMouseEnter: (e) => {
-                        if (!isSelected)
-                          e.currentTarget.style.backgroundColor = highlightColor;
-                      },
-                      onMouseLeave: (e) => {
-                        if (!isSelected)
-                          e.currentTarget.style.backgroundColor = "transparent";
-                      },
-                      onClick: () => handleHourSelect(h),
-                      children: h
-                    },
-                    h
-                  );
-                }) })
-              }
-            ),
-            /* @__PURE__ */ jsx10(
-              "div",
-              {
-                ref: minutesRef,
-                className: "flex-1 overflow-y-auto no-scrollbar scroll-smooth relative",
-                children: /* @__PURE__ */ jsx10("div", { className: "py-2", children: minutesList.map((m) => {
-                  const isSelected = currentMinute === m;
-                  return /* @__PURE__ */ jsx10(
-                    "div",
-                    {
-                      "data-value": m,
-                      className: clsx7(
-                        "text-center py-2 cursor-pointer transition-all duration-200 text-sm font-medium mx-2 rounded-lg my-1",
-                        isSelected ? "text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
-                      ),
-                      style: {
-                        backgroundColor: isSelected ? activeColor : void 0
-                      },
-                      onMouseEnter: (e) => {
-                        if (!isSelected)
-                          e.currentTarget.style.backgroundColor = highlightColor;
-                      },
-                      onMouseLeave: (e) => {
-                        if (!isSelected)
-                          e.currentTarget.style.backgroundColor = "transparent";
-                      },
-                      onClick: () => handleMinuteSelect(m),
-                      children: m
-                    },
-                    m
-                  );
-                }) })
-              }
-            ),
-            /* @__PURE__ */ jsx10("div", { className: "absolute top-1/2 left-0 right-0 h-10 -mt-5 bg-black/5 pointer-events-none border-y border-black/10 z-10" })
-          ] }),
-          /* @__PURE__ */ jsx10("div", { className: "p-3 bg-gray-50 border-t border-gray-100 flex justify-end", children: /* @__PURE__ */ jsx10(
-            ITButton,
-            {
-              variant: "solid",
-              color,
-              size: "small",
-              onClick: handleConfirm,
-              children: "Aceptar"
-            }
-          ) })
-        ]
-      }
-    )
-  ] });
-}
-
-// src/components/form-builder/useFormBuilder.ts
-import { useMemo as useMemo2 } from "react";
-var useFieldRules = (name, dependsOn) => {
-  const { values, getFieldConfig } = useITFormBuilderContext();
-  const config = getFieldConfig(name);
-  const isVisible = useMemo2(() => {
-    if (!config?.renderWhen) return true;
-    return config.renderWhen(values);
-  }, [config, values]);
-  const dynamicProps = useMemo2(() => {
-    if (!config?.dynamicProps) return {};
-    return config.dynamicProps(values);
-  }, [config, values]);
-  const isRequired = useMemo2(() => {
-    if (typeof config?.required === "function") {
-      return config.required(values);
-    }
-    return config?.required || false;
-  }, [config, values, dynamicProps]);
-  const isDisabled = useMemo2(() => {
-    if (typeof config?.disabled === "function") {
-      return config.disabled(values);
-    }
-    return config?.disabled || false;
-  }, [config, values, dynamicProps]);
-  return {
-    isVisible,
-    dynamicProps,
-    isRequired: dynamicProps.required !== void 0 ? dynamicProps.required : isRequired,
-    isDisabled: dynamicProps.disabled !== void 0 ? dynamicProps.disabled : isDisabled
-  };
-};
-
-// src/components/form-builder/fieldRenderer.tsx
-import { jsx as jsx11, jsxs as jsxs9 } from "react/jsx-runtime";
-var gridColsClasses = {
-  1: "grid-cols-1",
-  2: "grid-cols-2",
-  3: "grid-cols-3",
-  4: "grid-cols-4",
-  6: "grid-cols-6",
-  8: "grid-cols-8",
-  12: "grid-cols-12"
-};
-var getGridColsClass = (columns) => gridColsClasses[columns] || "grid-cols-12";
-var getColSpanClass = (span = 12, maxCols) => {
-  if (typeof span === "object") {
-    const classes = [];
-    if (span.sm) classes.push(`col-span-${Math.min(span.sm, maxCols)}`);
-    if (span.md) classes.push(`md:col-span-${Math.min(span.md, maxCols)}`);
-    if (span.lg) classes.push(`lg:col-span-${Math.min(span.lg, maxCols)}`);
-    if (span.xl) classes.push(`xl:col-span-${Math.min(span.xl, maxCols)}`);
-    return classes.join(" ") || `col-span-${maxCols}`;
-  }
-  return `col-span-${Math.min(span, maxCols)}`;
-};
-var ITFieldRenderer = ({ config, columns = 12 }) => {
-  const context = useITFormBuilderContext();
-  const { isVisible, isRequired, isDisabled, dynamicProps } = useFieldRules(
-    config.name,
-    config.dependsOn
-  );
-  useEffect9(() => {
-    context.registerField(config.name, config);
-    return () => {
-      context.unregisterField(config.name);
-    };
-  }, [config.name]);
-  if (!isVisible) return null;
-  const activeConfig = {
-    ...config,
-    ...dynamicProps,
-    required: isRequired,
-    disabled: isDisabled
-  };
-  const {
-    name,
-    label,
-    type,
-    placeholder,
-    options,
-    valueField,
-    labelField,
-    formatNumber,
-    showHintLength,
-    leftIcon,
-    rightIcon
-  } = activeConfig;
-  const value = context.values[name];
-  const error = context.errors[name];
-  const touched = context.touched[name];
-  const handleChangeWrapper = async (val) => {
-    const finalValue = val?.target ? val.target.value : val;
-    await context.setFieldValue(name, finalValue);
-    if (activeConfig.onChangeAction) {
-      await activeConfig.onChangeAction(finalValue, context);
-    }
-  };
-  const renderField = () => {
-    switch (type) {
-      case "text":
-      case "password":
-      case "number":
-      case "email":
-        return /* @__PURE__ */ jsx11(
-          ITInput,
-          {
-            type: type === "email" ? "text" : type,
-            name,
-            label: label || "",
-            placeholder,
-            disabled: isDisabled,
-            value: value !== void 0 ? value : activeConfig.defaultValue || "",
-            onChange: handleChangeWrapper,
-            onBlur: context.handleBlur,
-            currencyFormat: activeConfig.currencyFormat,
-            touched,
-            error,
-            required: isRequired,
-            iconRight: rightIcon,
-            iconLeft: leftIcon,
-            showHintLength,
-            maxLength: activeConfig.maxLength,
-            minLength: activeConfig.minLength,
-            rows: activeConfig.rows,
-            formatNumber
-          }
-        );
-      case "select":
-        return /* @__PURE__ */ jsx11(
-          ITSelect,
-          {
-            options: Array.isArray(options) ? options : [],
-            name,
-            disabled: isDisabled,
-            label: label || "",
-            placeholder,
-            value: value !== void 0 ? value : activeConfig.defaultValue || "",
-            valueField,
-            labelField,
-            onChange: handleChangeWrapper,
-            onBlur: context.handleBlur,
-            touched,
-            error,
-            required: isRequired
-          }
-        );
-      case "date":
-        return /* @__PURE__ */ jsx11(
-          ITDatePicker,
-          {
-            name,
-            disabled: isDisabled,
-            label: label || "",
-            value,
-            onChange: handleChangeWrapper,
-            placeholder,
-            onBlur: context.handleBlur,
-            touched,
-            error,
-            required: isRequired
-          }
-        );
-      case "time":
-        return /* @__PURE__ */ jsx11(
-          ITTimePicker,
-          {
-            name,
-            disabled: isDisabled,
-            label: label || "",
-            value,
-            onChange: handleChangeWrapper,
-            placeholder,
-            onBlur: context.handleBlur,
-            touched,
-            error,
-            required: isRequired
-          }
-        );
-      case "custom":
-        if (activeConfig.component) {
-          const CustomComponent = activeConfig.component;
-          return /* @__PURE__ */ jsx11(
-            CustomComponent,
-            {
-              ...activeConfig,
-              value,
-              onChange: handleChangeWrapper,
-              onBlur: context.handleBlur,
-              error,
-              touched,
-              context
-            }
-          );
-        }
-        return null;
-      case "section":
-        return /* @__PURE__ */ jsxs9(
-          "div",
-          {
-            className: clsx8(
-              "w-full col-span-full",
-              activeConfig.className
-            ),
-            children: [
-              label && /* @__PURE__ */ jsx11("h4", { className: "text-lg font-semibold text-gray-800 mb-4", children: label }),
-              /* @__PURE__ */ jsx11(
-                "div",
-                {
-                  className: clsx8(
-                    "grid gap-y-6 gap-x-5",
-                    getGridColsClass(columns)
-                  ),
-                  children: activeConfig.fields?.map((childConfig) => /* @__PURE__ */ jsx11(
-                    ITFieldRenderer,
-                    {
-                      config: childConfig,
-                      columns
-                    },
-                    childConfig.name
-                  ))
-                }
-              )
-            ]
-          }
-        );
-      case "array":
-        return /* @__PURE__ */ jsx11("div", { className: "p-4 border-2 border-dashed border-gray-200 rounded-xl", children: /* @__PURE__ */ jsxs9("p", { className: "text-sm text-gray-500 text-center", children: [
-          "Array Field: ",
-          label
-        ] }) });
-      default:
-        return null;
-    }
-  };
-  return /* @__PURE__ */ jsx11(
-    "div",
-    {
-      className: clsx8(
-        getColSpanClass(activeConfig.column, columns),
-        activeConfig.className
-      ),
-      children: renderField()
-    }
-  );
-};
-var fieldRenderer_default = memo(ITFieldRenderer);
-
-// src/components/form-builder/formBuilder.tsx
-import { jsx as jsx12 } from "react/jsx-runtime";
-var gridColsClasses2 = {
-  1: "grid-cols-1",
-  2: "grid-cols-2",
-  3: "grid-cols-3",
-  4: "grid-cols-4",
-  6: "grid-cols-6",
-  8: "grid-cols-8",
-  12: "grid-cols-12"
-};
-var getGridColsClass2 = (columns) => gridColsClasses2[columns] || "grid-cols-12";
-var getColSpanClass2 = (span, maxCols) => {
-  if (Array.isArray(span)) {
-    const [sm, md, lg] = span;
-    return `col-span-${Math.min(sm, maxCols)} md:col-span-${Math.min(
-      md,
-      maxCols
-    )} lg:col-span-${Math.min(lg, maxCols)}`;
-  } else {
-    return `col-span-${Math.min(span, maxCols)}`;
-  }
-};
-function ITFormBuilder({
-  fields,
-  config,
-  columns = 12,
-  values,
-  handleChange,
-  handleBlur,
-  touched,
-  errors,
-  setFieldValue = () => Promise.resolve(),
-  setFieldTouched = () => Promise.resolve(),
-  setFieldError = () => {
-  },
-  isSubmitting = false
-}) {
-  const [mounted, setMounted] = useState10(false);
-  useEffect10(() => {
-    setMounted(true);
-  }, []);
-  const providerValue = useMemo3(() => ({
-    config: config || [],
-    values: values || {},
-    errors: errors || {},
-    touched: touched || {},
-    handleChange,
-    handleBlur,
-    setFieldValue,
-    setFieldTouched,
-    setFieldError,
-    initialValues: {},
-    // Can be expanded later if Formik exposes it
-    isSubmitting,
-    isValidating: false,
-    submitCount: 0
-  }), [config, values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched, setFieldError, isSubmitting]);
-  if (config) {
-    return /* @__PURE__ */ jsx12(ITFormBuilderProvider, { value: providerValue, children: /* @__PURE__ */ jsx12("div", { className: clsx9("grid gap-y-6 gap-x-5", getGridColsClass2(columns)), children: config.map((fieldConfig) => /* @__PURE__ */ jsx12(fieldRenderer_default, { config: fieldConfig, columns }, fieldConfig.name)) }) });
-  }
-  return /* @__PURE__ */ jsx12(
-    "div",
-    {
-      className: clsx9(
-        "grid gap-y-6 gap-x-5",
-        getGridColsClass2(columns)
-      ),
-      children: fields?.map(
-        ({
-          name,
-          label,
-          type = "text",
-          placeholder,
-          required,
-          column = 12,
-          options,
-          valueField,
-          disabled = false,
-          labelField,
-          showHintLength,
-          formatNumber = true,
-          onChangeAction,
-          ...props
-        }, index) => /* @__PURE__ */ jsx12(
-          "div",
-          {
-            className: getColSpanClass2(column, columns),
-            children: (() => {
-              switch (type) {
-                case "text":
-                case "number":
-                case "password":
-                  return /* @__PURE__ */ jsx12(
-                    ITInput,
-                    {
-                      type,
-                      name,
-                      label,
-                      placeholder,
-                      disabled,
-                      value: values[name],
-                      onChange: (e) => {
-                        handleChange(e);
-                        if (onChangeAction && setFieldValue) {
-                          onChangeAction(e.target.value, setFieldValue);
-                        }
-                      },
-                      onBlur: handleBlur,
-                      currencyFormat: props.currencyFormat,
-                      touched: touched[name],
-                      error: errors[name],
-                      required,
-                      iconRight: props.rightIcon,
-                      iconLeft: props.leftIcon,
-                      showHintLength,
-                      maxLength: props.maxLength,
-                      minLength: props.minLength,
-                      rows: props.rows,
-                      formatNumber
-                    }
-                  );
-                case "select":
-                  return /* @__PURE__ */ jsx12(
-                    ITSelect,
-                    {
-                      options: options || [],
-                      name,
-                      disabled,
-                      label,
-                      placeholder,
-                      value: values[name],
-                      valueField,
-                      labelField,
-                      onChange: (e) => {
-                        handleChange(e);
-                        if (onChangeAction && setFieldValue) {
-                          onChangeAction(e.target.value, setFieldValue);
-                        }
-                      },
-                      onBlur: handleBlur,
-                      touched: touched[name],
-                      error: errors[name],
-                      required
-                    }
-                  );
-                case "date":
-                  return /* @__PURE__ */ jsx12(
-                    ITDatePicker,
-                    {
-                      name,
-                      disabled,
-                      label,
-                      value: values[name],
-                      onChange: (e) => {
-                        handleChange(e);
-                        if (onChangeAction && setFieldValue) {
-                          onChangeAction(e.target.value, setFieldValue);
-                        }
-                      },
-                      placeholder,
-                      onBlur: handleBlur,
-                      touched: touched[name],
-                      error: errors[name],
-                      required
-                    }
-                  );
-                default:
-                  return null;
-              }
-            })()
-          },
-          name
-        )
-      )
-    }
-  );
-}
-
-// src/components/slide/slide.tsx
-import { useState as useState11, useEffect as useEffect11 } from "react";
-import clsx10 from "clsx";
-import { jsx as jsx13 } from "react/jsx-runtime";
-function ITSlideToggle({
-  onToggle,
-  isOn: controlledIsOn,
-  initialState = false,
-  activeColor = "success",
-  inactiveColor = "#9ca3af",
-  // default gray-400
-  disabled = false,
-  size = "md",
-  className = ""
-}) {
-  const isControlled = controlledIsOn !== void 0;
-  const [internalIsOn, setInternalIsOn] = useState11(initialState);
-  useEffect11(() => {
-    if (isControlled) {
-      setInternalIsOn(controlledIsOn);
-    }
-  }, [controlledIsOn, isControlled]);
-  const isOn = isControlled ? controlledIsOn : internalIsOn;
-  const toggleSwitch = () => {
-    if (disabled) return;
-    const newState = !isOn;
-    if (!isControlled) {
-      setInternalIsOn(newState);
-    }
-    if (onToggle) {
-      onToggle(newState);
-    }
-  };
-  const isThemeColor = activeColor in theme.colors;
-  const resolvedActiveColor = isThemeColor ? theme.colors[activeColor][500] : activeColor;
-  const isInactiveThemeColor = inactiveColor in theme.colors;
-  const resolvedInactiveColor = isInactiveThemeColor ? theme.colors[inactiveColor][400] : inactiveColor;
-  const backgroundColor = isOn ? resolvedActiveColor : resolvedInactiveColor;
-  const sizeClasses2 = {
-    sm: {
-      container: "w-10 h-5",
-      knob: "w-3.5 h-3.5",
-      translate: "translate-x-5"
-    },
-    md: {
-      container: "w-14 h-7",
-      knob: "w-5 h-5",
-      translate: "translate-x-7"
-    },
-    lg: {
-      container: "w-16 h-8",
-      knob: "w-6 h-6",
-      translate: "translate-x-8"
-    }
-  };
-  const { container, knob, translate } = sizeClasses2[size];
-  return /* @__PURE__ */ jsx13(
-    "div",
-    {
-      onClick: toggleSwitch,
-      className: clsx10(
-        "flex items-center rounded-full p-1 transition-colors duration-300",
-        container,
-        disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
-        className
-      ),
-      style: { backgroundColor },
-      role: "switch",
-      "aria-checked": isOn,
-      tabIndex: disabled ? -1 : 0,
-      onKeyDown: (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          toggleSwitch();
-        }
-      },
-      children: /* @__PURE__ */ jsx13(
-        "div",
-        {
-          className: clsx10(
-            "bg-white rounded-full shadow-md transform transition-transform duration-300 pointer-events-none",
-            knob,
-            isOn ? translate : "translate-x-0"
-          )
-        }
-      )
-    }
-  );
-}
-
-// src/types/table.types.ts
-var variantStyles = {
-  default: "",
-  striped: "divide-y divide-gray-200",
-  bordered: "border border-gray-200"
-};
-var sizeStyles = {
-  sm: "text-xs",
-  md: "text-sm",
-  lg: "text-lg"
-};
-
-// src/components/table/table.tsx
-import clsx12 from "clsx";
-import React7, { useState as useState12 } from "react";
-import {
-  FaCheck,
-  FaSpinner,
-  FaTimes as FaTimes2
-} from "react-icons/fa";
-import { MdOutlineSwapVert } from "react-icons/md";
-
 // src/components/pagination/pagination.tsx
-import React6 from "react";
-import clsx11 from "clsx";
-import { FaChevronLeft as FaChevronLeft2, FaChevronRight as FaChevronRight2 } from "react-icons/fa";
-import { Fragment as Fragment3, jsx as jsx14, jsxs as jsxs10 } from "react/jsx-runtime";
+import { Fragment as Fragment2, jsx as jsx7, jsxs as jsxs5 } from "react/jsx-runtime";
 var DOTS = "...";
 var usePagination = ({
   totalPages,
   currentPage,
   siblingCount = 1
 }) => {
-  return React6.useMemo(() => {
+  return React2.useMemo(() => {
     const totalPageNumbers = siblingCount + 5;
     if (totalPageNumbers >= totalPages) {
       return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -2767,22 +1721,22 @@ function ITPagination({
     }
   };
   const baseItemClass = "flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium transition-colors cursor-pointer select-none";
-  const renderPaginationControls = () => /* @__PURE__ */ jsxs10("div", { className: "flex items-center gap-1", children: [
-    /* @__PURE__ */ jsx14(
+  const renderPaginationControls = () => /* @__PURE__ */ jsxs5("div", { className: "flex items-center gap-1", children: [
+    /* @__PURE__ */ jsx7(
       "div",
       {
-        className: clsx11(
+        className: clsx7(
           baseItemClass,
           currentPage === 1 ? "text-gray-300 cursor-not-allowed" : "text-gray-500 hover:bg-gray-100"
         ),
         onClick: handlePrevious,
         "aria-disabled": currentPage === 1,
-        children: /* @__PURE__ */ jsx14(FaChevronLeft2, { size: 12 })
+        children: /* @__PURE__ */ jsx7(FaChevronLeft2, { size: 12 })
       }
     ),
     paginationRange?.map((pageNumber, idx) => {
       if (pageNumber === DOTS) {
-        return /* @__PURE__ */ jsx14(
+        return /* @__PURE__ */ jsx7(
           "div",
           {
             className: "flex items-center justify-center w-8 h-8 select-none text-gray-400",
@@ -2792,10 +1746,10 @@ function ITPagination({
         );
       }
       const isActive = pageNumber === currentPage;
-      return /* @__PURE__ */ jsx14(
+      return /* @__PURE__ */ jsx7(
         "div",
         {
-          className: clsx11(
+          className: clsx7(
             baseItemClass,
             isActive ? "text-white" : "text-gray-600 hover:bg-gray-100"
           ),
@@ -2810,27 +1764,27 @@ function ITPagination({
         pageNumber
       );
     }),
-    /* @__PURE__ */ jsx14(
+    /* @__PURE__ */ jsx7(
       "div",
       {
-        className: clsx11(
+        className: clsx7(
           baseItemClass,
           currentPage === totalPages ? "text-gray-300 cursor-not-allowed" : "text-gray-500 hover:bg-gray-100"
         ),
         onClick: handleNext,
         "aria-disabled": currentPage === totalPages,
-        children: /* @__PURE__ */ jsx14(FaChevronRight2, { size: 12 })
+        children: /* @__PURE__ */ jsx7(FaChevronRight2, { size: 12 })
       }
     )
   ] });
   if (itemsPerPageOptions && itemsPerPage && onItemsPerPageChange) {
     const startItem = Math.min((currentPage - 1) * itemsPerPage + 1, totalItems || 0);
     const endItem = Math.min(currentPage * itemsPerPage, totalItems || 0);
-    return /* @__PURE__ */ jsxs10("div", { className: clsx11("flex flex-col sm:flex-row justify-between items-center gap-4 w-full", className), children: [
-      /* @__PURE__ */ jsxs10("div", { className: "flex items-center gap-4 text-sm text-gray-500", children: [
-        /* @__PURE__ */ jsxs10("div", { className: "flex items-center gap-2 bg-gray-50 px-3 py-1 rounded-lg border border-gray-200", children: [
-          /* @__PURE__ */ jsx14("span", { className: "text-xs font-medium", children: "Mostrar" }),
-          /* @__PURE__ */ jsx14(
+    return /* @__PURE__ */ jsxs5("div", { className: clsx7("flex flex-col sm:flex-row justify-between items-center gap-4 w-full", className), children: [
+      /* @__PURE__ */ jsxs5("div", { className: "flex items-center gap-4 text-sm text-gray-500", children: [
+        /* @__PURE__ */ jsxs5("div", { className: "flex items-center gap-2 bg-gray-50 px-3 py-1 rounded-lg border border-gray-200", children: [
+          /* @__PURE__ */ jsx7("span", { className: "text-xs font-medium", children: "Mostrar" }),
+          /* @__PURE__ */ jsx7(
             ITSelect,
             {
               name: "itemsPerPage",
@@ -2848,25 +1802,33 @@ function ITPagination({
             }
           )
         ] }),
-        totalItems !== void 0 && /* @__PURE__ */ jsxs10(Fragment3, { children: [
-          /* @__PURE__ */ jsx14("span", { className: "text-gray-300", children: "|" }),
-          /* @__PURE__ */ jsxs10("span", { className: "text-xs", children: [
-            /* @__PURE__ */ jsx14("span", { className: "font-semibold text-gray-700", children: startItem }),
+        totalItems !== void 0 && /* @__PURE__ */ jsxs5(Fragment2, { children: [
+          /* @__PURE__ */ jsx7("span", { className: "text-gray-300", children: "|" }),
+          /* @__PURE__ */ jsxs5("span", { className: "text-xs", children: [
+            /* @__PURE__ */ jsx7("span", { className: "font-semibold text-gray-700", children: startItem }),
             " - ",
-            /* @__PURE__ */ jsx14("span", { className: "font-semibold text-gray-700", children: endItem }),
+            /* @__PURE__ */ jsx7("span", { className: "font-semibold text-gray-700", children: endItem }),
             " de ",
-            /* @__PURE__ */ jsx14("span", { className: "font-semibold text-gray-900", children: totalItems })
+            /* @__PURE__ */ jsx7("span", { className: "font-semibold text-gray-900", children: totalItems })
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsx14("nav", { "aria-label": "Pagination", children: renderPaginationControls() })
+      /* @__PURE__ */ jsx7("nav", { "aria-label": "Pagination", children: renderPaginationControls() })
     ] });
   }
-  return /* @__PURE__ */ jsx14("nav", { "aria-label": "Pagination", className: clsx11("inline-flex", className), children: renderPaginationControls() });
+  return /* @__PURE__ */ jsx7("nav", { "aria-label": "Pagination", className: clsx7("inline-flex", className), children: renderPaginationControls() });
 }
 
 // src/components/table/table.tsx
-import { jsx as jsx15, jsxs as jsxs11 } from "react/jsx-runtime";
+import clsx8 from "clsx";
+import React3, { useState as useState6 } from "react";
+import {
+  FaCheck,
+  FaSpinner,
+  FaTimes
+} from "react-icons/fa";
+import { MdOutlineSwapVert } from "react-icons/md";
+import { jsx as jsx8, jsxs as jsxs6 } from "react/jsx-runtime";
 var getNestedValue = (obj, path) => {
   return path.split(".").reduce((acc, part) => acc && acc[part], obj);
 };
@@ -2887,11 +1849,11 @@ function ITTable({
   defaultItemsPerPage = 10,
   title
 }) {
-  const [currentPage, setCurrentPage] = useState12(1);
-  const [itemsPerPage, setItemsPerPage] = useState12(defaultItemsPerPage);
-  const [filters, setFilters] = useState12({});
-  const [sortConfig, setSortConfig] = useState12(null);
-  const sortedData = React7.useMemo(() => {
+  const [currentPage, setCurrentPage] = useState6(1);
+  const [itemsPerPage, setItemsPerPage] = useState6(defaultItemsPerPage);
+  const [filters, setFilters] = useState6({});
+  const [sortConfig, setSortConfig] = useState6(null);
+  const sortedData = React3.useMemo(() => {
     const safeData = Array.isArray(data) ? data : [];
     if (!sortConfig) return safeData;
     return [...safeData].sort((a, b) => {
@@ -2999,17 +1961,17 @@ function ITTable({
         if (currentValue === true) return "Filtrar solo verdaderos";
         return "Filtrar solo falsos";
       };
-      return /* @__PURE__ */ jsx15(
+      return /* @__PURE__ */ jsx8(
         "button",
         {
           className: "flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 rounded-full p-1 transition-all duration-200",
           onClick: () => handleFilterChange(col.key, nextValue),
           "aria-label": `${getToggleLabel()} para ${col.label}`,
           title: `${getToggleLabel()} para ${col.label}`,
-          children: /* @__PURE__ */ jsx15("div", { className: "relative w-10 h-5 bg-gray-300 rounded-full", children: /* @__PURE__ */ jsx15(
+          children: /* @__PURE__ */ jsx8("div", { className: "relative w-10 h-5 bg-gray-300 rounded-full", children: /* @__PURE__ */ jsx8(
             "div",
             {
-              className: clsx12(
+              className: clsx8(
                 "absolute top-0.5 w-4 h-4 rounded-full transition-all duration-300 shadow-sm",
                 {
                   "left-0.5 bg-gray-400": currentValue === void 0,
@@ -3024,7 +1986,7 @@ function ITTable({
     }
     if (col.filter === "catalog" && col.catalogOptions) {
       if (col.catalogOptions.loading) {
-        return /* @__PURE__ */ jsx15(
+        return /* @__PURE__ */ jsx8(
           FaSpinner,
           {
             className: "animate-spin",
@@ -3034,9 +1996,9 @@ function ITTable({
         );
       }
       if (col.catalogOptions.error) {
-        return /* @__PURE__ */ jsx15("span", { className: "text-red-500 text-xs", children: "Error cargando" });
+        return /* @__PURE__ */ jsx8("span", { className: "text-red-500 text-xs", children: "Error cargando" });
       }
-      return /* @__PURE__ */ jsx15(
+      return /* @__PURE__ */ jsx8(
         ITSelect,
         {
           name: `filter-${col.key}`,
@@ -3058,7 +2020,7 @@ function ITTable({
         }
       );
     }
-    return /* @__PURE__ */ jsx15(
+    return /* @__PURE__ */ jsx8(
       ITInput,
       {
         name: `filter-${col.key}`,
@@ -3080,15 +2042,15 @@ function ITTable({
       case "number":
         return typeof value === "number" && col.currencyMX ? formatCurrencyMX(value) : value;
       case "boolean":
-        return value ? /* @__PURE__ */ jsx15(
+        return value ? /* @__PURE__ */ jsx8(
           FaCheck,
           {
             className: "text-green-500",
             "aria-label": "Verdadero",
             title: "Verdadero"
           }
-        ) : /* @__PURE__ */ jsx15(
-          FaTimes2,
+        ) : /* @__PURE__ */ jsx8(
+          FaTimes,
           {
             className: "text-red-500",
             "aria-label": "Falso",
@@ -3109,62 +2071,62 @@ function ITTable({
         return value;
     }
   };
-  return /* @__PURE__ */ jsx15("div", { className: clsx12("space-y-4 w-full", containerClassName), children: /* @__PURE__ */ jsxs11("div", { className: "bg-white rounded-xl shadow-sm border border-secondary-200 overflow-hidden", children: [
-    title && /* @__PURE__ */ jsx15("div", { className: "bg-white px-6 py-5 border-b border-secondary-100", children: /* @__PURE__ */ jsx15("h2", { className: "text-xl font-bold text-secondary-900 leading-tight", children: title }) }),
-    /* @__PURE__ */ jsx15("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxs11(
+  return /* @__PURE__ */ jsx8("div", { className: clsx8("space-y-4 w-full", containerClassName), children: /* @__PURE__ */ jsxs6("div", { className: "bg-white rounded-xl shadow-sm border border-secondary-200 overflow-hidden", children: [
+    title && /* @__PURE__ */ jsx8("div", { className: "bg-white px-6 py-5 border-b border-secondary-100", children: /* @__PURE__ */ jsx8("h2", { className: "text-xl font-bold text-secondary-900 leading-tight", children: title }) }),
+    /* @__PURE__ */ jsx8("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxs6(
       "table",
       {
-        className: clsx12(
+        className: clsx8(
           "min-w-max w-full text-sm text-left text-secondary-600",
           variantStyles[variant],
           sizeStyles[size]
         ),
         children: [
-          /* @__PURE__ */ jsx15("thead", { children: /* @__PURE__ */ jsx15("tr", { className: "bg-secondary-50 border-b border-secondary-200 text-xs uppercase tracking-wider font-semibold text-secondary-500", children: columns.map((col) => /* @__PURE__ */ jsx15(
+          /* @__PURE__ */ jsx8("thead", { children: /* @__PURE__ */ jsx8("tr", { className: "bg-secondary-50 border-b border-secondary-200 text-xs uppercase tracking-wider font-semibold text-secondary-500", children: columns.map((col) => /* @__PURE__ */ jsx8(
             "th",
             {
               scope: "col",
-              className: clsx12("px-4 py-4 align-top", col.className),
-              children: /* @__PURE__ */ jsxs11("div", { className: "flex flex-col gap-3 min-w-[150px]", children: [
-                /* @__PURE__ */ jsxs11("div", { className: "flex items-center justify-between gap-2", children: [
-                  /* @__PURE__ */ jsx15("span", { className: "text-secondary-700 font-bold", children: col.label }),
-                  col.sortable && col.type !== "actions" && /* @__PURE__ */ jsx15(
+              className: clsx8("px-4 py-4 align-top", col.className),
+              children: /* @__PURE__ */ jsxs6("div", { className: "flex flex-col gap-3 min-w-[150px]", children: [
+                /* @__PURE__ */ jsxs6("div", { className: "flex items-center justify-between gap-2", children: [
+                  /* @__PURE__ */ jsx8("span", { className: "text-secondary-700 font-bold", children: col.label }),
+                  col.sortable && col.type !== "actions" && /* @__PURE__ */ jsx8(
                     "button",
                     {
                       onClick: () => handleSort(col.key),
                       className: `p-1 rounded-md transition-colors ${sortConfig?.key === col.key ? "bg-secondary-200 text-secondary-900" : "hover:bg-secondary-200 text-secondary-400 hover:text-secondary-700"}`,
                       title: `Ordenar por ${col.label}`,
-                      children: /* @__PURE__ */ jsx15(MdOutlineSwapVert, { className: "w-4 h-4", "aria-hidden": "true" })
+                      children: /* @__PURE__ */ jsx8(MdOutlineSwapVert, { className: "w-4 h-4", "aria-hidden": "true" })
                     }
                   )
                 ] }),
-                /* @__PURE__ */ jsx15("div", { className: "w-full", children: col.filter ? renderFilterInput(col) : null })
+                /* @__PURE__ */ jsx8("div", { className: "w-full", children: col.filter ? renderFilterInput(col) : null })
               ] })
             },
             col.key
           )) }) }),
-          /* @__PURE__ */ jsx15("tbody", { className: "divide-y divide-secondary-100", children: currentData.length > 0 ? currentData.map((row, rowIndex) => /* @__PURE__ */ jsx15(
+          /* @__PURE__ */ jsx8("tbody", { className: "divide-y divide-secondary-100", children: currentData.length > 0 ? currentData.map((row, rowIndex) => /* @__PURE__ */ jsx8(
             "tr",
             {
               className: "hover:bg-secondary-50/50 transition-colors duration-150 group",
-              children: columns.map((col) => /* @__PURE__ */ jsx15(
+              children: columns.map((col) => /* @__PURE__ */ jsx8(
                 "td",
                 {
-                  className: clsx12("px-4 py-3 align-middle", col.className),
-                  children: col.type === "actions" ? /* @__PURE__ */ jsx15("div", { className: "flex items-center justify-center gap-2", children: renderCellContent(col, row) }) : /* @__PURE__ */ jsx15("div", { className: "text-secondary-700 font-medium", children: renderCellContent(col, row) })
+                  className: clsx8("px-4 py-3 align-middle", col.className),
+                  children: col.type === "actions" ? /* @__PURE__ */ jsx8("div", { className: "flex items-center justify-center gap-2", children: renderCellContent(col, row) }) : /* @__PURE__ */ jsx8("div", { className: "text-secondary-700 font-medium", children: renderCellContent(col, row) })
                 },
                 `${rowIndex}-${col.key}`
               ))
             },
             rowIndex
-          )) : /* @__PURE__ */ jsx15("tr", { children: /* @__PURE__ */ jsx15("td", { colSpan: columns.length, className: "px-6 py-12 text-center", children: /* @__PURE__ */ jsxs11("div", { className: "flex flex-col items-center justify-center text-secondary-400", children: [
-            /* @__PURE__ */ jsx15("span", { className: "text-lg", children: "No se encontraron resultados" }),
-            /* @__PURE__ */ jsx15("span", { className: "text-sm mt-1", children: "Intenta ajustar los filtros" })
+          )) : /* @__PURE__ */ jsx8("tr", { children: /* @__PURE__ */ jsx8("td", { colSpan: columns.length, className: "px-6 py-12 text-center", children: /* @__PURE__ */ jsxs6("div", { className: "flex flex-col items-center justify-center text-secondary-400", children: [
+            /* @__PURE__ */ jsx8("span", { className: "text-lg", children: "No se encontraron resultados" }),
+            /* @__PURE__ */ jsx8("span", { className: "text-sm mt-1", children: "Intenta ajustar los filtros" })
           ] }) }) }) })
         ]
       }
     ) }),
-    /* @__PURE__ */ jsx15("div", { className: "bg-white rounded-b-xl border-t border-secondary-200 px-6 py-4", children: /* @__PURE__ */ jsx15(
+    /* @__PURE__ */ jsx8("div", { className: "bg-white rounded-b-xl border-t border-secondary-200 px-6 py-4", children: /* @__PURE__ */ jsx8(
       ITPagination,
       {
         currentPage,
@@ -3180,98 +2142,1409 @@ function ITTable({
   ] }) });
 }
 
-// src/types/toast.types.ts
-var positionStyles = {
-  "top-right": "top-4 right-4",
-  "top-center": "top-4 left-1/2 transform -translate-x-1/2",
-  "top-left": "top-4 left-4",
-  "bottom-right": "bottom-4 right-4",
-  "bottom-center": "bottom-4 left-1/2 transform -translate-x-1/2",
-  "bottom-left": "bottom-4 left-4"
+// src/components/data-table/dataTable.tsx
+import { Fragment as Fragment3, jsx as jsx9, jsxs as jsxs7 } from "react/jsx-runtime";
+var getNestedValue2 = (obj, path) => {
+  return path.split(".").reduce((acc, part) => acc && acc[part], obj);
 };
-
-// src/components/toast/toast.tsx
-import clsx13 from "clsx";
-import { useEffect as useEffect12, useState as useState13 } from "react";
-import { FaTimesCircle, FaCheckCircle, FaExclamationTriangle, FaInfoCircle, FaTimes as FaTimes3 } from "react-icons/fa";
-import { jsx as jsx16, jsxs as jsxs12 } from "react/jsx-runtime";
-function ITToast({
-  message,
-  type = "info",
-  duration = 1500,
-  position = "top-right",
-  onClose
+var EMPTY_OBJECT = {};
+function ITDataTable({
+  columns,
+  fetchData,
+  debounceMs = 500,
+  externalFilters = EMPTY_OBJECT,
+  loadingIndicator,
+  fetchOnMount = true,
+  reloadTrigger,
+  containerClassName,
+  className,
+  variant = "default",
+  size = "md",
+  itemsPerPageOptions = [5, 10, 20],
+  defaultItemsPerPage = 10,
+  title
 }) {
-  const [isVisible, setIsVisible] = useState13(true);
-  useEffect12(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(false);
-      setTimeout(() => {
-        if (onClose) onClose();
-      }, 300);
-    }, duration);
-    return () => clearTimeout(timer);
-  }, [duration, onClose]);
-  const handleClose = () => {
-    setIsVisible(false);
-    setTimeout(() => {
-      if (onClose) onClose();
-    }, 300);
-  };
-  const isThemeColor = type in theme.colors;
-  const backgroundColor = isThemeColor ? theme.colors[type][500] : theme.colors.primary[500];
-  const TypeIcon = () => {
-    switch (type) {
-      case "success":
-        return /* @__PURE__ */ jsx16(FaCheckCircle, { className: "w-5 h-5 flex-shrink-0" });
-      case "error":
-      case "danger":
-        return /* @__PURE__ */ jsx16(FaTimesCircle, { className: "w-5 h-5 flex-shrink-0" });
-      case "warning":
-        return /* @__PURE__ */ jsx16(FaExclamationTriangle, { className: "w-5 h-5 flex-shrink-0" });
-      case "info":
-      default:
-        return /* @__PURE__ */ jsx16(FaInfoCircle, { className: "w-5 h-5 flex-shrink-0" });
+  const [data, setData] = useState7([]);
+  const [totalItems, setTotalItems] = useState7(0);
+  const [isLoading, setIsLoading] = useState7(fetchOnMount);
+  const [currentPage, setCurrentPage] = useState7(1);
+  const [itemsPerPage, setItemsPerPage] = useState7(defaultItemsPerPage);
+  const [filters, setFilters] = useState7({});
+  const [sortConfig, setSortConfig] = useState7(null);
+  const debounceTimerRef = useRef2(null);
+  const performFetch = useCallback2(async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetchData({
+        page: currentPage,
+        limit: itemsPerPage,
+        filters: { ...filters, ...externalFilters },
+        sort: sortConfig || void 0
+      });
+      setData(response.data || []);
+      setTotalItems(response.total || 0);
+    } catch (error) {
+      console.error("ITDataTable: Error fetching data", error);
+      setData([]);
+      setTotalItems(0);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentPage, itemsPerPage, filters, sortConfig, fetchData]);
+  useEffect3(() => {
+    if (!fetchOnMount && data.length === 0 && !isLoading) {
+      return;
+    }
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    debounceTimerRef.current = setTimeout(() => {
+      performFetch();
+    }, debounceMs);
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    };
+  }, [currentPage, itemsPerPage, sortConfig, filters, externalFilters, reloadTrigger, fetchOnMount]);
+  const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
     }
   };
-  return /* @__PURE__ */ jsxs12(
+  const handleItemsPerPageChange = (value) => {
+    setItemsPerPage(value);
+    setCurrentPage(1);
+  };
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => {
+      if (value === void 0 || value === null || value === "") {
+        const newFilters = { ...prev };
+        delete newFilters[key];
+        return newFilters;
+      }
+      return { ...prev, [key]: value };
+    });
+    setCurrentPage(1);
+  };
+  const handleSort = (key) => {
+    const column = columns.find((col) => col.key === key);
+    if (!column || !column.sortable) return;
+    let direction = "asc";
+    if (sortConfig?.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+    setCurrentPage(1);
+  };
+  const renderFilterInput = (col) => {
+    if (!col.filter) return null;
+    if (col.type === "boolean") {
+      const currentValue = filters[col.key];
+      const nextValue = currentValue === void 0 ? true : currentValue === true ? false : void 0;
+      const getToggleLabel = () => {
+        if (currentValue === void 0) return "Mostrar todos";
+        if (currentValue === true) return "Filtrar solo verdaderos";
+        return "Filtrar solo falsos";
+      };
+      return /* @__PURE__ */ jsx9(
+        "button",
+        {
+          className: "flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 rounded-full p-1 transition-all duration-200",
+          onClick: () => handleFilterChange(col.key, nextValue),
+          "aria-label": `${getToggleLabel()} para ${col.label}`,
+          title: `${getToggleLabel()} para ${col.label}`,
+          disabled: isLoading,
+          children: /* @__PURE__ */ jsx9("div", { className: "relative w-10 h-5 bg-gray-300 rounded-full", children: /* @__PURE__ */ jsx9(
+            "div",
+            {
+              className: clsx9(
+                "absolute top-0.5 w-4 h-4 rounded-full transition-all duration-300 shadow-sm",
+                {
+                  "left-0.5 bg-gray-400": currentValue === void 0,
+                  "left-5 bg-slate-500": currentValue === true,
+                  "left-0.5 bg-gray-500": currentValue === false
+                }
+              )
+            }
+          ) })
+        }
+      );
+    }
+    if (col.filter === "catalog" && col.catalogOptions) {
+      if (col.catalogOptions.loading) {
+        return /* @__PURE__ */ jsx9(FaSpinner2, { className: "animate-spin", "aria-label": "Cargando opciones", title: "Cargando opciones" });
+      }
+      if (col.catalogOptions.error) {
+        return /* @__PURE__ */ jsx9("span", { className: "text-red-500 text-xs", children: "Error cargando" });
+      }
+      return /* @__PURE__ */ jsx9(
+        ITSelect,
+        {
+          name: `filter-${col.key}`,
+          options: [
+            { value: "", label: "Todos" },
+            ...col.catalogOptions.data.map((item) => ({
+              value: String(item.id),
+              label: item.name
+            }))
+          ],
+          value: String(filters[col.key] || ""),
+          onChange: (e) => {
+            const value = e.target.value === "" ? void 0 : e.target.value;
+            handleFilterChange(col.key, value);
+          },
+          onBlur: () => {
+          },
+          className: "w-full text-xs",
+          disabled: isLoading
+        }
+      );
+    }
+    return /* @__PURE__ */ jsx9(
+      ITInput,
+      {
+        name: `filter-${col.key}`,
+        className: "w-full text-xs",
+        placeholder: "Buscar...",
+        value: String(filters[col.key] || ""),
+        onChange: (e) => handleFilterChange(col.key, e.target.value),
+        onBlur: () => {
+        },
+        disabled: isLoading
+      }
+    );
+  };
+  const renderCellContent = (col, row) => {
+    const value = getNestedValue2(row, col.key);
+    if (col.render) return col.render(row);
+    switch (col.type) {
+      case "number":
+        return typeof value === "number" && col.currencyMX ? formatCurrencyMX(value) : value;
+      case "boolean":
+        return value ? /* @__PURE__ */ jsx9(FaCheck2, { className: "text-green-500", "aria-label": "Verdadero", title: "Verdadero" }) : /* @__PURE__ */ jsx9(FaTimes2, { className: "text-red-500", "aria-label": "Falso", title: "Falso" });
+      case "actions":
+        return col.actions ? col.actions(row) : null;
+      case "catalog":
+        if (col.catalogOptions) {
+          const catalogItem = col.catalogOptions.data.find((item) => item.id === value);
+          return catalogItem?.name || value;
+        }
+        return value;
+      default:
+        return value;
+    }
+  };
+  return /* @__PURE__ */ jsxs7("div", { className: clsx9("space-y-4 w-full relative", containerClassName), children: [
+    /* @__PURE__ */ jsxs7("div", { className: "bg-white rounded-xl shadow-sm border border-secondary-200 overflow-hidden", children: [
+      title && /* @__PURE__ */ jsxs7("div", { className: "bg-white px-6 py-5 border-b border-secondary-100 flex justify-between items-center", children: [
+        /* @__PURE__ */ jsx9("h2", { className: "text-xl font-bold text-secondary-900 leading-tight", children: title }),
+        isLoading && /* @__PURE__ */ jsx9("div", { className: "text-secondary-400", children: loadingIndicator || /* @__PURE__ */ jsx9(FaSpinner2, { className: "animate-spin text-primary-500 text-xl" }) })
+      ] }),
+      /* @__PURE__ */ jsxs7("div", { className: "overflow-x-auto relative min-h-[200px]", children: [
+        isLoading && /* @__PURE__ */ jsx9("div", { className: "absolute inset-0 z-20 flex items-center justify-center bg-white/40 backdrop-blur-[2px] transition-all duration-300", children: /* @__PURE__ */ jsx9("div", { className: "flex flex-col items-center gap-3 bg-white p-6 rounded-2xl shadow-xl border border-secondary-100 animate-in fade-in zoom-in duration-300", children: loadingIndicator || /* @__PURE__ */ jsxs7(Fragment3, { children: [
+          /* @__PURE__ */ jsx9(FaSpinner2, { className: "animate-spin text-primary-500 text-4xl" }),
+          /* @__PURE__ */ jsx9("span", { className: "text-sm font-semibold text-secondary-600 animate-pulse", children: "Cargando datos..." })
+        ] }) }) }),
+        /* @__PURE__ */ jsxs7(
+          "table",
+          {
+            className: clsx9(
+              "min-w-max w-full text-sm text-left text-secondary-600 transition-opacity duration-300",
+              isLoading ? "opacity-50" : "opacity-100",
+              variantStyles[variant],
+              sizeStyles[size],
+              className
+            ),
+            children: [
+              /* @__PURE__ */ jsx9("thead", { children: /* @__PURE__ */ jsx9("tr", { className: "bg-secondary-50 border-b border-secondary-200 text-xs uppercase tracking-wider font-semibold text-secondary-500", children: columns.map((col) => /* @__PURE__ */ jsx9("th", { scope: "col", className: clsx9("px-4 py-4 align-top", col.className), children: /* @__PURE__ */ jsxs7("div", { className: "flex flex-col gap-3 min-w-[150px]", children: [
+                /* @__PURE__ */ jsxs7("div", { className: "flex items-center justify-between gap-2", children: [
+                  /* @__PURE__ */ jsx9("span", { className: "text-secondary-700 font-bold", children: col.label }),
+                  col.sortable && col.type !== "actions" && /* @__PURE__ */ jsx9(
+                    "button",
+                    {
+                      onClick: () => handleSort(col.key),
+                      disabled: isLoading,
+                      className: `p-1 rounded-md transition-colors ${sortConfig?.key === col.key ? "bg-secondary-200 text-secondary-900" : "hover:bg-secondary-200 text-secondary-400 hover:text-secondary-700"} disabled:opacity-50`,
+                      title: `Ordenar por ${col.label}`,
+                      children: /* @__PURE__ */ jsx9(MdOutlineSwapVert2, { className: "w-4 h-4", "aria-hidden": "true" })
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsx9("div", { className: "w-full", children: col.filter ? renderFilterInput(col) : null })
+              ] }) }, col.key)) }) }),
+              /* @__PURE__ */ jsx9("tbody", { className: "divide-y divide-secondary-100", children: data.length > 0 ? data.map((row, rowIndex) => /* @__PURE__ */ jsx9("tr", { className: "hover:bg-secondary-50/50 transition-colors duration-150 group", children: columns.map((col) => /* @__PURE__ */ jsx9("td", { className: clsx9("px-4 py-3 align-middle", col.className), children: col.type === "actions" ? /* @__PURE__ */ jsx9("div", { className: "flex items-center justify-center gap-2", children: renderCellContent(col, row) }) : /* @__PURE__ */ jsx9("div", { className: "text-secondary-700 font-medium", children: renderCellContent(col, row) }) }, `${rowIndex}-${col.key}`)) }, rowIndex)) : /* @__PURE__ */ jsx9("tr", { children: /* @__PURE__ */ jsx9("td", { colSpan: columns.length, className: "px-6 py-20 text-center", children: !isLoading && /* @__PURE__ */ jsxs7("div", { className: "flex flex-col items-center justify-center text-secondary-400", children: [
+                /* @__PURE__ */ jsx9("span", { className: "text-lg", children: "No se encontraron resultados" }),
+                /* @__PURE__ */ jsx9("span", { className: "text-sm mt-1", children: "Intenta ajustar los filtros" })
+              ] }) }) }) })
+            ]
+          }
+        )
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx9("div", { className: "bg-white rounded-b-xl border-t border-secondary-200 px-6 py-4", children: /* @__PURE__ */ jsx9(
+      ITPagination,
+      {
+        currentPage,
+        totalPages,
+        onPageChange: goToPage,
+        color: "primary",
+        itemsPerPageOptions,
+        itemsPerPage,
+        onItemsPerPageChange: handleItemsPerPageChange,
+        totalItems
+      }
+    ) })
+  ] });
+}
+
+// src/components/date-picker/datePicker.tsx
+import clsx10 from "clsx";
+import React5, { useEffect as useEffect4, useRef as useRef3, useState as useState8 } from "react";
+import { FaCalendarAlt } from "react-icons/fa";
+import { isBefore as isBefore2 } from "date-fns";
+import { jsx as jsx10, jsxs as jsxs8 } from "react/jsx-runtime";
+function ITDatePicker({
+  name,
+  value,
+  onChange,
+  onBlur,
+  variant = "primary",
+  size = "medium",
+  className,
+  calendarClassName,
+  disabled = false,
+  label,
+  touched,
+  error,
+  required,
+  placeholder,
+  minDate,
+  maxDate,
+  range = false
+}) {
+  const [isOpen, setIsOpen] = useState8(false);
+  const [inputValue, setInputValue] = useState8("");
+  const [isValidDate, setIsValidDate] = useState8(true);
+  const [internalRange, setInternalRange] = useState8([null, null]);
+  const wrapperRef = useRef3(null);
+  const [calendarPosition, setCalendarPosition] = useState8({ top: 0, left: 0 });
+  const dateRange = React5.useMemo(() => {
+    if (range) {
+      if (Array.isArray(value)) return value;
+      return internalRange;
+    }
+    return [value instanceof Date ? value : null, null];
+  }, [value, range, internalRange]);
+  const [startDate, endDate] = dateRange;
+  useEffect4(() => {
+    if (range) {
+      if (startDate && endDate) {
+        setInputValue(`${formatDate(startDate)} - ${formatDate(endDate)}`);
+      } else if (startDate) {
+        setInputValue(`${formatDate(startDate)} - ...`);
+      } else {
+        setInputValue("");
+      }
+    } else {
+      if (startDate instanceof Date && !isNaN(startDate.getTime())) {
+        setInputValue(formatDate(startDate));
+      } else {
+        setInputValue("");
+      }
+    }
+  }, [startDate, endDate, range]);
+  useEffect4(() => {
+    const handleClickOutside = (event) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+  const calculateCalendarPosition = () => {
+    if (wrapperRef.current) {
+      const inputRect = wrapperRef.current.getBoundingClientRect();
+      const calendarHeight = 300;
+      const viewportHeight = window.innerHeight;
+      let top = inputRect.bottom + 4;
+      if (inputRect.bottom + calendarHeight > viewportHeight) {
+        top = inputRect.top - calendarHeight - 4;
+      }
+      setCalendarPosition({
+        top,
+        left: inputRect.left
+      });
+    }
+  };
+  const handleDateChange = (date) => {
+    if (range) {
+      let newRange;
+      if (!startDate || startDate && endDate) {
+        newRange = [date, null];
+      } else {
+        if (isBefore2(date, startDate)) {
+          newRange = [date, startDate];
+        } else {
+          newRange = [startDate, date];
+        }
+      }
+      setInternalRange(newRange);
+      if (newRange[0] && newRange[1]) {
+        onChange({
+          target: {
+            name,
+            value: newRange
+          }
+        });
+        setIsOpen(false);
+      } else {
+        onChange({
+          target: {
+            name,
+            value: newRange
+          }
+        });
+      }
+    } else {
+      const event = {
+        target: {
+          name,
+          value: date
+        }
+      };
+      onChange(event);
+      setInputValue(formatDate(date));
+      setIsOpen(false);
+    }
+  };
+  const handleIconClick = () => {
+    if (!disabled) {
+      calculateCalendarPosition();
+      setIsOpen(!isOpen);
+    }
+  };
+  const formatDate = (date) => date.toLocaleDateString("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+  }).replace(/\//g, "/");
+  const validateDate = (dateString) => {
+    const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const match = dateString.match(regex);
+    if (!match) return false;
+    const day = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10);
+    const year = parseInt(match[3], 10);
+    const date = new Date(year, month - 1, day);
+    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+  };
+  const handleInputChange = (e) => {
+    let val = e.target.value.replace(/\D/g, "");
+    if (val.length > 8) val = val.slice(0, 8);
+    if (val.length > 4) {
+      val = `${val.slice(0, 2)}/${val.slice(2, 4)}/${val.slice(4)}`;
+    } else if (val.length > 2) {
+      val = `${val.slice(0, 2)}/${val.slice(2)}`;
+    }
+    setInputValue(val);
+    if (val.length === 10 && validateDate(val)) {
+      const [day, month, year] = val.split("/").map(Number);
+      const date = new Date(year, month - 1, day);
+      const event = {
+        target: {
+          name,
+          value: date
+        }
+      };
+      onChange(event);
+      onChange(event);
+      setIsValidDate(true);
+    } else {
+      setIsValidDate(false);
+    }
+  };
+  const handleInputBlur = () => {
+    if (range) {
+      return;
+    }
+    if (!validateDate(inputValue)) {
+      const today = /* @__PURE__ */ new Date();
+      setInputValue(formatDate(today));
+      const event = {
+        target: {
+          name,
+          value: today
+        }
+      };
+      onChange(event);
+      setIsValidDate(true);
+    } else {
+      const [day, month, year] = inputValue.split("/").map(Number);
+      const date = new Date(year, month - 1, day);
+      if (!isNaN(date.getTime())) {
+        onBlur?.({ target: { name, value: date } });
+      } else {
+        const today = /* @__PURE__ */ new Date();
+        setInputValue(formatDate(today));
+        onChange({ target: { name, value: today } });
+      }
+    }
+  };
+  return /* @__PURE__ */ jsxs8("div", { ref: wrapperRef, className: clsx10("relative w-full", className), children: [
+    /* @__PURE__ */ jsx10(
+      ITInput,
+      {
+        name,
+        type: "text",
+        label,
+        placeholder,
+        value: inputValue,
+        onChange: handleInputChange,
+        onBlur: handleInputBlur,
+        maxLength: 10,
+        iconRight: /* @__PURE__ */ jsx10("span", { children: /* @__PURE__ */ jsx10(
+          FaCalendarAlt,
+          {
+            onClick: handleIconClick,
+            className: "text-slate-900 cursor-pointer"
+          }
+        ) }),
+        variant,
+        size,
+        disabled,
+        required,
+        touched,
+        error: !isValidDate ? "Fecha inv\xE1lida" : error,
+        onClick: handleIconClick
+      }
+    ),
+    isOpen && /* @__PURE__ */ jsx10(
+      "div",
+      {
+        className: clsx10(
+          "fixed z-[9999]",
+          calendarClassName,
+          range ? "w-[320px]" : "w-[280px]"
+        ),
+        style: {
+          top: `${calendarPosition.top}px`,
+          left: `${calendarPosition.left}px`,
+          backgroundColor: theme.card.backgroundColor,
+          borderColor: theme.card.borderColor,
+          borderWidth: "1px",
+          borderStyle: "solid",
+          borderRadius: theme.card.borderRadius,
+          boxShadow: theme.card.shadow,
+          padding: "0.5rem"
+        },
+        children: /* @__PURE__ */ jsx10(
+          calendar_default,
+          {
+            value: !range ? startDate : void 0,
+            startDate,
+            endDate,
+            selectionMode: range ? "range" : "single",
+            onChange: handleDateChange,
+            minDate,
+            maxDate,
+            className: "h-auto border-none shadow-none w-full"
+          }
+        )
+      }
+    )
+  ] });
+}
+
+// src/components/dialog/dialog.tsx
+import { createPortal } from "react-dom";
+import { useEffect as useEffect6, useRef as useRef4 } from "react";
+import { FaRegTimesCircle } from "react-icons/fa";
+
+// src/hooks/useClickOutside.ts
+import { useEffect as useEffect5 } from "react";
+var useClickOutside = (ref, callback) => {
+  useEffect5(() => {
+    const handleClickOutside = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        callback();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref, callback]);
+};
+var useClickOutside_default = useClickOutside;
+
+// src/components/form-header/form-header.tsx
+import { FaTimes as FaTimes3 } from "react-icons/fa";
+import { jsx as jsx11, jsxs as jsxs9 } from "react/jsx-runtime";
+function ITFormHeader({
+  title,
+  onClose,
+  className = ""
+}) {
+  return /* @__PURE__ */ jsxs9("div", { className: `bg-primary-500 text-white px-6 py-4 rounded-t-lg flex justify-center items-center relative ${className}`, children: [
+    /* @__PURE__ */ jsx11("h2", { className: "text-lg font-semibold text-center", children: title }),
+    onClose && /* @__PURE__ */ jsx11(
+      "button",
+      {
+        onClick: onClose,
+        className: "absolute right-4 text-white hover:text-gray-200 transition-colors duration-200 p-1 rounded-full hover:bg-primary-600",
+        "aria-label": "Cerrar",
+        children: /* @__PURE__ */ jsx11(FaTimes3, { className: "w-4 h-4" })
+      }
+    )
+  ] });
+}
+
+// src/components/dialog/dialog.tsx
+import { Fragment as Fragment4, jsx as jsx12, jsxs as jsxs10 } from "react/jsx-runtime";
+function ITDialog({
+  isOpen,
+  onClose,
+  children,
+  className,
+  title,
+  useFormHeader = false
+}) {
+  const modalRef = useRef4(null);
+  useClickOutside_default(modalRef, onClose);
+  useEffect6(() => {
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscape);
+    }
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isOpen, onClose]);
+  if (!isOpen) return null;
+  if (typeof document === "undefined") return null;
+  const content = /* @__PURE__ */ jsx12("div", { className: "fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]", children: /* @__PURE__ */ jsx12(
+    "div",
+    {
+      ref: modalRef,
+      className: `overflow-hidden relative ${className} ${useFormHeader ? "p-0" : "p-6"}`,
+      style: {
+        backgroundColor: theme.card.backgroundColor,
+        borderRadius: theme.card.borderRadius,
+        boxShadow: theme.card.shadow,
+        borderWidth: theme.card.borderWidth,
+        borderColor: theme.card.borderColor,
+        borderStyle: "solid"
+      },
+      children: useFormHeader && title ? /* @__PURE__ */ jsxs10(Fragment4, { children: [
+        /* @__PURE__ */ jsx12(ITFormHeader, { title, onClose }),
+        /* @__PURE__ */ jsx12("div", { className: "p-6", children })
+      ] }) : /* @__PURE__ */ jsxs10(Fragment4, { children: [
+        /* @__PURE__ */ jsx12(
+          "button",
+          {
+            className: "absolute top-2 right-2 text-gray-600 hover:text-gray-900",
+            onClick: onClose,
+            children: /* @__PURE__ */ jsx12(FaRegTimesCircle, {})
+          }
+        ),
+        title && /* @__PURE__ */ jsx12("h2", { className: "text-xl font-semibold mb-4", children: title }),
+        /* @__PURE__ */ jsx12("div", { children })
+      ] })
+    }
+  ) });
+  return createPortal(content, document.body);
+}
+
+// src/components/form-builder/formBuilder.tsx
+import clsx13 from "clsx";
+import { useEffect as useEffect11, useState as useState12, useMemo as useMemo3 } from "react";
+
+// src/components/form-builder/formBuilder.context.tsx
+import React6, { createContext, useContext, useState as useState9 } from "react";
+import { jsx as jsx13 } from "react/jsx-runtime";
+var ITFormBuilderContext = createContext(void 0);
+var ITFormBuilderProvider = ({
+  children,
+  value
+}) => {
+  const [fieldRegistry, setFieldRegistry] = useState9({});
+  const registerField = React6.useCallback((name, config) => {
+    setFieldRegistry((prev) => ({ ...prev, [name]: config }));
+  }, []);
+  const unregisterField = React6.useCallback((name) => {
+    setFieldRegistry((prev) => {
+      const newRegistry = { ...prev };
+      delete newRegistry[name];
+      return newRegistry;
+    });
+  }, []);
+  const getFieldConfig = React6.useCallback((name) => {
+    return fieldRegistry[name];
+  }, [fieldRegistry]);
+  const contextValue = React6.useMemo(
+    () => ({
+      ...value,
+      registerField,
+      unregisterField,
+      getFieldConfig
+    }),
+    [value, registerField, unregisterField, getFieldConfig]
+  );
+  return /* @__PURE__ */ jsx13(ITFormBuilderContext.Provider, { value: contextValue, children });
+};
+var useITFormBuilderContext = () => {
+  const context = useContext(ITFormBuilderContext);
+  if (!context) {
+    throw new Error("useITFormBuilderContext must be used within an ITFormBuilderProvider");
+  }
+  return context;
+};
+
+// src/components/form-builder/fieldRenderer.tsx
+import { memo, useEffect as useEffect10 } from "react";
+import clsx12 from "clsx";
+
+// src/components/time-picker/timePicker.tsx
+import clsx11 from "clsx";
+import { useEffect as useEffect8, useRef as useRef5, useState as useState10 } from "react";
+import { FaClock } from "react-icons/fa";
+import { jsx as jsx14, jsxs as jsxs11 } from "react/jsx-runtime";
+function ITTimePicker({
+  name,
+  value,
+  label,
+  placeholder = "HH:MM",
+  onChange,
+  onBlur,
+  required,
+  touched,
+  error,
+  disabled,
+  className,
+  size = "medium",
+  variant = "primary",
+  color = "primary"
+}) {
+  const [isOpen, setIsOpen] = useState10(false);
+  const [inputValue, setInputValue] = useState10(value || "");
+  const [isValidTime, setIsValidTime] = useState10(true);
+  const [dropdownPosition, setDropdownPosition] = useState10({ top: 0, left: 0 });
+  const wrapperRef = useRef5(null);
+  const dropdownRef = useRef5(null);
+  const hoursRef = useRef5(null);
+  const minutesRef = useRef5(null);
+  useClickOutside_default(dropdownRef, () => {
+    if (isOpen) {
+      setIsOpen(false);
+    }
+  });
+  const isThemeColor = color in theme.colors;
+  const highlightColor = isThemeColor ? theme.colors[color][50] : "#f3f4f6";
+  const activeColor = isThemeColor ? theme.colors[color][100] : "#e5e7eb";
+  useEffect8(() => {
+    setInputValue(value || "");
+  }, [value]);
+  const calculateDropdownPosition = () => {
+    if (wrapperRef.current) {
+      const inputRect = wrapperRef.current.getBoundingClientRect();
+      const dropdownHeight = 280;
+      const viewportHeight = window.innerHeight;
+      let top = inputRect.bottom + 4;
+      if (inputRect.bottom + dropdownHeight > viewportHeight) {
+        top = inputRect.top - dropdownHeight - 4;
+      }
+      setDropdownPosition({
+        top,
+        left: inputRect.left
+      });
+    }
+  };
+  const validateTime = (timeString) => {
+    const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+    return regex.test(timeString);
+  };
+  const currentHour = validateTime(inputValue) ? inputValue.split(":")[0] : null;
+  const currentMinute = validateTime(inputValue) ? inputValue.split(":")[1] : null;
+  useEffect8(() => {
+    if (isOpen) {
+      setTimeout(() => {
+        if (hoursRef.current && currentHour) {
+          const selectedHourEl = hoursRef.current.querySelector(
+            `[data-value="${currentHour}"]`
+          );
+          if (selectedHourEl) {
+            hoursRef.current.scrollTop = selectedHourEl.offsetTop - hoursRef.current.clientHeight / 2 + selectedHourEl.clientHeight / 2;
+          }
+        }
+        if (minutesRef.current && currentMinute) {
+          const selectedMinuteEl = minutesRef.current.querySelector(
+            `[data-value="${currentMinute}"]`
+          );
+          if (selectedMinuteEl) {
+            minutesRef.current.scrollTop = selectedMinuteEl.offsetTop - minutesRef.current.clientHeight / 2 + selectedMinuteEl.clientHeight / 2;
+          }
+        }
+      }, 50);
+    }
+  }, [isOpen, currentHour, currentMinute]);
+  const handleInputChange = (e) => {
+    let val = e.target.value.replace(/\D/g, "");
+    if (val.length > 4) val = val.slice(0, 4);
+    if (val.length >= 3) {
+      val = `${val.slice(0, 2)}:${val.slice(2)}`;
+    }
+    setInputValue(val);
+    if (validateTime(val)) {
+      setIsValidTime(true);
+      onChange({ target: { name, value: val } });
+    } else {
+      setIsValidTime(false);
+    }
+  };
+  const handleBlurInput = () => {
+    if (!validateTime(inputValue)) {
+      setIsValidTime(false);
+      onBlur({ target: { name, value } });
+      return;
+    }
+    setIsValidTime(true);
+    onBlur({ target: { name, value: inputValue } });
+  };
+  const handleHourSelect = (h) => {
+    const min = currentMinute || "00";
+    const newVal = `${h}:${min}`;
+    setInputValue(newVal);
+    onChange({ target: { name, value: newVal } });
+    setIsValidTime(true);
+  };
+  const handleMinuteSelect = (m) => {
+    const hr = currentHour || "00";
+    const newVal = `${hr}:${m}`;
+    setInputValue(newVal);
+    onChange({ target: { name, value: newVal } });
+    setIsValidTime(true);
+  };
+  const handleConfirm = () => {
+    setIsOpen(false);
+  };
+  const hoursList = Array.from(
+    { length: 24 },
+    (_, i) => i.toString().padStart(2, "0")
+  );
+  const minutesList = Array.from(
+    { length: 60 },
+    (_, i) => i.toString().padStart(2, "0")
+  );
+  return /* @__PURE__ */ jsxs11("div", { ref: wrapperRef, className: clsx11("relative w-full", className), children: [
+    /* @__PURE__ */ jsx14(
+      ITInput,
+      {
+        name,
+        label,
+        placeholder,
+        type: "text",
+        value: inputValue,
+        onChange: handleInputChange,
+        onBlur: handleBlurInput,
+        maxLength: 5,
+        required,
+        disabled,
+        variant,
+        size,
+        touched,
+        error: !isValidTime ? "Hora inv\xE1lida" : typeof error === "string" ? error : void 0,
+        iconRight: /* @__PURE__ */ jsx14(
+          FaClock,
+          {
+            onClick: () => {
+              if (!disabled) {
+                calculateDropdownPosition();
+                setIsOpen(!isOpen);
+              }
+            },
+            className: clsx11(
+              "cursor-pointer transition-colors",
+              disabled ? "text-slate-400 cursor-not-allowed" : "text-slate-900 hover:text-slate-600"
+            )
+          }
+        )
+      }
+    ),
+    isOpen && !disabled && /* @__PURE__ */ jsxs11(
+      "div",
+      {
+        ref: dropdownRef,
+        className: "fixed z-[9999] bg-white border border-gray-100 shadow-xl rounded-xl w-64 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 origin-top it-timepicker-dropdown",
+        style: {
+          top: `${dropdownPosition.top}px`,
+          left: `${dropdownPosition.left}px`
+        },
+        children: [
+          /* @__PURE__ */ jsxs11("div", { className: "flex bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider", children: [
+            /* @__PURE__ */ jsx14("div", { className: "flex-1 text-center py-2 border-r border-gray-100", children: "Horas" }),
+            /* @__PURE__ */ jsx14("div", { className: "flex-1 text-center py-2", children: "Minutos" })
+          ] }),
+          /* @__PURE__ */ jsxs11("div", { className: "flex h-56 relative bg-white", children: [
+            /* @__PURE__ */ jsx14(
+              "div",
+              {
+                ref: hoursRef,
+                className: "flex-1 overflow-y-auto no-scrollbar border-r border-gray-50 scroll-smooth relative",
+                children: /* @__PURE__ */ jsx14("div", { className: "py-2", children: hoursList.map((h) => {
+                  const isSelected = currentHour === h;
+                  return /* @__PURE__ */ jsx14(
+                    "div",
+                    {
+                      "data-value": h,
+                      className: clsx11(
+                        "text-center py-2 cursor-pointer transition-all duration-200 text-sm font-medium mx-2 rounded-lg my-1",
+                        isSelected ? "text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
+                      ),
+                      style: {
+                        backgroundColor: isSelected ? activeColor : void 0
+                      },
+                      onMouseEnter: (e) => {
+                        if (!isSelected)
+                          e.currentTarget.style.backgroundColor = highlightColor;
+                      },
+                      onMouseLeave: (e) => {
+                        if (!isSelected)
+                          e.currentTarget.style.backgroundColor = "transparent";
+                      },
+                      onClick: () => handleHourSelect(h),
+                      children: h
+                    },
+                    h
+                  );
+                }) })
+              }
+            ),
+            /* @__PURE__ */ jsx14(
+              "div",
+              {
+                ref: minutesRef,
+                className: "flex-1 overflow-y-auto no-scrollbar scroll-smooth relative",
+                children: /* @__PURE__ */ jsx14("div", { className: "py-2", children: minutesList.map((m) => {
+                  const isSelected = currentMinute === m;
+                  return /* @__PURE__ */ jsx14(
+                    "div",
+                    {
+                      "data-value": m,
+                      className: clsx11(
+                        "text-center py-2 cursor-pointer transition-all duration-200 text-sm font-medium mx-2 rounded-lg my-1",
+                        isSelected ? "text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
+                      ),
+                      style: {
+                        backgroundColor: isSelected ? activeColor : void 0
+                      },
+                      onMouseEnter: (e) => {
+                        if (!isSelected)
+                          e.currentTarget.style.backgroundColor = highlightColor;
+                      },
+                      onMouseLeave: (e) => {
+                        if (!isSelected)
+                          e.currentTarget.style.backgroundColor = "transparent";
+                      },
+                      onClick: () => handleMinuteSelect(m),
+                      children: m
+                    },
+                    m
+                  );
+                }) })
+              }
+            ),
+            /* @__PURE__ */ jsx14("div", { className: "absolute top-1/2 left-0 right-0 h-10 -mt-5 bg-black/5 pointer-events-none border-y border-black/10 z-10" })
+          ] }),
+          /* @__PURE__ */ jsx14("div", { className: "p-3 bg-gray-50 border-t border-gray-100 flex justify-end", children: /* @__PURE__ */ jsx14(
+            ITButton,
+            {
+              variant: "solid",
+              color,
+              size: "small",
+              onClick: handleConfirm,
+              children: "Aceptar"
+            }
+          ) })
+        ]
+      }
+    )
+  ] });
+}
+
+// src/components/form-builder/useFormBuilder.ts
+import { useMemo as useMemo2 } from "react";
+var useFieldRules = (name, dependsOn) => {
+  const { values, getFieldConfig } = useITFormBuilderContext();
+  const config = getFieldConfig(name);
+  const isVisible = useMemo2(() => {
+    if (!config?.renderWhen) return true;
+    return config.renderWhen(values);
+  }, [config, values]);
+  const dynamicProps = useMemo2(() => {
+    if (!config?.dynamicProps) return {};
+    return config.dynamicProps(values);
+  }, [config, values]);
+  const isRequired = useMemo2(() => {
+    if (typeof config?.required === "function") {
+      return config.required(values);
+    }
+    return config?.required || false;
+  }, [config, values, dynamicProps]);
+  const isDisabled = useMemo2(() => {
+    if (typeof config?.disabled === "function") {
+      return config.disabled(values);
+    }
+    return config?.disabled || false;
+  }, [config, values, dynamicProps]);
+  return {
+    isVisible,
+    dynamicProps,
+    isRequired: dynamicProps.required !== void 0 ? dynamicProps.required : isRequired,
+    isDisabled: dynamicProps.disabled !== void 0 ? dynamicProps.disabled : isDisabled
+  };
+};
+
+// src/components/form-builder/fieldRenderer.tsx
+import { jsx as jsx15, jsxs as jsxs12 } from "react/jsx-runtime";
+var gridColsClasses = {
+  1: "grid-cols-1",
+  2: "grid-cols-2",
+  3: "grid-cols-3",
+  4: "grid-cols-4",
+  6: "grid-cols-6",
+  8: "grid-cols-8",
+  12: "grid-cols-12"
+};
+var getGridColsClass = (columns) => gridColsClasses[columns] || "grid-cols-12";
+var getColSpanClass = (span = 12, maxCols) => {
+  if (typeof span === "object") {
+    const classes = [];
+    if (span.sm) classes.push(`col-span-${Math.min(span.sm, maxCols)}`);
+    if (span.md) classes.push(`md:col-span-${Math.min(span.md, maxCols)}`);
+    if (span.lg) classes.push(`lg:col-span-${Math.min(span.lg, maxCols)}`);
+    if (span.xl) classes.push(`xl:col-span-${Math.min(span.xl, maxCols)}`);
+    return classes.join(" ") || `col-span-${maxCols}`;
+  }
+  return `col-span-${Math.min(span, maxCols)}`;
+};
+var ITFieldRenderer = ({ config, columns = 12 }) => {
+  const context = useITFormBuilderContext();
+  const { isVisible, isRequired, isDisabled, dynamicProps } = useFieldRules(
+    config.name,
+    config.dependsOn
+  );
+  useEffect10(() => {
+    context.registerField(config.name, config);
+    return () => {
+      context.unregisterField(config.name);
+    };
+  }, [config.name]);
+  if (!isVisible) return null;
+  const activeConfig = {
+    ...config,
+    ...dynamicProps,
+    required: isRequired,
+    disabled: isDisabled
+  };
+  const {
+    name,
+    label,
+    type,
+    placeholder,
+    options,
+    valueField,
+    labelField,
+    formatNumber,
+    showHintLength,
+    leftIcon,
+    rightIcon
+  } = activeConfig;
+  const value = context.values[name];
+  const error = context.errors[name];
+  const touched = context.touched[name];
+  const handleChangeWrapper = async (val) => {
+    const finalValue = val?.target ? val.target.value : val;
+    await context.setFieldValue(name, finalValue);
+    if (activeConfig.onChangeAction) {
+      await activeConfig.onChangeAction(finalValue, context);
+    }
+  };
+  const renderField = () => {
+    switch (type) {
+      case "text":
+      case "password":
+      case "number":
+      case "email":
+        return /* @__PURE__ */ jsx15(
+          ITInput,
+          {
+            type: type === "email" ? "text" : type,
+            name,
+            label: label || "",
+            placeholder,
+            disabled: isDisabled,
+            value: value !== void 0 ? value : activeConfig.defaultValue || "",
+            onChange: handleChangeWrapper,
+            onBlur: context.handleBlur,
+            currencyFormat: activeConfig.currencyFormat,
+            touched,
+            error,
+            required: isRequired,
+            iconRight: rightIcon,
+            iconLeft: leftIcon,
+            showHintLength,
+            maxLength: activeConfig.maxLength,
+            minLength: activeConfig.minLength,
+            rows: activeConfig.rows,
+            formatNumber
+          }
+        );
+      case "select":
+        return /* @__PURE__ */ jsx15(
+          ITSelect,
+          {
+            options: Array.isArray(options) ? options : [],
+            name,
+            disabled: isDisabled,
+            label: label || "",
+            placeholder,
+            value: value !== void 0 ? value : activeConfig.defaultValue || "",
+            valueField,
+            labelField,
+            onChange: handleChangeWrapper,
+            onBlur: context.handleBlur,
+            touched,
+            error,
+            required: isRequired
+          }
+        );
+      case "date":
+        return /* @__PURE__ */ jsx15(
+          ITDatePicker,
+          {
+            name,
+            disabled: isDisabled,
+            label: label || "",
+            value,
+            onChange: handleChangeWrapper,
+            placeholder,
+            onBlur: context.handleBlur,
+            touched,
+            error,
+            required: isRequired
+          }
+        );
+      case "time":
+        return /* @__PURE__ */ jsx15(
+          ITTimePicker,
+          {
+            name,
+            disabled: isDisabled,
+            label: label || "",
+            value,
+            onChange: handleChangeWrapper,
+            placeholder,
+            onBlur: context.handleBlur,
+            touched,
+            error,
+            required: isRequired
+          }
+        );
+      case "custom":
+        if (activeConfig.component) {
+          const CustomComponent = activeConfig.component;
+          return /* @__PURE__ */ jsx15(
+            CustomComponent,
+            {
+              ...activeConfig,
+              value,
+              onChange: handleChangeWrapper,
+              onBlur: context.handleBlur,
+              error,
+              touched,
+              context
+            }
+          );
+        }
+        return null;
+      case "section":
+        return /* @__PURE__ */ jsxs12(
+          "div",
+          {
+            className: clsx12(
+              "w-full col-span-full",
+              activeConfig.className
+            ),
+            children: [
+              label && /* @__PURE__ */ jsx15("h4", { className: "text-lg font-semibold text-gray-800 mb-4", children: label }),
+              /* @__PURE__ */ jsx15(
+                "div",
+                {
+                  className: clsx12(
+                    "grid gap-y-6 gap-x-5",
+                    getGridColsClass(columns)
+                  ),
+                  children: activeConfig.fields?.map((childConfig) => /* @__PURE__ */ jsx15(
+                    ITFieldRenderer,
+                    {
+                      config: childConfig,
+                      columns
+                    },
+                    childConfig.name
+                  ))
+                }
+              )
+            ]
+          }
+        );
+      case "array":
+        return /* @__PURE__ */ jsx15("div", { className: "p-4 border-2 border-dashed border-gray-200 rounded-xl", children: /* @__PURE__ */ jsxs12("p", { className: "text-sm text-gray-500 text-center", children: [
+          "Array Field: ",
+          label
+        ] }) });
+      default:
+        return null;
+    }
+  };
+  return /* @__PURE__ */ jsx15(
+    "div",
+    {
+      className: clsx12(
+        getColSpanClass(activeConfig.column, columns),
+        activeConfig.className
+      ),
+      children: renderField()
+    }
+  );
+};
+var fieldRenderer_default = memo(ITFieldRenderer);
+
+// src/components/form-builder/formBuilder.tsx
+import { jsx as jsx16 } from "react/jsx-runtime";
+var gridColsClasses2 = {
+  1: "grid-cols-1",
+  2: "grid-cols-2",
+  3: "grid-cols-3",
+  4: "grid-cols-4",
+  6: "grid-cols-6",
+  8: "grid-cols-8",
+  12: "grid-cols-12"
+};
+var getGridColsClass2 = (columns) => gridColsClasses2[columns] || "grid-cols-12";
+var getColSpanClass2 = (span, maxCols) => {
+  if (Array.isArray(span)) {
+    const [sm, md, lg] = span;
+    return `col-span-${Math.min(sm, maxCols)} md:col-span-${Math.min(
+      md,
+      maxCols
+    )} lg:col-span-${Math.min(lg, maxCols)}`;
+  } else {
+    return `col-span-${Math.min(span, maxCols)}`;
+  }
+};
+function ITFormBuilder({
+  fields,
+  config,
+  columns = 12,
+  values,
+  handleChange,
+  handleBlur,
+  touched,
+  errors,
+  setFieldValue = () => Promise.resolve(),
+  setFieldTouched = () => Promise.resolve(),
+  setFieldError = () => {
+  },
+  isSubmitting = false
+}) {
+  const [mounted, setMounted] = useState12(false);
+  useEffect11(() => {
+    setMounted(true);
+  }, []);
+  const providerValue = useMemo3(() => ({
+    config: config || [],
+    values: values || {},
+    errors: errors || {},
+    touched: touched || {},
+    handleChange,
+    handleBlur,
+    setFieldValue,
+    setFieldTouched,
+    setFieldError,
+    initialValues: {},
+    // Can be expanded later if Formik exposes it
+    isSubmitting,
+    isValidating: false,
+    submitCount: 0
+  }), [config, values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched, setFieldError, isSubmitting]);
+  if (config) {
+    return /* @__PURE__ */ jsx16(ITFormBuilderProvider, { value: providerValue, children: /* @__PURE__ */ jsx16("div", { className: clsx13("grid gap-y-6 gap-x-5", getGridColsClass2(columns)), children: config.map((fieldConfig) => /* @__PURE__ */ jsx16(fieldRenderer_default, { config: fieldConfig, columns }, fieldConfig.name)) }) });
+  }
+  return /* @__PURE__ */ jsx16(
     "div",
     {
       className: clsx13(
-        "fixed z-50 p-4 rounded-xl shadow-xl flex items-center justify-between gap-4 transition-all duration-300 text-white min-w-[300px]",
-        positionStyles[position],
-        {
-          "opacity-100 translate-y-0 scale-100": isVisible,
-          "opacity-0 scale-95": !isVisible,
-          "-translate-y-4": !isVisible && position.startsWith("top"),
-          "translate-y-4": !isVisible && position.startsWith("bottom")
-        }
+        "grid gap-y-6 gap-x-5",
+        getGridColsClass2(columns)
       ),
-      style: { backgroundColor },
-      role: "alert",
-      children: [
-        /* @__PURE__ */ jsxs12("div", { className: "flex items-center gap-3", children: [
-          /* @__PURE__ */ jsx16(TypeIcon, {}),
-          /* @__PURE__ */ jsx16("span", { className: "font-medium text-sm sm:text-base leading-snug", children: message })
-        ] }),
-        /* @__PURE__ */ jsx16(
-          "button",
+      children: fields?.map(
+        ({
+          name,
+          label,
+          type = "text",
+          placeholder,
+          required,
+          column = 12,
+          options,
+          valueField,
+          disabled = false,
+          labelField,
+          showHintLength,
+          formatNumber = true,
+          onChangeAction,
+          ...props
+        }, index) => /* @__PURE__ */ jsx16(
+          "div",
           {
-            onClick: handleClose,
-            className: "p-1.5 rounded-full hover:bg-black/15 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50",
-            "aria-label": "Close notification",
-            children: /* @__PURE__ */ jsx16(FaTimes3, { className: "w-4 h-4" })
-          }
+            className: getColSpanClass2(column, columns),
+            children: (() => {
+              switch (type) {
+                case "text":
+                case "number":
+                case "password":
+                  return /* @__PURE__ */ jsx16(
+                    ITInput,
+                    {
+                      type,
+                      name,
+                      label,
+                      placeholder,
+                      disabled,
+                      value: values[name],
+                      onChange: (e) => {
+                        handleChange(e);
+                        if (onChangeAction && setFieldValue) {
+                          onChangeAction(e.target.value, setFieldValue);
+                        }
+                      },
+                      onBlur: handleBlur,
+                      currencyFormat: props.currencyFormat,
+                      touched: touched[name],
+                      error: errors[name],
+                      required,
+                      iconRight: props.rightIcon,
+                      iconLeft: props.leftIcon,
+                      showHintLength,
+                      maxLength: props.maxLength,
+                      minLength: props.minLength,
+                      rows: props.rows,
+                      formatNumber
+                    }
+                  );
+                case "select":
+                  return /* @__PURE__ */ jsx16(
+                    ITSelect,
+                    {
+                      options: options || [],
+                      name,
+                      disabled,
+                      label,
+                      placeholder,
+                      value: values[name],
+                      valueField,
+                      labelField,
+                      onChange: (e) => {
+                        handleChange(e);
+                        if (onChangeAction && setFieldValue) {
+                          onChangeAction(e.target.value, setFieldValue);
+                        }
+                      },
+                      onBlur: handleBlur,
+                      touched: touched[name],
+                      error: errors[name],
+                      required
+                    }
+                  );
+                case "date":
+                  return /* @__PURE__ */ jsx16(
+                    ITDatePicker,
+                    {
+                      name,
+                      disabled,
+                      label,
+                      value: values[name],
+                      onChange: (e) => {
+                        handleChange(e);
+                        if (onChangeAction && setFieldValue) {
+                          onChangeAction(e.target.value, setFieldValue);
+                        }
+                      },
+                      placeholder,
+                      onBlur: handleBlur,
+                      touched: touched[name],
+                      error: errors[name],
+                      required
+                    }
+                  );
+                default:
+                  return null;
+              }
+            })()
+          },
+          name
         )
-      ]
+      )
     }
   );
 }
 
+// src/components/image/image.tsx
+import { useState as useState13 } from "react";
+import { jsx as jsx17 } from "react/jsx-runtime";
+var ITImage = ({
+  src,
+  alt,
+  className = "",
+  fallbackSrc = ""
+}) => {
+  const [imageError, setImageError] = useState13(false);
+  const handleImageError = () => {
+    setImageError(true);
+  };
+  return /* @__PURE__ */ jsx17(
+    "div",
+    {
+      className: `${className} flex items-center justify-center bg-transparent`,
+      children: imageError ? /* @__PURE__ */ jsx17(
+        "img",
+        {
+          src: fallbackSrc,
+          alt: "Fallback",
+          className: "w-full h-full object-cover"
+        }
+      ) : /* @__PURE__ */ jsx17(
+        "img",
+        {
+          src,
+          alt,
+          onError: handleImageError,
+          className: "w-full h-full object-cover"
+        }
+      )
+    }
+  );
+};
+var image_default = ITImage;
+
 // src/components/navbar/navbar.tsx
-import { useRef as useRef5, useState as useState14 } from "react";
+import { useRef as useRef6, useState as useState14 } from "react";
 import { FaChevronDown, FaChevronRight as FaChevronRight3, FaUserCircle } from "react-icons/fa";
-import { jsx as jsx17, jsxs as jsxs13 } from "react/jsx-runtime";
+import { jsx as jsx18, jsxs as jsxs13 } from "react/jsx-runtime";
 function ITNavbar({
   logo,
   logoText,
@@ -3286,7 +3559,7 @@ function ITNavbar({
 }) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState14(false);
   const [expandedItems, setExpandedItems] = useState14(/* @__PURE__ */ new Set());
-  const userMenuRef = useRef5(null);
+  const userMenuRef = useRef6(null);
   useClickOutside_default(userMenuRef, () => setIsUserMenuOpen(false));
   const toggleUserMenu = () => {
     setIsUserMenuOpen(!isUserMenuOpen);
@@ -3310,28 +3583,28 @@ function ITNavbar({
   const shouldUseLegacy = !navigationItems.length && (navItems || sidebarItems);
   if (shouldUseLegacy) {
     return /* @__PURE__ */ jsxs13("div", { className: "flex flex-col h-screen", children: [
-      /* @__PURE__ */ jsx17("nav", { className: "bg-white border-b border-gray-200", children: /* @__PURE__ */ jsxs13("div", { className: "flex items-center justify-between mx-auto p-4", children: [
+      /* @__PURE__ */ jsx18("nav", { className: "bg-white border-b border-gray-200", children: /* @__PURE__ */ jsxs13("div", { className: "flex items-center justify-between mx-auto p-4", children: [
         /* @__PURE__ */ jsxs13("div", { className: "flex items-center space-x-3 rtl:space-x-reverse", children: [
-          logo && /* @__PURE__ */ jsx17("div", { className: "h-8", children: logo }),
-          logoText && /* @__PURE__ */ jsx17("span", { className: "self-center text-2xl font-semibold whitespace-nowrap text-gray-900", children: logoText })
+          logo && /* @__PURE__ */ jsx18("div", { className: "h-8", children: logo }),
+          logoText && /* @__PURE__ */ jsx18("span", { className: "self-center text-2xl font-semibold whitespace-nowrap text-gray-900", children: logoText })
         ] }),
-        /* @__PURE__ */ jsx17("div", { className: "flex items-center justify-end w-full md:w-auto md:order-2", children: /* @__PURE__ */ jsxs13("div", { className: "flex items-center space-x-4 md:order-2", children: [
-          /* @__PURE__ */ jsx17("ul", { className: "hidden md:flex space-x-4", children: navItems }),
+        /* @__PURE__ */ jsx18("div", { className: "flex items-center justify-end w-full md:w-auto md:order-2", children: /* @__PURE__ */ jsxs13("div", { className: "flex items-center space-x-4 md:order-2", children: [
+          /* @__PURE__ */ jsx18("ul", { className: "hidden md:flex space-x-4", children: navItems }),
           userMenu && /* @__PURE__ */ jsxs13("div", { className: "relative", children: [
-            /* @__PURE__ */ jsx17(
+            /* @__PURE__ */ jsx18(
               "button",
               {
                 type: "button",
                 className: "flex text-sm bg-gray-200 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300",
                 onClick: toggleUserMenu,
-                children: userMenu.userImage ? /* @__PURE__ */ jsx17(
+                children: userMenu.userImage ? /* @__PURE__ */ jsx18(
                   "img",
                   {
                     className: "w-8 h-8 rounded-full",
                     src: userMenu.userImage,
                     alt: "user photo"
                   }
-                ) : /* @__PURE__ */ jsx17(FaUserCircle, { className: "w-8 h-8 text-gray-500" })
+                ) : /* @__PURE__ */ jsx18(FaUserCircle, { className: "w-8 h-8 text-gray-500" })
               }
             ),
             isUserMenuOpen && /* @__PURE__ */ jsxs13(
@@ -3341,10 +3614,10 @@ function ITNavbar({
                 className: "z-50 absolute right-0 mt-2 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm",
                 children: [
                   /* @__PURE__ */ jsxs13("div", { className: "px-4 py-3", children: [
-                    /* @__PURE__ */ jsx17("span", { className: "block text-sm text-gray-900", children: userMenu.userName }),
-                    /* @__PURE__ */ jsx17("span", { className: "block text-sm text-gray-500 truncate", children: userMenu.userEmail })
+                    /* @__PURE__ */ jsx18("span", { className: "block text-sm text-gray-900", children: userMenu.userName }),
+                    /* @__PURE__ */ jsx18("span", { className: "block text-sm text-gray-500 truncate", children: userMenu.userEmail })
                   ] }),
-                  /* @__PURE__ */ jsx17("ul", { className: "py-2", children: userMenu.menuItems.map((item, index) => /* @__PURE__ */ jsx17("li", { children: /* @__PURE__ */ jsx17(
+                  /* @__PURE__ */ jsx18("ul", { className: "py-2", children: userMenu.menuItems.map((item, index) => /* @__PURE__ */ jsx18("li", { children: /* @__PURE__ */ jsx18(
                     "button",
                     {
                       onClick: () => {
@@ -3362,18 +3635,18 @@ function ITNavbar({
         ] }) })
       ] }) }),
       /* @__PURE__ */ jsxs13("div", { className: "flex-1 flex overflow-hidden relative", children: [
-        (showSidebar || showSidebarOnMobile) && /* @__PURE__ */ jsx17("aside", { className: "fixed inset-y-0 left-0 w-64 bg-gray-50 transform transition-transform duration-300 ease-in-out z-50 shadow-lg md:static md:transform-none md:shadow-none md:border-r md:border-gray-200", children: /* @__PURE__ */ jsx17("div", { className: "h-full overflow-y-auto py-4 px-3", children: /* @__PURE__ */ jsx17("ul", { className: "space-y-2 font-medium", children: sidebarItems }) }) }),
-        /* @__PURE__ */ jsx17("main", { className: "flex-1 bg-gray-100 overflow-y-auto", children })
+        (showSidebar || showSidebarOnMobile) && /* @__PURE__ */ jsx18("aside", { className: "fixed inset-y-0 left-0 w-64 bg-gray-50 transform transition-transform duration-300 ease-in-out z-50 shadow-lg md:static md:transform-none md:shadow-none md:border-r md:border-gray-200", children: /* @__PURE__ */ jsx18("div", { className: "h-full overflow-y-auto py-4 px-3", children: /* @__PURE__ */ jsx18("ul", { className: "space-y-2 font-medium", children: sidebarItems }) }) }),
+        /* @__PURE__ */ jsx18("main", { className: "flex-1 bg-gray-100 overflow-y-auto", children })
       ] })
     ] });
   }
   return /* @__PURE__ */ jsxs13("div", { className: "flex h-screen bg-gray-50 font-sans", children: [
     /* @__PURE__ */ jsxs13("aside", { className: "w-72 bg-secondary-900 shadow-xl flex flex-col transition-all duration-300 ease-in-out", children: [
       /* @__PURE__ */ jsxs13("div", { className: "p-6 border-b border-secondary-800/50 flex items-center gap-3", children: [
-        logo && /* @__PURE__ */ jsx17("div", { className: "h-8 w-auto object-contain transition-transform hover:scale-105", children: logo }),
-        logoText && /* @__PURE__ */ jsx17("span", { className: "text-lg font-bold text-white tracking-wide", children: logoText })
+        logo && /* @__PURE__ */ jsx18("div", { className: "h-8 w-auto object-contain transition-transform hover:scale-105", children: logo }),
+        logoText && /* @__PURE__ */ jsx18("span", { className: "text-lg font-bold text-white tracking-wide", children: logoText })
       ] }),
-      /* @__PURE__ */ jsx17("nav", { className: "flex-1 px-4 py-6 overflow-y-auto custom-scrollbar", children: /* @__PURE__ */ jsx17("ul", { className: "space-y-1.5", children: navigationItems.map((item) => /* @__PURE__ */ jsxs13("li", { children: [
+      /* @__PURE__ */ jsx18("nav", { className: "flex-1 px-4 py-6 overflow-y-auto custom-scrollbar", children: /* @__PURE__ */ jsx18("ul", { className: "space-y-1.5", children: navigationItems.map((item) => /* @__PURE__ */ jsxs13("li", { children: [
         /* @__PURE__ */ jsxs13(
           "div",
           {
@@ -3381,14 +3654,14 @@ function ITNavbar({
             onClick: () => handleItemClick(item),
             children: [
               /* @__PURE__ */ jsxs13("div", { className: "flex items-center gap-3", children: [
-                item.icon && /* @__PURE__ */ jsx17("div", { className: `text-xl transition-colors ${item.isActive ? "text-primary-400" : "text-secondary-500 group-hover:text-white"}`, children: item.icon }),
-                /* @__PURE__ */ jsx17("span", { className: `font-medium text-sm ${item.isActive ? "font-semibold" : ""}`, children: item.label })
+                item.icon && /* @__PURE__ */ jsx18("div", { className: `text-xl transition-colors ${item.isActive ? "text-primary-400" : "text-secondary-500 group-hover:text-white"}`, children: item.icon }),
+                /* @__PURE__ */ jsx18("span", { className: `font-medium text-sm ${item.isActive ? "font-semibold" : ""}`, children: item.label })
               ] }),
-              item.subitems && item.subitems.length > 0 && /* @__PURE__ */ jsx17("div", { className: "text-secondary-500 group-hover:text-white transition-transform", children: expandedItems.has(item.id) ? /* @__PURE__ */ jsx17(FaChevronDown, { className: "w-3 h-3" }) : /* @__PURE__ */ jsx17(FaChevronRight3, { className: "w-3 h-3" }) })
+              item.subitems && item.subitems.length > 0 && /* @__PURE__ */ jsx18("div", { className: "text-secondary-500 group-hover:text-white transition-transform", children: expandedItems.has(item.id) ? /* @__PURE__ */ jsx18(FaChevronDown, { className: "w-3 h-3" }) : /* @__PURE__ */ jsx18(FaChevronRight3, { className: "w-3 h-3" }) })
             ]
           }
         ),
-        item.subitems && item.subitems.length > 0 && expandedItems.has(item.id) && /* @__PURE__ */ jsx17("ul", { className: "mt-1 ml-4 pl-4 border-l border-secondary-800 space-y-1", children: item.subitems.map((subitem) => /* @__PURE__ */ jsx17("li", { children: /* @__PURE__ */ jsx17(
+        item.subitems && item.subitems.length > 0 && expandedItems.has(item.id) && /* @__PURE__ */ jsx18("ul", { className: "mt-1 ml-4 pl-4 border-l border-secondary-800 space-y-1", children: item.subitems.map((subitem) => /* @__PURE__ */ jsx18("li", { children: /* @__PURE__ */ jsx18(
           "button",
           {
             onClick: subitem.action,
@@ -3397,7 +3670,7 @@ function ITNavbar({
           }
         ) }, subitem.id)) })
       ] }, item.id)) }) }),
-      userMenu && /* @__PURE__ */ jsx17("div", { className: "p-4 border-t border-secondary-800", children: /* @__PURE__ */ jsxs13("div", { className: "relative", children: [
+      userMenu && /* @__PURE__ */ jsx18("div", { className: "p-4 border-t border-secondary-800", children: /* @__PURE__ */ jsxs13("div", { className: "relative", children: [
         /* @__PURE__ */ jsxs13(
           "button",
           {
@@ -3405,19 +3678,19 @@ function ITNavbar({
             className: "flex items-center gap-3 w-full p-3 rounded-xl hover:bg-secondary-800 transition-colors duration-200 group",
             onClick: toggleUserMenu,
             children: [
-              userMenu.userImage ? /* @__PURE__ */ jsx17(
+              userMenu.userImage ? /* @__PURE__ */ jsx18(
                 "img",
                 {
                   className: "w-10 h-10 rounded-full border-2 border-secondary-700 group-hover:border-primary-500 transition-colors",
                   src: userMenu.userImage,
                   alt: "user photo"
                 }
-              ) : /* @__PURE__ */ jsx17("div", { className: "w-10 h-10 rounded-full bg-secondary-800 flex items-center justify-center text-secondary-400 group-hover:text-white group-hover:bg-secondary-700 transition-colors", children: /* @__PURE__ */ jsx17(FaUserCircle, { className: "w-6 h-6" }) }),
+              ) : /* @__PURE__ */ jsx18("div", { className: "w-10 h-10 rounded-full bg-secondary-800 flex items-center justify-center text-secondary-400 group-hover:text-white group-hover:bg-secondary-700 transition-colors", children: /* @__PURE__ */ jsx18(FaUserCircle, { className: "w-6 h-6" }) }),
               /* @__PURE__ */ jsxs13("div", { className: "flex-1 text-left overflow-hidden", children: [
-                /* @__PURE__ */ jsx17("div", { className: "text-white font-medium text-sm truncate group-hover:text-primary-400 transition-colors", children: userMenu.userName }),
-                /* @__PURE__ */ jsx17("div", { className: "text-secondary-500 text-xs truncate", children: userMenu.userEmail })
+                /* @__PURE__ */ jsx18("div", { className: "text-white font-medium text-sm truncate group-hover:text-primary-400 transition-colors", children: userMenu.userName }),
+                /* @__PURE__ */ jsx18("div", { className: "text-secondary-500 text-xs truncate", children: userMenu.userEmail })
               ] }),
-              /* @__PURE__ */ jsx17(FaChevronRight3, { className: "text-secondary-600 w-3 h-3 group-hover:text-white transition-colors" })
+              /* @__PURE__ */ jsx18(FaChevronRight3, { className: "text-secondary-600 w-3 h-3 group-hover:text-white transition-colors" })
             ]
           }
         ),
@@ -3428,10 +3701,10 @@ function ITNavbar({
             className: "absolute bottom-full left-0 mb-3 w-full bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden transform transition-all duration-200 origin-bottom",
             children: [
               /* @__PURE__ */ jsxs13("div", { className: "bg-gray-50 px-4 py-3 border-b border-gray-100", children: [
-                /* @__PURE__ */ jsx17("span", { className: "block text-sm font-semibold text-gray-800", children: userMenu.userName }),
-                /* @__PURE__ */ jsx17("span", { className: "block text-xs text-gray-500 truncate", children: userMenu.userEmail })
+                /* @__PURE__ */ jsx18("span", { className: "block text-sm font-semibold text-gray-800", children: userMenu.userName }),
+                /* @__PURE__ */ jsx18("span", { className: "block text-xs text-gray-500 truncate", children: userMenu.userEmail })
               ] }),
-              /* @__PURE__ */ jsx17("ul", { className: "py-1", children: userMenu.menuItems.map((item, index) => /* @__PURE__ */ jsx17("li", { children: /* @__PURE__ */ jsx17(
+              /* @__PURE__ */ jsx18("ul", { className: "py-1", children: userMenu.menuItems.map((item, index) => /* @__PURE__ */ jsx18("li", { children: /* @__PURE__ */ jsx18(
                 "button",
                 {
                   onClick: () => {
@@ -3447,682 +3720,367 @@ function ITNavbar({
         )
       ] }) })
     ] }),
-    /* @__PURE__ */ jsx17("main", { className: "flex-1 overflow-y-auto bg-gray-50/50 relative", children })
+    /* @__PURE__ */ jsx18("main", { className: "flex-1 overflow-y-auto bg-gray-50/50 relative", children })
   ] });
 }
 
-// src/components/text/text.tsx
-import { jsx as jsx18 } from "react/jsx-runtime";
-function ITText({ children, className = "" }) {
-  return /* @__PURE__ */ jsx18("p", { className: `${className} text-gray-900 `, children });
+// src/components/search-select/search-select.tsx
+import { useState as useState15, useEffect as useEffect12, useRef as useRef7, useMemo as useMemo4 } from "react";
+import clsx14 from "clsx";
+import { FaSearch } from "react-icons/fa";
+import { jsx as jsx19, jsxs as jsxs14 } from "react/jsx-runtime";
+function ITSearchSelect({
+  name,
+  options = [],
+  label,
+  placeholder = "Selecciona una opci\xF3n",
+  valueField = "value",
+  labelField = "label",
+  value,
+  onChange,
+  onBlur,
+  disabled = false,
+  className,
+  touched,
+  required,
+  error,
+  readOnly = false,
+  onSearch,
+  isLoading = false,
+  noResultsMessage = "No se encontraron resultados"
+}) {
+  const [isOpen, setIsOpen] = useState15(false);
+  const [searchTerm, setSearchTerm] = useState15("");
+  const [isFocused, setIsFocused] = useState15(false);
+  const containerRef = useRef7(null);
+  const timeoutRef = useRef7(null);
+  const selectedOption = useMemo4(() => {
+    return options.find((opt) => opt[valueField] === value);
+  }, [options, value, valueField]);
+  useEffect12(() => {
+    if (!isFocused) {
+      setSearchTerm(selectedOption ? String(selectedOption[labelField]) : "");
+    }
+  }, [selectedOption, isFocused, labelField]);
+  useEffect12(() => {
+    function handleClickOutside(event) {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+  const filteredOptions = useMemo4(() => {
+    if (onSearch) return options;
+    if (!searchTerm || !isFocused) return options;
+    return options.filter(
+      (opt) => String(opt[labelField]).toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [options, searchTerm, onSearch, labelField, isFocused]);
+  const handleInputChange = (e) => {
+    const query = e.target.value;
+    setSearchTerm(query);
+    setIsOpen(true);
+    if (onSearch) {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        onSearch(query);
+      }, 500);
+    }
+  };
+  const handleSelect = (option) => {
+    if (onChange) {
+      onChange(option[valueField], option);
+    }
+    setSearchTerm(String(option[labelField]));
+    setIsOpen(false);
+  };
+  const handleFocus = () => {
+    if (disabled || readOnly) return;
+    setIsFocused(true);
+    setIsOpen(true);
+  };
+  const handleInputBlur = (e) => {
+    setTimeout(() => {
+      setIsFocused(false);
+      onBlur?.(e);
+    }, 200);
+  };
+  const inputTheme = theme.input || {};
+  const getInputStyle = () => {
+    const style = {
+      backgroundColor: inputTheme.backgroundColor || "#ffffff",
+      borderColor: inputTheme.borderColor || "#e2e8f0",
+      borderRadius: inputTheme.borderRadius || "0.5rem",
+      padding: inputTheme.padding || "0.5rem 0.75rem",
+      fontSize: inputTheme.fontSize || "0.875rem",
+      borderWidth: "1px",
+      borderStyle: "solid",
+      transition: "all 0.2s",
+      color: theme.colors.gray[900],
+      width: "100%"
+    };
+    if (disabled) {
+      style.backgroundColor = inputTheme.disabled?.backgroundColor || "#f1f5f9";
+      style.borderColor = inputTheme.disabled?.borderColor || "#e2e8f0";
+      style.opacity = 0.7;
+      style.cursor = "not-allowed";
+    }
+    if (touched && error) {
+      style.borderColor = inputTheme.error?.borderColor || "red";
+      if (isFocused) {
+        style.boxShadow = inputTheme.error?.ring;
+      }
+    } else if (isFocused && !readOnly) {
+      style.boxShadow = inputTheme.focus?.ring;
+      style.borderColor = inputTheme.focus?.borderColor;
+    }
+    return style;
+  };
+  return /* @__PURE__ */ jsxs14("div", { className: clsx14("w-full flex flex-col gap-1.5", className), ref: containerRef, children: [
+    label && /* @__PURE__ */ jsxs14(
+      "label",
+      {
+        className: clsx14("text-sm font-medium text-gray-700", {
+          "text-red-500": touched && error
+        }),
+        children: [
+          label,
+          required && /* @__PURE__ */ jsx19("span", { className: "text-red-500 ml-1", children: "*" })
+        ]
+      }
+    ),
+    /* @__PURE__ */ jsxs14("div", { className: "relative", children: [
+      /* @__PURE__ */ jsxs14("div", { className: "relative flex items-center", children: [
+        /* @__PURE__ */ jsx19(
+          "input",
+          {
+            type: "text",
+            name,
+            value: searchTerm,
+            onChange: handleInputChange,
+            onFocus: handleFocus,
+            onBlur: handleInputBlur,
+            disabled,
+            readOnly,
+            placeholder,
+            className: "outline-none pr-10",
+            style: getInputStyle(),
+            autoComplete: "off"
+          }
+        ),
+        /* @__PURE__ */ jsxs14("div", { className: "absolute right-3 flex items-center gap-2 text-gray-400 pointer-events-none", children: [
+          isLoading && /* @__PURE__ */ jsx19("div", { className: "animate-spin h-4 w-4 border-2 border-primary-500 border-t-transparent rounded-full" }),
+          !isLoading && /* @__PURE__ */ jsx19(FaSearch, { size: 14, className: clsx14({ "text-primary-500": isFocused }) })
+        ] })
+      ] }),
+      isOpen && /* @__PURE__ */ jsx19("div", { className: "absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200 origin-top", children: /* @__PURE__ */ jsx19("div", { className: "max-h-60 overflow-y-auto", children: filteredOptions.length > 0 ? filteredOptions.map((option) => /* @__PURE__ */ jsx19(
+        "div",
+        {
+          onClick: () => handleSelect(option),
+          className: clsx14(
+            "px-4 py-2 text-sm cursor-pointer transition-colors",
+            value === option[valueField] ? "bg-primary-50 text-primary-700 font-medium" : "hover:bg-gray-50 text-gray-700"
+          ),
+          children: option[labelField]
+        },
+        option[valueField]
+      )) : /* @__PURE__ */ jsx19("div", { className: "px-4 py-6 text-sm text-center text-gray-500 italic", children: isLoading ? "Cargando..." : noResultsMessage }) }) })
+    ] }),
+    touched && error && /* @__PURE__ */ jsx19("p", { className: "text-red-500 text-xs mt-1", children: error })
+  ] });
 }
 
-// src/components/image/image.tsx
-import { useState as useState15 } from "react";
-import { jsx as jsx19 } from "react/jsx-runtime";
-var ITImage = ({
-  src,
-  alt,
-  className = "",
-  fallbackSrc = ""
-}) => {
-  const [imageError, setImageError] = useState15(false);
-  const handleImageError = () => {
-    setImageError(true);
+// src/components/slide/slide.tsx
+import { useState as useState16, useEffect as useEffect13 } from "react";
+import clsx15 from "clsx";
+import { jsx as jsx20 } from "react/jsx-runtime";
+function ITSlideToggle({
+  onToggle,
+  isOn: controlledIsOn,
+  initialState = false,
+  activeColor = "success",
+  inactiveColor = "#9ca3af",
+  // default gray-400
+  disabled = false,
+  size = "md",
+  className = ""
+}) {
+  const isControlled = controlledIsOn !== void 0;
+  const [internalIsOn, setInternalIsOn] = useState16(initialState);
+  useEffect13(() => {
+    if (isControlled) {
+      setInternalIsOn(controlledIsOn);
+    }
+  }, [controlledIsOn, isControlled]);
+  const isOn = isControlled ? controlledIsOn : internalIsOn;
+  const toggleSwitch = () => {
+    if (disabled) return;
+    const newState = !isOn;
+    if (!isControlled) {
+      setInternalIsOn(newState);
+    }
+    if (onToggle) {
+      onToggle(newState);
+    }
   };
-  return /* @__PURE__ */ jsx19(
+  const isThemeColor = activeColor in theme.colors;
+  const resolvedActiveColor = isThemeColor ? theme.colors[activeColor][500] : activeColor;
+  const isInactiveThemeColor = inactiveColor in theme.colors;
+  const resolvedInactiveColor = isInactiveThemeColor ? theme.colors[inactiveColor][400] : inactiveColor;
+  const backgroundColor = isOn ? resolvedActiveColor : resolvedInactiveColor;
+  const sizeClasses2 = {
+    sm: {
+      container: "w-10 h-5",
+      knob: "w-3.5 h-3.5",
+      translate: "translate-x-5"
+    },
+    md: {
+      container: "w-14 h-7",
+      knob: "w-5 h-5",
+      translate: "translate-x-7"
+    },
+    lg: {
+      container: "w-16 h-8",
+      knob: "w-6 h-6",
+      translate: "translate-x-8"
+    }
+  };
+  const { container, knob, translate } = sizeClasses2[size];
+  return /* @__PURE__ */ jsx20(
     "div",
     {
-      className: `${className} flex items-center justify-center bg-transparent`,
-      children: imageError ? /* @__PURE__ */ jsx19(
-        "img",
-        {
-          src: fallbackSrc,
-          alt: "Fallback",
-          className: "w-full h-full object-cover"
+      onClick: toggleSwitch,
+      className: clsx15(
+        "flex items-center rounded-full p-1 transition-colors duration-300",
+        container,
+        disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
+        className
+      ),
+      style: { backgroundColor },
+      role: "switch",
+      "aria-checked": isOn,
+      tabIndex: disabled ? -1 : 0,
+      onKeyDown: (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggleSwitch();
         }
-      ) : /* @__PURE__ */ jsx19(
-        "img",
+      },
+      children: /* @__PURE__ */ jsx20(
+        "div",
         {
-          src,
-          alt,
-          onError: handleImageError,
-          className: "w-full h-full object-cover"
+          className: clsx15(
+            "bg-white rounded-full shadow-md transform transition-transform duration-300 pointer-events-none",
+            knob,
+            isOn ? translate : "translate-x-0"
+          )
         }
       )
     }
   );
-};
-var image_default = ITImage;
-
-// src/components/badget/badget.tsx
-import clsx14 from "clsx";
-
-// src/types/badget.types.ts
-var badgeSizes = {
-  small: "text-xs px-2 py-1",
-  medium: "text-sm px-3 py-1.5",
-  large: "text-base px-4 py-2"
-};
-
-// src/components/badget/badget.tsx
-import { jsx as jsx20 } from "react/jsx-runtime";
-function ITBadget({
-  children,
-  label,
-  color = "primary",
-  size = "medium",
-  variant = "filled",
-  className
-}) {
-  const themeBadge = theme.badge || {};
-  const config = themeBadge[color] || themeBadge.primary || {};
-  const getStyle = () => {
-    const style = {
-      fontSize: config.fontSize,
-      fontWeight: config.fontWeight,
-      padding: config.padding,
-      borderRadius: config.borderRadius,
-      // '9999px' in theme
-      borderWidth: "1px",
-      // Default border width for consistency
-      borderStyle: "solid",
-      borderColor: "transparent",
-      // Default transparent
-      transition: "all 0.2s"
-    };
-    if (variant === "filled") {
-      style.backgroundColor = config.backgroundColor;
-      style.color = config.color;
-      style.borderColor = config.borderColor || "transparent";
-    } else if (variant === "outlined") {
-      style.backgroundColor = "transparent";
-      style.color = config.color;
-      style.borderColor = config.color;
-    }
-    return style;
-  };
-  return /* @__PURE__ */ jsx20(
-    "span",
-    {
-      className: clsx14(
-        "inline-flex items-center justify-center",
-        // Fallback size if theme doesn't have it (though theme does have it for primary)
-        !config.padding ? badgeSizes[size] : "",
-        className
-      ),
-      style: getStyle(),
-      children: children || /* @__PURE__ */ jsx20("span", { className: clsx14("font-semibold"), children: label })
-    }
-  );
 }
 
-// src/types/yup.types.ts
-import * as Yup from "yup";
-var createValidationSchema = (fields) => Yup.object().shape(
-  fields.reduce((acc, field) => {
-    if (field.validation) {
-      acc[field.name] = field.validation;
-    }
-    return acc;
-  }, {})
-);
+// src/components/text/text.tsx
+import { jsx as jsx21 } from "react/jsx-runtime";
+function ITText({ children, className = "" }) {
+  return /* @__PURE__ */ jsx21("p", { className: `${className} text-gray-900 `, children });
+}
 
-// src/types/loader.types.ts
-var sizeClasses = {
-  sm: "h-4 w-4",
-  md: "h-8 w-8",
-  lg: "h-12 w-12",
-  xl: "h-16 w-16"
+// src/types/toast.types.ts
+var positionStyles = {
+  "top-right": "top-4 right-4",
+  "top-center": "top-4 left-1/2 transform -translate-x-1/2",
+  "top-left": "top-4 left-4",
+  "bottom-right": "bottom-4 right-4",
+  "bottom-center": "bottom-4 left-1/2 transform -translate-x-1/2",
+  "bottom-left": "bottom-4 left-4"
 };
 
-// src/components/loader/loader.tsx
-import { jsx as jsx21 } from "react/jsx-runtime";
-function ITLoader({
-  size = "md",
-  variant = "spinner",
-  color = "primary",
-  // Default to semantic primary
-  className = ""
+// src/components/toast/toast.tsx
+import clsx16 from "clsx";
+import { useEffect as useEffect14, useState as useState17 } from "react";
+import { FaTimesCircle, FaCheckCircle, FaExclamationTriangle, FaInfoCircle, FaTimes as FaTimes5 } from "react-icons/fa";
+import { jsx as jsx22, jsxs as jsxs15 } from "react/jsx-runtime";
+function ITToast({
+  message,
+  type = "info",
+  duration = 1500,
+  position = "top-right",
+  onClose
 }) {
-  const isSemantic = color in theme.colors;
-  const resolvedColor = isSemantic ? theme.colors[color][500] : color;
-  const isCssValue = isSemantic || color.startsWith("#") || color.startsWith("rgb");
-  const style = isCssValue ? { color: resolvedColor } : {};
-  const bgStyle = isCssValue ? { backgroundColor: resolvedColor } : {};
-  const colorClass = !isCssValue ? color : "";
-  if (variant === "spinner") {
-    return /* @__PURE__ */ jsx21(
-      "div",
-      {
-        className: `inline-block ${sizeClasses[size]} animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite] ${colorClass} ${className}`,
-        role: "status",
-        style,
-        children: /* @__PURE__ */ jsx21("span", { className: "!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]", children: "Loading..." })
-      }
-    );
-  }
-  if (variant === "dots") {
-    return /* @__PURE__ */ jsx21(
-      "div",
-      {
-        className: `flex items-center justify-center space-x-2 ${className}`,
-        children: [...Array(3)].map((_, i) => /* @__PURE__ */ jsx21(
-          "div",
+  const [isVisible, setIsVisible] = useState17(true);
+  useEffect14(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+      setTimeout(() => {
+        if (onClose) onClose();
+      }, 300);
+    }, duration);
+    return () => clearTimeout(timer);
+  }, [duration, onClose]);
+  const handleClose = () => {
+    setIsVisible(false);
+    setTimeout(() => {
+      if (onClose) onClose();
+    }, 300);
+  };
+  const isThemeColor = type in theme.colors;
+  const backgroundColor = isThemeColor ? theme.colors[type][500] : theme.colors.primary[500];
+  const TypeIcon = () => {
+    switch (type) {
+      case "success":
+        return /* @__PURE__ */ jsx22(FaCheckCircle, { className: "w-5 h-5 flex-shrink-0" });
+      case "error":
+      case "danger":
+        return /* @__PURE__ */ jsx22(FaTimesCircle, { className: "w-5 h-5 flex-shrink-0" });
+      case "warning":
+        return /* @__PURE__ */ jsx22(FaExclamationTriangle, { className: "w-5 h-5 flex-shrink-0" });
+      case "info":
+      default:
+        return /* @__PURE__ */ jsx22(FaInfoCircle, { className: "w-5 h-5 flex-shrink-0" });
+    }
+  };
+  return /* @__PURE__ */ jsxs15(
+    "div",
+    {
+      className: clsx16(
+        "fixed z-50 p-4 rounded-xl shadow-xl flex items-center justify-between gap-4 transition-all duration-300 text-white min-w-[300px]",
+        positionStyles[position],
+        {
+          "opacity-100 translate-y-0 scale-100": isVisible,
+          "opacity-0 scale-95": !isVisible,
+          "-translate-y-4": !isVisible && position.startsWith("top"),
+          "translate-y-4": !isVisible && position.startsWith("bottom")
+        }
+      ),
+      style: { backgroundColor },
+      role: "alert",
+      children: [
+        /* @__PURE__ */ jsxs15("div", { className: "flex items-center gap-3", children: [
+          /* @__PURE__ */ jsx22(TypeIcon, {}),
+          /* @__PURE__ */ jsx22("span", { className: "font-medium text-sm sm:text-base leading-snug", children: message })
+        ] }),
+        /* @__PURE__ */ jsx22(
+          "button",
           {
-            className: `${sizeClasses[size.replace(/l|g/, "")]} animate-bounce rounded-full ${colorClass}`,
-            style: {
-              ...bgStyle,
-              animationDelay: `${i * 0.1}s`
-            }
-          },
-          i
-        ))
-      }
-    );
-  }
-  if (variant === "bar") {
-    return /* @__PURE__ */ jsx21(
-      "div",
-      {
-        className: `w-full ${size === "sm" ? "h-1" : size === "md" ? "h-1.5" : size === "lg" ? "h-2" : "h-2.5"} bg-gray-200 rounded-full overflow-hidden ${className}`,
-        children: /* @__PURE__ */ jsx21(
-          "div",
-          {
-            className: `h-full animate-progress ${colorClass}`,
-            style: {
-              backgroundColor: resolvedColor,
-              // Simplified gradient for modern look, or keep it solid
-              backgroundImage: isCssValue ? `linear-gradient(to right, ${resolvedColor}DD, ${resolvedColor})` : void 0,
-              animation: "progress 1.5s ease-in-out infinite"
-            }
+            onClick: handleClose,
+            className: "p-1.5 rounded-full hover:bg-black/15 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50",
+            "aria-label": "Close notification",
+            children: /* @__PURE__ */ jsx22(FaTimes5, { className: "w-4 h-4" })
           }
         )
-      }
-    );
-  }
-  if (variant === "pulse") {
-    return /* @__PURE__ */ jsx21(
-      "div",
-      {
-        className: `rounded-full ${sizeClasses[size]} animate-pulse ${colorClass} ${className}`,
-        style: bgStyle
-      }
-    );
-  }
-  return null;
-}
-
-// src/components/layout/layout.tsx
-import { useState as useState18 } from "react";
-
-// src/components/topbar/topbar.tsx
-import { FaUserCircle as FaUserCircle2, FaBars } from "react-icons/fa";
-import { useRef as useRef6, useState as useState16 } from "react";
-import { jsx as jsx22, jsxs as jsxs14 } from "react/jsx-runtime";
-function ITTopBar({
-  logo,
-  logoText,
-  userMenu,
-  showMobileMenuButton,
-  onToggleMobileMenu,
-  navItems,
-  onNavItemClick
-}) {
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState16(false);
-  const userMenuRef = useRef6(null);
-  useClickOutside_default(userMenuRef, () => setIsUserMenuOpen(false));
-  return /* @__PURE__ */ jsx22(
-    "header",
-    {
-      className: "sticky top-0 z-40 backdrop-blur-md transition-all duration-300",
-      style: {
-        backgroundColor: theme.topbar?.backgroundColor || "rgba(255, 255, 255, 0.9)",
-        borderBottom: `1px solid ${theme.topbar?.borderColor || "#e2e8f0"}`,
-        boxShadow: theme.topbar?.shadow || "none"
-      },
-      children: /* @__PURE__ */ jsxs14("div", { className: "flex items-center justify-between h-[72px] px-6 lg:px-8", children: [
-        /* @__PURE__ */ jsxs14("div", { className: "flex items-center gap-5", children: [
-          showMobileMenuButton && /* @__PURE__ */ jsx22(
-            "button",
-            {
-              className: "lg:hidden p-2.5 rounded-xl transition-colors duration-200",
-              style: {
-                color: theme.topbar?.iconColor || "#64748b"
-              },
-              onMouseEnter: (e) => e.currentTarget.style.backgroundColor = theme.topbar?.userMenu?.hoverBackground || "#f1f5f9",
-              onMouseLeave: (e) => e.currentTarget.style.backgroundColor = "transparent",
-              onClick: onToggleMobileMenu,
-              children: /* @__PURE__ */ jsx22(FaBars, { className: "w-[1.125rem] h-[1.125rem]" })
-            }
-          ),
-          /* @__PURE__ */ jsxs14("div", { className: "flex items-center gap-3", children: [
-            logo && /* @__PURE__ */ jsx22("div", { className: "flex-shrink-0 drop-shadow-sm", children: logo }),
-            logoText && /* @__PURE__ */ jsx22(
-              "span",
-              {
-                className: "text-[1.15rem] font-bold tracking-tight",
-                style: { color: theme.topbar?.textHoverColor || "#0f172a" },
-                children: logoText
-              }
-            )
-          ] }),
-          navItems && navItems.length > 0 && /* @__PURE__ */ jsx22("nav", { className: "hidden md:flex ml-8 space-x-1 border-l pl-8", style: { borderColor: theme.topbar?.borderColor || "#e2e8f0" }, children: navItems.map((item) => /* @__PURE__ */ jsx22(
-            "button",
-            {
-              onClick: () => onNavItemClick?.(item.id),
-              className: "px-4 py-2 rounded-lg font-medium text-[0.9rem] transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)]",
-              style: { color: theme.topbar?.textColor || "#475569" },
-              onMouseEnter: (e) => {
-                e.currentTarget.style.color = theme.topbar?.textHoverColor || "#0f172a";
-                e.currentTarget.style.backgroundColor = theme.topbar?.userMenu?.hoverBackground || "#f1f5f9";
-              },
-              onMouseLeave: (e) => {
-                e.currentTarget.style.color = theme.topbar?.textColor || "#475569";
-                e.currentTarget.style.backgroundColor = "transparent";
-              },
-              children: /* @__PURE__ */ jsxs14("div", { className: "flex items-center gap-2", children: [
-                item.icon && /* @__PURE__ */ jsx22("span", { className: "opacity-70", children: item.icon }),
-                item.label
-              ] })
-            },
-            item.id
-          )) })
-        ] }),
-        userMenu && /* @__PURE__ */ jsxs14("div", { className: "relative", children: [
-          /* @__PURE__ */ jsxs14(
-            "button",
-            {
-              type: "button",
-              className: "flex items-center gap-3 rounded-full pl-2 pr-4 py-1.5 transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] border border-transparent hover:border-gray-200",
-              style: {
-                backgroundColor: isUserMenuOpen ? theme.topbar?.userMenu?.hoverBackground || "#f1f5f9" : "transparent"
-              },
-              onMouseEnter: (e) => {
-                if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = theme.topbar?.userMenu?.hoverBackground || "#f1f5f9";
-              },
-              onMouseLeave: (e) => {
-                if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = "transparent";
-              },
-              onClick: () => setIsUserMenuOpen(!isUserMenuOpen),
-              children: [
-                /* @__PURE__ */ jsxs14("div", { className: "relative", children: [
-                  userMenu.userImage ? /* @__PURE__ */ jsx22(
-                    "img",
-                    {
-                      className: "w-9 h-9 rounded-full object-cover ring-2 ring-white shadow-sm",
-                      src: userMenu.userImage,
-                      alt: "Current user"
-                    }
-                  ) : /* @__PURE__ */ jsx22("div", { className: "w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center ring-2 ring-white shadow-sm", children: /* @__PURE__ */ jsx22(FaUserCircle2, { className: "w-6 h-6", style: { color: theme.topbar?.iconColor || "#94a3b8" } }) }),
-                  /* @__PURE__ */ jsx22("div", { className: "absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full" })
-                ] }),
-                /* @__PURE__ */ jsxs14("div", { className: "hidden sm:flex flex-col text-left py-0.5", children: [
-                  /* @__PURE__ */ jsx22(
-                    "span",
-                    {
-                      className: "font-semibold text-[0.85rem] leading-tight",
-                      style: { color: theme.topbar?.userMenu?.textColor || "#0f172a" },
-                      children: userMenu.userName
-                    }
-                  ),
-                  /* @__PURE__ */ jsx22(
-                    "span",
-                    {
-                      className: "text-[0.7rem] font-medium",
-                      style: { color: theme.topbar?.userMenu?.subtitleColor || "#64748b" },
-                      children: userMenu.userEmail
-                    }
-                  )
-                ] })
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsxs14(
-            "div",
-            {
-              ref: userMenuRef,
-              className: `
-                absolute right-0 mt-3 w-64 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] z-50 overflow-hidden transform origin-top-right transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)]
-                ${isUserMenuOpen ? "scale-100 opacity-100 translate-y-0" : "scale-95 opacity-0 -translate-y-2 pointer-events-none"}
-              `,
-              style: {
-                backgroundColor: theme.topbar?.userMenu?.dropdown?.backgroundColor || "#ffffff",
-                border: `1px solid ${theme.topbar?.userMenu?.dropdown?.borderColor || "#f1f5f9"}`
-              },
-              children: [
-                /* @__PURE__ */ jsxs14("div", { className: "px-5 py-4 border-b bg-slate-50/50", style: { borderColor: theme.topbar?.userMenu?.dropdown?.borderColor || "#f1f5f9" }, children: [
-                  /* @__PURE__ */ jsx22("span", { className: "block font-bold text-[0.9rem]", style: { color: theme.topbar?.userMenu?.textColor || "#0f172a" }, children: userMenu.userName }),
-                  /* @__PURE__ */ jsx22("span", { className: "block text-xs font-medium truncate mt-0.5", style: { color: theme.topbar?.userMenu?.subtitleColor || "#64748b" }, children: userMenu.userEmail })
-                ] }),
-                /* @__PURE__ */ jsx22("ul", { className: "py-2", children: userMenu.menuItems.map((m, i) => {
-                  const isDestructive = m.label.toLowerCase().includes("salir") || m.label.toLowerCase().includes("cerrar") || m.label.toLowerCase().includes("logout");
-                  return /* @__PURE__ */ jsxs14("li", { className: "px-2", children: [
-                    i === userMenu.menuItems.length - 1 && isDestructive && i > 0 && /* @__PURE__ */ jsx22("div", { className: "h-px bg-slate-100 my-1 mx-2" }),
-                    /* @__PURE__ */ jsx22(
-                      "button",
-                      {
-                        onClick: (e) => {
-                          m.onClick();
-                          setIsUserMenuOpen(false);
-                        },
-                        className: `block w-full text-left px-3 py-2.5 rounded-xl text-[0.875rem] font-medium transition-colors duration-150`,
-                        style: { color: isDestructive ? "#ef4444" : theme.topbar?.userMenu?.textColor || "#334155" },
-                        onMouseEnter: (e) => {
-                          e.currentTarget.style.backgroundColor = isDestructive ? "#fef2f2" : theme.topbar?.userMenu?.dropdown?.itemHoverBackground || "#f8fafc";
-                        },
-                        onMouseLeave: (e) => {
-                          e.currentTarget.style.backgroundColor = "transparent";
-                        },
-                        children: m.label
-                      }
-                    )
-                  ] }, i);
-                }) })
-              ]
-            }
-          )
-        ] })
-      ] })
+      ]
     }
   );
-}
-
-// src/components/sidebar/sidebar.tsx
-import { useEffect as useEffect13, useRef as useRef7, useState as useState17 } from "react";
-import { FaChevronDown as FaChevronDown2 } from "react-icons/fa";
-import { jsx as jsx23, jsxs as jsxs15 } from "react/jsx-runtime";
-function ITSidebar({
-  navigationItems = [],
-  isCollapsed = false,
-  onToggleCollapse,
-  className = "",
-  visibleOnMobile = false
-}) {
-  const [expandedItems, setExpandedItems] = useState17(/* @__PURE__ */ new Set());
-  const [isHovering, setIsHovering] = useState17(false);
-  const sidebarRef = useRef7(null);
-  const hoverTimeoutRef = useRef7(null);
-  const leaveTimeoutRef = useRef7(null);
-  useEffect13(() => {
-    const handleMouseEnter = () => {
-      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-      if (leaveTimeoutRef.current) clearTimeout(leaveTimeoutRef.current);
-      setIsHovering(true);
-    };
-    const handleMouseLeave = () => {
-      leaveTimeoutRef.current = setTimeout(() => {
-        setIsHovering(false);
-      }, 300);
-    };
-    const sidebar = sidebarRef.current;
-    if (sidebar) {
-      sidebar.addEventListener("mouseenter", handleMouseEnter);
-      sidebar.addEventListener("mouseleave", handleMouseLeave);
-    }
-    return () => {
-      if (sidebar) {
-        sidebar.removeEventListener("mouseenter", handleMouseEnter);
-        sidebar.removeEventListener("mouseleave", handleMouseLeave);
-      }
-      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-      if (leaveTimeoutRef.current) clearTimeout(leaveTimeoutRef.current);
-    };
-  }, [isCollapsed]);
-  const toggleExpanded = (itemId) => {
-    const newExpanded = new Set(expandedItems);
-    if (newExpanded.has(itemId)) newExpanded.delete(itemId);
-    else newExpanded.add(itemId);
-    setExpandedItems(newExpanded);
-  };
-  const handleItemClick = (item) => {
-    if (item.subitems && item.subitems.length > 0) {
-      toggleExpanded(item.id);
-    } else if (item.action) {
-      item.action();
-    }
-  };
-  const isSidebarCollapsed = visibleOnMobile ? false : !isHovering && isCollapsed;
-  const sidebarWidth = isSidebarCollapsed ? "w-[88px]" : "w-[280px]";
-  return /* @__PURE__ */ jsx23(
-    "aside",
-    {
-      ref: sidebarRef,
-      className: `
-        relative flex flex-col 
-        transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)]
-        ${sidebarWidth}
-        ${className}
-        ${!visibleOnMobile ? "hidden lg:flex" : "flex"}
-        shadow-[4px_0_24px_rgba(0,0,0,0.02)]
-      `,
-      style: {
-        zIndex: 50,
-        backgroundColor: theme.sidebar?.backgroundColor || "rgba(255, 255, 255, 0.90)",
-        borderRight: `1px solid ${theme.sidebar?.borderColor || "#e2e8f0"}`,
-        WebkitBackdropFilter: "blur(12px)",
-        backdropFilter: "blur(12px)"
-      },
-      children: /* @__PURE__ */ jsx23("nav", { className: "flex-1 py-6 overflow-y-auto overflow-x-hidden custom-scrollbar px-4", children: /* @__PURE__ */ jsx23("ul", { className: "space-y-2", children: navigationItems.map((item) => /* @__PURE__ */ jsxs15("li", { className: "relative group/navitem", children: [
-        /* @__PURE__ */ jsxs15(
-          "div",
-          {
-            className: `flex items-center cursor-pointer 
-                  transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)]
-                  rounded-xl relative overflow-visible
-                  ${isSidebarCollapsed ? "justify-center p-2.5 mb-2" : "justify-between px-3.5 py-3 mb-1"}
-                `,
-            style: {
-              backgroundColor: item.isActive ? theme.sidebar?.active?.backgroundColor || "#f8fafc" : "transparent",
-              boxShadow: item.isActive ? "0 1px 2px 0 rgba(0, 0, 0, 0.05)" : "none",
-              border: item.isActive ? `1px solid ${theme.sidebar?.borderColor || "#e2e8f0"}` : "1px solid transparent"
-            },
-            onMouseEnter: (e) => {
-              if (!item.isActive) e.currentTarget.style.backgroundColor = theme.sidebar?.hover?.backgroundColor || "#f1f5f9";
-            },
-            onMouseLeave: (e) => {
-              if (!item.isActive) e.currentTarget.style.backgroundColor = "transparent";
-            },
-            onClick: () => handleItemClick(item),
-            children: [
-              item.isActive && !isSidebarCollapsed && /* @__PURE__ */ jsx23(
-                "div",
-                {
-                  className: "absolute left-0 top-1/4 bottom-1/4 w-[3px] rounded-r-full transition-all",
-                  style: { backgroundColor: theme.sidebar?.active?.iconColor || "#10b981", boxShadow: `0 0 10px ${theme.sidebar?.active?.iconColor || "#10b981"}` }
-                }
-              ),
-              /* @__PURE__ */ jsxs15("div", { className: `flex items-center ${!isSidebarCollapsed ? "gap-3.5" : "justify-center"} relative z-10 w-full`, children: [
-                item.icon && /* @__PURE__ */ jsx23(
-                  "div",
-                  {
-                    className: `transition-all duration-300 flex-shrink-0 flex items-center justify-center`,
-                    style: {
-                      color: item.isActive ? theme.sidebar?.active?.iconColor || "#10b981" : theme.sidebar?.icon?.color || "#9ca3af",
-                      opacity: item.isActive ? 1 : 0.8,
-                      fontSize: item.isActive ? "1.35rem" : theme.sidebar?.icon?.size || "1.25rem",
-                      filter: item.isActive ? "drop-shadow(0 0 8px rgba(255,255,255,0.2))" : "none"
-                    },
-                    children: item.icon
-                  }
-                ),
-                !isSidebarCollapsed && /* @__PURE__ */ jsx23(
-                  "span",
-                  {
-                    className: `transition-all duration-300 truncate tracking-wide`,
-                    style: {
-                      color: item.isActive ? theme.sidebar?.active?.color || "#ffffff" : theme.sidebar?.label?.color || "#d1d5db",
-                      fontSize: theme.sidebar?.label?.size || "0.9rem",
-                      fontWeight: item.isActive ? "600" : theme.sidebar?.label?.weight || "500"
-                    },
-                    children: item.label
-                  }
-                )
-              ] }),
-              !isSidebarCollapsed && item.subitems && item.subitems.length > 0 && /* @__PURE__ */ jsx23(
-                "div",
-                {
-                  className: `flex-shrink-0 transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${expandedItems.has(item.id) ? "rotate-180" : ""}`,
-                  style: { color: item.isActive ? theme.sidebar?.active?.color || "#0f172a" : theme.sidebar?.icon?.color || "#64748b", opacity: 0.7 },
-                  children: /* @__PURE__ */ jsx23(FaChevronDown2, { className: "w-3 h-3" })
-                }
-              ),
-              item.badge && /* @__PURE__ */ jsx23(
-                "span",
-                {
-                  className: `
-                      absolute flex items-center justify-center font-bold shadow-md
-                      ${isSidebarCollapsed ? "top-1 right-1 w-2.5 h-2.5 rounded-full ring-2" : "right-3 top-1/2 transform -translate-y-1/2 px-2 py-0.5 text-[10px] rounded-full backdrop-blur-sm"}
-                    `,
-                  style: {
-                    backgroundColor: theme.sidebar?.badge?.backgroundColor || theme.sidebar?.active?.iconColor || "#10b981",
-                    color: theme.sidebar?.badge?.color || "#ffffff",
-                    boxShadow: isSidebarCollapsed ? `0 0 0 2px ${theme.sidebar?.backgroundColor || "#111827"}` : "none"
-                  },
-                  children: isSidebarCollapsed ? "" : item.badge
-                }
-              )
-            ]
-          }
-        ),
-        isSidebarCollapsed && /* @__PURE__ */ jsxs15(
-          "div",
-          {
-            className: "absolute left-full top-0 ml-4 rounded-2xl opacity-0 invisible group-hover/navitem:opacity-100 group-hover/navitem:visible transition-all duration-300 pointer-events-none z-50 min-w-[220px] overflow-hidden -translate-x-2 group-hover/navitem:translate-x-0 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)]",
-            style: {
-              backgroundColor: theme.sidebar?.backgroundColor || "#ffffff",
-              border: `1px solid ${theme.sidebar?.borderColor || "#e2e8f0"}`,
-              WebkitBackdropFilter: "blur(16px)",
-              backdropFilter: "blur(16px)"
-            },
-            children: [
-              /* @__PURE__ */ jsxs15("div", { className: "px-5 py-4 flex items-center gap-3 font-semibold border-b", style: { borderColor: theme.sidebar?.borderColor || "#e2e8f0", color: theme.sidebar?.active?.color || "#0f172a" }, children: [
-                item.icon && /* @__PURE__ */ jsx23("span", { style: { color: theme.sidebar?.active?.iconColor || "#10b981" }, className: "text-xl drop-shadow-sm", children: item.icon }),
-                /* @__PURE__ */ jsx23("span", { className: "tracking-wide text-[15px]", children: item.label })
-              ] }),
-              item.subitems && item.subitems.length > 0 ? /* @__PURE__ */ jsx23("div", { className: "py-2", children: item.subitems.map((subitem) => /* @__PURE__ */ jsxs15(
-                "div",
-                {
-                  className: `px-5 py-2.5 text-sm flex items-center gap-3 transition-colors`,
-                  children: [
-                    /* @__PURE__ */ jsx23("span", { className: `w-1.5 h-1.5 rounded-full transition-all ${subitem.isActive ? "scale-125" : ""}`, style: { backgroundColor: subitem.isActive ? theme.sidebar?.active?.iconColor || "#10b981" : theme.sidebar?.icon?.color || "#94a3b8" } }),
-                    /* @__PURE__ */ jsx23("span", { style: { color: subitem.isActive ? theme.sidebar?.active?.color || "#0f172a" : theme.sidebar?.label?.color || "#475569", fontWeight: subitem.isActive ? 600 : 500 }, children: subitem.label })
-                  ]
-                },
-                subitem.id
-              )) }) : /* @__PURE__ */ jsx23("div", { className: "px-5 py-3 text-sm text-zinc-500 italic", children: "No hay submen\xFA" })
-            ]
-          }
-        ),
-        !isSidebarCollapsed && item.subitems && item.subitems.length > 0 && /* @__PURE__ */ jsx23("div", { className: `overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] ${expandedItems.has(item.id) ? "max-h-[500px] opacity-100 mt-1" : "max-h-0 opacity-0"}`, children: /* @__PURE__ */ jsx23("ul", { className: "ml-5 pl-4 space-y-1 py-1", style: { borderLeft: `2px solid ${theme.sidebar?.borderColor || "#e2e8f0"}` }, children: item.subitems.map((subitem) => /* @__PURE__ */ jsxs15("li", { className: "relative", children: [
-          subitem.isActive && /* @__PURE__ */ jsx23("div", { className: "absolute -left-[18px] top-1/2 -translate-y-1/2 w-4 h-[2px] rounded-r-full", style: { backgroundColor: theme.sidebar?.active?.iconColor || "#10b981" } }),
-          /* @__PURE__ */ jsx23(
-            "button",
-            {
-              onClick: subitem.action,
-              className: `block w-full text-left px-4 py-2 rounded-xl transition-all duration-300`,
-              style: {
-                color: subitem.isActive ? theme.sidebar?.active?.color || "#0f172a" : theme.sidebar?.label?.color || "#475569",
-                backgroundColor: subitem.isActive ? theme.sidebar?.active?.backgroundColor || "#f8fafc" : "transparent",
-                fontSize: "0.85rem",
-                fontWeight: subitem.isActive ? 600 : 500,
-                letterSpacing: "0.01em"
-              },
-              onMouseEnter: (e) => {
-                if (!subitem.isActive) {
-                  e.currentTarget.style.backgroundColor = theme.sidebar?.hover?.backgroundColor || "#f1f5f9";
-                  e.currentTarget.style.transform = "translateX(4px)";
-                }
-              },
-              onMouseLeave: (e) => {
-                if (!subitem.isActive) {
-                  e.currentTarget.style.backgroundColor = "transparent";
-                  e.currentTarget.style.transform = "translateX(0)";
-                }
-              },
-              children: subitem.label
-            }
-          )
-        ] }, subitem.id)) }) })
-      ] }, item.id)) }) })
-    }
-  );
-}
-
-// src/components/layout/layout.tsx
-import { jsx as jsx24, jsxs as jsxs16 } from "react/jsx-runtime";
-function ITLayout({
-  topBar,
-  sidebar,
-  children,
-  className = ""
-}) {
-  const [desktopCollapsed, setDesktopCollapsed] = useState18(true);
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState18(false);
-  return /* @__PURE__ */ jsxs16("div", { className: `flex flex-col h-screen overflow-hidden w-full ${className}`, children: [
-    /* @__PURE__ */ jsx24(
-      ITTopBar,
-      {
-        ...topBar,
-        showMobileMenuButton: true,
-        onToggleMobileMenu: () => setMobileSidebarOpen((v) => !v)
-      }
-    ),
-    /* @__PURE__ */ jsxs16("div", { className: "flex flex-1 overflow-hidden relative", style: { backgroundColor: theme.layout?.backgroundColor || "#f8fafc" }, children: [
-      /* @__PURE__ */ jsxs16("div", { className: "hidden lg:block relative z-40 h-full", children: [
-        /* @__PURE__ */ jsx24("div", { className: "w-[88px] h-full flex-shrink-0" }),
-        /* @__PURE__ */ jsx24("div", { className: "absolute top-0 left-0 h-full", children: /* @__PURE__ */ jsx24(
-          ITSidebar,
-          {
-            ...sidebar,
-            isCollapsed: desktopCollapsed,
-            onToggleCollapse: () => setDesktopCollapsed((v) => !v),
-            visibleOnMobile: false,
-            className: `h-full drop-shadow-2xl transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] flex-shrink-0`
-          }
-        ) })
-      ] }),
-      mobileSidebarOpen && /* @__PURE__ */ jsx24(
-        "div",
-        {
-          className: "lg:hidden fixed inset-0 z-50 transition-opacity duration-300 backdrop-blur-sm bg-black/40",
-          onClick: () => setMobileSidebarOpen(false),
-          children: /* @__PURE__ */ jsx24(
-            "div",
-            {
-              className: "h-full w-auto transform transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)]",
-              onClick: (e) => e.stopPropagation(),
-              children: /* @__PURE__ */ jsx24(
-                ITSidebar,
-                {
-                  ...sidebar,
-                  isCollapsed: false,
-                  visibleOnMobile: true,
-                  className: "h-full shadow-2xl",
-                  onToggleCollapse: () => setMobileSidebarOpen(false)
-                }
-              )
-            }
-          )
-        }
-      ),
-      /* @__PURE__ */ jsx24("main", { className: "flex-1 overflow-y-auto w-full custom-scrollbar relative z-0", children: /* @__PURE__ */ jsx24(
-        "div",
-        {
-          className: "mx-auto w-full h-full",
-          style: { padding: theme.layout?.contentPadding || "1.5rem" },
-          children
-        }
-      ) })
-    ] })
-  ] });
 }
 
 // src/components/dropfile/dropfile.tsx
-import { useState as useState19, useEffect as useEffect14, useRef as useRef8 } from "react";
+import { useState as useState18, useEffect as useEffect15, useRef as useRef8 } from "react";
 import { useDropzone } from "react-dropzone";
-import clsx15 from "clsx";
-import { Fragment as Fragment4, jsx as jsx25, jsxs as jsxs17 } from "react/jsx-runtime";
+import clsx17 from "clsx";
+import { Fragment as Fragment5, jsx as jsx23, jsxs as jsxs16 } from "react/jsx-runtime";
 var ITDropfile = ({
   onFileSelect,
   onCancel,
@@ -4135,15 +4093,15 @@ var ITDropfile = ({
   onStatusChange,
   initialPreviewUrl
 }) => {
-  const [selectedFile, setSelectedFile] = useState19(null);
-  const [fileType, setFileType] = useState19(null);
-  const [imagePreview, setImagePreview] = useState19(initialPreviewUrl || null);
-  const [isConfirmed, setIsConfirmed] = useState19(false);
-  const [internalUploadStatus, setInternalUploadStatus] = useState19(
+  const [selectedFile, setSelectedFile] = useState18(null);
+  const [fileType, setFileType] = useState18(null);
+  const [imagePreview, setImagePreview] = useState18(initialPreviewUrl || null);
+  const [isConfirmed, setIsConfirmed] = useState18(false);
+  const [internalUploadStatus, setInternalUploadStatus] = useState18(
     initialPreviewUrl ? "subido" /* UPLOADED */ : "pendiente" /* PENDING */
   );
   const canvasRef = useRef8(null);
-  useEffect14(() => {
+  useEffect15(() => {
     if (initialPreviewUrl && !selectedFile) {
       setImagePreview(initialPreviewUrl);
       if (externalStatus === void 0) setInternalUploadStatus("subido" /* UPLOADED */);
@@ -4232,9 +4190,9 @@ var ITDropfile = ({
       }
     };
     const { label, color, dotColor } = config[status];
-    return /* @__PURE__ */ jsxs17("div", { className: `inline-flex items-center gap-2 px-2.5 py-1 rounded-full border ${color}`, children: [
-      /* @__PURE__ */ jsx25("div", { className: `w-2 h-2 rounded-full ${dotColor}` }),
-      /* @__PURE__ */ jsx25("span", { className: "text-xs font-medium flex items-center gap-1.5", children: label })
+    return /* @__PURE__ */ jsxs16("div", { className: `inline-flex items-center gap-2 px-2.5 py-1 rounded-full border ${color}`, children: [
+      /* @__PURE__ */ jsx23("div", { className: `w-2 h-2 rounded-full ${dotColor}` }),
+      /* @__PURE__ */ jsx23("span", { className: "text-xs font-medium flex items-center gap-1.5", children: label })
     ] });
   };
   const onDrop = (acceptedFiles) => {
@@ -4266,12 +4224,12 @@ var ITDropfile = ({
     accept: getAcceptedFileTypes(),
     maxFiles: 1
   });
-  useEffect14(() => {
+  useEffect15(() => {
     const renderPDF = async () => {
     };
     renderPDF();
   }, [selectedFile, fileType]);
-  useEffect14(() => {
+  useEffect15(() => {
     return () => {
       if (imagePreview) {
         URL.revokeObjectURL(imagePreview);
@@ -4309,19 +4267,19 @@ var ITDropfile = ({
     handleCancel();
   };
   const isImage = fileType && fileType.startsWith("image/");
-  return /* @__PURE__ */ jsxs17("div", { className: clsx15("w-full transition-all duration-300", containerClassName), children: [
-    /* @__PURE__ */ jsxs17("div", { className: "flex items-center justify-between mb-2", children: [
-      /* @__PURE__ */ jsxs17("label", { className: "block text-sm font-semibold text-gray-700", children: [
+  return /* @__PURE__ */ jsxs16("div", { className: clsx17("w-full transition-all duration-300", containerClassName), children: [
+    /* @__PURE__ */ jsxs16("div", { className: "flex items-center justify-between mb-2", children: [
+      /* @__PURE__ */ jsxs16("label", { className: "block text-sm font-semibold text-gray-700", children: [
         "Subir archivo ",
-        /* @__PURE__ */ jsxs17("span", { className: "text-gray-400 font-normal text-xs", children: [
+        /* @__PURE__ */ jsxs16("span", { className: "text-gray-400 font-normal text-xs", children: [
           "(",
           getFileExtensions(),
           ")"
         ] })
       ] }),
-      showStatusBadge && selectedFile && /* @__PURE__ */ jsx25(StatusBadge, { status: uploadStatus })
+      showStatusBadge && selectedFile && /* @__PURE__ */ jsx23(StatusBadge, { status: uploadStatus })
     ] }),
-    !selectedFile && !imagePreview ? /* @__PURE__ */ jsxs17(
+    !selectedFile && !imagePreview ? /* @__PURE__ */ jsxs16(
       "div",
       {
         ...getRootProps(),
@@ -4331,41 +4289,41 @@ var ITDropfile = ({
             ${isDragActive ? "border-primary-500 bg-primary-50 scale-[1.01]" : "border-gray-300 bg-white hover:border-primary-400 hover:bg-gray-50"}
           `,
         children: [
-          /* @__PURE__ */ jsx25("input", { ...getInputProps() }),
-          /* @__PURE__ */ jsx25("div", { className: `mb-3 p-3 rounded-full transition-colors duration-300 ${isDragActive ? "bg-primary-100" : "bg-gray-100 group-hover:bg-primary-50"}`, children: /* @__PURE__ */ jsx25(
+          /* @__PURE__ */ jsx23("input", { ...getInputProps() }),
+          /* @__PURE__ */ jsx23("div", { className: `mb-3 p-3 rounded-full transition-colors duration-300 ${isDragActive ? "bg-primary-100" : "bg-gray-100 group-hover:bg-primary-50"}`, children: /* @__PURE__ */ jsx23(
             "svg",
             {
               className: `w-6 h-6 transition-colors duration-300 ${isDragActive ? "text-primary-600" : "text-gray-400 group-hover:text-primary-500"}`,
               fill: "none",
               viewBox: "0 0 24 24",
               stroke: "currentColor",
-              children: /* @__PURE__ */ jsx25("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" })
+              children: /* @__PURE__ */ jsx23("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" })
             }
           ) }),
-          /* @__PURE__ */ jsx25("div", { className: "text-center space-y-1", children: /* @__PURE__ */ jsx25("p", { className: `text-sm font-medium transition-colors duration-300 ${isDragActive ? "text-primary-700" : "text-gray-700"}`, children: isDragActive ? "\xA1Suelta aqu\xED!" : "Haz clic o arrastra" }) })
+          /* @__PURE__ */ jsx23("div", { className: "text-center space-y-1", children: /* @__PURE__ */ jsx23("p", { className: `text-sm font-medium transition-colors duration-300 ${isDragActive ? "text-primary-700" : "text-gray-700"}`, children: isDragActive ? "\xA1Suelta aqu\xED!" : "Haz clic o arrastra" }) })
         ]
       }
-    ) : /* @__PURE__ */ jsxs17("div", { className: "w-full bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden animate-fade-in", children: [
-      /* @__PURE__ */ jsx25("div", { className: "flex items-center justify-between p-3 bg-gray-50 border-b border-gray-100", children: /* @__PURE__ */ jsxs17("div", { className: "flex items-center gap-3 overflow-hidden", children: [
-        /* @__PURE__ */ jsx25("div", { className: "flex-shrink-0 w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center text-primary-600", children: selectedFile && fileType?.startsWith("image/") || !selectedFile && imagePreview ? /* @__PURE__ */ jsx25("svg", { className: "w-5 h-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ jsx25("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" }) }) : /* @__PURE__ */ jsx25("svg", { className: "w-5 h-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ jsx25("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" }) }) }),
-        /* @__PURE__ */ jsxs17("div", { className: "min-w-0", children: [
-          /* @__PURE__ */ jsx25("p", { className: "text-xs font-medium text-gray-900 truncate", title: selectedFile?.name || "Imagen cargada", children: selectedFile?.name || "Imagen cargada" }),
-          /* @__PURE__ */ jsx25("p", { className: "text-[10px] text-gray-500", children: selectedFile ? (selectedFile.size / 1024 / 1024).toFixed(2) + " MB" : "" })
+    ) : /* @__PURE__ */ jsxs16("div", { className: "w-full bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden animate-fade-in", children: [
+      /* @__PURE__ */ jsx23("div", { className: "flex items-center justify-between p-3 bg-gray-50 border-b border-gray-100", children: /* @__PURE__ */ jsxs16("div", { className: "flex items-center gap-3 overflow-hidden", children: [
+        /* @__PURE__ */ jsx23("div", { className: "flex-shrink-0 w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center text-primary-600", children: selectedFile && fileType?.startsWith("image/") || !selectedFile && imagePreview ? /* @__PURE__ */ jsx23("svg", { className: "w-5 h-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ jsx23("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" }) }) : /* @__PURE__ */ jsx23("svg", { className: "w-5 h-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ jsx23("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" }) }) }),
+        /* @__PURE__ */ jsxs16("div", { className: "min-w-0", children: [
+          /* @__PURE__ */ jsx23("p", { className: "text-xs font-medium text-gray-900 truncate", title: selectedFile?.name || "Imagen cargada", children: selectedFile?.name || "Imagen cargada" }),
+          /* @__PURE__ */ jsx23("p", { className: "text-[10px] text-gray-500", children: selectedFile ? (selectedFile.size / 1024 / 1024).toFixed(2) + " MB" : "" })
         ] })
       ] }) }),
-      /* @__PURE__ */ jsx25("div", { className: clsx15("relative bg-gray-100 flex items-center justify-center", !contentClassName ? "max-h-[200px] min-h-[100px] overflow-auto" : contentClassName), children: selectedFile && fileType?.startsWith("image/") || !selectedFile && imagePreview ? /* @__PURE__ */ jsx25(
+      /* @__PURE__ */ jsx23("div", { className: clsx17("relative bg-gray-100 flex items-center justify-center", !contentClassName ? "max-h-[200px] min-h-[100px] overflow-auto" : contentClassName), children: selectedFile && fileType?.startsWith("image/") || !selectedFile && imagePreview ? /* @__PURE__ */ jsx23(
         "img",
         {
           src: imagePreview,
           alt: "Vista previa",
           className: "w-full h-full object-contain max-h-[200px]"
         }
-      ) : /* @__PURE__ */ jsxs17("div", { className: "py-8 flex flex-col items-center text-gray-400", children: [
-        /* @__PURE__ */ jsx25("svg", { className: "w-10 h-10 mb-2 opacity-50", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ jsx25("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 1.5, d: "M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" }) }),
-        /* @__PURE__ */ jsx25("span", { className: "text-xs", children: "Sin vista previa" })
+      ) : /* @__PURE__ */ jsxs16("div", { className: "py-8 flex flex-col items-center text-gray-400", children: [
+        /* @__PURE__ */ jsx23("svg", { className: "w-10 h-10 mb-2 opacity-50", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ jsx23("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 1.5, d: "M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" }) }),
+        /* @__PURE__ */ jsx23("span", { className: "text-xs", children: "Sin vista previa" })
       ] }) }),
-      /* @__PURE__ */ jsx25("div", { className: "px-3 py-2 bg-white border-t border-gray-100 flex justify-end gap-2", children: !isConfirmed ? /* @__PURE__ */ jsxs17(Fragment4, { children: [
-        /* @__PURE__ */ jsx25(
+      /* @__PURE__ */ jsx23("div", { className: "px-3 py-2 bg-white border-t border-gray-100 flex justify-end gap-2", children: !isConfirmed ? /* @__PURE__ */ jsxs16(Fragment5, { children: [
+        /* @__PURE__ */ jsx23(
           "button",
           {
             type: "button",
@@ -4374,31 +4332,31 @@ var ITDropfile = ({
             children: "Cancelar"
           }
         ),
-        /* @__PURE__ */ jsxs17(
+        /* @__PURE__ */ jsxs16(
           "button",
           {
             type: "button",
             onClick: handleConfirm,
             className: "px-3 py-1.5 text-xs font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 shadow-sm transition-colors flex items-center gap-1",
             children: [
-              /* @__PURE__ */ jsx25("span", { children: "Confirmar" }),
-              /* @__PURE__ */ jsx25("svg", { className: "w-3 h-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ jsx25("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 13l4 4L19 7" }) })
+              /* @__PURE__ */ jsx23("span", { children: "Confirmar" }),
+              /* @__PURE__ */ jsx23("svg", { className: "w-3 h-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ jsx23("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 13l4 4L19 7" }) })
             ]
           }
         )
-      ] }) : /* @__PURE__ */ jsxs17(
+      ] }) : /* @__PURE__ */ jsxs16(
         "button",
         {
           type: "button",
           onClick: handleDelete,
           className: "px-3 py-1.5 text-xs font-medium text-danger-600 bg-danger-50 border border-danger-100 rounded-lg hover:bg-danger-100 transition-colors flex items-center gap-1",
           children: [
-            /* @__PURE__ */ jsx25("svg", { className: "w-3 h-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ jsx25("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" }) }),
-            /* @__PURE__ */ jsx25("span", { children: "Eliminar" })
+            /* @__PURE__ */ jsx23("svg", { className: "w-3 h-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ jsx23("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" }) }),
+            /* @__PURE__ */ jsx23("span", { children: "Eliminar" })
           ]
         }
       ) }),
-      uploadStatus === "subiendo" /* UPLOADING */ && /* @__PURE__ */ jsx25("div", { className: "px-4 pb-2", children: /* @__PURE__ */ jsx25("div", { className: "w-full bg-gray-200 rounded-full h-1.5", children: /* @__PURE__ */ jsx25(
+      uploadStatus === "subiendo" /* UPLOADING */ && /* @__PURE__ */ jsx23("div", { className: "px-4 pb-2", children: /* @__PURE__ */ jsx23("div", { className: "w-full bg-gray-200 rounded-full h-1.5", children: /* @__PURE__ */ jsx23(
         "div",
         {
           className: "bg-primary-600 h-1.5 rounded-full transition-all duration-1000 ease-out",
@@ -4413,11 +4371,562 @@ var ITDropfile = ({
 };
 var dropfile_default = ITDropfile;
 
+// src/components/layout/layout.tsx
+import { useState as useState21 } from "react";
+
+// src/components/topbar/topbar.tsx
+import { FaUserCircle as FaUserCircle2, FaBars } from "react-icons/fa";
+import { useRef as useRef9, useState as useState19 } from "react";
+import { jsx as jsx24, jsxs as jsxs17 } from "react/jsx-runtime";
+function ITTopBar({
+  logo,
+  logoText,
+  userMenu,
+  showMobileMenuButton,
+  onToggleMobileMenu,
+  navItems,
+  onNavItemClick
+}) {
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState19(false);
+  const userMenuRef = useRef9(null);
+  useClickOutside_default(userMenuRef, () => setIsUserMenuOpen(false));
+  return /* @__PURE__ */ jsx24(
+    "header",
+    {
+      className: "sticky top-0 z-40 backdrop-blur-md transition-all duration-300",
+      style: {
+        backgroundColor: theme.topbar?.backgroundColor || "rgba(255, 255, 255, 0.9)",
+        borderBottom: `1px solid ${theme.topbar?.borderColor || "#e2e8f0"}`,
+        boxShadow: theme.topbar?.shadow || "none"
+      },
+      children: /* @__PURE__ */ jsxs17("div", { className: "flex items-center justify-between h-[72px] px-6 lg:px-8", children: [
+        /* @__PURE__ */ jsxs17("div", { className: "flex items-center gap-5", children: [
+          showMobileMenuButton && /* @__PURE__ */ jsx24(
+            "button",
+            {
+              className: "lg:hidden p-2.5 rounded-xl transition-colors duration-200",
+              style: {
+                color: theme.topbar?.iconColor || "#64748b"
+              },
+              onMouseEnter: (e) => e.currentTarget.style.backgroundColor = theme.topbar?.userMenu?.hoverBackground || "#f1f5f9",
+              onMouseLeave: (e) => e.currentTarget.style.backgroundColor = "transparent",
+              onClick: onToggleMobileMenu,
+              children: /* @__PURE__ */ jsx24(FaBars, { className: "w-[1.125rem] h-[1.125rem]" })
+            }
+          ),
+          /* @__PURE__ */ jsxs17("div", { className: "flex items-center gap-3", children: [
+            logo && /* @__PURE__ */ jsx24("div", { className: "flex-shrink-0 drop-shadow-sm", children: logo }),
+            logoText && /* @__PURE__ */ jsx24(
+              "span",
+              {
+                className: "text-[1.15rem] font-bold tracking-tight",
+                style: { color: theme.topbar?.textHoverColor || "#0f172a" },
+                children: logoText
+              }
+            )
+          ] }),
+          navItems && navItems.length > 0 && /* @__PURE__ */ jsx24("nav", { className: "hidden md:flex ml-8 space-x-1 border-l pl-8", style: { borderColor: theme.topbar?.borderColor || "#e2e8f0" }, children: navItems.map((item) => /* @__PURE__ */ jsx24(
+            "button",
+            {
+              onClick: () => onNavItemClick?.(item.id),
+              className: "px-4 py-2 rounded-lg font-medium text-[0.9rem] transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)]",
+              style: { color: theme.topbar?.textColor || "#475569" },
+              onMouseEnter: (e) => {
+                e.currentTarget.style.color = theme.topbar?.textHoverColor || "#0f172a";
+                e.currentTarget.style.backgroundColor = theme.topbar?.userMenu?.hoverBackground || "#f1f5f9";
+              },
+              onMouseLeave: (e) => {
+                e.currentTarget.style.color = theme.topbar?.textColor || "#475569";
+                e.currentTarget.style.backgroundColor = "transparent";
+              },
+              children: /* @__PURE__ */ jsxs17("div", { className: "flex items-center gap-2", children: [
+                item.icon && /* @__PURE__ */ jsx24("span", { className: "opacity-70", children: item.icon }),
+                item.label
+              ] })
+            },
+            item.id
+          )) })
+        ] }),
+        userMenu && /* @__PURE__ */ jsxs17("div", { className: "relative", children: [
+          /* @__PURE__ */ jsxs17(
+            "button",
+            {
+              type: "button",
+              className: "flex items-center gap-3 rounded-full pl-2 pr-4 py-1.5 transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] border border-transparent hover:border-gray-200",
+              style: {
+                backgroundColor: isUserMenuOpen ? theme.topbar?.userMenu?.hoverBackground || "#f1f5f9" : "transparent"
+              },
+              onMouseEnter: (e) => {
+                if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = theme.topbar?.userMenu?.hoverBackground || "#f1f5f9";
+              },
+              onMouseLeave: (e) => {
+                if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = "transparent";
+              },
+              onClick: () => setIsUserMenuOpen(!isUserMenuOpen),
+              children: [
+                /* @__PURE__ */ jsxs17("div", { className: "relative", children: [
+                  userMenu.userImage ? /* @__PURE__ */ jsx24(
+                    "img",
+                    {
+                      className: "w-9 h-9 rounded-full object-cover ring-2 ring-white shadow-sm",
+                      src: userMenu.userImage,
+                      alt: "Current user"
+                    }
+                  ) : /* @__PURE__ */ jsx24("div", { className: "w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center ring-2 ring-white shadow-sm", children: /* @__PURE__ */ jsx24(FaUserCircle2, { className: "w-6 h-6", style: { color: theme.topbar?.iconColor || "#94a3b8" } }) }),
+                  /* @__PURE__ */ jsx24("div", { className: "absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full" })
+                ] }),
+                /* @__PURE__ */ jsxs17("div", { className: "hidden sm:flex flex-col text-left py-0.5", children: [
+                  /* @__PURE__ */ jsx24(
+                    "span",
+                    {
+                      className: "font-semibold text-[0.85rem] leading-tight",
+                      style: { color: theme.topbar?.userMenu?.textColor || "#0f172a" },
+                      children: userMenu.userName
+                    }
+                  ),
+                  /* @__PURE__ */ jsx24(
+                    "span",
+                    {
+                      className: "text-[0.7rem] font-medium",
+                      style: { color: theme.topbar?.userMenu?.subtitleColor || "#64748b" },
+                      children: userMenu.userEmail
+                    }
+                  )
+                ] })
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxs17(
+            "div",
+            {
+              ref: userMenuRef,
+              className: `
+                absolute right-0 mt-3 w-64 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] z-50 overflow-hidden transform origin-top-right transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)]
+                ${isUserMenuOpen ? "scale-100 opacity-100 translate-y-0" : "scale-95 opacity-0 -translate-y-2 pointer-events-none"}
+              `,
+              style: {
+                backgroundColor: theme.topbar?.userMenu?.dropdown?.backgroundColor || "#ffffff",
+                border: `1px solid ${theme.topbar?.userMenu?.dropdown?.borderColor || "#f1f5f9"}`
+              },
+              children: [
+                /* @__PURE__ */ jsxs17("div", { className: "px-5 py-4 border-b bg-slate-50/50", style: { borderColor: theme.topbar?.userMenu?.dropdown?.borderColor || "#f1f5f9" }, children: [
+                  /* @__PURE__ */ jsx24("span", { className: "block font-bold text-[0.9rem]", style: { color: theme.topbar?.userMenu?.textColor || "#0f172a" }, children: userMenu.userName }),
+                  /* @__PURE__ */ jsx24("span", { className: "block text-xs font-medium truncate mt-0.5", style: { color: theme.topbar?.userMenu?.subtitleColor || "#64748b" }, children: userMenu.userEmail })
+                ] }),
+                /* @__PURE__ */ jsx24("ul", { className: "py-2", children: userMenu.menuItems.map((m, i) => {
+                  const isDestructive = m.label.toLowerCase().includes("salir") || m.label.toLowerCase().includes("cerrar") || m.label.toLowerCase().includes("logout");
+                  return /* @__PURE__ */ jsxs17("li", { className: "px-2", children: [
+                    i === userMenu.menuItems.length - 1 && isDestructive && i > 0 && /* @__PURE__ */ jsx24("div", { className: "h-px bg-slate-100 my-1 mx-2" }),
+                    /* @__PURE__ */ jsx24(
+                      "button",
+                      {
+                        onClick: (e) => {
+                          m.onClick();
+                          setIsUserMenuOpen(false);
+                        },
+                        className: `block w-full text-left px-3 py-2.5 rounded-xl text-[0.875rem] font-medium transition-colors duration-150`,
+                        style: { color: isDestructive ? "#ef4444" : theme.topbar?.userMenu?.textColor || "#334155" },
+                        onMouseEnter: (e) => {
+                          e.currentTarget.style.backgroundColor = isDestructive ? "#fef2f2" : theme.topbar?.userMenu?.dropdown?.itemHoverBackground || "#f8fafc";
+                        },
+                        onMouseLeave: (e) => {
+                          e.currentTarget.style.backgroundColor = "transparent";
+                        },
+                        children: m.label
+                      }
+                    )
+                  ] }, i);
+                }) })
+              ]
+            }
+          )
+        ] })
+      ] })
+    }
+  );
+}
+
+// src/components/sidebar/sidebar.tsx
+import { useEffect as useEffect16, useRef as useRef10, useState as useState20 } from "react";
+import { FaChevronDown as FaChevronDown2 } from "react-icons/fa";
+import { jsx as jsx25, jsxs as jsxs18 } from "react/jsx-runtime";
+function ITSidebar({
+  navigationItems = [],
+  isCollapsed = false,
+  onToggleCollapse,
+  className = "",
+  visibleOnMobile = false
+}) {
+  const [expandedItems, setExpandedItems] = useState20(/* @__PURE__ */ new Set());
+  const [isHovering, setIsHovering] = useState20(false);
+  const sidebarRef = useRef10(null);
+  const hoverTimeoutRef = useRef10(null);
+  const leaveTimeoutRef = useRef10(null);
+  useEffect16(() => {
+    const handleMouseEnter = () => {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+      if (leaveTimeoutRef.current) clearTimeout(leaveTimeoutRef.current);
+      setIsHovering(true);
+    };
+    const handleMouseLeave = () => {
+      leaveTimeoutRef.current = setTimeout(() => {
+        setIsHovering(false);
+      }, 300);
+    };
+    const sidebar = sidebarRef.current;
+    if (sidebar) {
+      sidebar.addEventListener("mouseenter", handleMouseEnter);
+      sidebar.addEventListener("mouseleave", handleMouseLeave);
+    }
+    return () => {
+      if (sidebar) {
+        sidebar.removeEventListener("mouseenter", handleMouseEnter);
+        sidebar.removeEventListener("mouseleave", handleMouseLeave);
+      }
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+      if (leaveTimeoutRef.current) clearTimeout(leaveTimeoutRef.current);
+    };
+  }, [isCollapsed]);
+  const toggleExpanded = (itemId) => {
+    const newExpanded = new Set(expandedItems);
+    if (newExpanded.has(itemId)) newExpanded.delete(itemId);
+    else newExpanded.add(itemId);
+    setExpandedItems(newExpanded);
+  };
+  const handleItemClick = (item) => {
+    if (item.subitems && item.subitems.length > 0) {
+      toggleExpanded(item.id);
+    } else if (item.action) {
+      item.action();
+    }
+  };
+  const isSidebarCollapsed = visibleOnMobile ? false : !isHovering && isCollapsed;
+  const sidebarWidth = isSidebarCollapsed ? "w-[88px]" : "w-[280px]";
+  return /* @__PURE__ */ jsx25(
+    "aside",
+    {
+      ref: sidebarRef,
+      className: `
+        relative flex flex-col 
+        transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)]
+        ${sidebarWidth}
+        ${className}
+        ${!visibleOnMobile ? "hidden lg:flex" : "flex"}
+        shadow-[4px_0_24px_rgba(0,0,0,0.02)]
+      `,
+      style: {
+        zIndex: 50,
+        backgroundColor: theme.sidebar?.backgroundColor || "rgba(255, 255, 255, 0.90)",
+        borderRight: `1px solid ${theme.sidebar?.borderColor || "#e2e8f0"}`,
+        WebkitBackdropFilter: "blur(12px)",
+        backdropFilter: "blur(12px)"
+      },
+      children: /* @__PURE__ */ jsx25("nav", { className: "flex-1 py-6 overflow-y-auto overflow-x-hidden custom-scrollbar px-4", children: /* @__PURE__ */ jsx25("ul", { className: "space-y-2", children: navigationItems.map((item) => /* @__PURE__ */ jsxs18("li", { className: "relative group/navitem", children: [
+        /* @__PURE__ */ jsxs18(
+          "div",
+          {
+            className: `flex items-center cursor-pointer 
+                  transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)]
+                  rounded-xl relative overflow-visible
+                  ${isSidebarCollapsed ? "justify-center p-2.5 mb-2" : "justify-between px-3.5 py-3 mb-1"}
+                `,
+            style: {
+              backgroundColor: item.isActive ? theme.sidebar?.active?.backgroundColor || "#f8fafc" : "transparent",
+              boxShadow: item.isActive ? "0 1px 2px 0 rgba(0, 0, 0, 0.05)" : "none",
+              border: item.isActive ? `1px solid ${theme.sidebar?.borderColor || "#e2e8f0"}` : "1px solid transparent"
+            },
+            onMouseEnter: (e) => {
+              if (!item.isActive) e.currentTarget.style.backgroundColor = theme.sidebar?.hover?.backgroundColor || "#f1f5f9";
+            },
+            onMouseLeave: (e) => {
+              if (!item.isActive) e.currentTarget.style.backgroundColor = "transparent";
+            },
+            onClick: () => handleItemClick(item),
+            children: [
+              item.isActive && !isSidebarCollapsed && /* @__PURE__ */ jsx25(
+                "div",
+                {
+                  className: "absolute left-0 top-1/4 bottom-1/4 w-[3px] rounded-r-full transition-all",
+                  style: { backgroundColor: theme.sidebar?.active?.iconColor || "#10b981", boxShadow: `0 0 10px ${theme.sidebar?.active?.iconColor || "#10b981"}` }
+                }
+              ),
+              /* @__PURE__ */ jsxs18("div", { className: `flex items-center ${!isSidebarCollapsed ? "gap-3.5" : "justify-center"} relative z-10 w-full`, children: [
+                item.icon && /* @__PURE__ */ jsx25(
+                  "div",
+                  {
+                    className: `transition-all duration-300 flex-shrink-0 flex items-center justify-center`,
+                    style: {
+                      color: item.isActive ? theme.sidebar?.active?.iconColor || "#10b981" : theme.sidebar?.icon?.color || "#9ca3af",
+                      opacity: item.isActive ? 1 : 0.8,
+                      fontSize: item.isActive ? "1.35rem" : theme.sidebar?.icon?.size || "1.25rem",
+                      filter: item.isActive ? "drop-shadow(0 0 8px rgba(255,255,255,0.2))" : "none"
+                    },
+                    children: item.icon
+                  }
+                ),
+                !isSidebarCollapsed && /* @__PURE__ */ jsx25(
+                  "span",
+                  {
+                    className: `transition-all duration-300 truncate tracking-wide`,
+                    style: {
+                      color: item.isActive ? theme.sidebar?.active?.color || "#ffffff" : theme.sidebar?.label?.color || "#d1d5db",
+                      fontSize: theme.sidebar?.label?.size || "0.9rem",
+                      fontWeight: item.isActive ? "600" : theme.sidebar?.label?.weight || "500"
+                    },
+                    children: item.label
+                  }
+                )
+              ] }),
+              !isSidebarCollapsed && item.subitems && item.subitems.length > 0 && /* @__PURE__ */ jsx25(
+                "div",
+                {
+                  className: `flex-shrink-0 transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${expandedItems.has(item.id) ? "rotate-180" : ""}`,
+                  style: { color: item.isActive ? theme.sidebar?.active?.color || "#0f172a" : theme.sidebar?.icon?.color || "#64748b", opacity: 0.7 },
+                  children: /* @__PURE__ */ jsx25(FaChevronDown2, { className: "w-3 h-3" })
+                }
+              ),
+              item.badge && /* @__PURE__ */ jsx25(
+                "span",
+                {
+                  className: `
+                      absolute flex items-center justify-center font-bold shadow-md
+                      ${isSidebarCollapsed ? "top-1 right-1 w-2.5 h-2.5 rounded-full ring-2" : "right-3 top-1/2 transform -translate-y-1/2 px-2 py-0.5 text-[10px] rounded-full backdrop-blur-sm"}
+                    `,
+                  style: {
+                    backgroundColor: theme.sidebar?.badge?.backgroundColor || theme.sidebar?.active?.iconColor || "#10b981",
+                    color: theme.sidebar?.badge?.color || "#ffffff",
+                    boxShadow: isSidebarCollapsed ? `0 0 0 2px ${theme.sidebar?.backgroundColor || "#111827"}` : "none"
+                  },
+                  children: isSidebarCollapsed ? "" : item.badge
+                }
+              )
+            ]
+          }
+        ),
+        isSidebarCollapsed && /* @__PURE__ */ jsxs18(
+          "div",
+          {
+            className: "absolute left-full top-0 ml-4 rounded-2xl opacity-0 invisible group-hover/navitem:opacity-100 group-hover/navitem:visible transition-all duration-300 pointer-events-none z-50 min-w-[220px] overflow-hidden -translate-x-2 group-hover/navitem:translate-x-0 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)]",
+            style: {
+              backgroundColor: theme.sidebar?.backgroundColor || "#ffffff",
+              border: `1px solid ${theme.sidebar?.borderColor || "#e2e8f0"}`,
+              WebkitBackdropFilter: "blur(16px)",
+              backdropFilter: "blur(16px)"
+            },
+            children: [
+              /* @__PURE__ */ jsxs18("div", { className: "px-5 py-4 flex items-center gap-3 font-semibold border-b", style: { borderColor: theme.sidebar?.borderColor || "#e2e8f0", color: theme.sidebar?.active?.color || "#0f172a" }, children: [
+                item.icon && /* @__PURE__ */ jsx25("span", { style: { color: theme.sidebar?.active?.iconColor || "#10b981" }, className: "text-xl drop-shadow-sm", children: item.icon }),
+                /* @__PURE__ */ jsx25("span", { className: "tracking-wide text-[15px]", children: item.label })
+              ] }),
+              item.subitems && item.subitems.length > 0 ? /* @__PURE__ */ jsx25("div", { className: "py-2", children: item.subitems.map((subitem) => /* @__PURE__ */ jsxs18(
+                "div",
+                {
+                  className: `px-5 py-2.5 text-sm flex items-center gap-3 transition-colors`,
+                  children: [
+                    /* @__PURE__ */ jsx25("span", { className: `w-1.5 h-1.5 rounded-full transition-all ${subitem.isActive ? "scale-125" : ""}`, style: { backgroundColor: subitem.isActive ? theme.sidebar?.active?.iconColor || "#10b981" : theme.sidebar?.icon?.color || "#94a3b8" } }),
+                    /* @__PURE__ */ jsx25("span", { style: { color: subitem.isActive ? theme.sidebar?.active?.color || "#0f172a" : theme.sidebar?.label?.color || "#475569", fontWeight: subitem.isActive ? 600 : 500 }, children: subitem.label })
+                  ]
+                },
+                subitem.id
+              )) }) : /* @__PURE__ */ jsx25("div", { className: "px-5 py-3 text-sm text-zinc-500 italic", children: "No hay submen\xFA" })
+            ]
+          }
+        ),
+        !isSidebarCollapsed && item.subitems && item.subitems.length > 0 && /* @__PURE__ */ jsx25("div", { className: `overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] ${expandedItems.has(item.id) ? "max-h-[500px] opacity-100 mt-1" : "max-h-0 opacity-0"}`, children: /* @__PURE__ */ jsx25("ul", { className: "ml-5 pl-4 space-y-1 py-1", style: { borderLeft: `2px solid ${theme.sidebar?.borderColor || "#e2e8f0"}` }, children: item.subitems.map((subitem) => /* @__PURE__ */ jsxs18("li", { className: "relative", children: [
+          subitem.isActive && /* @__PURE__ */ jsx25("div", { className: "absolute -left-[18px] top-1/2 -translate-y-1/2 w-4 h-[2px] rounded-r-full", style: { backgroundColor: theme.sidebar?.active?.iconColor || "#10b981" } }),
+          /* @__PURE__ */ jsx25(
+            "button",
+            {
+              onClick: subitem.action,
+              className: `block w-full text-left px-4 py-2 rounded-xl transition-all duration-300`,
+              style: {
+                color: subitem.isActive ? theme.sidebar?.active?.color || "#0f172a" : theme.sidebar?.label?.color || "#475569",
+                backgroundColor: subitem.isActive ? theme.sidebar?.active?.backgroundColor || "#f8fafc" : "transparent",
+                fontSize: "0.85rem",
+                fontWeight: subitem.isActive ? 600 : 500,
+                letterSpacing: "0.01em"
+              },
+              onMouseEnter: (e) => {
+                if (!subitem.isActive) {
+                  e.currentTarget.style.backgroundColor = theme.sidebar?.hover?.backgroundColor || "#f1f5f9";
+                  e.currentTarget.style.transform = "translateX(4px)";
+                }
+              },
+              onMouseLeave: (e) => {
+                if (!subitem.isActive) {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.transform = "translateX(0)";
+                }
+              },
+              children: subitem.label
+            }
+          )
+        ] }, subitem.id)) }) })
+      ] }, item.id)) }) })
+    }
+  );
+}
+
+// src/components/layout/layout.tsx
+import { jsx as jsx26, jsxs as jsxs19 } from "react/jsx-runtime";
+function ITLayout({
+  topBar,
+  sidebar,
+  children,
+  className = "",
+  contentClassName = ""
+}) {
+  const [desktopCollapsed, setDesktopCollapsed] = useState21(true);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState21(false);
+  return /* @__PURE__ */ jsxs19("div", { className: `flex flex-col h-screen overflow-hidden w-full ${className}`, children: [
+    /* @__PURE__ */ jsx26(
+      ITTopBar,
+      {
+        ...topBar,
+        showMobileMenuButton: true,
+        onToggleMobileMenu: () => setMobileSidebarOpen((v) => !v)
+      }
+    ),
+    /* @__PURE__ */ jsxs19("div", { className: "flex flex-1 overflow-hidden relative", style: { backgroundColor: theme.layout?.backgroundColor || "#f8fafc" }, children: [
+      /* @__PURE__ */ jsxs19("div", { className: "hidden lg:block relative z-40 h-full", children: [
+        /* @__PURE__ */ jsx26("div", { className: "w-[88px] h-full flex-shrink-0" }),
+        /* @__PURE__ */ jsx26("div", { className: "absolute top-0 left-0 h-full", children: /* @__PURE__ */ jsx26(
+          ITSidebar,
+          {
+            ...sidebar,
+            isCollapsed: desktopCollapsed,
+            onToggleCollapse: () => setDesktopCollapsed((v) => !v),
+            visibleOnMobile: false,
+            className: `h-full drop-shadow-2xl transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] flex-shrink-0`
+          }
+        ) })
+      ] }),
+      mobileSidebarOpen && /* @__PURE__ */ jsx26(
+        "div",
+        {
+          className: "lg:hidden fixed inset-0 z-50 transition-opacity duration-300 backdrop-blur-sm bg-black/40",
+          onClick: () => setMobileSidebarOpen(false),
+          children: /* @__PURE__ */ jsx26(
+            "div",
+            {
+              className: "h-full w-auto transform transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)]",
+              onClick: (e) => e.stopPropagation(),
+              children: /* @__PURE__ */ jsx26(
+                ITSidebar,
+                {
+                  ...sidebar,
+                  isCollapsed: false,
+                  visibleOnMobile: true,
+                  className: "h-full shadow-2xl",
+                  onToggleCollapse: () => setMobileSidebarOpen(false)
+                }
+              )
+            }
+          )
+        }
+      ),
+      /* @__PURE__ */ jsx26("main", { className: "flex-1 overflow-y-auto w-full custom-scrollbar relative z-0", children: /* @__PURE__ */ jsx26(
+        "div",
+        {
+          className: `mx-auto w-full h-full ${contentClassName}`,
+          style: { padding: theme.layout?.contentPadding || "1.5rem" },
+          children
+        }
+      ) })
+    ] })
+  ] });
+}
+
+// src/types/loader.types.ts
+var sizeClasses = {
+  sm: "h-4 w-4",
+  md: "h-8 w-8",
+  lg: "h-12 w-12",
+  xl: "h-16 w-16"
+};
+
+// src/components/loader/loader.tsx
+import { jsx as jsx27 } from "react/jsx-runtime";
+function ITLoader({
+  size = "md",
+  variant = "spinner",
+  color = "primary",
+  // Default to semantic primary
+  className = ""
+}) {
+  const isSemantic = color in theme.colors;
+  const resolvedColor = isSemantic ? theme.colors[color][500] : color;
+  const isCssValue = isSemantic || color.startsWith("#") || color.startsWith("rgb");
+  const style = isCssValue ? { color: resolvedColor } : {};
+  const bgStyle = isCssValue ? { backgroundColor: resolvedColor } : {};
+  const colorClass = !isCssValue ? color : "";
+  if (variant === "spinner") {
+    return /* @__PURE__ */ jsx27(
+      "div",
+      {
+        className: `inline-block ${sizeClasses[size]} animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite] ${colorClass} ${className}`,
+        role: "status",
+        style,
+        children: /* @__PURE__ */ jsx27("span", { className: "!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]", children: "Loading..." })
+      }
+    );
+  }
+  if (variant === "dots") {
+    return /* @__PURE__ */ jsx27(
+      "div",
+      {
+        className: `flex items-center justify-center space-x-2 ${className}`,
+        children: [...Array(3)].map((_, i) => /* @__PURE__ */ jsx27(
+          "div",
+          {
+            className: `${sizeClasses[size.replace(/l|g/, "")]} animate-bounce rounded-full ${colorClass}`,
+            style: {
+              ...bgStyle,
+              animationDelay: `${i * 0.1}s`
+            }
+          },
+          i
+        ))
+      }
+    );
+  }
+  if (variant === "bar") {
+    return /* @__PURE__ */ jsx27(
+      "div",
+      {
+        className: `w-full ${size === "sm" ? "h-1" : size === "md" ? "h-1.5" : size === "lg" ? "h-2" : "h-2.5"} bg-gray-200 rounded-full overflow-hidden ${className}`,
+        children: /* @__PURE__ */ jsx27(
+          "div",
+          {
+            className: `h-full animate-progress ${colorClass}`,
+            style: {
+              backgroundColor: resolvedColor,
+              // Simplified gradient for modern look, or keep it solid
+              backgroundImage: isCssValue ? `linear-gradient(to right, ${resolvedColor}DD, ${resolvedColor})` : void 0,
+              animation: "progress 1.5s ease-in-out infinite"
+            }
+          }
+        )
+      }
+    );
+  }
+  if (variant === "pulse") {
+    return /* @__PURE__ */ jsx27(
+      "div",
+      {
+        className: `rounded-full ${sizeClasses[size]} animate-pulse ${colorClass} ${className}`,
+        style: bgStyle
+      }
+    );
+  }
+  return null;
+}
+
 // src/components/stepper/stepper.tsx
-import clsx16 from "clsx";
-import { useEffect as useEffect15, useRef as useRef9, useState as useState20 } from "react";
-import { FaChevronLeft as FaChevronLeft4, FaChevronRight as FaChevronRight5, FaCheck as FaCheck2 } from "react-icons/fa";
-import { jsx as jsx26, jsxs as jsxs18 } from "react/jsx-runtime";
+import clsx18 from "clsx";
+import { useEffect as useEffect17, useRef as useRef11, useState as useState22 } from "react";
+import { FaChevronLeft as FaChevronLeft4, FaChevronRight as FaChevronRight5, FaCheck as FaCheck3 } from "react-icons/fa";
+import { jsx as jsx28, jsxs as jsxs20 } from "react/jsx-runtime";
 function ITStepper({
   steps,
   currentStep,
@@ -4432,15 +4941,15 @@ function ITStepper({
   maxContentHeight = "400px",
   color = "primary"
 }) {
-  const [direction, setDirection] = useState20("next");
-  const contentRef = useRef9(null);
-  const progressRef = useRef9(null);
+  const [direction, setDirection] = useState22("next");
+  const contentRef = useRef11(null);
+  const progressRef = useRef11(null);
   const isThemeColor = color in theme.colors;
   const resolvedColor = isThemeColor ? theme.colors[color][500] : color;
-  useEffect15(() => {
+  useEffect17(() => {
     onStepChange?.(currentStep);
   }, [currentStep, onStepChange]);
-  useEffect15(() => {
+  useEffect17(() => {
     const pct = currentStep / Math.max(1, steps.length - 1) * 100;
     if (progressRef.current) {
       progressRef.current.style.width = `${pct}%`;
@@ -4484,23 +4993,23 @@ function ITStepper({
   const renderStepContent = (index, isCompleted, isActive) => {
     const step = steps[index];
     if (isCompleted) {
-      return /* @__PURE__ */ jsx26(FaCheck2, { className: "w-4 h-4" });
+      return /* @__PURE__ */ jsx28(FaCheck3, { className: "w-4 h-4" });
     }
     if (step.icon && useIcons) {
-      return /* @__PURE__ */ jsx26("div", { className: "flex items-center justify-center w-5 h-5", children: step.icon });
+      return /* @__PURE__ */ jsx28("div", { className: "flex items-center justify-center w-5 h-5", children: step.icon });
     }
-    return /* @__PURE__ */ jsx26("span", { className: "text-sm font-semibold", children: index + 1 });
+    return /* @__PURE__ */ jsx28("span", { className: "text-sm font-semibold", children: index + 1 });
   };
-  return /* @__PURE__ */ jsxs18("div", { className: clsx16("w-full max-w-5xl mx-auto px-4", containerClassName), children: [
-    /* @__PURE__ */ jsxs18("div", { className: "relative mb-8", children: [
-      /* @__PURE__ */ jsx26(
+  return /* @__PURE__ */ jsxs20("div", { className: clsx18("w-full max-w-5xl mx-auto px-4", containerClassName), children: [
+    /* @__PURE__ */ jsxs20("div", { className: "relative mb-8", children: [
+      /* @__PURE__ */ jsx28(
         "div",
         {
           className: "absolute left-6 right-6 top-5 h-1 bg-gray-200 rounded-full z-0",
           "aria-hidden": true
         }
       ),
-      /* @__PURE__ */ jsx26(
+      /* @__PURE__ */ jsx28(
         "div",
         {
           ref: progressRef,
@@ -4508,11 +5017,11 @@ function ITStepper({
           "aria-hidden": true
         }
       ),
-      /* @__PURE__ */ jsx26("div", { className: "flex items-start justify-between space-x-2 relative z-20", children: steps.map((step, idx) => {
+      /* @__PURE__ */ jsx28("div", { className: "flex items-start justify-between space-x-2 relative z-20", children: steps.map((step, idx) => {
         const isActive = idx === currentStep;
         const isCompleted = idx < currentStep;
         const hasIcon = step.icon && useIcons;
-        return /* @__PURE__ */ jsx26(
+        return /* @__PURE__ */ jsx28(
           "button",
           {
             type: "button",
@@ -4522,11 +5031,11 @@ function ITStepper({
             "aria-label": `Paso ${idx + 1} ${step.label}`,
             className: "flex-1 group",
             title: step.label,
-            children: /* @__PURE__ */ jsxs18("div", { className: "flex flex-col items-center", children: [
-              /* @__PURE__ */ jsx26(
+            children: /* @__PURE__ */ jsxs20("div", { className: "flex flex-col items-center", children: [
+              /* @__PURE__ */ jsx28(
                 "div",
                 {
-                  className: clsx16(
+                  className: clsx18(
                     "flex items-center justify-center w-11 h-11 rounded-full border-2 transition-all duration-300 transform",
                     hasIcon && "p-2",
                     isCompleted && "bg-slate-400 border-slate-400 text-white scale-100 shadow",
@@ -4537,10 +5046,10 @@ function ITStepper({
                   children: renderStepContent(idx, isCompleted, isActive)
                 }
               ),
-              /* @__PURE__ */ jsx26(
+              /* @__PURE__ */ jsx28(
                 "span",
                 {
-                  className: clsx16(
+                  className: clsx18(
                     "mt-2 text-xs sm:text-sm font-medium transition-colors text-center",
                     isCompleted ? "text-slate-400" : !isActive && "text-gray-400"
                   ),
@@ -4554,14 +5063,14 @@ function ITStepper({
         );
       }) })
     ] }),
-    /* @__PURE__ */ jsx26(
+    /* @__PURE__ */ jsx28(
       "div",
       {
         ref: contentRef,
         tabIndex: -1,
         role: "region",
         "aria-labelledby": `step-${currentStep}`,
-        className: clsx16(
+        className: clsx18(
           stepClassName,
           "bg-white border border-gray-100 rounded-2xl shadow-lg min-h-[280px] transition-transform duration-400 no-scrollbar p-6",
           scrollableContent && "overflow-y-auto hide-scrollbar"
@@ -4570,37 +5079,37 @@ function ITStepper({
         children: steps[currentStep].content
       }
     ),
-    /* @__PURE__ */ jsxs18("div", { className: "flex justify-between items-center mt-6", children: [
-      /* @__PURE__ */ jsx26(
+    /* @__PURE__ */ jsxs20("div", { className: "flex justify-between items-center mt-6", children: [
+      /* @__PURE__ */ jsx28(
         ITButton,
         {
           variant: "outlined",
           color: "secondary",
           disabled: currentStep === 0,
           onClick: prevStep,
-          children: /* @__PURE__ */ jsxs18("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsx26(FaChevronLeft4, {}),
+          children: /* @__PURE__ */ jsxs20("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx28(FaChevronLeft4, {}),
             "Atr\xE1s"
           ] })
         }
       ),
-      /* @__PURE__ */ jsxs18("div", { className: "flex items-center gap-3", children: [
-        /* @__PURE__ */ jsxs18("div", { className: "text-sm text-gray-500 mr-2 hidden sm:block", children: [
+      /* @__PURE__ */ jsxs20("div", { className: "flex items-center gap-3", children: [
+        /* @__PURE__ */ jsxs20("div", { className: "text-sm text-gray-500 mr-2 hidden sm:block", children: [
           "Paso ",
           currentStep + 1,
           " de ",
           steps.length
         ] }),
-        /* @__PURE__ */ jsx26(
+        /* @__PURE__ */ jsx28(
           ITButton,
           {
             variant: "solid",
             color,
             disabled: disableNext,
             onClick: nextStep,
-            children: /* @__PURE__ */ jsxs18("div", { className: "flex items-center gap-2", children: [
+            children: /* @__PURE__ */ jsxs20("div", { className: "flex items-center gap-2", children: [
               currentStep === steps.length - 1 ? "Finalizar" : "Siguiente",
-              currentStep === steps.length - 1 ? /* @__PURE__ */ jsx26(FaCheck2, {}) : /* @__PURE__ */ jsx26(FaChevronRight5, {})
+              currentStep === steps.length - 1 ? /* @__PURE__ */ jsx28(FaCheck3, {}) : /* @__PURE__ */ jsx28(FaChevronRight5, {})
             ] })
           }
         )
@@ -4610,10 +5119,10 @@ function ITStepper({
 }
 
 // src/components/theme-provider/themeProvider.tsx
-import { useMemo as useMemo4 } from "react";
-import { Fragment as Fragment5, jsx as jsx27, jsxs as jsxs19 } from "react/jsx-runtime";
+import { useMemo as useMemo5 } from "react";
+import { Fragment as Fragment6, jsx as jsx29, jsxs as jsxs21 } from "react/jsx-runtime";
 function ITThemeProvider({ theme: theme2, children }) {
-  const activeThemeContext = useMemo4(() => {
+  const activeThemeContext = useMemo5(() => {
     const baseColors = {
       primary: palette.blue,
       secondary: palette.gray,
@@ -4634,7 +5143,7 @@ function ITThemeProvider({ theme: theme2, children }) {
       }
     };
   }, [theme2]);
-  const cssVariables = useMemo4(() => {
+  const cssVariables = useMemo5(() => {
     let variablesString = "";
     Object.entries(activeThemeContext.colors).forEach(([colorName, scale]) => {
       Object.entries(scale).forEach(([shade, hexValue]) => {
@@ -4642,19 +5151,139 @@ function ITThemeProvider({ theme: theme2, children }) {
 `;
       });
     });
+    if (theme2?.layout) {
+      if (theme2.layout.backgroundColor) variablesString += `--layout-bg: ${theme2.layout.backgroundColor};
+`;
+      if (theme2.layout.contentPadding) variablesString += `--layout-padding: ${theme2.layout.contentPadding};
+`;
+    }
+    if (theme2?.topbar) {
+      if (theme2.topbar.backgroundColor) variablesString += `--topbar-bg: ${theme2.topbar.backgroundColor};
+`;
+      if (theme2.topbar.borderColor) variablesString += `--topbar-border: ${theme2.topbar.borderColor};
+`;
+      if (theme2.topbar.iconColor) variablesString += `--topbar-icon: ${theme2.topbar.iconColor};
+`;
+      if (theme2.topbar.iconHoverColor) variablesString += `--topbar-icon-hover: ${theme2.topbar.iconHoverColor};
+`;
+      if (theme2.topbar.shadow) variablesString += `--topbar-shadow: ${theme2.topbar.shadow};
+`;
+      if (theme2.topbar.textColor) variablesString += `--topbar-text: ${theme2.topbar.textColor};
+`;
+      if (theme2.topbar.textHoverColor) variablesString += `--topbar-text-hover: ${theme2.topbar.textHoverColor};
+`;
+      if (theme2.topbar.userMenu) {
+        if (theme2.topbar.userMenu.backgroundColor) variablesString += `--topbar-user-bg: ${theme2.topbar.userMenu.backgroundColor};
+`;
+        if (theme2.topbar.userMenu.hoverBackground) variablesString += `--topbar-user-hover: ${theme2.topbar.userMenu.hoverBackground};
+`;
+        if (theme2.topbar.userMenu.textColor) variablesString += `--topbar-user-text: ${theme2.topbar.userMenu.textColor};
+`;
+        if (theme2.topbar.userMenu.subtitleColor) variablesString += `--topbar-user-subtitle: ${theme2.topbar.userMenu.subtitleColor};
+`;
+        if (theme2.topbar.userMenu.dropdown) {
+          if (theme2.topbar.userMenu.dropdown.backgroundColor) variablesString += `--topbar-user-dropdown-bg: ${theme2.topbar.userMenu.dropdown.backgroundColor};
+`;
+          if (theme2.topbar.userMenu.dropdown.borderColor) variablesString += `--topbar-user-dropdown-border: ${theme2.topbar.userMenu.dropdown.borderColor};
+`;
+          if (theme2.topbar.userMenu.dropdown.itemHoverBackground) variablesString += `--topbar-user-item-hover: ${theme2.topbar.userMenu.dropdown.itemHoverBackground};
+`;
+        }
+      }
+    }
+    if (theme2?.sidebar) {
+      if (theme2.sidebar.backgroundColor) variablesString += `--sidebar-bg: ${theme2.sidebar.backgroundColor};
+`;
+      if (theme2.sidebar.borderColor) variablesString += `--sidebar-border: ${theme2.sidebar.borderColor};
+`;
+      if (theme2.sidebar.label) {
+        if (theme2.sidebar.label.color) variablesString += `--sidebar-label-color: ${theme2.sidebar.label.color};
+`;
+        if (theme2.sidebar.label.size) variablesString += `--sidebar-label-size: ${theme2.sidebar.label.size};
+`;
+        if (theme2.sidebar.label.weight) variablesString += `--sidebar-label-weight: ${theme2.sidebar.label.weight};
+`;
+      }
+      if (theme2.sidebar.icon) {
+        if (theme2.sidebar.icon.color) variablesString += `--sidebar-icon-color: ${theme2.sidebar.icon.color};
+`;
+        if (theme2.sidebar.icon.size) variablesString += `--sidebar-icon-size: ${theme2.sidebar.icon.size};
+`;
+      }
+      if (theme2.sidebar.hover?.backgroundColor) variablesString += `--sidebar-hover-bg: ${theme2.sidebar.hover.backgroundColor};
+`;
+      if (theme2.sidebar.active) {
+        if (theme2.sidebar.active.backgroundColor) variablesString += `--sidebar-active-bg: ${theme2.sidebar.active.backgroundColor};
+`;
+        if (theme2.sidebar.active.color) variablesString += `--sidebar-active-color: ${theme2.sidebar.active.color};
+`;
+        if (theme2.sidebar.active.iconColor) variablesString += `--sidebar-active-icon: ${theme2.sidebar.active.iconColor};
+`;
+      }
+      if (theme2.sidebar.badge) {
+        if (theme2.sidebar.badge.backgroundColor) variablesString += `--sidebar-badge-bg: ${theme2.sidebar.badge.backgroundColor};
+`;
+        if (theme2.sidebar.badge.color) variablesString += `--sidebar-badge-color: ${theme2.sidebar.badge.color};
+`;
+      }
+    }
+    if (theme2?.calendar) {
+      if (theme2.calendar.backgroundColor) variablesString += `--calendar-bg: ${theme2.calendar.backgroundColor};
+`;
+      if (theme2.calendar.borderColor) variablesString += `--calendar-border: ${theme2.calendar.borderColor};
+`;
+      if (theme2.calendar.header) {
+        if (theme2.calendar.header.textColor) variablesString += `--calendar-header-text: ${theme2.calendar.header.textColor};
+`;
+        if (theme2.calendar.header.hoverBackground) variablesString += `--calendar-header-hover: ${theme2.calendar.header.hoverBackground};
+`;
+      }
+      if (theme2.calendar.days) {
+        if (theme2.calendar.days.textColor) variablesString += `--calendar-days-text: ${theme2.calendar.days.textColor};
+`;
+        if (theme2.calendar.days.weekendColor) variablesString += `--calendar-days-weekend: ${theme2.calendar.days.weekendColor};
+`;
+        if (theme2.calendar.days.outsideMonthColor) variablesString += `--calendar-days-outside: ${theme2.calendar.days.outsideMonthColor};
+`;
+      }
+      if (theme2.calendar.selection) {
+        if (theme2.calendar.selection.selectedColor) variablesString += `--calendar-selected-text: ${theme2.calendar.selection.selectedColor};
+`;
+        if (theme2.calendar.selection.selectedBackground) variablesString += `--calendar-selected-bg: ${theme2.calendar.selection.selectedBackground};
+`;
+        if (theme2.calendar.selection.rangeBackground) variablesString += `--calendar-range-bg: ${theme2.calendar.selection.rangeBackground};
+`;
+        if (theme2.calendar.selection.todayBackground) variablesString += `--calendar-today-bg: ${theme2.calendar.selection.todayBackground};
+`;
+        if (theme2.calendar.selection.todayColor) variablesString += `--calendar-today-text: ${theme2.calendar.selection.todayColor};
+`;
+      }
+    }
     return `:root {
 ${variablesString}}`;
   }, [activeThemeContext]);
-  return /* @__PURE__ */ jsxs19(Fragment5, { children: [
-    /* @__PURE__ */ jsx27("style", { suppressHydrationWarning: true, children: cssVariables }),
+  return /* @__PURE__ */ jsxs21(Fragment6, { children: [
+    /* @__PURE__ */ jsx29("style", { suppressHydrationWarning: true, children: cssVariables }),
     children
   ] });
 }
+
+// src/types/yup.types.ts
+import * as Yup from "yup";
+var createValidationSchema = (fields) => Yup.object().shape(
+  fields.reduce((acc, field) => {
+    if (field.validation) {
+      acc[field.name] = field.validation;
+    }
+    return acc;
+  }, {})
+);
 export {
   ITBadget,
   ITButton,
   calendar_default as ITCalendar,
   ITCard,
+  ITDataTable,
   ITDatePicker,
   ITDialog,
   dropfile_default as ITDropfile,
@@ -4665,6 +5294,7 @@ export {
   ITLoader,
   ITNavbar,
   ITPagination,
+  ITSearchSelect,
   ITSelect,
   ITSlideToggle,
   ITStepper,

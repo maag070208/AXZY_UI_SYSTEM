@@ -14,6 +14,7 @@ import ITInput from "./components/input/input";
 import ITNavbar from "./components/navbar/navbar";
 import ITPagination from "./components/pagination/pagination";
 import ITSelect from "./components/select/select";
+import ITSearchSelect from "./components/search-select/search-select";
 import ITSlideToggle from "./components/slide/slide";
 import ITTable from "./components/table/table";
 import ITText from "./components/text/text";
@@ -31,6 +32,7 @@ import type { ITFormBuilderProps } from "./components/form-builder/formBuilder.p
 import type { ITInputProps } from "./components/input/input.props";
 import type { ITNavbarProps } from "./components/navbar/navbar.props";
 import type { ITSelectProps } from "./components/select/select.props";
+import type { ITSearchSelectProps } from "./components/search-select/search-select.props";
 import type { ITSlideToggleProps } from "./components/slide/slide.props";
 import type { Column, ITTableProps } from "./components/table/table.props";
 import type { ITToastProps } from "./components/toast/toast.props";
@@ -54,7 +56,7 @@ export {
   ITCalendar,
   ITCard, ITDataTable, ITDatePicker,
   ITDialog, ITDropfile, ITFormBuilder, ITImage, ITInput, ITLayout,
-  ITLoader, ITNavbar, ITPagination, ITSelect,
+  ITLoader, ITNavbar, ITPagination, ITSelect, ITSearchSelect,
   ITSlideToggle, ITStepper, ITTable, ITText, ITThemeProvider, ITTimePicker, ITToast
 };
 
@@ -65,7 +67,7 @@ export {
     ITCardProps, ITDataTableFetchParams, ITDataTableProps, ITDataTableResponse, ITDatePickerProps,
     ITDialogProps,
     ITFormBuilderProps,
-    ITInputProps, ITLayoutProps, ITNavbarProps, ITSelectProps,
+    ITInputProps, ITLayoutProps, ITNavbarProps, ITSelectProps, ITSearchSelectProps,
     ITSlideToggleProps,
     ITTableProps, ITThemeConfig, ITThemeProviderProps, ITTimePickerProps, ITToastProps
   };

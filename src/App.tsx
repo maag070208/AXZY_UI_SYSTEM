@@ -178,7 +178,10 @@ function App() {
                       name="singleFilter"
                       label="Filtrar por Fecha"
                       value={singleDate}
-                      onChange={(e: any) => setSingleDate(e.target.value as Date)}
+                      range
+                      onChange={(e: any) => {
+                        console.log(e);
+                      }}
                       placeholder="Selecciona una fecha..."
                     />
                 </div>
