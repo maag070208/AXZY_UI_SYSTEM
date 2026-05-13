@@ -18,6 +18,8 @@ import ITSearchSelect from "./components/search-select/search-select";
 import ITSlideToggle from "./components/slide/slide";
 import ITTable from "./components/table/table";
 import ITText from "./components/text/text";
+import ITTabs from "./components/tabs/tabs";
+import ITTripleFilter from "./components/triple-filter/tripleFilter";
 import ITToast from "./components/toast/toast";
 
 // PROPS
@@ -35,6 +37,8 @@ import type { ITSelectProps } from "./components/select/select.props";
 import type { ITSearchSelectProps } from "./components/search-select/search-select.props";
 import type { ITSlideToggleProps } from "./components/slide/slide.props";
 import type { Column, ITTableProps } from "./components/table/table.props";
+import type { ITTabsProps, ITTabItem } from "./components/tabs/tabs.props";
+import type { ITTripleFilterProps, ITTripleFilterOption } from "./components/triple-filter/tripleFilter.props";
 import type { ITToastProps } from "./components/toast/toast.props";
 import type { FieldConfig, FieldConfigV2 } from "./types/field.types";
 
@@ -57,7 +61,7 @@ export {
   ITCard, ITDataTable, ITDatePicker,
   ITDialog, ITDropfile, ITFormBuilder, ITImage, ITInput, ITLayout,
   ITLoader, ITNavbar, ITPagination, ITSelect, ITSearchSelect,
-  ITSlideToggle, ITStepper, ITTable, ITText, ITThemeProvider, ITTimePicker, ITToast
+  ITSlideToggle, ITStepper, ITTable, ITTabs, ITTripleFilter, ITText, ITThemeProvider, ITTimePicker, ITToast
 };
 
   export type {
@@ -69,6 +73,6 @@ export {
     ITFormBuilderProps,
     ITInputProps, ITLayoutProps, ITNavbarProps, ITSelectProps, ITSearchSelectProps,
     ITSlideToggleProps,
-    ITTableProps, ITThemeConfig, ITThemeProviderProps, ITTimePickerProps, ITToastProps
+    ITTableProps, ITTabsProps, ITTabItem, ITTripleFilterProps, ITTripleFilterOption, ITThemeConfig, ITThemeProviderProps, ITTimePickerProps, ITToastProps
   };
 

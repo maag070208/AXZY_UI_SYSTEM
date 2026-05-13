@@ -53,15 +53,17 @@ export default function ITLayout({
             onClick={() => setMobileSidebarOpen(false)}
           >
             <div 
-              className="h-full w-auto transform transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)]"
-              onClick={(e) => e.stopPropagation()} // Prevent clicks inside sidebar from closing the drawer
+              className="h-full w-fit flex transform transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)]"
+              onClick={(e) => e.stopPropagation()} 
             >
                <ITSidebar
                 {...sidebar}
                 isCollapsed={false}
                 visibleOnMobile={true}
-                className="h-full shadow-2xl"
+                className="h-full shadow-2xl relative z-[60]"
                 onToggleCollapse={() => setMobileSidebarOpen(false)}
+                onItemClick={() => setMobileSidebarOpen(false)}
+                onSubItemClick={() => setMobileSidebarOpen(false)}
               />
             </div>
           </div>

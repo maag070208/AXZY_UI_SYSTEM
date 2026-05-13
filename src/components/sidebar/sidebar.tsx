@@ -9,6 +9,8 @@ export default function ITSidebar({
   onToggleCollapse,
   className = "",
   visibleOnMobile = false,
+  onItemClick,
+  onSubItemClick,
 }: ITSidebarProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [isHovering, setIsHovering] = useState(false);
@@ -54,8 +56,9 @@ export default function ITSidebar({
   const handleItemClick = (item: ITNavigationItem) => {
     if (item.subitems && item.subitems.length > 0) {
       toggleExpanded(item.id);
-    } else if (item.action) {
-      item.action();
+    } else {
+      if (item.action) item.action();
+      if (onItemClick) onItemClick(item);
     }
   };
 
@@ -219,7 +222,10 @@ export default function ITSidebar({
                            <div className="absolute -left-[18px] top-1/2 -translate-y-1/2 w-4 h-[2px] rounded-r-full" style={{ backgroundColor: theme.sidebar?.active?.iconColor || '#10b981' }} />
                         )}
                         <button
-                          onClick={subitem.action}
+                          onClick={() => {
+                            if (subitem.action) subitem.action();
+                            if (onSubItemClick) onSubItemClick(subitem);
+                          }}
                           className={`block w-full text-left px-4 py-2 rounded-xl transition-all duration-300`}
                           style={{
                              color: subitem.isActive ? (theme.sidebar?.active?.color || '#0f172a') : (theme.sidebar?.label?.color || '#475569'),

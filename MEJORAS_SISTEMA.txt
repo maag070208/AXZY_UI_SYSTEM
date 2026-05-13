@@ -1,0 +1,37 @@
+# PUNTOS DE MEJORA - AXZY UI SYSTEM
+
+Análisis técnico de arquitectura y componentes.
+
+## 1. Arquitectura de Tipos (Consistencia)
+- **Problema**: `ITButton` usa `color`, `ITBadget` usa `variant` y `color` indistintamente para el tema.
+- **Mejora**: Estandarizar a `variant` para estilo (filled, outline) y `color` para semántica (primary, success).
+- **Acción**: Refactorizar interfaces en `.props.ts` para seguir un patrón único en toda la librería.
+
+## 2. Documentación JSDoc
+- **Problema**: Muchos componentes tienen props sin descripción interna.
+- **Mejora**: Implementar JSDoc en todas las interfaces de props.
+- **Beneficio**: Mejor soporte de IntelliSense para el desarrollador final.
+
+## 3. Manejo de Layout y Z-Index
+- **Problema**: El Sidebar móvil compite con el `ITDialog` y `ITToast`.
+- **Mejora**: Definir escala de Z-Index en `theme.ts` (ej: sidebar: 40, modal: 50, toast: 60).
+- **Acción**: Usar variables CSS para Z-Index en lugar de clases arbitrarias.
+
+## 4. Componentes Atómicos (Tailwind Bloat)
+- **Problema**: Componentes como `ITInput` y `ITSelect` repiten mucha lógica de clases Tailwind.
+- **Mejora**: Extraer utilidades de estilos base a `src/utils/styles.ts` o usar un factory de estilos.
+- **Beneficio**: Menor peso del bundle y mantenimiento centralizado.
+
+## 5. Storybook y Testing
+- **Problema**: Existen archivos `.stories.tsx` vacíos o con solo el caso "Default".
+- **Mejora**: Documentar estados: `Loading`, `Disabled`, `Error`, `EmptyState`.
+- **Acción**: Implementar tests de accesibilidad (A11y) automáticos en Storybook.
+
+## 6. Lógica de Negocio en UI
+- **Problema**: `ITDataTable` y `ITSearchTable` tienen lógica de filtrado muy acoplada.
+- **Mejora**: Separar la lógica de filtrado a un custom hook `useTableLogic`.
+- **Beneficio**: Reutilización de lógica en tablas personalizadas.
+
+## 7. Performance (Renderizado)
+- **Problema**: `ITFormBuilder` re-renderiza todo el formulario por cada pulsación de tecla.
+- **Mejora**: Implementar `React.memo` en campos individuales y optimizar el manejo de estado.

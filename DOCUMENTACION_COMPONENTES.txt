@@ -1,0 +1,701 @@
+# AXZY UI - TECHNICAL SPECIFICATIONS & USAGE
+
+Documentación detallada de componentes con tipado estricto y ejemplos de implementación.
+Todos los componentes consumen tokens de `theme.ts`.
+
+---
+
+## ITLayout
+Contenedor raíz del ecosistema administrativo.
+
+### Model
+```ts
+export interface ITLayoutProps {
+  topBar: ITTopBarProps;      // Configuración de Navbar superior
+  sidebar: ITSidebarProps;    // Configuración de Sidebar lateral
+  children: React.ReactNode;  // Contenido de la pantalla
+  className?: string;         // Clases para el wrapper principal
+  contentClassName?: string;  // Clases para el área de contenido (main)
+}
+```
+
+### Usage
+```tsx
+<ITLayout topBar={topBarProps} sidebar={sidebarProps}>
+  <DashboardScreen />
+</ITLayout>
+```
+
+---
+
+## ITButton
+Botón atómico con soporte para variantes, colores semánticos y estados.
+
+### Model
+```ts
+export interface ITButtonProps {
+  label?: string;
+  children?: React.ReactNode;
+  onClick?: () => void;
+  color?: "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "purple" | "error" | "gray";
+  size?: "small" | "medium" | "large";
+  variant?: "filled" | "outlined" | "raised" | "rounded" | "text" | "raised-text" | "icon-only" | "link";
+  disabled?: boolean;
+  className?: string;
+  type?: "submit" | "reset" | "button";
+}
+```
+
+### Usage
+```tsx
+<ITButton 
+  label="Guardar" 
+  color="primary" 
+  variant="filled" 
+  onClick={() => save()} 
+/>
+```
+
+---
+
+## ITTabs
+Sistema de navegación por pestañas para segmentación de contenido.
+
+### Model
+```ts
+export interface ITTabItem {
+  id: string;
+  label: string;
+  content: ReactNode;
+  icon?: ReactNode;
+  disabled?: boolean;
+}
+
+export interface ITTabsProps {
+  items: ITTabItem[];
+  defaultActiveId?: string;
+  onChange?: (id: string) => void;
+  variant?: "line" | "pill"; 
+  className?: string;
+}
+```
+
+### Usage
+```tsx
+<ITTabs items={[{ id: '1', label: 'Tab', content: <div /> }]} variant="line" />
+```
+
+---
+
+## ITTripleFilter
+Selector segmentado diseñado para filtros rápidos de estado.
+
+### Model
+```ts
+export interface ITTripleFilterOption<T> {
+  label: string;
+  value: T;
+}
+
+export interface ITTripleFilterProps<T> {
+  value: T;
+  onChange: (value: T) => void;
+  options: ITTripleFilterOption<T>[];
+  className?: string;
+}
+```
+
+### Usage
+```tsx
+<ITTripleFilter
+  value={filter}
+  onChange={setFilter}
+  options={[
+    { label: "Todos", value: "all" },
+    { label: "Activos", value: true },
+    { label: "Inactivos", value: false }
+  ]}
+/>
+```
+
+---
+
+## ITDataTable
+Tabla de datos con lógica de negocio integrada y carga dinámica.
+
+### Model
+```ts
+export interface Column {
+  key: string;
+  label: string;
+  type: "string" | "number" | "boolean" | "date" | "catalog";
+  sortable?: boolean;
+  filter?: boolean | "catalog";
+}
+
+export interface ITDataTableProps<T> {
+  columns: Column[];
+  fetchData: (params: ITDataTableFetchParams) => Promise<ITDataTableResponse<T>>;
+  externalFilters?: Record<string, any>;
+  defaultItemsPerPage?: number;
+}
+```
+
+### Usage
+```tsx
+<ITDataTable columns={cols} fetchData={api.getUsers} />
+```
+
+---
+
+## ITSearchTable
+Tabla "todo-en-uno" avanzada con edición en línea y búsqueda global.
+
+### Model
+```ts
+export interface SearchColumn<T = any> {
+  key: string;
+  label: string;
+  type: "string" | "number" | "boolean" | "date" | "actions" | "catalog";
+  filter?: boolean | "catalog"; 
+  sortable?: boolean;
+  editable?: boolean;
+  inputType?: "text" | "number" | "select" | "checkbox" | "date";
+  options?: { value: string | number; label: string }[];
+  render?: (row: T) => React.ReactNode;
+}
+
+export interface ITSearchTableProps<T> {
+  columns: SearchColumn<T>[];
+  data: T[];
+  title?: string;
+  pageIndex: number;
+  totalCount: number;
+  totalPages: number;
+  onPageChange?: (page: number) => void;
+  onSortChange?: (config: { key: string, direction: "asc" | "desc" }) => void;
+  onFilterChange?: (filters: Record<string, any>) => void;
+  variant?: "default" | "striped" | "bordered" | "clean";
+  size?: "sm" | "md" | "lg";
+}
+```
+
+### Usage
+```tsx
+<ITSearchTable
+  title="Gestión de Inventario"
+  columns={inventoryColumns}
+  data={products}
+  totalCount={100}
+  totalPages={10}
+  pageIndex={1}
+  onPageChange={(p) => setPage(p)}
+/>
+```
+
+---
+
+## ITFormBuilder
+Motor dinámico de formularios basado en configuración JSON.
+
+### Model
+```ts
+export interface FieldConfig {
+  name: string;
+  label: string;
+  type: "text" | "email" | "password" | "number" | "select" | "date" | "checkbox";
+  required?: boolean;
+  options?: { label: string; value: any }[];
+}
+
+export interface ITFormBuilderProps {
+  config: FieldConfig[];
+  values: any;
+  handleChange: (e: any) => void;
+  errors?: Record<string, string>;
+  touched?: Record<string, boolean>;
+}
+```
+
+### Usage
+```tsx
+<ITFormBuilder
+  values={formik.values}
+  handleChange={formik.handleChange}
+  config={[
+    { name: 'email', label: 'Email', type: 'email', required: true },
+    { name: 'role', label: 'Rol', type: 'select', options: [{label: 'Admin', value: '1'}]}
+  ]}
+/>
+```
+
+---
+
+## ITDialog
+Ventana modal estandarizada.
+
+### Model
+```ts
+export interface ITDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  useFormHeader?: boolean; // Estilo cabecera de formulario AXZY
+  children?: React.ReactNode;
+}
+```
+
+### Usage
+```tsx
+<ITDialog isOpen={show} onClose={() => setShow(false)} title="Nuevo Registro">
+  <MyContent />
+</ITDialog>
+```
+
+---
+
+## ITToast
+Notificaciones efímeras de sistema.
+
+### Model
+```ts
+export interface ITToastProps {
+  message: string;
+  type?: "success" | "error" | "warning" | "info";
+  duration?: number;
+  onClose?: () => void;
+}
+```
+
+### Usage
+```tsx
+<ITToast message="Éxito al guardar" type="success" />
+```
+
+---
+
+## ITBadget
+Indicador visual de estado o etiquetas.
+
+### Model
+```ts
+export interface ITBadgetProps {
+  label?: string;
+  color?: "primary" | "secondary" | "success" | "danger" | "warning" | "info";
+  variant?: "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "error" | "purple";
+  size?: "small" | "medium" | "large";
+}
+```
+
+### Usage
+```tsx
+<ITBadget label="Pendiente" color="warning" />
+```
+
+---
+
+## ITInput
+Campo de entrada de texto versátil.
+
+### Model
+```ts
+export interface ITInputProps {
+  name: string;
+  type?: "text" | "password" | "number" | "email" | "textarea" | "checkbox";
+  label?: string;
+  placeholder?: string;
+  value?: any;
+  onChange: (e: any) => void;
+  variant?: "primary" | "secondary" | "success" | "danger" | "warning" | "info";
+  iconLeft?: ReactNode;
+  error?: string;
+}
+```
+
+### Usage
+```tsx
+<ITInput name="user" label="Usuario" iconLeft={<FaUser />} onChange={...} />
+```
+
+---
+
+## ITDatePicker
+Selector de fecha y rangos.
+
+### Model
+```ts
+export interface ITDatePickerProps {
+  name: string;
+  value?: Date | [Date | null, Date | null];
+  onChange: (e: any) => void;
+  range?: boolean;
+  label?: string;
+  placeholder?: string;
+  variant?: "primary" | "secondary" | "success" | "danger" | "warning" | "info";
+}
+```
+
+### Usage
+```tsx
+<ITDatePicker name="date" label="Fecha" range={false} onChange={...} />
+```
+
+---
+
+## ITSidebar
+Menú de navegación lateral dinámico.
+
+### Model
+```ts
+export interface ITNavigationItem {
+  id: string;
+  label: string;
+  icon?: React.ReactNode;
+  action?: () => void;
+  isActive?: boolean;
+  subitems?: ITNavigationSubItem[];
+  badge?: string;
+}
+
+export interface ITSidebarProps {
+  navigationItems: ITNavigationItem[];
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
+  onItemClick?: (item: ITNavigationItem) => void;
+}
+```
+
+### Usage
+```tsx
+<ITSidebar navigationItems={navConfig} isCollapsed={false} />
+```
+
+---
+
+## ITFormHeader
+Cabecera estandarizada para formularios.
+
+### Model
+```ts
+export interface ITFormHeaderProps {
+  title: string;
+  onClose?: () => void;
+  className?: string;
+}
+```
+
+### Usage
+```tsx
+<ITFormHeader title="Crear Usuario" onClose={close} />
+```
+
+---
+
+## ITSlide
+Switch / Toggle de estado.
+
+### Model
+```ts
+export interface ITSlideProps {
+  isOn?: boolean;
+  onToggle?: (value: boolean) => void;
+  activeColor?: "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "purple";
+  size?: "sm" | "md" | "lg";
+}
+```
+
+### Usage
+```tsx
+<ITSlide isOn={active} onToggle={setActive} activeColor="success" />
+```
+
+---
+
+## ITLoader
+Indicador de carga animado.
+
+### Model
+```ts
+export interface ITLoaderProps {
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  variant?: "spinner" | "dots" | "bar";
+  color?: string; // Hex o Variable CSS
+  className?: string;
+}
+```
+
+### Usage
+```tsx
+<ITLoader variant="spinner" size="md" color="primary" />
+```
+
+---
+
+## ITPagination
+Control de paginación con selector de registros por página.
+
+### Model
+```ts
+export interface ITPaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  totalItems?: number;
+  itemsPerPage?: number;
+  onItemsPerPageChange?: (value: number) => void;
+  itemsPerPageOptions?: number[];
+  color?: "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "purple";
+}
+```
+
+### Usage
+```tsx
+<ITPagination 
+  currentPage={1} 
+  totalPages={10} 
+  onPageChange={(p) => setPage(p)} 
+/>
+```
+
+---
+
+## ITSearchSelect
+Selector con búsqueda y soporte para carga remota.
+
+### Model
+```ts
+export interface ITSearchSelectOption {
+  label: string;
+  value: string | number;
+}
+
+export interface ITSearchSelectProps {
+  name?: string;
+  label?: string;
+  placeholder?: string;
+  value?: string | number;
+  options?: ITSearchSelectOption[];
+  onSearch?: (query: string) => void;
+  isLoading?: boolean;
+  onChange?: (value: string | number, option?: ITSearchSelectOption) => void;
+  error?: string;
+}
+```
+
+### Usage
+```tsx
+<ITSearchSelect
+  label="Seleccionar Cliente"
+  onSearch={(q) => fetchClients(q)}
+  isLoading={loading}
+/>
+```
+
+---
+
+## ITStepper
+Indicador de progreso por pasos.
+
+### Model
+```ts
+export interface Step {
+  label: string;
+  content: React.ReactNode;
+  icon?: React.ReactNode;
+}
+
+export interface ITStepperProps {
+  steps: Step[];
+  currentStep: number;
+  onStepChange?: (step: number) => void;
+  color?: "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "purple";
+}
+```
+
+### Usage
+```tsx
+<ITStepper 
+  currentStep={0} 
+  steps={[{ label: 'Paso 1', content: <Step1 /> }]} 
+/>
+```
+
+---
+
+## ITTimePicker
+Selector de hora.
+
+### Model
+```ts
+export interface ITTimePickerProps {
+  name: string;
+  value?: string; // "HH:mm"
+  label?: string;
+  onChange: (e: any) => void;
+  variant?: "primary" | "secondary" | "danger" | "success" | "warning" | "info" | "purple";
+  size?: "small" | "medium" | "large";
+}
+```
+
+### Usage
+```tsx
+<ITTimePicker name="time" label="Hora" onChange={...} />
+```
+
+---
+
+## ITTopBar
+Barra superior de la aplicación.
+
+### Model
+```ts
+export interface ITTopBarProps {
+  logoText?: string;
+  userMenu?: {
+    userName: string;
+    userEmail: string;
+    userImage?: string;
+    menuItems: { label: string; onClick: () => void }[];
+  };
+  navItems?: Array<{ id: string; label: string; action: () => void }>;
+}
+```
+
+### Usage
+```tsx
+<ITTopBar logoText="AXZY UI" userMenu={userMenuConfig} />
+```
+
+---
+
+## ITThemeProvider
+Proveedor de tema global para inyección de tokens CSS.
+
+### Model
+```ts
+export interface ITThemeProviderProps {
+  theme?: Partial<ITThemeConfig>;
+  children: React.ReactNode;
+}
+```
+
+### Usage
+```tsx
+<ITThemeProvider theme={customTheme}>
+  <App />
+</ITThemeProvider>
+```
+
+---
+
+## ITNavbar
+Barra de navegación horizontal superior (Alternativa a ITTopBar).
+
+### Model
+```ts
+export interface ITNavbarProps {
+  logoText?: string;
+  navigationItems?: ITNavigationItem[];
+  userMenu?: {
+    userName: string;
+    userEmail: string;
+    menuItems: Array<{ label: string; onClick: () => void }>;
+  };
+}
+```
+
+### Usage
+```tsx
+<ITNavbar 
+  logoText="AXZY PANEL" 
+  navigationItems={[{ id: 'h', label: 'Inicio' }]} 
+/>
+```
+
+---
+
+## ITTable
+Base de renderizado de tablas estructuradas.
+
+### Model
+```ts
+export interface Column<T = any> {
+  key: string;
+  label: string;
+  type: "string" | "number" | "boolean" | "date" | "catalog" | "actions";
+  sortable?: boolean;
+  filter?: boolean | "catalog";
+  render?: (row: T) => React.ReactNode;
+}
+
+export interface ITTableProps<T> {
+  columns: Column<T>[];
+  data: T[];
+  variant?: "default" | "striped" | "bordered" | "clean";
+  size?: "sm" | "md" | "lg";
+}
+```
+
+### Usage
+```tsx
+<ITTable data={users} columns={[{ key: 'name', label: 'Nombre', type: 'string' }]} />
+```
+
+---
+
+## ITImage
+Imagen con soporte para fallback en error.
+
+### Model
+```ts
+export interface ITImageProps {
+  src: string;
+  alt: string;
+  fallbackSrc?: string;
+  className?: string;
+}
+```
+
+### Usage
+```tsx
+<ITImage src="photo.jpg" fallbackSrc="placeholder.png" />
+```
+
+---
+
+## ITCalendar
+Selector de fechas avanzado con soporte para eventos.
+
+### Model
+```ts
+export interface ITCalendarProps {
+  events?: CalendarEvent[];
+  mode?: "week" | "day" | "month";
+  selectionMode?: "single" | "range";
+  onSlotClick?: (date: Date) => void;
+  onEventClick?: (event: CalendarEvent) => void;
+}
+```
+
+### Usage
+```tsx
+<ITCalendar mode="month" selectionMode="single" />
+```
+
+---
+
+## ITText
+Componente tipográfico básico.
+
+### Model
+```ts
+export interface ITTextProps {
+  children: React.ReactNode;
+  className?: string;
+}
+```
+
+### Usage
+```tsx
+<ITText className="font-bold">Hola Mundo</ITText>
+```

@@ -20,5 +20,7 @@ export interface ITSidebarProps {
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
   visibleOnMobile?: boolean; 
+  onItemClick?: (item: ITNavigationItem) => void;
+  onSubItemClick?: (subitem: ITNavigationSubItem) => void;
   className?: string;
 }
