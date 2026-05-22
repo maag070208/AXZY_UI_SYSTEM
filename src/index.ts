@@ -48,12 +48,14 @@ import ITLayout from "./components/layout/layout";
 import { ITLayoutProps } from "./components/layout/layout.props";
 import ITLoader from "./components/loader/loader";
 import ITStepper from "./components/stepper/stepper";
-import ITThemeProvider, { useITTheme } from "./components/theme-provider/themeProvider";
+import ITThemeProvider, { useITTheme, useITThemeSafe } from "./components/theme-provider/themeProvider";
 import type { ITThemeProviderProps, ITThemePalette } from "./components/theme-provider/themeProvider.props";
 import ITTimePicker from "./components/time-picker/timePicker";
 import type { ITTimePickerProps } from "./components/time-picker/timePicker.props";
 import type { ITThemeConfig } from "./theme/theme.types";
 import { createValidationSchema } from "./types/yup.types";
+
+import { getContrastTextColor, isLightColor, resolveCssColor } from "./utils/color.utils";
 
 export {
   createValidationSchema, ITBadget, ITButton,
@@ -61,8 +63,9 @@ export {
   ITCard, ITDataTable, ITDatePicker,
   ITDialog, ITDropfile, ITFormBuilder, ITImage, ITInput, ITLayout,
   ITLoader, ITNavbar, ITPagination, ITSelect, ITSearchSelect,
-  ITSlideToggle, ITStepper, ITTable, ITTabs, ITTripleFilter, ITText, ITThemeProvider, useITTheme, ITTimePicker, ITToast,
-  UploadStatus, FileTypeEnum
+  ITSlideToggle, ITStepper, ITTable, ITTabs, ITTripleFilter, ITText, ITThemeProvider, useITTheme, useITThemeSafe, ITTimePicker, ITToast,
+  UploadStatus, FileTypeEnum,
+  getContrastTextColor, isLightColor, resolveCssColor
 };
 
   export type {
@@ -76,4 +79,5 @@ export {
     ITSlideToggleProps,
     ITTableProps, ITTabsProps, ITTabItem, ITTripleFilterProps, ITTripleFilterOption, ITThemeConfig, ITThemeProviderProps, ITThemePalette, ITTimePickerProps, ITToastProps
   };
+
 

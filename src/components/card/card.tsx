@@ -2,6 +2,8 @@ import clsx from "clsx";
 import { ITCardProps } from "./card.props";
 import { theme } from "@/theme/theme";
 import { useState } from "react";
+import { useITThemeSafe } from "../theme-provider/themeProvider";
+import { getContrastTextColor } from "@/utils/color.utils";
 
 /**
  * Componente de tarjeta (Card) personalizable.
@@ -22,14 +24,27 @@ export default function ITCard({
   const [isHovered, setIsHovered] = useState(false);
   const cardTheme = theme.card;
 
+  const themeContext = useITThemeSafe();
+  const isDarkMode = themeContext?.resolvedTheme === "dark";
+  const palette = themeContext?.palette;
+  const textColorClass = getContrastTextColor(
+    cardTheme.backgroundColor || "#ffffff",
+    palette,
+    isDarkMode
+  );
+
   const containerStyle: React.CSSProperties = {
     backgroundColor: cardTheme.backgroundColor,
     borderColor: cardTheme.borderColor,
     borderWidth: cardTheme.borderWidth,
     borderRadius: cardTheme.borderRadius,
-    boxShadow: onClick ? (isHovered ? cardTheme.hover.shadow : cardTheme.shadow) : 'none',
-    transition: onClick ? 'all 0.2s ease-in-out' : 'none',
-    cursor: onClick ? 'pointer' : 'default',
+    boxShadow: onClick
+      ? isHovered
+        ? cardTheme.hover.shadow
+        : cardTheme.shadow
+      : "none",
+    transition: onClick ? "all 0.2s ease-in-out" : "none",
+    cursor: onClick ? "pointer" : "default",
   };
 
   const bodyStyle: React.CSSProperties = {
@@ -41,10 +56,7 @@ export default function ITCard({
       onClick={onClick}
       onMouseEnter={() => onClick && setIsHovered(true)}
       onMouseLeave={() => onClick && setIsHovered(false)}
-      className={clsx(
-        "overflow-hidden flex flex-col",
-        className
-      )}
+      className={clsx("overflow-hidden flex flex-col", className)}
       style={containerStyle}
     >
       {image && (
@@ -59,9 +71,11 @@ export default function ITCard({
         {title && (
           <h3
             className={clsx(
-              "text-xl font-semibold mb-2 text-gray-800",
-              titleClassName
+              "text-xl font-semibold mb-2",
+              textColorClass,
+              titleClassName,
             )}
+            style={{ color: "inherit" }}
           >
             {title}
           </h3>
@@ -69,10 +83,16 @@ export default function ITCard({
         <div className="text-gray-600">{children}</div>
       </div>
       {actions && (
-        <div className={clsx("p-4 border-t border-gray-100 mt-auto", actionClassName)}>
+        <div
+          className={clsx(
+            "p-4 border-t border-gray-100 mt-auto",
+            actionClassName,
+          )}
+        >
           {actions}
         </div>
       )}
     </div>
   );
 }
+

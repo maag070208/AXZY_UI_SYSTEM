@@ -24,6 +24,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:app": "tsc -b && vite build -c vite.app.config.ts",
     "lint": "eslint .",
     "preview": "vite preview",
     "bundle": "tsup src/index.ts",
