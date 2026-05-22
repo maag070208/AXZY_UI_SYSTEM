@@ -1,7 +1,7 @@
 export interface ITNavigationSubItem {
   id: string;
   label: string;
-  action: () => void;
+  action?: () => void;
   isActive?: boolean;
 }
 
@@ -22,5 +22,7 @@ export interface ITSidebarProps {
   visibleOnMobile?: boolean; 
   onItemClick?: (item: ITNavigationItem) => void;
   onSubItemClick?: (subitem: ITNavigationSubItem) => void;
+  subitemConnector?: 'lines' | 'dots' | '|' | 'none';
   className?: string;
 }
+

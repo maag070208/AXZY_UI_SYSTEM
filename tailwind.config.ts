@@ -1,6 +1,7 @@
 import { theme as appTheme } from "./src/theme/theme.ts";
 
 export default {
+  darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   safelist: [
     {

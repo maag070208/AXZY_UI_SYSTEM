@@ -18,7 +18,7 @@ export interface ITSelectProps {
   disabled?: boolean;
   className?: string;
   touched?: boolean;
-  error?: string;
+  error?: string | boolean;
   required?: boolean;
   autoFocus?: boolean;
   readOnly?: boolean;

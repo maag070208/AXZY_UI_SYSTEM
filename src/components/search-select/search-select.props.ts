@@ -34,7 +34,7 @@ export interface ITSearchSelectProps {
   /** Indica si el campo es requerido */
   required?: boolean;
   /** Mensaje de error */
-  error?: string;
+  error?: string | boolean;
   /** Indica si el campo es de solo lectura */
   readOnly?: boolean;
   /** Callback para búsqueda en servidor (Modo 2: Conexión con API) */

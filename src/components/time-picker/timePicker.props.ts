@@ -4,7 +4,7 @@ export interface ITTimePickerProps {
   label?: string;
   placeholder?: string;
   onChange: (e: any) => void;
-  onBlur: (e: any) => void;
+  onBlur?: (e: any) => void;
   required?: boolean;
   touched?: boolean;
   error?: string | boolean;

@@ -24,7 +24,7 @@ export interface ITDatePickerProps {
   label?: string;
   required?: boolean;
   touched?: boolean;
-  error?: string;
+  error?: string | boolean;
   minDate?: Date;
   maxDate?: Date;
 }

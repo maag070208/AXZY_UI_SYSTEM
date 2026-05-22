@@ -31,6 +31,7 @@ export default function ITSearchSelect({
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const [localTouched, setLocalTouched] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -100,12 +101,23 @@ export default function ITSearchSelect({
     // Retrasar el cierre para permitir el click en la opción
     setTimeout(() => {
       setIsFocused(false);
+      setLocalTouched(true);
       onBlur?.(e);
     }, 200);
   };
 
   // Theme logic
   const inputTheme = (theme as any).input || {};
+
+  const isTouched = touched !== undefined ? touched : localTouched;
+  const isEmpty = value === undefined || value === null || String(value).trim() === "";
+
+  const effectiveError = error !== undefined && error !== false
+    ? (error === true ? "Este campo es requerido" : error)
+    : (required && isEmpty ? "Este campo es requerido" : undefined);
+
+  const hasError = isTouched && !!effectiveError;
+  const errorMessage = typeof effectiveError === "string" ? effectiveError : "Este campo es requerido";
   
   const getInputStyle = () => {
     const style: React.CSSProperties = {
@@ -117,7 +129,7 @@ export default function ITSearchSelect({
       borderWidth: '1px',
       borderStyle: 'solid',
       transition: 'all 0.2s',
-      color: theme.colors.gray[900],
+      color: 'var(--input-text-color, var(--color-secondary-900))',
       width: '100%',
     };
 
@@ -128,7 +140,7 @@ export default function ITSearchSelect({
       style.cursor = "not-allowed";
     }
 
-    if (touched && error) {
+    if (hasError) {
       style.borderColor = inputTheme.error?.borderColor || 'red';
       if (isFocused) {
         style.boxShadow = inputTheme.error?.ring;
@@ -142,11 +154,11 @@ export default function ITSearchSelect({
   };
 
   return (
-    <div className={clsx("w-full flex flex-col gap-1.5", className)} ref={containerRef}>
+    <div className={clsx("w-full flex flex-col gap-1.5", className, isOpen && "relative z-30")} ref={containerRef}>
       {label && (
         <label
-          className={clsx("text-sm font-medium text-gray-700", {
-            "text-red-500": touched && error,
+          className={clsx("text-sm font-medium text-gray-700 dark:text-slate-300", {
+            "text-red-500": hasError,
           })}
         >
           {label}
@@ -178,7 +190,7 @@ export default function ITSearchSelect({
 
         {/* Dropdown Panel */}
         {isOpen && (
-          <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200 origin-top">
+          <div className="absolute z-50 w-full mt-1 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200 origin-top">
             <div className="max-h-60 overflow-y-auto">
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => (
@@ -188,8 +200,8 @@ export default function ITSearchSelect({
                     className={clsx(
                       "px-4 py-2 text-sm cursor-pointer transition-colors",
                       value === option[valueField]
-                        ? "bg-primary-50 text-primary-700 font-medium"
-                        : "hover:bg-gray-50 text-gray-700"
+                        ? "bg-primary-50 dark:bg-primary-950/40 text-primary-700 dark:text-primary-300 font-medium"
+                        : "hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300"
                     )}
                   >
                     {option[labelField]}
@@ -206,8 +218,8 @@ export default function ITSearchSelect({
       </div>
 
       {/* Error Message */}
-      {touched && error && (
-        <p className="text-red-500 text-xs mt-1">{error}</p>
+      {hasError && (
+        <p className="text-red-500 text-xs mt-1">{errorMessage}</p>
       )}
     </div>
   );

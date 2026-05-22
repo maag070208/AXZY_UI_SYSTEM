@@ -272,17 +272,17 @@ export const components = {
   },
 
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'var(--card-bg, #ffffff)',
     borderRadius: '1rem',
-    borderColor: semanticColors.gray[200],
+    borderColor: `var(--card-border, ${semanticColors.gray[200]})`,
     borderWidth: '1px',
-    shadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+    shadow: 'var(--card-shadow, 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1))',
     hover: {
-      shadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+      shadow: 'var(--card-shadow-hover, 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1))',
     },
     header: {
-      backgroundColor: semanticColors.gray[50],
-      borderBottom: `1px solid var(--color-secondary-200)`,
+      backgroundColor: `var(--card-header-bg, ${semanticColors.gray[50]})`,
+      borderBottom: `1px solid var(--card-header-border, var(--color-secondary-200))`,
       padding: '1rem 1.5rem',
       borderTopLeftRadius: '1rem',
       borderTopRightRadius: '1rem',
@@ -293,23 +293,23 @@ export const components = {
   },
 
   input: {
-    backgroundColor: '#ffffff',
-    borderColor: semanticColors.gray[300],
+    backgroundColor: 'var(--input-bg, #ffffff)',
+    borderColor: `var(--input-border, ${semanticColors.gray[300]})`,
     borderRadius: '0.5rem',
     padding: '0.5rem 0.75rem',
     fontSize: '0.875rem',
     focus: {
-      borderColor: semanticColors.primary[500],
-      ring: `0 0 0 3px ${semanticColors.primary[100]}`,
+      borderColor: `var(--input-focus-border, ${semanticColors.primary[500]})`,
+      ring: `var(--input-focus-ring, 0 0 0 3px ${semanticColors.primary[100]})`,
     },
-    placeholder: semanticColors.gray[400],
+    placeholder: `var(--input-placeholder, ${semanticColors.gray[400]})`,
     disabled: {
-      backgroundColor: semanticColors.gray[100],
-      borderColor: semanticColors.gray[200],
+      backgroundColor: `var(--input-disabled-bg, ${semanticColors.gray[100]})`,
+      borderColor: `var(--input-disabled-border, ${semanticColors.gray[200]})`,
     },
     error: {
-      borderColor: semanticColors.danger[500],
-      ring: `0 0 0 3px ${semanticColors.danger[100]}`,
+      borderColor: `var(--input-error-border, ${semanticColors.danger[500]})`,
+      ring: `var(--input-error-ring, 0 0 0 3px ${semanticColors.danger[100]})`,
     },
   },
 
@@ -360,24 +360,24 @@ export const components = {
 
   modal: {
     overlay: {
-      backgroundColor: 'rgba(15, 23, 42, 0.75)',
+      backgroundColor: 'var(--modal-overlay, rgba(15, 23, 42, 0.75))',
     },
     content: {
-      backgroundColor: '#ffffff',
+      backgroundColor: 'var(--modal-bg, #ffffff)',
       borderRadius: '1rem',
-      shadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+      shadow: 'var(--modal-shadow, 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1))',
     },
     header: {
       padding: '1.5rem 1.5rem 0.5rem 1.5rem',
-      borderBottom: `1px solid var(--color-secondary-200)`,
+      borderBottom: `1px solid var(--modal-header-border, var(--color-secondary-200))`,
     },
     body: {
       padding: '1.5rem',
     },
     footer: {
       padding: '1rem 1.5rem',
-      borderTop: `1px solid var(--color-secondary-200)`,
-      backgroundColor: semanticColors.gray[50],
+      borderTop: `1px solid var(--modal-footer-border, var(--color-secondary-200))`,
+      backgroundColor: `var(--modal-footer-bg, ${semanticColors.gray[50]})`,
     },
   },
 

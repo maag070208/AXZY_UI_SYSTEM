@@ -17,7 +17,7 @@ export interface ITInputProps {
   placeholder?: string;
   value?: any;
   onChange: (event: any) => void;
-  onBlur: (
+  onBlur?: (
     event:
       | React.FocusEvent<HTMLInputElement>
       | React.FocusEvent<HTMLTextAreaElement, Element>
@@ -32,7 +32,7 @@ export interface ITInputProps {
   labelClassName?: string;
   className?: string;
   touched?: boolean;
-  error?: string;
+  error?: string | boolean;
   required?: boolean;
   formatNumber?:boolean;
   autoFocus?: boolean;

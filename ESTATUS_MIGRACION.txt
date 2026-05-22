@@ -1,0 +1,49 @@
+================================================================================
+ESTATUS DE MIGRACIÓN Y SOPORTE DE TEMAS (AXZY UI SYSTEM)
+================================================================================
+Fecha de reporte: 2026-05-22
+
+Este documento detalla el listado de componentes y su estatus de migración y
+soporte tanto para Modo Claro como Modo Oscuro a través del inyector dinámico
+de variables y overrides de ITThemeProvider.
+
+--------------------------------------------------------------------------------
+#   Componente            Estatus de Migración    Modo Claro    Modo Oscuro
+--------------------------------------------------------------------------------
+1.  ITLayout              MIGRADO (Completo)      OK            OK
+2.  ITNavbar              MIGRADO (Completo)      OK            OK
+3.  ITCard                MIGRADO (Completo)      OK            OK
+4.  ITText                MIGRADO (Completo)      OK            OK
+5.  ITButton              MIGRADO (Completo)      OK            OK
+6.  ITInput               MIGRADO (Completo)      OK            OK
+7.  ITSelect              MIGRADO (Completo)      OK            OK
+8.  ITSearchSelect        MIGRADO (Completo)      OK            OK
+9.  ITDatePicker          MIGRADO (Completo)      OK            OK
+10. ITTimePicker          MIGRADO (Completo)      OK            OK
+11. ITCalendar            MIGRADO (Completo)      OK            OK
+12. ITSlideToggle         MIGRADO (Completo)      OK            OK
+13. ITDropfile            MIGRADO (Completo)      OK            OK
+14. ITFormBuilder         MIGRADO (Completo)      OK            OK
+15. ITTable               MIGRADO (Completo)      OK            OK
+16. ITDataTable           MIGRADO (Completo)      OK            OK
+17. ITBadget              MIGRADO (Completo)      OK            OK
+18. ITImage               MIGRADO (Completo)      OK            OK
+19. ITTabs                MIGRADO (Completo)      OK            OK
+20. ITStepper             MIGRADO (Completo)      OK            OK
+21. ITPagination          MIGRADO (Completo)      OK            OK
+22. ITTripleFilter        MIGRADO (Completo)      OK            OK
+23. ITDialog              MIGRADO (Completo)      OK            OK
+24. ITToast               MIGRADO (Completo)      OK            OK
+25. ITLoader              MIGRADO (Completo)      OK            OK
+26. ITThemeProvider       MIGRADO (Completo)      OK            OK
+--------------------------------------------------------------------------------
+
+DETALLES TÉCNICOS Y AJUSTES RECIENTES:
+- La sincronización se realiza mediante ITThemeProvider + tailwind.config.ts (darkMode: 'class').
+- Los colores globales del layout y de los componentes (fondos, bordes y textos) se resuelven en tiempo de ejecución.
+- Todos los componentes han sido validados exitosamente en el Showcase interactivo (App.tsx).
+- AJUSTE (Modo Oscuro): Corregido contraste de etiquetas (Label) en ITInput, ITSelect e ITSearchSelect (añadiendo dark:text-slate-300).
+- AJUSTE (Modo Oscuro): Refactorizado ITCalendar al 100% para remover colores/bordes/botones estáticos, adaptándolos con variables CSS de tema.
+- AJUSTE (Z-Index): Agregada elevación de stacking context (z-index) automática en ITSearchSelect cuando el panel dropdown está abierto para evitar solapamiento.
+- AJUSTE (ITSidebar): Implementadas variantes de líneas conectoras de subitems (lines, dots, |, none/normal) y acción de subitem opcional.
+

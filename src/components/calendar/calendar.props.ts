@@ -1,3 +1,5 @@
+import { ColorsTypes } from "@/types/colors.types";
+
 export interface CalendarEvent {
   id: string;
   title: string;
@@ -27,4 +29,5 @@ export interface ITCalendarProps {
 
   className?: string;
   disabled?: boolean;
+  variant?: ColorsTypes;
 }

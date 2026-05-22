@@ -43,6 +43,7 @@ export default function ITInput({
   const [isFocused, setIsFocused] = useState(false);
   const [hasSelectedAll, setHasSelectedAll] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [localTouched, setLocalTouched] = useState(false);
   
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -59,7 +60,7 @@ export default function ITInput({
       borderWidth: '1px',
       borderStyle: 'solid',
       transition: 'all 0.2s',
-      color: theme.colors.gray[900], // Default text color
+      color: 'var(--input-text-color, var(--color-secondary-900))', // Theme-aware text color
     };
 
     if (disabled) {
@@ -87,7 +88,17 @@ export default function ITInput({
     return style;
   };
   
-  const hasError = touched && error;
+  const isTouched = touched !== undefined ? touched : localTouched;
+  const isEmpty = isCheckboxOrRadio
+    ? !checked
+    : (value === undefined || value === null || String(value).trim() === "");
+
+  const effectiveError = error !== undefined && error !== false
+    ? (error === true ? "Este campo es requerido" : error)
+    : (required && isEmpty ? "Este campo es requerido" : undefined);
+
+  const hasError = isTouched && !!effectiveError;
+  const errorMessage = typeof effectiveError === "string" ? effectiveError : "Este campo es requerido";
 
 
    const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
@@ -307,6 +318,7 @@ const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   };
 
 const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+  setLocalTouched(true);
   setHasSelectedAll(false);
   setIsFocused(false);
   if (readOnly) {
@@ -411,7 +423,14 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                 id={name}
                 type={type}
                 checked={checked}
-                onChange={handleTextChange} // Checkbox uses text change handler in original code? Or just onChange? Code at 410 uses handleTextChange for non-number.
+                onChange={(e) => {
+                  setLocalTouched(true);
+                  handleTextChange(e);
+                }}
+                onBlur={(e) => {
+                  setLocalTouched(true);
+                  onBlur?.(e);
+                }}
                 disabled={disabled}
                 required={required}
                 className={clsx(
@@ -420,11 +439,11 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                    type === "checkbox" && "form-checkbox rounded",
                    className,
                    { "opacity-50 cursor-not-allowed": disabled },
-                   { "border-red-500": touched && error }
+                   { "border-red-500": hasError }
                 )}
               />
               {label && (
-                <label htmlFor={name} className="text-sm text-gray-700 select-none">
+                <label htmlFor={name} className="text-sm text-gray-700 dark:text-slate-300 select-none">
                   {label} {required && <span className="text-red-500">*</span>}
                 </label>
               )}
@@ -436,8 +455,8 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                 <label
                   htmlFor={name}
                   className={clsx(
-                    "text-sm font-medium text-gray-700",
-                    { "text-red-500": touched && error },
+                    "text-sm font-medium text-gray-700 dark:text-slate-300",
+                    { "text-red-500": hasError },
                     labelClassName
                   )}
                 >
@@ -460,7 +479,11 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                     placeholder={placeholder}
                     value={value ?? ""}
                     onChange={readOnly ? undefined : onChange}
-                    onBlur={readOnly ? undefined : onBlur}
+                    onBlur={(e) => {
+                      if (readOnly) return;
+                      setLocalTouched(true);
+                      onBlur?.(e);
+                    }}
                     readOnly={readOnly}
                     maxLength={maxLength}
                     minLength={minLength}
@@ -509,6 +532,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                           ? handleBlur
                           : (e) => {
                               setIsFocused(false);
+                              setLocalTouched(true);
                               onBlur?.(e);
                             }
                       }
@@ -561,9 +585,9 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
          )}
 
              {/* Validation message aligned with input */}
-       {touched && error && !isCheckboxOrRadio && (
+       {hasError && !isCheckboxOrRadio && (
          <div className="flex-shrink-0 min-w-[140px] flex items-center pt-3">
-           <p className="text-red-500 text-xs">{error}</p>
+           <p className="text-red-500 text-xs">{errorMessage}</p>
          </div>
        )}
        
@@ -577,9 +601,9 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
        )}
        
        {/* Validation for checkbox/radio - keep below */}
-       {isCheckboxOrRadio && touched && error && (
+       {isCheckboxOrRadio && hasError && (
          <div className="mt-1 text-xs">
-           <p className="text-red-500">{error}</p>
+           <p className="text-red-500">{errorMessage}</p>
          </div>
        )}
     </div>

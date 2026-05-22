@@ -297,6 +297,7 @@ export default function ITDatePicker({
             onChange={handleDateChange}
             minDate={minDate}
             maxDate={maxDate}
+            variant={variant}
             className="h-auto border-none shadow-none w-full"
           />
         </div>

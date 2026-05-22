@@ -1,122 +1,1775 @@
-import React, { useMemo } from 'react';
-import { ITThemeProviderProps } from './themeProvider.props';
-import { palette, theme as defaultThemeConfig } from '../../theme/theme';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { MdPalette, MdClose, MdRefresh, MdCheck } from "react-icons/md";
+import { ITThemeProviderProps, ITThemePalette } from "./themeProvider.props";
 
-export default function ITThemeProvider({ theme, children }: ITThemeProviderProps) {
-  // Merge the provided theme over the default HEX palette to ensure we always have values
-  const activeThemeContext = useMemo(() => {
-    // Reconstruct the default semantic mapping using RAW HEX codes
-    const baseColors = {
-      primary: palette.blue,
-      secondary: palette.gray,
-      success: palette.success,
-      danger: palette.danger,
-      warning: palette.warning,
-      info: palette.cyan,
-      purple: palette.purple,
-    };
+// ============================================================================
+// DEFAULT PALETTE & PRESETS CONFIG
+// ============================================================================
 
-    return {
-      colors: {
-        ...baseColors,
-        ...theme?.colors,
-      },
+const STORAGE_KEY = "it-theme-palette";
+
+export const DEFAULT_PALETTE: ITThemePalette = {
+  primary: "#06b6d4",      // Cyan
+  secondary: "#6b7280",    // Gray
+  ternary: "#8b5cf6",      // Purple/Violet
+  danger: "#ef4444",       // Red
+  success: "#22c55e",      // Green
+  info: "#3b82f6",         // Blue
+  alert: "#f97316",        // Orange
+  warning: "#eab308",      // Yellow
+  layout: {
+    sidebarBg: "#0f172a",    // Dark slate-900
+    sidebarText: "#94a3b8",  // Slate-400
+    navbarBg: "#ffffff",     // White
+    navbarText: "#1e293b",   // Slate-800
+  },
+  table: {
+    headerBg: "#f8fafc",     // Slate-50
+    headerText: "#334155",   // Slate-700
+    rowBg: "#ffffff",        // White
+    rowText: "#1e293b",      // Slate-800
+  }
+};
+
+export const PRESETS: { name: string; colors: ITThemePalette }[] = [
+  {
+    name: "Midnight Nova 🌌",
+    colors: {
+      primary: "#6366f1",      // Indigo
+      secondary: "#475569",    // Slate
+      ternary: "#a855f7",      // Purple
+      danger: "#ef4444",
+      success: "#22c55e",
+      info: "#38bdf8",
+      alert: "#f97316",
+      warning: "#eab308",
       layout: {
-        ...defaultThemeConfig.layout,
-        ...theme?.layout,
+        sidebarBg: "#020617",   // Slate-950
+        sidebarText: "#cbd5e1",
+        navbarBg: "#0f172a",
+        navbarText: "#f8fafc",
+      },
+      table: {
+        headerBg: "#1e293b",
+        headerText: "#e2e8f0",
+        rowBg: "#0f172a",
+        rowText: "#cbd5e1",
+      }
+    },
+  },
+
+  {
+    name: "Tokyo Drift 🏎️",
+    colors: {
+      primary: "#f43f5e",      // Rose
+      secondary: "#64748b",
+      ternary: "#fb923c",      // Orange
+      danger: "#dc2626",
+      success: "#16a34a",
+      info: "#0ea5e9",
+      alert: "#f97316",
+      warning: "#facc15",
+      layout: {
+        sidebarBg: "#0f050b",   // Deep rose-slate
+        sidebarText: "#fda4af",
+        navbarBg: "#1c0a15",
+        navbarText: "#ffe4e6",
+      },
+      table: {
+        headerBg: "#2e1022",
+        headerText: "#fecdd3",
+        rowBg: "#1c0a15",
+        rowText: "#ffe4e6",
+      }
+    },
+  },
+
+  {
+    name: "Ocean Core 🌊",
+    colors: {
+      primary: "#0ea5e9",      // Sky
+      secondary: "#64748b",
+      ternary: "#14b8a6",      // Teal
+      danger: "#ef4444",
+      success: "#10b981",
+      info: "#3b82f6",
+      alert: "#f97316",
+      warning: "#eab308",
+      layout: {
+        sidebarBg: "#031b2f",   // Deep ocean blue
+        sidebarText: "#7dd3fc",
+        navbarBg: "#0b253c",
+        navbarText: "#e0f2fe",
+      },
+      table: {
+        headerBg: "#0c2e4b",
+        headerText: "#bae6fd",
+        rowBg: "#0b253c",
+        rowText: "#e0f2fe",
+      }
+    },
+  },
+
+  {
+    name: "Matrix Pulse 💚",
+    colors: {
+      primary: "#10b981",      // Emerald
+      secondary: "#64748b",
+      ternary: "#84cc16",      // Lime
+      danger: "#ef4444",
+      success: "#16a34a",
+      info: "#06b6d4",
+      alert: "#f59e0b",
+      warning: "#eab308",
+      layout: {
+        sidebarBg: "#022c1b",   // Deep forest green
+        sidebarText: "#6ee7b7",
+        navbarBg: "#043e26",
+        navbarText: "#d1fae5",
+      },
+      table: {
+        headerBg: "#064e3b",
+        headerText: "#a7f3d0",
+        rowBg: "#043e26",
+        rowText: "#d1fae5",
+      }
+    },
+  },
+
+  {
+    name: "Royal Velvet 👑",
+    colors: {
+      primary: "#8b5cf6",      // Violet
+      secondary: "#64748b",
+      ternary: "#ec4899",      // Pink
+      danger: "#e11d48",
+      success: "#22c55e",
+      info: "#3b82f6",
+      alert: "#f97316",
+      warning: "#facc15",
+      layout: {
+        sidebarBg: "#1e0b36",   // Deep royal purple
+        sidebarText: "#c084fc",
+        navbarBg: "#291048",
+        navbarText: "#f3e8ff",
+      },
+      table: {
+        headerBg: "#3b1764",
+        headerText: "#e9d5ff",
+        rowBg: "#291048",
+        rowText: "#f3e8ff",
+      }
+    },
+  },
+];
+// ============================================================================
+// CONTEXT & PROVIDER
+// ============================================================================
+
+interface ITThemeContextType {
+  palette: ITThemePalette;
+  colors: ITThemePalette;
+  setPalette: (newPalette: ITThemePalette) => void;
+  updateColor: (key: string, value: string) => void;
+  resetTheme: () => void;
+  applyPreset: (colors: ITThemePalette) => void;
+  resolvedTheme: "light" | "dark";
+  darkModeMode: "light" | "dark" | "system";
+  setDarkModeMode: (mode: "light" | "dark" | "system") => void;
+}
+
+const ITThemeContext = createContext<ITThemeContextType | undefined>(undefined);
+
+export const useITTheme = () => {
+  const context = useContext(ITThemeContext);
+  if (!context) {
+    throw new Error("useITTheme must be used within an ITThemeProvider");
+  }
+  return context;
+};
+
+const getNestedValue = (obj: any, path: string) => {
+  return path.split(".").reduce((acc, part) => acc && acc[part], obj);
+};
+
+const isLightColor = (hex: string) => {
+  if (!hex || typeof hex !== "string") return false;
+  const color = hex.replace("#", "");
+  let r = 0, g = 0, b = 0;
+  if (color.length === 3) {
+    r = parseInt(color[0] + color[0], 16);
+    g = parseInt(color[1] + color[1], 16);
+    b = parseInt(color[2] + color[2], 16);
+  } else if (color.length === 6) {
+    r = parseInt(color.substring(0, 2), 16);
+    g = parseInt(color.substring(2, 4), 16);
+    b = parseInt(color.substring(4, 6), 16);
+  } else {
+    return false;
+  }
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness > 140;
+};
+
+export default function ITThemeProvider({ children, theme }: ITThemeProviderProps) {
+  const [palette, setPaletteState] = useState<ITThemePalette>(() => {
+    const basePalette = {
+      ...DEFAULT_PALETTE,
+      ...theme,
+      layout: { ...DEFAULT_PALETTE.layout, ...theme?.layout },
+      table: { ...DEFAULT_PALETTE.table, ...theme?.table }
+    };
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return {
+          ...basePalette,
+          ...parsed,
+          layout: { ...basePalette.layout, ...parsed.layout },
+          table: { ...basePalette.table, ...parsed.table }
+        };
+      }
+    } catch (e) {
+      console.error("Failed to load theme from localStorage", e);
+    }
+    return basePalette as ITThemePalette;
+  });
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [showSavedToast, setShowSavedToast] = useState(false);
+
+  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
+
+  const [darkModeMode, setDarkModeMode] = useState<'light' | 'dark' | 'system'>(() => {
+    const saved = localStorage.getItem("it-theme-dark-mode");
+    if (saved === "light" || saved === "dark" || saved === "system") {
+      return saved;
+    }
+    return "system";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("it-theme-dark-mode", darkModeMode);
+
+    const applyDarkMode = (isDark: boolean) => {
+      if (isDark) {
+        document.documentElement.classList.add("dark");
+        document.documentElement.setAttribute("data-theme", "dark");
+        setResolvedTheme('dark');
+      } else {
+        document.documentElement.classList.remove("dark");
+        document.documentElement.setAttribute("data-theme", "light");
+        setResolvedTheme('light');
       }
     };
-  }, [theme]);
 
-  // Transform the theme object into CSS Custom Properties (Variables)
-  const cssVariables = useMemo(() => {
-    let variablesString = '';
-    
-    // Process colors
-    Object.entries(activeThemeContext.colors).forEach(([colorName, scale]) => {
-      Object.entries(scale).forEach(([shade, hexValue]) => {
-        variablesString += `--color-${colorName}-${shade}: ${hexValue};\n`;
-      });
-    });
+    if (darkModeMode === "system") {
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      applyDarkMode(mediaQuery.matches);
 
-    if (theme?.layout) {
-      if (theme.layout.backgroundColor) variablesString += `--layout-bg: ${theme.layout.backgroundColor};\n`;
-      if (theme.layout.contentPadding) variablesString += `--layout-padding: ${theme.layout.contentPadding};\n`;
+      const listener = (e: MediaQueryListEvent) => {
+        applyDarkMode(e.matches);
+      };
+
+      mediaQuery.addEventListener("change", listener);
+      return () => mediaQuery.removeEventListener("change", listener);
+    } else {
+      applyDarkMode(darkModeMode === "dark");
     }
+  }, [darkModeMode]);
 
-    if (theme?.topbar) {
-      if (theme.topbar.backgroundColor) variablesString += `--topbar-bg: ${theme.topbar.backgroundColor};\n`;
-      if (theme.topbar.borderColor) variablesString += `--topbar-border: ${theme.topbar.borderColor};\n`;
-      if (theme.topbar.iconColor) variablesString += `--topbar-icon: ${theme.topbar.iconColor};\n`;
-      if (theme.topbar.iconHoverColor) variablesString += `--topbar-icon-hover: ${theme.topbar.iconHoverColor};\n`;
-      if (theme.topbar.shadow) variablesString += `--topbar-shadow: ${theme.topbar.shadow};\n`;
-      if (theme.topbar.textColor) variablesString += `--topbar-text: ${theme.topbar.textColor};\n`;
-      if (theme.topbar.textHoverColor) variablesString += `--topbar-text-hover: ${theme.topbar.textHoverColor};\n`;
-      if (theme.topbar.userMenu) {
-        if (theme.topbar.userMenu.backgroundColor) variablesString += `--topbar-user-bg: ${theme.topbar.userMenu.backgroundColor};\n`;
-        if (theme.topbar.userMenu.hoverBackground) variablesString += `--topbar-user-hover: ${theme.topbar.userMenu.hoverBackground};\n`;
-        if (theme.topbar.userMenu.textColor) variablesString += `--topbar-user-text: ${theme.topbar.userMenu.textColor};\n`;
-        if (theme.topbar.userMenu.subtitleColor) variablesString += `--topbar-user-subtitle: ${theme.topbar.userMenu.subtitleColor};\n`;
-        if (theme.topbar.userMenu.dropdown) {
-          if (theme.topbar.userMenu.dropdown.backgroundColor) variablesString += `--topbar-user-dropdown-bg: ${theme.topbar.userMenu.dropdown.backgroundColor};\n`;
-          if (theme.topbar.userMenu.dropdown.borderColor) variablesString += `--topbar-user-dropdown-border: ${theme.topbar.userMenu.dropdown.borderColor};\n`;
-          if (theme.topbar.userMenu.dropdown.itemHoverBackground) variablesString += `--topbar-user-item-hover: ${theme.topbar.userMenu.dropdown.itemHoverBackground};\n`;
+  // Inyectar variables CSS en el :root al cambiar la paleta o tema resuelto
+  useEffect(() => {
+    const injectStyles = (obj: any, prefix = "") => {
+      Object.entries(obj).forEach(([key, val]) => {
+        if (typeof val === "object" && val !== null) {
+          injectStyles(val, prefix + key + "-");
+        } else {
+          document.documentElement.style.setProperty(`--color-${prefix}${key}`, val as string);
+          if (prefix === "layout-") {
+            document.documentElement.style.setProperty(`--color-${key}`, val as string);
+          }
         }
+      });
+    };
+    injectStyles(palette);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(palette));
+
+    // Dynamic overrides for Tailwind classes and component tokens
+    let styleTag = document.getElementById("it-theme-dynamic-overrides") as HTMLStyleElement;
+    if (!styleTag) {
+      styleTag = document.createElement("style");
+      styleTag.id = "it-theme-dynamic-overrides";
+      document.head.appendChild(styleTag);
+    }
+
+    const isDark = resolvedTheme === "dark";
+
+    let tableRowBg = palette.table.rowBg;
+    let tableRowText = palette.table.rowText;
+    let tableHeaderBg = palette.table.headerBg;
+    let tableHeaderText = palette.table.headerText;
+    let navbarBg = palette.layout.navbarBg;
+    let navbarText = palette.layout.navbarText;
+    let sidebarBg = palette.layout.sidebarBg;
+    let sidebarText = palette.layout.sidebarText;
+
+    if (isDark) {
+      if (isLightColor(tableRowBg)) {
+        tableRowBg = `color-mix(in srgb, ${palette.table.rowBg} 8%, #111827)`;
+      }
+      if (!isLightColor(tableRowText)) {
+        tableRowText = `color-mix(in srgb, ${palette.table.rowText} 20%, #f3f4f6)`;
+      }
+      if (isLightColor(tableHeaderBg)) {
+        tableHeaderBg = `color-mix(in srgb, ${palette.table.headerBg} 12%, #1f2937)`;
+      }
+      if (!isLightColor(tableHeaderText)) {
+        tableHeaderText = `color-mix(in srgb, ${palette.table.headerText} 20%, #f9fafb)`;
+      }
+      if (isLightColor(navbarBg)) {
+        navbarBg = `color-mix(in srgb, ${palette.layout.navbarBg} 8%, #111827)`;
+      }
+      if (!isLightColor(navbarText)) {
+        navbarText = `color-mix(in srgb, ${palette.layout.navbarText} 20%, #f3f4f6)`;
+      }
+      if (isLightColor(sidebarBg)) {
+        sidebarBg = `color-mix(in srgb, ${palette.layout.sidebarBg} 8%, #0f172a)`;
+      }
+      if (!isLightColor(sidebarText)) {
+        sidebarText = `color-mix(in srgb, ${palette.layout.sidebarText} 20%, #cbd5e1)`;
+      }
+    } else {
+      if (!isLightColor(tableRowBg)) {
+        tableRowBg = `color-mix(in srgb, ${palette.table.rowBg} 8%, #ffffff)`;
+      }
+      if (isLightColor(tableRowText)) {
+        tableRowText = `color-mix(in srgb, ${palette.table.rowText} 30%, #1e293b)`;
+      }
+      if (!isLightColor(tableHeaderBg)) {
+        tableHeaderBg = `color-mix(in srgb, ${palette.table.headerBg} 12%, #f8fafc)`;
+      }
+      if (isLightColor(tableHeaderText)) {
+        tableHeaderText = `color-mix(in srgb, ${palette.table.headerText} 30%, #334155)`;
+      }
+      if (!isLightColor(navbarBg)) {
+        navbarBg = `color-mix(in srgb, ${palette.layout.navbarBg} 8%, #ffffff)`;
+      }
+      if (isLightColor(navbarText)) {
+        navbarText = `color-mix(in srgb, ${palette.layout.navbarText} 30%, #1e293b)`;
+      }
+      if (!isLightColor(sidebarBg)) {
+        sidebarBg = `color-mix(in srgb, ${palette.layout.sidebarBg} 8%, #ffffff)`;
+      }
+      if (isLightColor(sidebarText)) {
+        sidebarText = `color-mix(in srgb, ${palette.layout.sidebarText} 30%, #1e293b)`;
       }
     }
 
-    if (theme?.sidebar) {
-      if (theme.sidebar.backgroundColor) variablesString += `--sidebar-bg: ${theme.sidebar.backgroundColor};\n`;
-      if (theme.sidebar.borderColor) variablesString += `--sidebar-border: ${theme.sidebar.borderColor};\n`;
-      if (theme.sidebar.label) {
-        if (theme.sidebar.label.color) variablesString += `--sidebar-label-color: ${theme.sidebar.label.color};\n`;
-        if (theme.sidebar.label.size) variablesString += `--sidebar-label-size: ${theme.sidebar.label.size};\n`;
-        if (theme.sidebar.label.weight) variablesString += `--sidebar-label-weight: ${theme.sidebar.label.weight};\n`;
-      }
-      if (theme.sidebar.icon) {
-        if (theme.sidebar.icon.color) variablesString += `--sidebar-icon-color: ${theme.sidebar.icon.color};\n`;
-        if (theme.sidebar.icon.size) variablesString += `--sidebar-icon-size: ${theme.sidebar.icon.size};\n`;
-      }
-      if (theme.sidebar.hover?.backgroundColor) variablesString += `--sidebar-hover-bg: ${theme.sidebar.hover.backgroundColor};\n`;
-      if (theme.sidebar.active) {
-        if (theme.sidebar.active.backgroundColor) variablesString += `--sidebar-active-bg: ${theme.sidebar.active.backgroundColor};\n`;
-        if (theme.sidebar.active.color) variablesString += `--sidebar-active-color: ${theme.sidebar.active.color};\n`;
-        if (theme.sidebar.active.iconColor) variablesString += `--sidebar-active-icon: ${theme.sidebar.active.iconColor};\n`;
-      }
-      if (theme.sidebar.badge) {
-        if (theme.sidebar.badge.backgroundColor) variablesString += `--sidebar-badge-bg: ${theme.sidebar.badge.backgroundColor};\n`;
-        if (theme.sidebar.badge.color) variablesString += `--sidebar-badge-color: ${theme.sidebar.badge.color};\n`;
-      }
-    }
+    styleTag.innerHTML = `
+      :root {
+        --color-primary: ${palette.primary};
+        --color-secondary: ${palette.secondary};
+        --color-ternary: ${palette.ternary};
+        --color-danger: ${palette.danger};
+        --color-success: ${palette.success};
+        --color-info: ${palette.info};
+        --color-alert: ${palette.alert};
+        --color-warning: ${palette.warning};
 
-    if (theme?.calendar) {
-      if (theme.calendar.backgroundColor) variablesString += `--calendar-bg: ${theme.calendar.backgroundColor};\n`;
-      if (theme.calendar.borderColor) variablesString += `--calendar-border: ${theme.calendar.borderColor};\n`;
-      if (theme.calendar.header) {
-        if (theme.calendar.header.textColor) variablesString += `--calendar-header-text: ${theme.calendar.header.textColor};\n`;
-        if (theme.calendar.header.hoverBackground) variablesString += `--calendar-header-hover: ${theme.calendar.header.hoverBackground};\n`;
-      }
-      if (theme.calendar.days) {
-        if (theme.calendar.days.textColor) variablesString += `--calendar-days-text: ${theme.calendar.days.textColor};\n`;
-        if (theme.calendar.days.weekendColor) variablesString += `--calendar-days-weekend: ${theme.calendar.days.weekendColor};\n`;
-        if (theme.calendar.days.outsideMonthColor) variablesString += `--calendar-days-outside: ${theme.calendar.days.outsideMonthColor};\n`;
-      }
-      if (theme.calendar.selection) {
-        if (theme.calendar.selection.selectedColor) variablesString += `--calendar-selected-text: ${theme.calendar.selection.selectedColor};\n`;
-        if (theme.calendar.selection.selectedBackground) variablesString += `--calendar-selected-bg: ${theme.calendar.selection.selectedBackground};\n`;
-        if (theme.calendar.selection.rangeBackground) variablesString += `--calendar-range-bg: ${theme.calendar.selection.rangeBackground};\n`;
-        if (theme.calendar.selection.todayBackground) variablesString += `--calendar-today-bg: ${theme.calendar.selection.todayBackground};\n`;
-        if (theme.calendar.selection.todayColor) variablesString += `--calendar-today-text: ${theme.calendar.selection.todayColor};\n`;
-      }
-    }
+        /* Generated scales for primary */
+        --color-primary-50: color-mix(in srgb, var(--color-primary) 5%, #ffffff);
+        --color-primary-100: color-mix(in srgb, var(--color-primary) 10%, #ffffff);
+        --color-primary-200: color-mix(in srgb, var(--color-primary) 30%, #ffffff);
+        --color-primary-300: color-mix(in srgb, var(--color-primary) 50%, #ffffff);
+        --color-primary-400: color-mix(in srgb, var(--color-primary) 70%, #ffffff);
+        --color-primary-500: var(--color-primary);
+        --color-primary-600: color-mix(in srgb, var(--color-primary) 85%, #000000);
+        --color-primary-700: color-mix(in srgb, var(--color-primary) 70%, #000000);
+        --color-primary-800: color-mix(in srgb, var(--color-primary) 55%, #000000);
+        --color-primary-900: color-mix(in srgb, var(--color-primary) 40%, #000000);
+        --color-primary-950: color-mix(in srgb, var(--color-primary) 25%, #000000);
 
-    return `:root {\n${variablesString}}`;
-  }, [activeThemeContext]);
+        /* Generated scales for secondary */
+        --color-secondary-50: color-mix(in srgb, var(--color-secondary) 5%, #ffffff);
+        --color-secondary-100: color-mix(in srgb, var(--color-secondary) 10%, #ffffff);
+        --color-secondary-200: color-mix(in srgb, var(--color-secondary) 30%, #ffffff);
+        --color-secondary-300: color-mix(in srgb, var(--color-secondary) 50%, #ffffff);
+        --color-secondary-400: color-mix(in srgb, var(--color-secondary) 70%, #ffffff);
+        --color-secondary-500: var(--color-secondary);
+        --color-secondary-600: color-mix(in srgb, var(--color-secondary) 85%, #000000);
+        --color-secondary-700: color-mix(in srgb, var(--color-secondary) 70%, #000000);
+        --color-secondary-800: color-mix(in srgb, var(--color-secondary) 55%, #000000);
+        --color-secondary-900: color-mix(in srgb, var(--color-secondary) 40%, #000000);
+        --color-secondary-950: color-mix(in srgb, var(--color-secondary) 25%, #000000);
+
+        /* Generated scales for ternary */
+        --color-ternary-50: color-mix(in srgb, var(--color-ternary) 5%, #ffffff);
+        --color-ternary-100: color-mix(in srgb, var(--color-ternary) 10%, #ffffff);
+        --color-ternary-200: color-mix(in srgb, var(--color-ternary) 30%, #ffffff);
+        --color-ternary-300: color-mix(in srgb, var(--color-ternary) 50%, #ffffff);
+        --color-ternary-400: color-mix(in srgb, var(--color-ternary) 70%, #ffffff);
+        --color-ternary-500: var(--color-ternary);
+        --color-ternary-600: color-mix(in srgb, var(--color-ternary) 85%, #000000);
+        --color-ternary-700: color-mix(in srgb, var(--color-ternary) 70%, #000000);
+        --color-ternary-800: color-mix(in srgb, var(--color-ternary) 55%, #000000);
+        --color-ternary-900: color-mix(in srgb, var(--color-ternary) 40%, #000000);
+        --color-ternary-950: color-mix(in srgb, var(--color-ternary) 25%, #000000);
+
+        /* Purple scales mapped as aliases to ternary */
+        --color-purple-50: var(--color-ternary-50);
+        --color-purple-100: var(--color-ternary-100);
+        --color-purple-200: var(--color-ternary-200);
+        --color-purple-300: var(--color-ternary-300);
+        --color-purple-400: var(--color-ternary-400);
+        --color-purple-500: var(--color-ternary-500);
+        --color-purple-600: var(--color-ternary-600);
+        --color-purple-700: var(--color-ternary-700);
+        --color-purple-800: var(--color-ternary-800);
+        --color-purple-900: var(--color-ternary-900);
+        --color-purple-950: var(--color-ternary-950);
+
+        /* Generated scales for danger */
+        --color-danger-50: color-mix(in srgb, var(--color-danger) 5%, #ffffff);
+        --color-danger-100: color-mix(in srgb, var(--color-danger) 10%, #ffffff);
+        --color-danger-200: color-mix(in srgb, var(--color-danger) 30%, #ffffff);
+        --color-danger-300: color-mix(in srgb, var(--color-danger) 50%, #ffffff);
+        --color-danger-400: color-mix(in srgb, var(--color-danger) 70%, #ffffff);
+        --color-danger-500: var(--color-danger);
+        --color-danger-600: color-mix(in srgb, var(--color-danger) 85%, #000000);
+        --color-danger-700: color-mix(in srgb, var(--color-danger) 70%, #000000);
+        --color-danger-800: color-mix(in srgb, var(--color-danger) 55%, #000000);
+        --color-danger-900: color-mix(in srgb, var(--color-danger) 40%, #000000);
+        --color-danger-950: color-mix(in srgb, var(--color-danger) 25%, #000000);
+
+        /* Generated scales for success */
+        --color-success-50: color-mix(in srgb, var(--color-success) 5%, #ffffff);
+        --color-success-100: color-mix(in srgb, var(--color-success) 10%, #ffffff);
+        --color-success-200: color-mix(in srgb, var(--color-success) 30%, #ffffff);
+        --color-success-300: color-mix(in srgb, var(--color-success) 50%, #ffffff);
+        --color-success-400: color-mix(in srgb, var(--color-success) 70%, #ffffff);
+        --color-success-500: var(--color-success);
+        --color-success-600: color-mix(in srgb, var(--color-success) 85%, #000000);
+        --color-success-700: color-mix(in srgb, var(--color-success) 70%, #000000);
+        --color-success-800: color-mix(in srgb, var(--color-success) 55%, #000000);
+        --color-success-900: color-mix(in srgb, var(--color-success) 40%, #000000);
+        --color-success-950: color-mix(in srgb, var(--color-success) 25%, #000000);
+
+        /* Generated scales for info */
+        --color-info-50: color-mix(in srgb, var(--color-info) 5%, #ffffff);
+        --color-info-100: color-mix(in srgb, var(--color-info) 10%, #ffffff);
+        --color-info-200: color-mix(in srgb, var(--color-info) 30%, #ffffff);
+        --color-info-300: color-mix(in srgb, var(--color-info) 50%, #ffffff);
+        --color-info-400: color-mix(in srgb, var(--color-info) 70%, #ffffff);
+        --color-info-500: var(--color-info);
+        --color-info-600: color-mix(in srgb, var(--color-info) 85%, #000000);
+        --color-info-700: color-mix(in srgb, var(--color-info) 70%, #000000);
+        --color-info-800: color-mix(in srgb, var(--color-info) 55%, #000000);
+        --color-info-900: color-mix(in srgb, var(--color-info) 40%, #000000);
+        --color-info-950: color-mix(in srgb, var(--color-info) 25%, #000000);
+
+        /* Generated scales for alert */
+        --color-alert-50: color-mix(in srgb, var(--color-alert) 5%, #ffffff);
+        --color-alert-100: color-mix(in srgb, var(--color-alert) 10%, #ffffff);
+        --color-alert-200: color-mix(in srgb, var(--color-alert) 30%, #ffffff);
+        --color-alert-300: color-mix(in srgb, var(--color-alert) 50%, #ffffff);
+        --color-alert-400: color-mix(in srgb, var(--color-alert) 70%, #ffffff);
+        --color-alert-500: var(--color-alert);
+        --color-alert-600: color-mix(in srgb, var(--color-alert) 85%, #000000);
+        --color-alert-700: color-mix(in srgb, var(--color-alert) 70%, #000000);
+        --color-alert-800: color-mix(in srgb, var(--color-alert) 55%, #000000);
+        --color-alert-900: color-mix(in srgb, var(--color-alert) 40%, #000000);
+        --color-alert-950: color-mix(in srgb, var(--color-alert) 25%, #000000);
+
+        /* Generated scales for warning */
+        --color-warning-50: color-mix(in srgb, var(--color-warning) 5%, #ffffff);
+        --color-warning-100: color-mix(in srgb, var(--color-warning) 10%, #ffffff);
+        --color-warning-200: color-mix(in srgb, var(--color-warning) 30%, #ffffff);
+        --color-warning-300: color-mix(in srgb, var(--color-warning) 50%, #ffffff);
+        --color-warning-400: color-mix(in srgb, var(--color-warning) 70%, #ffffff);
+        --color-warning-500: var(--color-warning);
+        --color-warning-600: color-mix(in srgb, var(--color-warning) 85%, #000000);
+        --color-warning-700: color-mix(in srgb, var(--color-warning) 70%, #000000);
+        --color-warning-800: color-mix(in srgb, var(--color-warning) 55%, #000000);
+        --color-warning-900: color-mix(in srgb, var(--color-warning) 40%, #000000);
+        --color-warning-950: color-mix(in srgb, var(--color-warning) 25%, #000000);
+
+        /* Support legacy client app variables */
+        --color-primary-focus: color-mix(in srgb, var(--color-primary) 30%, transparent);
+        --color-primary-light: color-mix(in srgb, var(--color-primary) 10%, #ffffff);
+        --color-secondary-border: color-mix(in srgb, var(--color-secondary) 30%, #000000);
+        --color-ternary-light: color-mix(in srgb, var(--color-ternary) 15%, #ffffff);
+        --color-danger-focus: color-mix(in srgb, var(--color-danger) 30%, transparent);
+        --color-success-focus: color-mix(in srgb, var(--color-success) 30%, transparent);
+        --color-info-focus: color-mix(in srgb, var(--color-info) 30%, transparent);
+        --color-alert-focus: color-mix(in srgb, var(--color-alert) 30%, transparent);
+        --color-warning-focus: color-mix(in srgb, var(--color-warning) 30%, transparent);
+
+        /* Map library properties for complete safety */
+        --color-primary-hover: color-mix(in srgb, var(--color-primary) 85%, #000000);
+        --color-primary-ring: color-mix(in srgb, var(--color-primary) 40%, transparent);
+        --color-primary-soft: color-mix(in srgb, var(--color-primary) 12%, transparent);
+        --color-primary-soft-border: color-mix(in srgb, var(--color-primary) 24%, transparent);
+
+        --color-secondary-hover: color-mix(in srgb, var(--color-secondary) 85%, #000000);
+        --color-secondary-ring: color-mix(in srgb, var(--color-secondary) 40%, transparent);
+        --color-secondary-soft: color-mix(in srgb, var(--color-secondary) 12%, transparent);
+        --color-secondary-soft-border: color-mix(in srgb, var(--color-secondary) 24%, transparent);
+
+        --color-ternary-hover: color-mix(in srgb, var(--color-ternary) 85%, #000000);
+        --color-ternary-ring: color-mix(in srgb, var(--color-ternary) 40%, transparent);
+        --color-ternary-soft: color-mix(in srgb, var(--color-ternary) 12%, transparent);
+        --color-ternary-soft-border: color-mix(in srgb, var(--color-ternary) 24%, transparent);
+
+        --color-danger-hover: color-mix(in srgb, var(--color-danger) 85%, #000000);
+        --color-danger-ring: color-mix(in srgb, var(--color-danger) 40%, transparent);
+        --color-danger-soft: color-mix(in srgb, var(--color-danger) 12%, transparent);
+        --color-danger-soft-border: color-mix(in srgb, var(--color-danger) 24%, transparent);
+
+        --color-success-hover: color-mix(in srgb, var(--color-success) 85%, #000000);
+        --color-success-ring: color-mix(in srgb, var(--color-success) 40%, transparent);
+        --color-success-soft: color-mix(in srgb, var(--color-success) 12%, transparent);
+        --color-success-soft-border: color-mix(in srgb, var(--color-success) 24%, transparent);
+
+        --color-info-hover: color-mix(in srgb, var(--color-info) 85%, #000000);
+        --color-info-ring: color-mix(in srgb, var(--color-info) 40%, transparent);
+        --color-info-soft: color-mix(in srgb, var(--color-info) 12%, transparent);
+        --color-info-soft-border: color-mix(in srgb, var(--color-info) 24%, transparent);
+
+        --color-alert-hover: color-mix(in srgb, var(--color-alert) 85%, #000000);
+        --color-alert-ring: color-mix(in srgb, var(--color-alert) 40%, transparent);
+        --color-alert-soft: color-mix(in srgb, var(--color-alert) 12%, transparent);
+        --color-alert-soft-border: color-mix(in srgb, var(--color-alert) 24%, transparent);
+
+        --color-warning-hover: color-mix(in srgb, var(--color-warning) 85%, #000000);
+        --color-warning-ring: color-mix(in srgb, var(--color-warning) 40%, transparent);
+        --color-warning-soft: color-mix(in srgb, var(--color-warning) 12%, transparent);
+        --color-warning-soft-border: color-mix(in srgb, var(--color-warning) 24%, transparent);
+
+        --color-sidebarBg: ${sidebarBg} !important;
+        --color-sidebarText: ${sidebarText} !important;
+        --color-navbarBg: ${navbarBg} !important;
+        --color-navbarText: ${navbarText} !important;
+
+        --color-table-headerBg: ${tableHeaderBg} !important;
+        --color-table-headerText: ${tableHeaderText} !important;
+        --color-table-rowBg: ${tableRowBg} !important;
+        --color-table-rowText: ${tableRowText} !important;
+
+        /* Native library variables integration */
+        --sidebar-bg: var(--color-sidebarBg);
+        --sidebar-border: color-mix(in srgb, var(--color-sidebarBg) 85%, #000000);
+        --sidebar-label-color: var(--color-sidebarText);
+        --sidebar-icon-color: color-mix(in srgb, var(--color-sidebarText) 80%, transparent);
+        --sidebar-hover-bg: color-mix(in srgb, var(--color-sidebarText) 10%, transparent);
+        --sidebar-active-bg: color-mix(in srgb, var(--color-primary) 12%, transparent);
+        --sidebar-active-color: var(--color-primary);
+        --sidebar-active-icon: var(--color-primary);
+        --sidebar-badge-bg: var(--color-primary);
+        --sidebar-badge-color: #ffffff;
+
+        --topbar-bg: var(--color-navbarBg);
+        --topbar-text: var(--color-navbarText);
+        --topbar-border: color-mix(in srgb, var(--color-navbarBg) 85%, #000000);
+        --topbar-icon: color-mix(in srgb, var(--color-navbarText) 80%, transparent);
+        --topbar-icon-hover: var(--color-navbarText);
+
+        --layout-bg: var(--color-secondary-50);
+        --input-text-color: var(--color-secondary-900);
+
+        --calendar-selected-bg: var(--color-primary);
+        --calendar-selected-text: #ffffff;
+        --calendar-range-bg: var(--color-primary-50);
+        --calendar-today-bg: var(--color-primary-100);
+        --calendar-today-text: var(--color-primary);
+      }
+
+      /* Dark mode overrides */
+      .dark, [data-theme="dark"] {
+        --layout-bg: #090f1d;
+        --card-bg: #111827;
+        --card-border: #1f2937;
+        --card-header-bg: #1f2937;
+        --card-header-border: #374151;
+        --input-bg: #1f2937;
+        --input-border: #374151;
+        --input-placeholder: #6b7280;
+        --input-text-color: #cbd5e1;
+        --modal-bg: #111827;
+        --modal-footer-bg: #1f2937;
+        --modal-header-border: #374151;
+        --modal-footer-border: #374151;
+        --calendar-bg: #111827;
+        --calendar-border: #1f2937;
+        --calendar-header-text: #f3f4f6;
+        --calendar-header-hover: #1f2937;
+        --calendar-days-text: #e5e7eb;
+        --calendar-selected-bg: var(--color-primary);
+        --calendar-selected-text: #ffffff;
+        --calendar-range-bg: var(--color-primary-50);
+        --calendar-today-bg: var(--color-primary-100);
+        --calendar-today-text: var(--color-primary);
+
+        /* Override dynamic color-mix scales to blend with dark instead of white */
+        --color-primary-50: color-mix(in srgb, var(--color-primary) 10%, #0b1329);
+        --color-primary-100: color-mix(in srgb, var(--color-primary) 20%, #0b1329);
+        --color-primary-200: color-mix(in srgb, var(--color-primary) 35%, #0b1329);
+        --color-primary-300: color-mix(in srgb, var(--color-primary) 50%, #0b1329);
+        --color-primary-400: color-mix(in srgb, var(--color-primary) 70%, #0b1329);
+
+        --color-secondary-50: color-mix(in srgb, var(--color-secondary) 10%, #090f1d);
+        --color-secondary-100: color-mix(in srgb, var(--color-secondary) 18%, #090f1d);
+        --color-secondary-200: color-mix(in srgb, var(--color-secondary) 30%, #090f1d);
+        --color-secondary-300: color-mix(in srgb, var(--color-secondary) 45%, #090f1d);
+        --color-secondary-400: color-mix(in srgb, var(--color-secondary) 60%, #090f1d);
+
+        --color-success-50: color-mix(in srgb, var(--color-success) 10%, #061f14);
+        --color-success-100: color-mix(in srgb, var(--color-success) 20%, #061f14);
+        --color-success-200: color-mix(in srgb, var(--color-success) 35%, #061f14);
+
+        --color-danger-50: color-mix(in srgb, var(--color-danger) 10%, #1f0808);
+        --color-danger-100: color-mix(in srgb, var(--color-danger) 20%, #1f0808);
+        --color-danger-200: color-mix(in srgb, var(--color-danger) 35%, #1f0808);
+
+        --color-warning-50: color-mix(in srgb, var(--color-warning) 10%, #1f1b05);
+        --color-warning-100: color-mix(in srgb, var(--color-warning) 20%, #1f1b05);
+        --color-warning-200: color-mix(in srgb, var(--color-warning) 35%, #1f1b05);
+
+        --color-ternary-50: color-mix(in srgb, var(--color-ternary) 10%, #14081f);
+        --color-ternary-100: color-mix(in srgb, var(--color-ternary) 20%, #14081f);
+        --color-ternary-200: color-mix(in srgb, var(--color-ternary) 35%, #14081f);
+
+        --color-info-50: color-mix(in srgb, var(--color-info) 10%, #08141f);
+        --color-info-100: color-mix(in srgb, var(--color-info) 20%, #08141f);
+        --color-info-200: color-mix(in srgb, var(--color-info) 35%, #08141f);
+      }
+
+      /* Force dark mode class overrides for common backgrounds, borders, and texts */
+      .dark, [data-theme="dark"] {
+        color: #cbd5e1;
+      }
+      .dark .text-slate-800, [data-theme="dark"] .text-slate-800,
+      .dark .text-gray-800, [data-theme="dark"] .text-gray-800,
+      .dark h1, [data-theme="dark"] h1,
+      .dark h2, [data-theme="dark"] h2,
+      .dark h3, [data-theme="dark"] h3 {
+        color: #f8fafc !important;
+      }
+      .dark .text-slate-700, [data-theme="dark"] .text-slate-700,
+      .dark .text-gray-700, [data-theme="dark"] .text-gray-700 {
+        color: #cbd5e1 !important;
+      }
+      .dark .text-slate-600, [data-theme="dark"] .text-slate-600,
+      .dark .text-gray-600, [data-theme="dark"] .text-gray-600 {
+        color: #cbd5e1 !important;
+      }
+      .dark .text-slate-500, [data-theme="dark"] .text-slate-500,
+      .dark .text-gray-500, [data-theme="dark"] .text-gray-500 {
+        color: #94a3b8 !important;
+      }
+      .dark .text-slate-400, [data-theme="dark"] .text-slate-400,
+      .dark .text-gray-400, [data-theme="dark"] .text-gray-400 {
+        color: #64748b !important;
+      }
+
+      .dark .bg-white, [data-theme="dark"] .bg-white {
+        background-color: var(--card-bg, #111827) !important;
+      }
+      .dark .bg-slate-50, [data-theme="dark"] .bg-slate-50,
+      .dark .bg-gray-50, [data-theme="dark"] .bg-gray-50 {
+        background-color: #1f2937 !important;
+      }
+      .dark .border-slate-100, [data-theme="dark"] .border-slate-100,
+      .dark .border-gray-100, [data-theme="dark"] .border-gray-100,
+      .dark .border-slate-200, [data-theme="dark"] .border-slate-200,
+      .dark .border-gray-200, [data-theme="dark"] .border-gray-200 {
+        border-color: #374151 !important;
+      }
+
+      .dark .bg-gray-100, [data-theme="dark"] .bg-gray-100,
+      .dark .bg-slate-100, [data-theme="dark"] .bg-slate-100 {
+        background-color: #1f2937 !important;
+      }
+      .dark .border-gray-300, [data-theme="dark"] .border-gray-300,
+      .dark .border-slate-300, [data-theme="dark"] .border-slate-300 {
+        border-color: #4b5563 !important;
+      }
+      .dark .bg-gray-200, [data-theme="dark"] .bg-gray-200,
+      .dark .bg-slate-200, [data-theme="dark"] .bg-slate-200 {
+        background-color: #374151 !important;
+      }
+
+      /* Light mode overrides inside forced light subtree */
+      [data-theme="light"] {
+        color: #334155;
+        --layout-bg: var(--color-secondary-50);
+        --card-bg: #ffffff;
+        --card-border: #f1f5f9;
+        --card-header-bg: #f8fafc;
+        --card-header-border: #e2e8f0;
+        --input-bg: #ffffff;
+        --input-border: #cbd5e1;
+        --input-placeholder: #94a3b8;
+        --input-text-color: #1e293b;
+        --modal-bg: #ffffff;
+        --modal-footer-bg: #f8fafc;
+        --modal-header-border: #e2e8f0;
+        --modal-footer-border: #e2e8f0;
+        --calendar-bg: #ffffff;
+        --calendar-border: #e2e8f0;
+        --calendar-header-text: #1e293b;
+        --calendar-header-hover: #f1f5f9;
+        --calendar-days-text: #334155;
+        --calendar-selected-bg: var(--color-primary);
+        --calendar-selected-text: #ffffff;
+        --calendar-range-bg: var(--color-primary-50);
+        --calendar-today-bg: var(--color-primary-100);
+        --calendar-today-text: var(--color-primary);
+
+        --color-primary-50: color-mix(in srgb, var(--color-primary) 5%, #ffffff);
+        --color-primary-100: color-mix(in srgb, var(--color-primary) 10%, #ffffff);
+        --color-primary-200: color-mix(in srgb, var(--color-primary) 30%, #ffffff);
+        --color-primary-300: color-mix(in srgb, var(--color-primary) 50%, #ffffff);
+        --color-primary-400: color-mix(in srgb, var(--color-primary) 70%, #ffffff);
+
+        --color-secondary-50: color-mix(in srgb, var(--color-secondary) 5%, #ffffff);
+        --color-secondary-100: color-mix(in srgb, var(--color-secondary) 10%, #ffffff);
+        --color-secondary-200: color-mix(in srgb, var(--color-secondary) 30%, #ffffff);
+        --color-secondary-300: color-mix(in srgb, var(--color-secondary) 50%, #ffffff);
+        --color-secondary-400: color-mix(in srgb, var(--color-secondary) 70%, #ffffff);
+
+        --color-success-50: color-mix(in srgb, var(--color-success) 5%, #ffffff);
+        --color-success-100: color-mix(in srgb, var(--color-success) 10%, #ffffff);
+        --color-success-200: color-mix(in srgb, var(--color-success) 30%, #ffffff);
+
+        --color-danger-50: color-mix(in srgb, var(--color-danger) 5%, #ffffff);
+        --color-danger-100: color-mix(in srgb, var(--color-danger) 10%, #ffffff);
+        --color-danger-200: color-mix(in srgb, var(--color-danger) 30%, #ffffff);
+
+        --color-warning-50: color-mix(in srgb, var(--color-warning) 5%, #ffffff);
+        --color-warning-100: color-mix(in srgb, var(--color-warning) 10%, #ffffff);
+        --color-warning-200: color-mix(in srgb, var(--color-warning) 30%, #ffffff);
+
+        --color-ternary-50: color-mix(in srgb, var(--color-ternary) 5%, #ffffff);
+        --color-ternary-100: color-mix(in srgb, var(--color-ternary) 10%, #ffffff);
+        --color-ternary-200: color-mix(in srgb, var(--color-ternary) 30%, #ffffff);
+
+        --color-info-50: color-mix(in srgb, var(--color-info) 5%, #ffffff);
+        --color-info-100: color-mix(in srgb, var(--color-info) 10%, #ffffff);
+        --color-info-200: color-mix(in srgb, var(--color-info) 30%, #ffffff);
+      }
+
+      [data-theme="light"] .text-slate-800,
+      [data-theme="light"] .text-gray-800,
+      [data-theme="light"] h1,
+      [data-theme="light"] h2,
+      [data-theme="light"] h3 {
+        color: #1e293b !important;
+      }
+      [data-theme="light"] .text-slate-700,
+      [data-theme="light"] .text-gray-700 {
+        color: #334155 !important;
+      }
+      [data-theme="light"] .text-slate-600,
+      [data-theme="light"] .text-gray-600 {
+        color: #475569 !important;
+      }
+      [data-theme="light"] .text-slate-500,
+      [data-theme="light"] .text-gray-500 {
+        color: #64748b !important;
+      }
+      [data-theme="light"] .text-slate-400,
+      [data-theme="light"] .text-gray-400 {
+        color: #94a3b8 !important;
+      }
+
+      [data-theme="light"] .bg-white {
+        background-color: #ffffff !important;
+      }
+      [data-theme="light"] .bg-slate-50,
+      [data-theme="light"] .bg-gray-50 {
+        background-color: #f8fafc !important;
+      }
+      [data-theme="light"] .border-slate-100,
+      [data-theme="light"] .border-gray-100,
+      [data-theme="light"] .border-slate-200,
+      [data-theme="light"] .border-gray-200 {
+        border-color: #e2e8f0 !important;
+      }
+      [data-theme="light"] .bg-gray-100,
+      [data-theme="light"] .bg-slate-100 {
+        background-color: #f1f5f9 !important;
+      }
+      [data-theme="light"] .border-gray-300,
+      [data-theme="light"] .border-slate-300 {
+        border-color: #cbd5e1 !important;
+      }
+      [data-theme="light"] .bg-gray-200,
+      [data-theme="light"] .bg-slate-200 {
+        background-color: #e2e8f0 !important;
+      }
+
+
+      /* Primary overrides (cyan mappings in UI library) */
+      .bg-cyan-400 { background-color: var(--color-primary) !important; }
+      .hover\\:bg-cyan-500:hover { background-color: var(--color-primary-hover) !important; }
+      .focus\\:ring-cyan-300:focus { --tw-ring-color: var(--color-primary-ring) !important; }
+      .text-cyan-600 { color: var(--color-primary) !important; }
+      .text-cyan-500 { color: var(--color-primary) !important; }
+      .border-cyan-400 { border-color: var(--color-primary) !important; }
+      .focus\\:border-cyan-500:focus { border-color: var(--color-primary-hover) !important; }
+      .focus\\:ring-cyan-500:focus { --tw-ring-color: var(--color-primary-hover) !important; }
+      .text-cyan-100 { color: var(--color-primary-soft) !important; }
+      .hover\\:bg-cyan-50:hover { background-color: var(--color-primary-soft) !important; }
+
+      /* Success overrides (green mappings in UI library) */
+      .bg-green-700 { background-color: var(--color-success) !important; }
+      .hover\\:bg-green-800:hover { background-color: var(--color-success-hover) !important; }
+      .focus\\:ring-green-300:focus { --tw-ring-color: var(--color-success-ring) !important; }
+      .text-green-700 { color: var(--color-success) !important; }
+      .border-green-700 { border-color: var(--color-success) !important; }
+      .bg-green-500 { background-color: var(--color-success) !important; }
+      .hover\\:bg-green-600:hover { background-color: var(--color-success-hover) !important; }
+
+      /* Danger overrides (red mappings in UI library) */
+      .bg-red-700 { background-color: var(--color-danger) !important; }
+      .hover\\:bg-red-800:hover { background-color: var(--color-danger-hover) !important; }
+      .focus\\:ring-red-300:focus { --tw-ring-color: var(--color-danger-ring) !important; }
+      .text-red-700 { color: var(--color-danger) !important; }
+      .border-red-700 { border-color: var(--color-danger) !important; }
+      .bg-red-500 { background-color: var(--color-danger) !important; }
+      .hover\\:bg-red-600:hover { background-color: var(--color-danger-hover) !important; }
+
+      /* Warning overrides (yellow mappings in UI library) */
+      .bg-yellow-400 { background-color: var(--color-warning) !important; }
+      .hover\\:bg-yellow-500:hover { background-color: var(--color-warning-hover) !important; }
+      .focus\\:ring-yellow-300:focus { --tw-ring-color: var(--color-warning-ring) !important; }
+      .text-yellow-600 { color: var(--color-warning-hover) !important; }
+      .border-yellow-400 { border-color: var(--color-warning) !important; }
+      .bg-yellow-500 { background-color: var(--color-warning) !important; }
+      .hover\\:bg-yellow-600:hover { background-color: var(--color-warning-hover) !important; }
+
+      /* Ternary / Orange overrides */
+      .bg-orange-500 { background-color: var(--color-ternary) !important; }
+      .hover\\:bg-orange-500:hover { background-color: var(--color-ternary-hover) !important; }
+      .hover\\:bg-orange-600:hover { background-color: var(--color-ternary-hover) !important; }
+      .text-orange-500 { color: var(--color-ternary) !important; }
+      .text-orange-800 { color: var(--color-ternary-hover) !important; }
+      .bg-orange-200 { background-color: var(--color-ternary-soft) !important; }
+      .border-orange-400 { border-color: var(--color-ternary) !important; }
+      .border-orange-500 { border-color: var(--color-ternary) !important; }
+      .hover\\:bg-orange-50\\/30:hover { background-color: var(--color-ternary-soft) !important; }
+
+      /* Info / Blue overrides */
+      .bg-blue-500 { background-color: var(--color-info) !important; }
+      .hover\\:bg-blue-600:hover { background-color: var(--color-info-hover) !important; }
+      .text-blue-500 { color: var(--color-info) !important; }
+      .text-blue-600 { color: var(--color-info-hover) !important; }
+      .border-blue-500 { border-color: var(--color-info) !important; }
+
+      /* Secondary elements overrides */
+      button[class*="bg-white"][class*="hover:bg-gray-100"] {
+        background-color: var(--color-secondary) !important;
+        border-color: var(--color-secondary-soft-border) !important;
+        color: #111827 !important;
+      }
+      button[class*="bg-white"][class*="hover:bg-gray-100"]:hover {
+        background-color: var(--color-secondary-hover) !important;
+      }
+
+      /* Custom Table styling overrides */
+      thead tr, tr.bg-secondary-50, tr[class*="bg-secondary-50"] {
+        background-color: var(--color-table-headerBg) !important;
+        border-bottom-color: color-mix(in srgb, var(--color-table-headerBg) 85%, #000000) !important;
+      }
+      th span, th div span {
+        color: var(--color-table-headerText) !important;
+      }
+      tbody tr {
+        background-color: var(--color-table-rowBg) !important;
+      }
+      tbody tr td, tbody tr td div {
+        color: var(--color-table-rowText) !important;
+      }
+      tbody tr:hover {
+        background-color: color-mix(in srgb, var(--color-primary) 8%, var(--color-table-rowBg)) !important;
+      }
+
+      /* Animation for Saved Indicator */
+      @keyframes fadeInOut {
+        0%, 100% { opacity: 0; transform: translateY(-4px); }
+        15%, 85% { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in-out {
+        animation: fadeInOut 1.5s ease-in-out forwards;
+      }
+
+      /* Fallback utility classes for blurs */
+      .backdrop-blur-xs {
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+      }
+      .backdrop-blur-xl {
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+      }
+
+      /* =======================================================================
+         AUTONOMOUS THEME DESIGNER STYLES (No Tailwind dependencies)
+         ======================================================================= */
+
+      @keyframes itBounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+      }
+      .it-theme-bounce {
+        animation: itBounce 3s infinite ease-in-out !important;
+      }
+
+      /* FAB styles */
+      .it-theme-fab {
+        position: fixed !important;
+        bottom: 24px !important;
+        right: 24px !important;
+        width: 56px !important;
+        height: 56px !important;
+        border-radius: 50% !important;
+        border: none !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.15) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        z-index: 99999 !important;
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease, box-shadow 0.2s ease !important;
+        outline: none !important;
+      }
+      .it-theme-fab:hover {
+        transform: scale(1.1) !important;
+        box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.2) !important;
+      }
+      .it-theme-fab:active {
+        transform: scale(0.95) !important;
+      }
+
+      /* Backdrop styles */
+      .it-theme-backdrop {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background-color: rgba(15, 23, 42, 0.3) !important;
+        backdrop-filter: blur(4px) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
+        z-index: 99997 !important;
+        transition: opacity 0.3s ease !important;
+      }
+
+      /* Drawer container */
+      .it-theme-drawer {
+        position: fixed !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        max-width: 420px !important;
+        background-color: #ffffff !important;
+        box-shadow: -10px 0 25px -5px rgba(0, 0, 0, 0.08), -8px 0 10px -6px rgba(0, 0, 0, 0.08) !important;
+        z-index: 99998 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        padding: 24px !important;
+        box-sizing: border-box !important;
+        border-left: 1px solid rgba(226, 232, 240, 0.8) !important;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        font-family: Inter, system-ui, -apple-system, sans-serif !important;
+        color: #1e293b !important;
+      }
+
+      .dark .it-theme-drawer, [data-theme="dark"] .it-theme-drawer {
+        background-color: #0f172a !important;
+        border-left-color: rgba(30, 41, 59, 0.8) !important;
+        color: #f1f5f9 !important;
+      }
+
+      /* Drawer Header */
+      .it-theme-drawer-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding-bottom: 16px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+      }
+      .dark .it-theme-drawer-header, [data-theme="dark"] .it-theme-drawer-header {
+        border-bottom-color: #1e293b !important;
+      }
+      
+      .it-theme-drawer-title-group {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+      }
+
+      .it-theme-icon-container {
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: #ffffff !important;
+      }
+
+      .it-theme-drawer-title {
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        margin: 0 !important;
+        color: #1e293b !important;
+        line-height: 1.2 !important;
+      }
+      .dark .it-theme-drawer-title, [data-theme="dark"] .it-theme-drawer-title {
+        color: #f8fafc !important;
+      }
+
+      .it-theme-drawer-subtitle {
+        font-size: 11px !important;
+        color: #64748b !important;
+        margin: 2px 0 0 0 !important;
+        font-weight: 400 !important;
+      }
+      .dark .it-theme-drawer-subtitle, [data-theme="dark"] .it-theme-drawer-subtitle {
+        color: #94a3b8 !important;
+      }
+
+      .it-theme-close-btn {
+        background: none !important;
+        border: none !important;
+        color: #94a3b8 !important;
+        cursor: pointer !important;
+        padding: 6px !important;
+        border-radius: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: background-color 0.2s, color 0.2s !important;
+      }
+      .it-theme-close-btn:hover {
+        background-color: #f1f5f9 !important;
+        color: #334155 !important;
+      }
+      .dark .it-theme-close-btn:hover, [data-theme="dark"] .it-theme-close-btn:hover {
+        background-color: #1e293b !important;
+        color: #f1f5f9 !important;
+      }
+
+      /* Sections inside Drawer */
+      .it-theme-section {
+        margin-top: 18px !important;
+      }
+      
+      .it-theme-section-title {
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        color: #94a3b8 !important;
+        margin-bottom: 8px !important;
+        margin-top: 0 !important;
+      }
+
+      /* Preset Grid */
+      .it-theme-presets-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+      }
+
+      .it-theme-preset-card {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 10px !important;
+        border-radius: 10px !important;
+        border: 1px solid #e2e8f0 !important;
+        background-color: rgba(255, 255, 255, 0.6) !important;
+        cursor: pointer !important;
+        text-align: left !important;
+        transition: all 0.2s ease !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+      .dark .it-theme-preset-card, [data-theme="dark"] .it-theme-preset-card {
+        border-color: #1e293b !important;
+        background-color: rgba(15, 23, 42, 0.4) !important;
+      }
+      
+      .it-theme-preset-card:hover {
+        border-color: #cbd5e1 !important;
+        transform: translateY(-1px) !important;
+      }
+      .dark .it-theme-preset-card:hover, [data-theme="dark"] .it-theme-preset-card:hover {
+        border-color: #334155 !important;
+      }
+
+      .it-theme-preset-name {
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        margin-bottom: 6px !important;
+        margin-top: 0 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        width: 100% !important;
+      }
+      .dark .it-theme-preset-name, [data-theme="dark"] .it-theme-preset-name {
+        color: #cbd5e1 !important;
+      }
+
+      .it-theme-preset-colors {
+        display: flex !important;
+        gap: 4px !important;
+      }
+
+      .it-theme-preset-dot {
+        width: 12px !important;
+        height: 12px !important;
+        border-radius: 50% !important;
+        border: 1px solid rgba(0,0,0,0.08) !important;
+      }
+
+      /* Color controls list */
+      .it-theme-color-list {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 6px !important;
+        max-height: 250px !important;
+        overflow-y: auto !important;
+        padding-right: 4px !important;
+      }
+
+      .it-theme-color-row {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 6px 10px !important;
+        border-radius: 10px !important;
+        border: 1px solid #f1f5f9 !important;
+        background-color: rgba(248, 250, 252, 0.5) !important;
+      }
+      .dark .it-theme-color-row, [data-theme="dark"] .it-theme-color-row {
+        border-color: #1e293b !important;
+        background-color: rgba(9, 15, 29, 0.5) !important;
+      }
+
+      .it-theme-color-left {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+      }
+
+      .it-theme-color-picker-btn {
+        position: relative !important;
+        width: 28px !important;
+        height: 28px !important;
+        border-radius: 50% !important;
+        overflow: hidden !important;
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.06) !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      .dark .it-theme-color-picker-btn, [data-theme="dark"] .it-theme-color-picker-btn {
+        border-color: #475569 !important;
+      }
+
+      .it-theme-color-picker-input {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        opacity: 0 !important;
+        cursor: pointer !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .it-theme-color-picker-preview {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 50% !important;
+      }
+
+      .it-theme-color-meta {
+        display: flex !important;
+        flex-direction: column !important;
+      }
+
+      .it-theme-color-label {
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        color: #475569 !important;
+      }
+      .dark .it-theme-color-label, [data-theme="dark"] .it-theme-color-label {
+        color: #cbd5e1 !important;
+      }
+
+      .it-theme-color-hex-text {
+        font-family: monospace !important;
+        font-size: 9px !important;
+        color: #94a3b8 !important;
+        margin-top: 1px !important;
+      }
+
+      .it-theme-color-text-input {
+        width: 80px !important;
+        padding: 4px 6px !important;
+        font-size: 11px !important;
+        font-family: monospace !important;
+        text-align: center !important;
+        border-radius: 6px !important;
+        border: 1px solid #cbd5e1 !important;
+        background-color: #ffffff !important;
+        color: #334155 !important;
+        outline: none !important;
+        transition: border-color 0.2s !important;
+        box-sizing: border-box !important;
+      }
+      .dark .it-theme-color-text-input, [data-theme="dark"] .it-theme-color-text-input {
+        border-color: #475569 !important;
+        background-color: #1e293b !important;
+        color: #cbd5e1 !important;
+      }
+
+      /* Mode Selector Segmented Control */
+      .it-theme-mode-selector {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 2px !important;
+        background-color: #f1f5f9 !important;
+        padding: 2px !important;
+        border-radius: 8px !important;
+        width: 180px !important;
+      }
+      .dark .it-theme-mode-selector, [data-theme="dark"] .it-theme-mode-selector {
+        background-color: #1e293b !important;
+      }
+
+      .it-theme-mode-btn {
+        background: none !important;
+        border: none !important;
+        padding: 6px 8px !important;
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        color: #475569 !important;
+        border-radius: 6px !important;
+        cursor: pointer !important;
+        text-align: center !important;
+        transition: all 0.2s ease !important;
+      }
+      .dark .it-theme-mode-btn, [data-theme="dark"] .it-theme-mode-btn {
+        color: #94a3b8 !important;
+      }
+
+      .it-theme-mode-btn-active {
+        background-color: #ffffff !important;
+        color: var(--color-primary) !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+      }
+      .dark .it-theme-mode-btn-active, [data-theme="dark"] .it-theme-mode-btn-active {
+        background-color: #0f172a !important;
+        color: var(--color-primary) !important;
+      }
+
+      /* Saved notification toast */
+      .it-theme-toast-container {
+        height: 20px !important;
+        margin: 6px 0 !important;
+        position: relative !important;
+      }
+
+      .it-theme-toast {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+      }
+
+      .it-theme-toast-badge {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        font-size: 10px !important;
+        font-weight: 600 !important;
+        background-color: rgba(34, 197, 94, 0.1) !important;
+        color: #16a34a !important;
+        padding: 3px 10px !important;
+        border-radius: 9999px !important;
+        border: 1px solid rgba(34, 197, 94, 0.2) !important;
+      }
+
+      /* Drawer Footer */
+      .it-theme-drawer-footer {
+        padding-top: 12px !important;
+        margin-top: 12px !important;
+        border-top: 1px solid #e2e8f0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+      }
+      .dark .it-theme-drawer-footer, [data-theme="dark"] .it-theme-drawer-footer {
+        border-top-color: #1e293b !important;
+      }
+
+      .it-theme-reset-btn {
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        padding: 6px 12px !important;
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        background: none !important;
+        border: none !important;
+        border-radius: 6px !important;
+        color: #64748b !important;
+        cursor: pointer !important;
+        transition: background-color 0.2s, color 0.2s !important;
+      }
+      .it-theme-reset-btn:hover {
+        background-color: #f1f5f9 !important;
+        color: #1e293b !important;
+      }
+      .dark .it-theme-reset-btn:hover, [data-theme="dark"] .it-theme-reset-btn:hover {
+        background-color: #1e293b !important;
+        color: #f8fafc !important;
+      }
+
+      .it-theme-done-btn {
+        padding: 6px 16px !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        border: none !important;
+        border-radius: 6px !important;
+        color: #ffffff !important;
+        cursor: pointer !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+        transition: transform 0.2s, background-color 0.2s !important;
+      }
+      .it-theme-done-btn:hover {
+        transform: translateY(-1px) !important;
+      }
+    `;
+
+    setShowSavedToast(true);
+    const timer = setTimeout(() => setShowSavedToast(false), 1500);
+    return () => clearTimeout(timer);
+  }, [palette, resolvedTheme]);
+
+  const updateColor = (key: string, value: string) => {
+    setPaletteState((prev) => {
+      if (key.includes(".")) {
+        const [section, subKey] = key.split(".");
+        return {
+          ...prev,
+          [section]: {
+            ...(prev[section as keyof ITThemePalette] as Record<string, string>),
+            [subKey]: value,
+          },
+        };
+      }
+      return {
+        ...prev,
+        [key]: value,
+      };
+    });
+  };
+
+  const applyPreset = (colors: ITThemePalette) => {
+    setPaletteState(colors);
+  };
+
+  const resetTheme = () => {
+    const basePalette = {
+      ...DEFAULT_PALETTE,
+      ...theme,
+      layout: { ...DEFAULT_PALETTE.layout, ...theme?.layout },
+      table: { ...DEFAULT_PALETTE.table, ...theme?.table }
+    };
+    setPaletteState(basePalette as ITThemePalette);
+  };
 
   return (
-    <>
-      <style suppressHydrationWarning>{cssVariables}</style>
+    <ITThemeContext.Provider
+      value={{
+        palette,
+        colors: palette,
+        setPalette: setPaletteState,
+        updateColor,
+        resetTheme,
+        applyPreset,
+        resolvedTheme,
+        darkModeMode,
+        setDarkModeMode
+      }}
+    >
       {children}
-    </>
+
+      {/* FAB (Floating Action Button) */}
+      <button
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="it-theme-fab it-theme-bounce"
+        style={{
+          backgroundColor: "var(--color-primary)"
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = "var(--color-primary-hover)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = "var(--color-primary)";
+        }}
+        aria-label="Configurar Paleta de Colores"
+        title="Configurar Paleta de Colores"
+      >
+        <MdPalette style={{ width: '28px', height: '28px' }} />
+      </button>
+
+      {/* Drawer Configurator */}
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            onClick={() => setIsOpen(false)}
+            className="it-theme-backdrop"
+          />
+
+          {/* Configuration Panel */}
+          <div className="it-theme-drawer">
+            <div>
+              {/* Header */}
+              <div className="it-theme-drawer-header">
+                <div className="it-theme-drawer-title-group">
+                  <div
+                    className="it-theme-icon-container"
+                    style={{ backgroundColor: "var(--color-primary)" }}
+                  >
+                    <MdPalette style={{ width: '20px', height: '20px' }} />
+                  </div>
+                  <div>
+                    <h3 className="it-theme-drawer-title">
+                      ITTheme Designer
+                    </h3>
+                    <p className="it-theme-drawer-subtitle">
+                      Configure color tokens in real-time
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="it-theme-close-btn"
+                >
+                  <MdClose style={{ width: '20px', height: '20px' }} />
+                </button>
+              </div>
+
+              {/* Saved Toast Indicator */}
+              <div className="it-theme-toast-container">
+                {showSavedToast && (
+                  <div className="it-theme-toast">
+                    <span className="it-theme-toast-badge">
+                      <MdCheck style={{ width: '14px', height: '14px' }} />
+                      Auto-saved to LocalStorage
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Theme Mode Selector (Claro / Oscuro / Local) */}
+              <div className="it-theme-section" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <h4 className="it-theme-section-title" style={{ margin: 0 }}>
+                  Apariencia
+                </h4>
+                <div className="it-theme-mode-selector">
+                  <button
+                    type="button"
+                    onClick={() => setDarkModeMode("light")}
+                    className={`it-theme-mode-btn ${darkModeMode === "light" ? "it-theme-mode-btn-active" : ""}`}
+                  >
+                    Claro
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDarkModeMode("dark")}
+                    className={`it-theme-mode-btn ${darkModeMode === "dark" ? "it-theme-mode-btn-active" : ""}`}
+                  >
+                    Oscuro
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDarkModeMode("system")}
+                    className={`it-theme-mode-btn ${darkModeMode === "system" ? "it-theme-mode-btn-active" : ""}`}
+                  >
+                    Local
+                  </button>
+                </div>
+              </div>
+
+              {/* Preset Palettes */}
+              <div className="it-theme-section">
+                <h4 className="it-theme-section-title">
+                  Presets
+                </h4>
+                <div className="it-theme-presets-grid">
+                  {PRESETS.map((preset) => {
+                    const isSelected = JSON.stringify(preset.colors) === JSON.stringify(palette);
+                    return (
+                      <button
+                        key={preset.name}
+                        onClick={() => applyPreset(preset.colors)}
+                        className="it-theme-preset-card"
+                        style={isSelected ? {
+                          borderColor: "var(--color-primary)",
+                          backgroundColor: "color-mix(in srgb, var(--color-primary) 5%, transparent)",
+                          boxShadow: "0 0 0 1px var(--color-primary)"
+                        } : {}}
+                      >
+                        <span className="it-theme-preset-name">
+                          {preset.name}
+                        </span>
+                        {/* Dot previews */}
+                        <div className="it-theme-preset-colors">
+                          <span
+                            className="it-theme-preset-dot"
+                            style={{ backgroundColor: preset.colors.primary }}
+                          />
+                          <span
+                            className="it-theme-preset-dot"
+                            style={{ backgroundColor: preset.colors.secondary }}
+                          />
+                          <span
+                            className="it-theme-preset-dot"
+                            style={{ backgroundColor: preset.colors.ternary }}
+                          />
+                          <span
+                            className="it-theme-preset-dot"
+                            style={{ backgroundColor: preset.colors.success }}
+                          />
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Color Customizers */}
+              <div>
+                {/* Brand Colors */}
+                <div className="it-theme-section">
+                  <h4 className="it-theme-section-title">
+                    Base Brand Colors
+                  </h4>
+                  <div className="it-theme-color-list">
+                    {[
+                      "primary",
+                      "secondary",
+                      "ternary",
+                      "danger",
+                      "success",
+                      "info",
+                      "alert",
+                      "warning"
+                    ].map((key) => {
+                      return (
+                        <div
+                          key={key}
+                          className="it-theme-color-row"
+                        >
+                          <div className="it-theme-color-left">
+                            <div className="it-theme-color-picker-btn">
+                              <input
+                                type="color"
+                                value={getNestedValue(palette, key)}
+                                onChange={(e) => updateColor(key, e.target.value)}
+                                className="it-theme-color-picker-input"
+                              />
+                              <div
+                                className="it-theme-color-picker-preview"
+                                style={{ backgroundColor: getNestedValue(palette, key) }}
+                              />
+                            </div>
+                            <div className="it-theme-color-meta">
+                              <span className="it-theme-color-label">
+                                {key}
+                              </span>
+                              <div className="it-theme-color-hex-text">
+                                {getNestedValue(palette, key)}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Hex text input */}
+                          <input
+                            type="text"
+                            value={getNestedValue(palette, key)}
+                            onChange={(e) => updateColor(key, e.target.value)}
+                            placeholder="#000000"
+                            className="it-theme-color-text-input"
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Layout Colors */}
+                <div className="it-theme-section">
+                  <h4 className="it-theme-section-title">
+                    Sidebar & Navbar Styles
+                  </h4>
+                  <div className="it-theme-color-list">
+                    {[
+                      "layout.sidebarBg",
+                      "layout.sidebarText",
+                      "layout.navbarBg",
+                      "layout.navbarText"
+                    ].map((key) => {
+                      const displayLabel = key.split(".")[1];
+                      return (
+                        <div
+                          key={key}
+                          className="it-theme-color-row"
+                        >
+                          <div className="it-theme-color-left">
+                            <div className="it-theme-color-picker-btn">
+                              <input
+                                type="color"
+                                value={getNestedValue(palette, key)}
+                                onChange={(e) => updateColor(key, e.target.value)}
+                                className="it-theme-color-picker-input"
+                              />
+                              <div
+                                className="it-theme-color-picker-preview"
+                                style={{ backgroundColor: getNestedValue(palette, key) }}
+                              />
+                            </div>
+                            <div className="it-theme-color-meta">
+                              <span className="it-theme-color-label">
+                                {displayLabel}
+                              </span>
+                              <div className="it-theme-color-hex-text">
+                                {getNestedValue(palette, key)}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Hex text input */}
+                          <input
+                            type="text"
+                            value={getNestedValue(palette, key)}
+                            onChange={(e) => updateColor(key, e.target.value)}
+                            placeholder="#000000"
+                            className="it-theme-color-text-input"
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Table Colors */}
+                <div className="it-theme-section" style={{ paddingBottom: '24px' }}>
+                  <h4 className="it-theme-section-title">
+                    Table Styles
+                  </h4>
+                  <div className="it-theme-color-list">
+                    {[
+                      "table.headerBg",
+                      "table.headerText",
+                      "table.rowBg",
+                      "table.rowText"
+                    ].map((key) => {
+                      const displayLabel = key.split(".")[1];
+                      return (
+                        <div
+                          key={key}
+                          className="it-theme-color-row"
+                        >
+                          <div className="it-theme-color-left">
+                            <div className="it-theme-color-picker-btn">
+                              <input
+                                type="color"
+                                value={getNestedValue(palette, key)}
+                                onChange={(e) => updateColor(key, e.target.value)}
+                                className="it-theme-color-picker-input"
+                              />
+                              <div
+                                className="it-theme-color-picker-preview"
+                                style={{ backgroundColor: getNestedValue(palette, key) }}
+                              />
+                            </div>
+                            <div className="it-theme-color-meta">
+                              <span className="it-theme-color-label">
+                                {displayLabel}
+                              </span>
+                              <div className="it-theme-color-hex-text">
+                                {getNestedValue(palette, key)}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Hex text input */}
+                          <input
+                            type="text"
+                            value={getNestedValue(palette, key)}
+                            onChange={(e) => updateColor(key, e.target.value)}
+                            placeholder="#000000"
+                            className="it-theme-color-text-input"
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer Control Panel */}
+            <div className="it-theme-drawer-footer">
+              <button
+                onClick={resetTheme}
+                className="it-theme-reset-btn"
+              >
+                <MdRefresh style={{ width: '16px', height: '16px' }} />
+                Reset Defaults
+              </button>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="it-theme-done-btn"
+                style={{
+                  backgroundColor: "var(--color-primary)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "var(--color-primary-hover)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "var(--color-primary)";
+                }}
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </ITThemeContext.Provider>
   );
 }

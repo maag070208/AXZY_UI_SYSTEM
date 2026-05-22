@@ -132,12 +132,12 @@ export default function ITTimePicker({
   const handleBlurInput = () => {
     if (!validateTime(inputValue)) {
       setIsValidTime(false);
-      onBlur({ target: { name, value } });
+      onBlur?.({ target: { name, value } });
       return;
     }
 
     setIsValidTime(true);
-    onBlur({ target: { name, value: inputValue } });
+    onBlur?.({ target: { name, value: inputValue } });
   };
 
   const handleHourSelect = (h: string) => {

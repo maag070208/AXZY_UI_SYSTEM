@@ -43,13 +43,13 @@ import type { ITToastProps } from "./components/toast/toast.props";
 import type { FieldConfig, FieldConfigV2 } from "./types/field.types";
 
 // UTILS
-import ITDropfile from "./components/dropfile/dropfile";
+import ITDropfile, { UploadStatus, FileTypeEnum } from "./components/dropfile/dropfile";
 import ITLayout from "./components/layout/layout";
 import { ITLayoutProps } from "./components/layout/layout.props";
 import ITLoader from "./components/loader/loader";
 import ITStepper from "./components/stepper/stepper";
-import ITThemeProvider from "./components/theme-provider/themeProvider";
-import type { ITThemeProviderProps } from "./components/theme-provider/themeProvider.props";
+import ITThemeProvider, { useITTheme } from "./components/theme-provider/themeProvider";
+import type { ITThemeProviderProps, ITThemePalette } from "./components/theme-provider/themeProvider.props";
 import ITTimePicker from "./components/time-picker/timePicker";
 import type { ITTimePickerProps } from "./components/time-picker/timePicker.props";
 import type { ITThemeConfig } from "./theme/theme.types";
@@ -61,7 +61,8 @@ export {
   ITCard, ITDataTable, ITDatePicker,
   ITDialog, ITDropfile, ITFormBuilder, ITImage, ITInput, ITLayout,
   ITLoader, ITNavbar, ITPagination, ITSelect, ITSearchSelect,
-  ITSlideToggle, ITStepper, ITTable, ITTabs, ITTripleFilter, ITText, ITThemeProvider, ITTimePicker, ITToast
+  ITSlideToggle, ITStepper, ITTable, ITTabs, ITTripleFilter, ITText, ITThemeProvider, useITTheme, ITTimePicker, ITToast,
+  UploadStatus, FileTypeEnum
 };
 
   export type {
@@ -73,6 +74,6 @@ export {
     ITFormBuilderProps,
     ITInputProps, ITLayoutProps, ITNavbarProps, ITSelectProps, ITSearchSelectProps,
     ITSlideToggleProps,
-    ITTableProps, ITTabsProps, ITTabItem, ITTripleFilterProps, ITTripleFilterOption, ITThemeConfig, ITThemeProviderProps, ITTimePickerProps, ITToastProps
+    ITTableProps, ITTabsProps, ITTabItem, ITTripleFilterProps, ITTripleFilterOption, ITThemeConfig, ITThemeProviderProps, ITThemePalette, ITTimePickerProps, ITToastProps
   };
 
