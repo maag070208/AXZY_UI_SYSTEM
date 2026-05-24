@@ -236,10 +236,10 @@ export default function ITDataTable<T extends Record<string, unknown>>({
 
   return (
     <div className={clsx("space-y-4 w-full relative", containerClassName)}>
-      <div className="bg-white rounded-xl shadow-sm border border-secondary-200 overflow-hidden">
+      <div className="rounded-xl shadow-sm border border-secondary-200 overflow-hidden" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
         {/* Header outside overflow */}
         {title && (
-          <div className="bg-white px-6 py-5 border-b border-secondary-100 flex justify-between items-center">
+          <div className="px-6 py-5 border-b border-secondary-100 flex justify-between items-center" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
             <h2 className="text-xl font-bold text-secondary-900 leading-tight">{title}</h2>
             {isLoading && (
               <div className="text-secondary-400">
@@ -253,7 +253,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
         <div className="overflow-x-auto relative min-h-[200px]">
           {isLoading && (
             <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/40 backdrop-blur-[2px] transition-all duration-300">
-               <div className="flex flex-col items-center gap-3 bg-white p-6 rounded-2xl shadow-xl border border-secondary-100 animate-in fade-in zoom-in duration-300">
+             <div className="flex flex-col items-center gap-3 p-6 rounded-2xl shadow-xl border border-secondary-100 animate-in fade-in zoom-in duration-300" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
                   {loadingIndicator || (
                     <>
                       <FaSpinner className="animate-spin text-primary-500 text-4xl" />
@@ -341,7 +341,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
       </div>
 
       {/* Pagination */}
-      <div className="bg-white rounded-b-xl border-t border-secondary-200 px-6 py-4">
+      <div className="rounded-b-xl border-t border-secondary-200 px-6 py-4" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
         <ITPagination
           currentPage={currentPage}
           totalPages={totalPages}

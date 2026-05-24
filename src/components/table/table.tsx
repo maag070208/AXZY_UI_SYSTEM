@@ -297,10 +297,10 @@ export default function ITTable<T extends Record<string, unknown>>({
 
      return (
 <div className={clsx("space-y-4 w-full", containerClassName)}>
-  <div className="bg-white rounded-xl shadow-sm border border-secondary-200 overflow-hidden">
+  <div className="rounded-xl shadow-sm border border-secondary-200 overflow-hidden" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
     {/* Header outside overflow */}
     {title && (
-      <div className="bg-white px-6 py-5 border-b border-secondary-100">
+      <div className="px-6 py-5 border-b border-secondary-100" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
         <h2 className="text-xl font-bold text-secondary-900 leading-tight">{title}</h2>
       </div>
     )}
@@ -392,7 +392,7 @@ export default function ITTable<T extends Record<string, unknown>>({
 
 
       {/* Pagination */}
-      <div className="bg-white rounded-b-xl border-t border-secondary-200 px-6 py-4">
+      <div className="rounded-b-xl border-t border-secondary-200 px-6 py-4" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
         <ITPagination
           currentPage={currentPage}
           totalPages={totalPages || 1}

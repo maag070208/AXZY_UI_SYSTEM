@@ -11,156 +11,156 @@ import ITTabs from "../tabs/tabs";
 const STORAGE_KEY = "it-theme-palette";
 
 export const DEFAULT_PALETTE: ITThemePalette = {
-  primary: "#06b6d4",      // Cyan
-  secondary: "#6b7280",    // Gray
-  ternary: "#8b5cf6",      // Purple/Violet
-  danger: "#ef4444",       // Red
-  success: "#22c55e",      // Green
-  info: "#3b82f6",         // Blue
-  alert: "#f97316",        // Orange
-  warning: "#eab308",      // Yellow
+  primary: "#06b6d4", // Cyan
+  secondary: "#6b7280", // Gray
+  ternary: "#8b5cf6", // Purple/Violet
+  danger: "#ef4444", // Red
+  success: "#22c55e", // Green
+  info: "#3b82f6", // Blue
+  alert: "#f97316", // Orange
+  warning: "#eab308", // Yellow
   layout: {
-    sidebarBg: "#0f172a",    // Dark slate-900
-    sidebarText: "#94a3b8",  // Slate-400
-    navbarBg: "#ffffff",     // White
-    navbarText: "#1e293b",   // Slate-800
+    sidebarBg: "#ffffff", // White (light mode default)
+    sidebarText: "#334155", // Slate-700 (dark text for light sidebar)
+    navbarBg: "#ffffff", // White
+    navbarText: "#1e293b", // Slate-800
   },
   table: {
-    headerBg: "#f8fafc",     // Slate-50
-    headerText: "#334155",   // Slate-700
-    rowBg: "#ffffff",        // White
-    rowText: "#1e293b",      // Slate-800
-  }
+    headerBg: "#f8fafc", // Slate-50
+    headerText: "#334155", // Slate-700
+    rowBg: "#ffffff", // White
+    rowText: "#1e293b", // Slate-800
+  },
 };
 
 export const PRESETS: { name: string; colors: ITThemePalette }[] = [
   {
     name: "Midnight Nova 🌌",
     colors: {
-      primary: "#6366f1",      // Indigo
-      secondary: "#475569",    // Slate
-      ternary: "#a855f7",      // Purple
-      danger: "#ef4444",
-      success: "#22c55e",
-      info: "#38bdf8",
-      alert: "#f97316",
-      warning: "#eab308",
+      primary: "#6366f1", // Indigo
+      secondary: "#475569", // Slate
+      ternary: "#f472b6", // Pink (was Purple — now distinct from primary)
+      danger: "#ef4444", // Red
+      success: "#34d399", // Emerald (distinct green tone)
+      info: "#38bdf8", // Sky
+      alert: "#fb923c", // Orange
+      warning: "#fbbf24", // Amber
       layout: {
-        sidebarBg: "#020617",   // Slate-950
+        sidebarBg: "#020617",
         sidebarText: "#cbd5e1",
         navbarBg: "#0f172a",
         navbarText: "#f8fafc",
       },
       table: {
-        headerBg: "#1e293b",
-        headerText: "#e2e8f0",
-        rowBg: "#0f172a",
-        rowText: "#cbd5e1",
-      }
+        headerBg: "#f8fafc",
+        headerText: "#334155",
+        rowBg: "#ffffff",
+        rowText: "#1e293b",
+      },
     },
   },
 
   {
     name: "Tokyo Drift 🏎️",
     colors: {
-      primary: "#f43f5e",      // Rose
-      secondary: "#64748b",
-      ternary: "#fb923c",      // Orange
-      danger: "#dc2626",
-      success: "#16a34a",
-      info: "#0ea5e9",
-      alert: "#f97316",
-      warning: "#facc15",
+      primary: "#f43f5e", // Rose
+      secondary: "#64748b", // Slate
+      ternary: "#fb923c", // Orange
+      danger: "#b91c1c", // Dark Red (distinct from Rose primary)
+      success: "#2dd4bf", // Teal (NOT green — avoids confusion with primary hue)
+      info: "#818cf8", // Indigo (distinct from sky/cyan)
+      alert: "#f59e0b", // Amber (distinct from orange ternary)
+      warning: "#fde047", // Yellow
       layout: {
-        sidebarBg: "#0f050b",   // Deep rose-slate
+        sidebarBg: "#0f050b",
         sidebarText: "#fda4af",
         navbarBg: "#1c0a15",
         navbarText: "#ffe4e6",
       },
       table: {
-        headerBg: "#2e1022",
-        headerText: "#fecdd3",
-        rowBg: "#1c0a15",
-        rowText: "#ffe4e6",
-      }
+        headerBg: "#f8fafc",
+        headerText: "#334155",
+        rowBg: "#ffffff",
+        rowText: "#1e293b",
+      },
     },
   },
 
   {
     name: "Ocean Core 🌊",
     colors: {
-      primary: "#0ea5e9",      // Sky
-      secondary: "#64748b",
-      ternary: "#14b8a6",      // Teal
-      danger: "#ef4444",
-      success: "#10b981",
-      info: "#3b82f6",
-      alert: "#f97316",
-      warning: "#eab308",
+      primary: "#0ea5e9", // Sky
+      secondary: "#64748b", // Slate
+      ternary: "#a78bfa", // Violet (distinct from Sky primary)
+      danger: "#f43f5e", // Rose (distinct red, not plain red)
+      success: "#34d399", // Emerald
+      info: "#6366f1", // Indigo (distinct from Sky primary)
+      alert: "#fb923c", // Orange
+      warning: "#fbbf24", // Amber
       layout: {
-        sidebarBg: "#031b2f",   // Deep ocean blue
+        sidebarBg: "#031b2f",
         sidebarText: "#7dd3fc",
         navbarBg: "#0b253c",
         navbarText: "#e0f2fe",
       },
       table: {
-        headerBg: "#0c2e4b",
-        headerText: "#bae6fd",
-        rowBg: "#0b253c",
-        rowText: "#e0f2fe",
-      }
+        headerBg: "#f8fafc",
+        headerText: "#334155",
+        rowBg: "#ffffff",
+        rowText: "#1e293b",
+      },
     },
   },
 
   {
     name: "Matrix Pulse 💚",
     colors: {
-      primary: "#10b981",      // Emerald
-      secondary: "#64748b",
-      ternary: "#84cc16",      // Lime
-      danger: "#ef4444",
-      success: "#16a34a",
-      info: "#06b6d4",
-      alert: "#f59e0b",
-      warning: "#eab308",
+      primary: "#10b981", // Emerald
+      secondary: "#64748b", // Slate
+      ternary: "#84cc16", // Lime (yellow-green, distinct from emerald)
+      danger: "#ef4444", // Red
+      success: "#2dd4bf", // Teal (distinct cyan-green, NOT another green)
+      info: "#38bdf8", // Sky blue (distinct from greens)
+      alert: "#f97316", // Orange
+      warning: "#fbbf24", // Amber (distinct from orange)
       layout: {
-        sidebarBg: "#022c1b",   // Deep forest green
+        sidebarBg: "#022c1b",
         sidebarText: "#6ee7b7",
         navbarBg: "#043e26",
         navbarText: "#d1fae5",
       },
       table: {
-        headerBg: "#064e3b",
-        headerText: "#a7f3d0",
-        rowBg: "#043e26",
-        rowText: "#d1fae5",
-      }
+        headerBg: "#f8fafc",
+        headerText: "#334155",
+        rowBg: "#ffffff",
+        rowText: "#1e293b",
+      },
     },
   },
 
   {
     name: "Royal Velvet 👑",
     colors: {
-      primary: "#8b5cf6",      // Violet
-      secondary: "#64748b",
-      ternary: "#ec4899",      // Pink
-      danger: "#e11d48",
-      success: "#22c55e",
-      info: "#3b82f6",
-      alert: "#f97316",
-      warning: "#facc15",
+      primary: "#8b5cf6", // Violet
+      secondary: "#64748b", // Slate
+      ternary: "#ec4899", // Pink (distinct from violet)
+      danger: "#ef4444", // Red
+      success: "#34d399", // Emerald (clean green, distinct from violet)
+      info: "#38bdf8", // Sky (distinct from violet/pink)
+      alert: "#fb923c", // Orange
+      warning: "#fbbf24", // Amber
       layout: {
-        sidebarBg: "#1e0b36",   // Deep royal purple
+        sidebarBg: "#1e0b36",
         sidebarText: "#c084fc",
         navbarBg: "#291048",
         navbarText: "#f3e8ff",
       },
       table: {
-        headerBg: "#3b1764",
-        headerText: "#e9d5ff",
-        rowBg: "#291048",
-        rowText: "#f3e8ff",
-      }
+        headerBg: "#f8fafc",
+        headerText: "#334155",
+        rowBg: "#ffffff",
+        rowText: "#1e293b",
+      },
     },
   },
 ];
@@ -205,7 +205,9 @@ const getNestedValue = (obj: any, path: string) => {
 const isLightColor = (hex: string) => {
   if (!hex || typeof hex !== "string") return false;
   const color = hex.replace("#", "");
-  let r = 0, g = 0, b = 0;
+  let r = 0,
+    g = 0,
+    b = 0;
   if (color.length === 3) {
     r = parseInt(color[0] + color[0], 16);
     g = parseInt(color[1] + color[1], 16);
@@ -221,13 +223,38 @@ const isLightColor = (hex: string) => {
   return brightness > 140;
 };
 
-export default function ITThemeProvider({ children, theme }: ITThemeProviderProps) {
+/** Returns true if the hex color is very dark (brightness < 50) */
+const isVeryDarkColor = (hex: string) => {
+  if (!hex || typeof hex !== "string") return false;
+  const color = hex.replace("#", "");
+  let r = 0,
+    g = 0,
+    b = 0;
+  if (color.length === 3) {
+    r = parseInt(color[0] + color[0], 16);
+    g = parseInt(color[1] + color[1], 16);
+    b = parseInt(color[2] + color[2], 16);
+  } else if (color.length === 6) {
+    r = parseInt(color.substring(0, 2), 16);
+    g = parseInt(color.substring(2, 4), 16);
+    b = parseInt(color.substring(4, 6), 16);
+  } else {
+    return false;
+  }
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness < 50;
+};
+
+export default function ITThemeProvider({
+  children,
+  theme,
+}: ITThemeProviderProps) {
   const [palette, setPaletteState] = useState<ITThemePalette>(() => {
     const basePalette = {
       ...DEFAULT_PALETTE,
       ...theme,
       layout: { ...DEFAULT_PALETTE.layout, ...theme?.layout },
-      table: { ...DEFAULT_PALETTE.table, ...theme?.table }
+      table: { ...DEFAULT_PALETTE.table, ...theme?.table },
     };
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -237,7 +264,7 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
           ...basePalette,
           ...parsed,
           layout: { ...basePalette.layout, ...parsed.layout },
-          table: { ...basePalette.table, ...parsed.table }
+          table: { ...basePalette.table, ...parsed.table },
         };
       }
     } catch (e) {
@@ -249,7 +276,9 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
   const [isOpen, setIsOpen] = useState(false);
   const [showSavedToast, setShowSavedToast] = useState(false);
 
-  const [customPresets, setCustomPresets] = useState<{ name: string; colors: ITThemePalette }[]>(() => {
+  const [customPresets, setCustomPresets] = useState<
+    { name: string; colors: ITThemePalette }[]
+  >(() => {
     try {
       const saved = localStorage.getItem("it-theme-custom-presets");
       return saved ? JSON.parse(saved) : [];
@@ -265,7 +294,7 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
     if (!newPresetName.trim()) return;
     const newPreset = {
       name: newPresetName.trim(),
-      colors: JSON.parse(JSON.stringify(palette))
+      colors: JSON.parse(JSON.stringify(palette)),
     };
     const updated = [...customPresets, newPreset];
     setCustomPresets(updated);
@@ -277,20 +306,22 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
 
   const handleDeletePreset = (nameToDelete: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    const updated = customPresets.filter(p => p.name !== nameToDelete);
+    const updated = customPresets.filter((p) => p.name !== nameToDelete);
     setCustomPresets(updated);
     localStorage.setItem("it-theme-custom-presets", JSON.stringify(updated));
   };
 
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
+  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
 
-  const [darkModeMode, setDarkModeMode] = useState<'light' | 'dark' | 'system'>(() => {
-    const saved = localStorage.getItem("it-theme-dark-mode");
-    if (saved === "light" || saved === "dark" || saved === "system") {
-      return saved;
-    }
-    return "system";
-  });
+  const [darkModeMode, setDarkModeMode] = useState<"light" | "dark" | "system">(
+    () => {
+      const saved = localStorage.getItem("it-theme-dark-mode");
+      if (saved === "light" || saved === "dark" || saved === "system") {
+        return saved;
+      }
+      return "system";
+    },
+  );
 
   useEffect(() => {
     localStorage.setItem("it-theme-dark-mode", darkModeMode);
@@ -299,11 +330,11 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
       if (isDark) {
         document.documentElement.classList.add("dark");
         document.documentElement.setAttribute("data-theme", "dark");
-        setResolvedTheme('dark');
+        setResolvedTheme("dark");
       } else {
         document.documentElement.classList.remove("dark");
         document.documentElement.setAttribute("data-theme", "light");
-        setResolvedTheme('light');
+        setResolvedTheme("light");
       }
     };
 
@@ -329,9 +360,15 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
         if (typeof val === "object" && val !== null) {
           injectStyles(val, prefix + key + "-");
         } else {
-          document.documentElement.style.setProperty(`--color-${prefix}${key}`, val as string);
+          document.documentElement.style.setProperty(
+            `--color-${prefix}${key}`,
+            val as string,
+          );
           if (prefix === "layout-") {
-            document.documentElement.style.setProperty(`--color-${key}`, val as string);
+            document.documentElement.style.setProperty(
+              `--color-${key}`,
+              val as string,
+            );
           }
         }
       });
@@ -340,7 +377,9 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
     localStorage.setItem(STORAGE_KEY, JSON.stringify(palette));
 
     // Dynamic overrides for Tailwind classes and component tokens
-    let styleTag = document.getElementById("it-theme-dynamic-overrides") as HTMLStyleElement;
+    let styleTag = document.getElementById(
+      "it-theme-dynamic-overrides",
+    ) as HTMLStyleElement;
     if (!styleTag) {
       styleTag = document.createElement("style");
       styleTag.id = "it-theme-dynamic-overrides";
@@ -384,29 +423,53 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
         sidebarText = `color-mix(in srgb, ${palette.layout.sidebarText} 20%, #cbd5e1)`;
       }
     } else {
+      // Light mode: if table colors are dark (from a dark preset), override to clean light values
+      // Very dark colors (brightness < 50) get replaced directly to avoid dirty tints
       if (!isLightColor(tableRowBg)) {
-        tableRowBg = `color-mix(in srgb, ${palette.table.rowBg} 8%, #ffffff)`;
+        tableRowBg = isVeryDarkColor(palette.table.rowBg)
+          ? "#ffffff"
+          : `color-mix(in srgb, ${palette.table.rowBg} 8%, #ffffff)`;
       }
       if (isLightColor(tableRowText)) {
         tableRowText = `color-mix(in srgb, ${palette.table.rowText} 30%, #1e293b)`;
+      } else if (
+        !isLightColor(tableRowText) &&
+        isVeryDarkColor(palette.table.rowText)
+      ) {
+        // Very dark text is fine for light mode, keep it
       }
       if (!isLightColor(tableHeaderBg)) {
-        tableHeaderBg = `color-mix(in srgb, ${palette.table.headerBg} 12%, #f8fafc)`;
+        tableHeaderBg = isVeryDarkColor(palette.table.headerBg)
+          ? "#f1f5f9"
+          : `color-mix(in srgb, ${palette.table.headerBg} 12%, #f8fafc)`;
       }
       if (isLightColor(tableHeaderText)) {
         tableHeaderText = `color-mix(in srgb, ${palette.table.headerText} 30%, #334155)`;
+      } else if (
+        !isLightColor(tableHeaderText) &&
+        isVeryDarkColor(palette.table.headerText)
+      ) {
+        // Dark header text is fine for light mode
       }
       if (!isLightColor(navbarBg)) {
-        navbarBg = `color-mix(in srgb, ${palette.layout.navbarBg} 8%, #ffffff)`;
+        navbarBg = isVeryDarkColor(palette.layout.navbarBg)
+          ? "#ffffff"
+          : `color-mix(in srgb, ${palette.layout.navbarBg} 8%, #ffffff)`;
       }
       if (isLightColor(navbarText)) {
         navbarText = `color-mix(in srgb, ${palette.layout.navbarText} 30%, #1e293b)`;
       }
       if (!isLightColor(sidebarBg)) {
-        sidebarBg = `color-mix(in srgb, ${palette.layout.sidebarBg} 8%, #ffffff)`;
+        sidebarBg = isVeryDarkColor(palette.layout.sidebarBg)
+          ? "#ffffff"
+          : `color-mix(in srgb, ${palette.layout.sidebarBg} 8%, #ffffff)`;
       }
       if (isLightColor(sidebarText)) {
         sidebarText = `color-mix(in srgb, ${palette.layout.sidebarText} 30%, #1e293b)`;
+      }
+      // If sidebar became light, ensure text is dark for contrast
+      if (sidebarBg === "#ffffff" || isLightColor(sidebarBg)) {
+        sidebarText = "#334155";
       }
     }
 
@@ -1425,7 +1488,10 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
         return {
           ...prev,
           [section]: {
-            ...(prev[section as keyof ITThemePalette] as Record<string, string>),
+            ...(prev[section as keyof ITThemePalette] as Record<
+              string,
+              string
+            >),
             [subKey]: value,
           },
         };
@@ -1446,7 +1512,7 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
       ...DEFAULT_PALETTE,
       ...theme,
       layout: { ...DEFAULT_PALETTE.layout, ...theme?.layout },
-      table: { ...DEFAULT_PALETTE.table, ...theme?.table }
+      table: { ...DEFAULT_PALETTE.table, ...theme?.table },
     };
     setPaletteState(basePalette as ITThemePalette);
   };
@@ -1478,9 +1544,7 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 truncate">
               {displayLabel}
             </span>
-            <span className="font-mono text-[9px] text-slate-400">
-              {value}
-            </span>
+            <span className="font-mono text-[9px] text-slate-400">{value}</span>
           </div>
         </div>
 
@@ -1506,7 +1570,7 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
         applyPreset,
         resolvedTheme,
         darkModeMode,
-        setDarkModeMode
+        setDarkModeMode,
       }}
     >
       {children}
@@ -1516,7 +1580,7 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
         onClick={() => setIsOpen((prev) => !prev)}
         className="it-theme-fab it-theme-bounce"
         style={{
-          backgroundColor: "var(--color-primary)"
+          backgroundColor: "var(--color-primary)",
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.backgroundColor = "var(--color-primary-hover)";
@@ -1527,7 +1591,7 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
         aria-label="Configurar Paleta de Colores"
         title="Configurar Paleta de Colores"
       >
-        <MdPalette style={{ width: '28px', height: '28px' }} />
+        <MdPalette style={{ width: "28px", height: "28px" }} />
       </button>
 
       {/* Dialog Configurator */}
@@ -1569,7 +1633,11 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
                         : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
                     }`}
                   >
-                    {mode === "light" ? "Claro" : mode === "dark" ? "Oscuro" : "Sistema"}
+                    {mode === "light"
+                      ? "Claro"
+                      : mode === "dark"
+                        ? "Oscuro"
+                        : "Sistema"}
                   </button>
                 ))}
               </div>
@@ -1582,7 +1650,9 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
                   </h4>
                   <div className="grid grid-cols-2 gap-1.5 max-h-[110px] overflow-y-auto pr-1">
                     {customPresets.map((preset) => {
-                      const isSelected = JSON.stringify(preset.colors) === JSON.stringify(palette);
+                      const isSelected =
+                        JSON.stringify(preset.colors) ===
+                        JSON.stringify(palette);
                       return (
                         <button
                           key={preset.name}
@@ -1605,10 +1675,24 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
                             {preset.name}
                           </span>
                           <div className="flex gap-1">
-                            <span className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: preset.colors.primary }} />
-                            <span className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: preset.colors.secondary }} />
-                            <span className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: preset.colors.ternary }} />
-                            <span className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: preset.colors.success }} />
+                            <span
+                              className="w-2.5 h-2.5 rounded-full border border-black/10"
+                              style={{ backgroundColor: preset.colors.primary }}
+                            />
+                            <span
+                              className="w-2.5 h-2.5 rounded-full border border-black/10"
+                              style={{
+                                backgroundColor: preset.colors.secondary,
+                              }}
+                            />
+                            <span
+                              className="w-2.5 h-2.5 rounded-full border border-black/10"
+                              style={{ backgroundColor: preset.colors.ternary }}
+                            />
+                            <span
+                              className="w-2.5 h-2.5 rounded-full border border-black/10"
+                              style={{ backgroundColor: preset.colors.success }}
+                            />
                           </div>
                         </button>
                       );
@@ -1626,7 +1710,8 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
                 {/* Oficiales */}
                 <div className="grid grid-cols-2 gap-1.5">
                   {PRESETS.map((preset) => {
-                    const isSelected = JSON.stringify(preset.colors) === JSON.stringify(palette);
+                    const isSelected =
+                      JSON.stringify(preset.colors) === JSON.stringify(palette);
                     return (
                       <button
                         key={preset.name}
@@ -1641,10 +1726,22 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
                           {preset.name}
                         </span>
                         <div className="flex gap-1">
-                          <span className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: preset.colors.primary }} />
-                          <span className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: preset.colors.secondary }} />
-                          <span className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: preset.colors.ternary }} />
-                          <span className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: preset.colors.success }} />
+                          <span
+                            className="w-2.5 h-2.5 rounded-full border border-black/10"
+                            style={{ backgroundColor: preset.colors.primary }}
+                          />
+                          <span
+                            className="w-2.5 h-2.5 rounded-full border border-black/10"
+                            style={{ backgroundColor: preset.colors.secondary }}
+                          />
+                          <span
+                            className="w-2.5 h-2.5 rounded-full border border-black/10"
+                            style={{ backgroundColor: preset.colors.ternary }}
+                          />
+                          <span
+                            className="w-2.5 h-2.5 rounded-full border border-black/10"
+                            style={{ backgroundColor: preset.colors.success }}
+                          />
                         </div>
                       </button>
                     );
@@ -1672,10 +1769,10 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
                         "success",
                         "info",
                         "alert",
-                        "warning"
+                        "warning",
                       ].map((key) => renderColorRow(key))}
                     </div>
-                  )
+                  ),
                 },
                 {
                   id: "layout",
@@ -1686,10 +1783,10 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
                         "layout.sidebarBg",
                         "layout.sidebarText",
                         "layout.navbarBg",
-                        "layout.navbarText"
+                        "layout.navbarText",
                       ].map((key) => renderColorRow(key))}
                     </div>
-                  )
+                  ),
                 },
                 {
                   id: "tables",
@@ -1700,11 +1797,11 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
                         "table.headerBg",
                         "table.headerText",
                         "table.rowBg",
-                        "table.rowText"
+                        "table.rowText",
                       ].map((key) => renderColorRow(key))}
                     </div>
-                  )
-                }
+                  ),
+                },
               ]}
             />
           </div>
@@ -1720,8 +1817,8 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
                 className="flex-1 px-3 py-1.5 text-xs rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 outline-none focus:border-cyan-500"
                 autoFocus
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleSavePreset();
-                  if (e.key === 'Escape') {
+                  if (e.key === "Enter") handleSavePreset();
+                  if (e.key === "Escape") {
                     setIsSavingPreset(false);
                     setNewPresetName("");
                   }
@@ -1756,7 +1853,7 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
                 <MdRefresh className="w-4 h-4" />
                 Restaurar por Defecto
               </button>
-              
+
               {!isSavingPreset && (
                 <button
                   onClick={() => setIsSavingPreset(true)}
@@ -1767,7 +1864,7 @@ export default function ITThemeProvider({ children, theme }: ITThemeProviderProp
                 </button>
               )}
             </div>
-            
+
             <button
               onClick={() => setIsOpen(false)}
               className="px-4 py-1.5 text-xs font-bold rounded-md bg-cyan-600 dark:bg-cyan-500 text-white hover:bg-cyan-700 dark:hover:bg-cyan-600 shadow-sm transition-all"
