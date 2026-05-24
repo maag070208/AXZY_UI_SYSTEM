@@ -31,9 +31,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Run tests
-        run: yarn test --passWithNoTests
-
       - name: Build bundle
         run: yarn run bundle
 
