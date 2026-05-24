@@ -10,25 +10,29 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
       packages: write
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "20"
           registry-url: "https://registry.npmjs.org"
+          cache: "yarn"
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       - name: Run tests
-        run: yarn test # Si tienes tests
+        run: yarn test --passWithNoTests
 
       - name: Build bundle
         run: yarn run bundle
@@ -39,16 +43,22 @@ jobs:
       - name: Determine version bump
         id: version
         run: |
-          git log -1 --pretty=%B | grep -q "BREAKING CHANGE" && echo "bump=major" >> $GITHUB_OUTPUT || \
-          git log -1 --pretty=%B | grep -q "feat:" && echo "bump=minor" >> $GITHUB_OUTPUT || \
-          echo "bump=patch" >> $GITHUB_OUTPUT
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+
+          if echo "$COMMIT_MSG" | grep -q "BREAKING CHANGE"; then
+            echo "bump=major" >> $GITHUB_OUTPUT
+          elif echo "$COMMIT_MSG" | grep -q "^feat:"; then
+            echo "bump=minor" >> $GITHUB_OUTPUT
+          else
+            echo "bump=patch" >> $GITHUB_OUTPUT
+          fi
 
       - name: Bump version
         run: |
-          npm version ${{ steps.version.outputs.bump }} -m "chore(release): Bump version to %s [skip ci]"
-          git push origin main --follow-tags
+          npm version ${{ steps.version.outputs.bump }} -m "chore(release): bump version to %s [skip ci]"
+          git push origin HEAD --follow-tags
 
-      - name: Publish to npm
+      - name: Publish to NPM
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
