@@ -24,4 +24,5 @@ export interface ITThemePalette {
 export interface ITThemeProviderProps {
   theme?: Partial<ITThemePalette>;
   children: React.ReactNode;
+  showFab?: boolean;
 }

@@ -248,6 +248,7 @@ const isVeryDarkColor = (hex: string) => {
 export default function ITThemeProvider({
   children,
   theme,
+  showFab = true,
 }: ITThemeProviderProps) {
   const [palette, setPaletteState] = useState<ITThemePalette>(() => {
     const basePalette = {
@@ -256,6 +257,9 @@ export default function ITThemeProvider({
       layout: { ...DEFAULT_PALETTE.layout, ...theme?.layout },
       table: { ...DEFAULT_PALETTE.table, ...theme?.table },
     };
+    if (!showFab) {
+      return basePalette as ITThemePalette;
+    }
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -353,6 +357,18 @@ export default function ITThemeProvider({
     }
   }, [darkModeMode]);
 
+  // Sync palette with theme prop when showFab is false
+  useEffect(() => {
+    if (!showFab) {
+      setPaletteState({
+        ...DEFAULT_PALETTE,
+        ...theme,
+        layout: { ...DEFAULT_PALETTE.layout, ...theme?.layout },
+        table: { ...DEFAULT_PALETTE.table, ...theme?.table },
+      });
+    }
+  }, [theme, showFab]);
+
   // Inyectar variables CSS en el :root al cambiar la paleta o tema resuelto
   useEffect(() => {
     const injectStyles = (obj: any, prefix = "") => {
@@ -374,7 +390,9 @@ export default function ITThemeProvider({
       });
     };
     injectStyles(palette);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(palette));
+    if (showFab) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(palette));
+    }
 
     // Dynamic overrides for Tailwind classes and component tokens
     let styleTag = document.getElementById(
@@ -1576,33 +1594,36 @@ export default function ITThemeProvider({
       {children}
 
       {/* FAB (Floating Action Button) */}
-      <button
-        onClick={() => setIsOpen((prev) => !prev)}
-        className="it-theme-fab it-theme-bounce"
-        style={{
-          backgroundColor: "var(--color-primary)",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = "var(--color-primary-hover)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = "var(--color-primary)";
-        }}
-        aria-label="Configurar Paleta de Colores"
-        title="Configurar Paleta de Colores"
-      >
-        <MdPalette style={{ width: "28px", height: "28px" }} />
-      </button>
+      {showFab && (
+        <button
+          onClick={() => setIsOpen((prev) => !prev)}
+          className="it-theme-fab it-theme-bounce"
+          style={{
+            backgroundColor: "var(--color-primary)",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "var(--color-primary-hover)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "var(--color-primary)";
+          }}
+          aria-label="Configurar Paleta de Colores"
+          title="Configurar Paleta de Colores"
+        >
+          <MdPalette style={{ width: "28px", height: "28px" }} />
+        </button>
+      )}
 
       {/* Dialog Configurator */}
-      <ITDialog
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        title="Diseñador de Temas ITTheme"
-        useFormHeader={true}
-        className="max-w-2xl w-full"
-      >
-        <div className="flex flex-col gap-4 text-slate-800 dark:text-slate-100">
+      {showFab && (
+        <ITDialog
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          title="Diseñador de Temas ITTheme"
+          useFormHeader={true}
+          className="max-w-2xl w-full"
+        >
+          <div className="flex flex-col gap-4 text-slate-800 dark:text-slate-100">
           {/* Saved Toast Indicator */}
           <div className="h-6 relative">
             {showSavedToast && (
@@ -1874,6 +1895,7 @@ export default function ITThemeProvider({
           </div>
         </div>
       </ITDialog>
+      )}
     </ITThemeContext.Provider>
   );
 }
