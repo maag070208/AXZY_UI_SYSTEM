@@ -11,7 +11,7 @@ export default function ITSidebar({
   visibleOnMobile = false,
   onItemClick,
   onSubItemClick,
-  subitemConnector = '|',
+  subitemConnector = 'dot',
 }: ITSidebarProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [isHovering, setIsHovering] = useState(false);
@@ -223,9 +223,18 @@ export default function ITSidebar({
                       {item.subitems.map((subitem) => (
                         <div
                           key={subitem.id}
-                          className={`px-5 py-2.5 text-sm flex items-center gap-3 transition-colors`}
+                          className={`px-5 py-2.5 text-sm flex items-center gap-3 transition-colors relative`}
                         >
-                          <span className={`w-1.5 h-1.5 rounded-full transition-all ${subitem.isActive ? "scale-125" : ""}`} style={{ backgroundColor: subitem.isActive ? (theme.sidebar?.active?.iconColor || '#10b981') : (theme.sidebar?.icon?.color || '#94a3b8') }}></span>
+                          {subitem.isActive && subitemConnector === '|' && (
+                            <div
+                              className="absolute left-0 top-1/3 bottom-1/3 w-[2.5px] rounded-r-full"
+                              style={{
+                                backgroundColor: theme.sidebar?.active?.iconColor || '#10b981',
+                                boxShadow: `0 0 6px ${theme.sidebar?.active?.iconColor || '#10b981'}40`,
+                              }}
+                            />
+                          )}
+                          <span className={`w-1.5 h-1.5 rounded-full transition-all ${subitem.isActive ? "scale-125" : ""}`} style={{ backgroundColor: subitem.isActive ? (theme.sidebar?.active?.iconColor || '#10b981') : (theme.sidebar?.icon?.color || '#94a3b8') }} />
                           <span style={{ color: subitem.isActive ? (theme.sidebar?.active?.color || '#0f172a') : (theme.sidebar?.label?.color || '#475569'), fontWeight: subitem.isActive ? 600 : 500 }}>{subitem.label}</span>
                         </div>
                       ))}
@@ -240,36 +249,33 @@ export default function ITSidebar({
               {!isSidebarCollapsed && item.subitems && item.subitems.length > 0 && (
                 <div className={`overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] ${expandedItems.has(item.id) ? "max-h-[500px] opacity-100 mt-1" : "max-h-0 opacity-0"}`}>
                   <ul
-                    className="ml-5 pl-4 space-y-1 py-1"
+                    className="ml-5 space-y-0.5 py-1"
                     style={{
-                      borderLeft: subitemConnector === 'none'
-                        ? 'none'
-                        : `2px ${subitemConnector === 'dots' ? 'dotted' : 'solid'} ${theme.sidebar?.borderColor || '#e2e8f0'}`
+                      borderLeft: subitemConnector === '|'
+                        ? `1px solid ${theme.sidebar?.borderColor || '#e2e8f0'}`
+                        : 'none'
                     }}
                   >
                     {item.subitems.map((subitem) => (
                       <li key={subitem.id} className="relative">
-                        {/* Connecting line for active subitem */}
-                        {subitem.isActive && (subitemConnector === 'lines' || subitemConnector === 'dots') && (
-                          <div className="absolute -left-[18px] top-1/2 -translate-y-1/2 w-4 h-[2px] rounded-r-full" style={{ backgroundColor: theme.sidebar?.active?.iconColor || '#10b981' }} />
-                        )}
                         <button
                           onClick={() => {
                             if (subitem.action) subitem.action();
                             if (onSubItemClick) onSubItemClick(subitem);
                           }}
-                          className={`block w-full text-left px-4 py-2 rounded-xl transition-all duration-300`}
+                          className={`flex items-center gap-2.5 w-full text-left px-3 py-2 rounded-xl transition-all duration-300`}
                           style={{
                             color: subitem.isActive ? (theme.sidebar?.active?.color || '#0f172a') : (theme.sidebar?.label?.color || '#475569'),
                             backgroundColor: subitem.isActive ? (theme.sidebar?.active?.backgroundColor || '#f8fafc') : 'transparent',
                             fontSize: '0.85rem',
                             fontWeight: subitem.isActive ? 600 : 500,
-                            letterSpacing: '0.01em'
+                            letterSpacing: '0.01em',
+                            marginLeft: subitemConnector === '|' ? '-1px' : '0',
                           }}
                           onMouseEnter={(e) => {
                             if (!subitem.isActive) {
                               e.currentTarget.style.backgroundColor = theme.sidebar?.hover?.backgroundColor || '#f1f5f9';
-                              e.currentTarget.style.transform = 'translateX(4px)';
+                              e.currentTarget.style.transform = 'translateX(3px)';
                             }
                           }}
                           onMouseLeave={(e) => {
@@ -279,7 +285,28 @@ export default function ITSidebar({
                             }
                           }}
                         >
-                          {subitem.label}
+                          {/* Accent bar for active subitem when using | */}
+                          {subitem.isActive && subitemConnector === '|' && (
+                            <div
+                              className="absolute left-0 top-1/3 bottom-1/3 w-[2.5px] rounded-r-full transition-all"
+                              style={{
+                                backgroundColor: theme.sidebar?.active?.iconColor || '#10b981',
+                                boxShadow: `0 0 6px ${theme.sidebar?.active?.iconColor || '#10b981'}40`,
+                              }}
+                            />
+                          )}
+                          {/* Connector indicator for dot */}
+                          {subitemConnector === 'dot' && (
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full flex-shrink-0 transition-all duration-300 ${subitem.isActive ? 'scale-125' : ''}`}
+                              style={{
+                                backgroundColor: subitem.isActive
+                                  ? (theme.sidebar?.active?.iconColor || '#10b981')
+                                  : (theme.sidebar?.icon?.color || '#94a3b8')
+                              }}
+                            />
+                          )}
+                          <span className="truncate">{subitem.label}</span>
                         </button>
                       </li>
                     ))}

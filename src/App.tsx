@@ -19,6 +19,14 @@ import {
   TextShowcase,
 } from "./showcases/StructureShowcases";
 import {
+  StackShowcase,
+  FlexShowcase,
+  GridShowcase,
+  ScreenDashboardShowcase,
+  ScreenFormShowcase,
+  ScreenCardGridShowcase,
+} from "./showcases/LayoutPrimitivesShowcases";
+import {
   ButtonShowcase,
   InputShowcase,
   SelectShowcase,
@@ -53,8 +61,8 @@ function App() {
   const [activeComponentId, setActiveComponentId] = useState("home");
   const [searchTerm, setSearchTerm] = useState("");
   const [subitemConnector, setSubitemConnector] = useState<
-    "lines" | "dots" | "|" | "none"
-  >("lines");
+    "dot" | "|" | "none"
+  >("dot");
 
   // Group definitions for the sidebar
   const categories = [
@@ -69,8 +77,14 @@ function App() {
       icon: <FaCreditCard />,
       subitems: [
         { id: "layout", label: "ITLayout & ITNavbar" },
+        { id: "stack", label: "ITStack" },
+        { id: "flex", label: "ITFlex" },
+        { id: "grid", label: "ITGrid" },
         { id: "card", label: "ITCard" },
         { id: "text", label: "ITText" },
+        { id: "screen-dashboard", label: "Dashboard Ejemplo" },
+        { id: "screen-form", label: "Formulario Ejemplo" },
+        { id: "screen-cardgrid", label: "Grid Tarjetas Ejemplo" },
       ],
     },
     {
@@ -201,10 +215,22 @@ function App() {
       // Structure
       case "layout":
         return <LayoutShowcase />;
+      case "stack":
+        return <StackShowcase />;
+      case "flex":
+        return <FlexShowcase />;
+      case "grid":
+        return <GridShowcase />;
       case "card":
         return <CardShowcase />;
       case "text":
         return <TextShowcase />;
+      case "screen-dashboard":
+        return <ScreenDashboardShowcase />;
+      case "screen-form":
+        return <ScreenFormShowcase />;
+      case "screen-cardgrid":
+        return <ScreenCardGridShowcase />;
       // Forms
       case "button":
         return <ButtonShowcase />;
@@ -259,7 +285,7 @@ function App() {
   };
 
   return (
-    <ITThemeProvider showFab={false}>
+    <ITThemeProvider showFab={true}>
       <ITLayout sidebar={sidebarProps} topBar={topBarProps}>
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Glassmorphic Search Bar Header */}
@@ -276,7 +302,7 @@ function App() {
             <div className="flex flex-wrap items-center gap-3">
               {/* Connector selection */}
               <div className="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-950/40 p-1 rounded-xl border border-slate-200/50 dark:border-slate-800/80">
-                {(["lines", "dots", "|", "none"] as const).map((style) => (
+                {(["dot", "|", "none"] as const).map((style) => (
                   <button
                     key={style}
                     onClick={() => setSubitemConnector(style)}
@@ -286,13 +312,7 @@ function App() {
                         : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
                     }`}
                   >
-                    {style === "lines"
-                      ? "Líneas"
-                      : style === "dots"
-                        ? "Puntos"
-                        : style === "|"
-                          ? "Vertical"
-                          : "Normal"}
+                    {style === "dot" ? "Punto" : style === "|" ? "Vertical" : "Normal"}
                   </button>
                 ))}
               </div>
@@ -311,7 +331,7 @@ function App() {
                 />
               </div>
             </div>
-          </div>
+          </div>Diseñador de Temas ITTheme
 
           <div className="bg-white/50 dark:bg-slate-950/10 border border-slate-100 dark:border-slate-900 rounded-3xl p-6 md:p-8 backdrop-blur-sm min-h-[500px]">
             {renderShowcase()}

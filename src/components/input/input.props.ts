@@ -22,6 +22,7 @@ export interface ITInputProps {
       | React.FocusEvent<HTMLInputElement>
       | React.FocusEvent<HTMLTextAreaElement, Element>
   ) => void;
+  onKeyDown?: (event: React.KeyboardEvent) => void;
   showHintLength?: boolean;
   maxLength?: number;
   minLength?: number;

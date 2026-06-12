@@ -1,17 +1,15 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 import { useITFormBuilderContext } from './formBuilder.context';
+import type { FieldConfigV2 } from '@/types/field.types';
 
 export const useFormBuilder = () => {
   const context = useITFormBuilderContext();
   const { values, errors, touched } = context;
 
-  // Calculate Progress (percentage of required fields that are filled out without errors)
   const progress = useMemo(() => {
     const requiredFields = Object.keys(context.getFieldConfig).filter((name) => {
         const config = context.getFieldConfig(name);
         if (!config) return false;
-        
-        // Evaluate dynamic required
         if (typeof config.required === 'function') {
            return config.required(values);
         }
@@ -25,10 +23,7 @@ export const useFormBuilder = () => {
       const val = values[fieldName];
       const hasValue = val !== undefined && val !== null && val !== '';
       const hasError = !!errors[fieldName];
-      
-      if (hasValue && !hasError) {
-        filledFields++;
-      }
+      if (hasValue && !hasError) filledFields++;
     });
 
     return Math.round((filledFields / requiredFields.length) * 100);
@@ -42,43 +37,44 @@ export const useFormBuilder = () => {
 };
 
 /**
- * Hook to evaluate dynamic rules for a specific field based on the global form state.
- * Highly optimized to only re-render if the 'dependsOn' fields change, 
- * or if the field is not memoizable.
+ * Hook to evaluate dynamic rules using only the dependent values passed as props.
+ * This avoids subscribing to the entire `values` context, enabling true React.memo isolation.
+ *
+ * `dependentValues` should be a filtered object containing only the fields this
+ * field depends on (derived from `dependsOn` in FieldConfigV2).
  */
-export const useFieldRules = (name: string, dependsOn?: string[]) => {
-    const { values, getFieldConfig } = useITFormBuilderContext();
-    const config = getFieldConfig(name);
+export const useFieldRules = (
+  config: FieldConfigV2,
+  dependentValues: Record<string, any>,
+) => {
+  const { getFieldConfig } = useITFormBuilderContext();
+  const fieldConfig = getFieldConfig(config.name) || config;
 
-    // Default to true if no renderWhen
-    const isVisible = useMemo(() => {
-        if (!config?.renderWhen) return true;
-        return config.renderWhen(values);
-    }, [config, values]);
+  const isVisible = useMemo(() => {
+    if (!fieldConfig.renderWhen) return true;
+    return fieldConfig.renderWhen(dependentValues);
+  }, [fieldConfig.renderWhen, dependentValues]);
 
-    const dynamicProps = useMemo(() => {
-        if (!config?.dynamicProps) return {};
-        return config.dynamicProps(values);
-    }, [config, values]);
+  const dynamicProps = useMemo(() => {
+    if (!fieldConfig.dynamicProps) return {};
+    return fieldConfig.dynamicProps(dependentValues);
+  }, [fieldConfig.dynamicProps, dependentValues]);
 
-    const isRequired = useMemo(() => {
-        if (typeof config?.required === 'function') {
-            return config.required(values);
-        }
-        return config?.required || false;
-    }, [config, values, dynamicProps]);
+  const isRequired = useMemo(() => {
+    if (typeof dynamicProps.required !== 'undefined') return dynamicProps.required;
+    if (typeof fieldConfig.required === 'function') {
+      return fieldConfig.required(dependentValues);
+    }
+    return fieldConfig.required || false;
+  }, [fieldConfig.required, dynamicProps.required, dependentValues]);
 
-    const isDisabled = useMemo(() => {
-         if (typeof config?.disabled === 'function') {
-             return config.disabled(values);
-         }
-         return config?.disabled || false;
-    }, [config, values, dynamicProps]);
+  const isDisabled = useMemo(() => {
+    if (typeof dynamicProps.disabled !== 'undefined') return dynamicProps.disabled;
+    if (typeof fieldConfig.disabled === 'function') {
+      return fieldConfig.disabled(dependentValues);
+    }
+    return fieldConfig.disabled || false;
+  }, [fieldConfig.disabled, dynamicProps.disabled, dependentValues]);
 
-    return {
-        isVisible,
-        dynamicProps,
-        isRequired: dynamicProps.required !== undefined ? dynamicProps.required : isRequired,
-        isDisabled: dynamicProps.disabled !== undefined ? dynamicProps.disabled : isDisabled
-    };
-}
+  return { isVisible, dynamicProps, isRequired, isDisabled };
+};

@@ -5,4 +5,5 @@ export interface ITDialogProps {
   className?: string;
   title?: string;
   useFormHeader?: boolean;
+  fullScreen?: boolean;
 }

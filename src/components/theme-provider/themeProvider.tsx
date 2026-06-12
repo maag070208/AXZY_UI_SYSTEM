@@ -3,6 +3,10 @@ import { MdPalette, MdClose, MdRefresh, MdCheck } from "react-icons/md";
 import { ITThemeProviderProps, ITThemePalette } from "./themeProvider.props";
 import ITDialog from "../dialog/dialog";
 import ITTabs from "../tabs/tabs";
+import ITButton from "../button/button";
+import ITInput from "../input/input";
+import ITSegmentedControl from "../segmented-control/segmented-control";
+import ITDivider from "../divider/divider";
 
 // ============================================================================
 // DEFAULT PALETTE & PRESETS CONFIG
@@ -1621,9 +1625,9 @@ export default function ITThemeProvider({
           onClose={() => setIsOpen(false)}
           title="Diseñador de Temas ITTheme"
           useFormHeader={true}
-          className="max-w-2xl w-full"
+          fullScreen
         >
-          <div className="flex flex-col gap-4 text-slate-800 dark:text-slate-100">
+          <div className="flex flex-col gap-5 h-full text-slate-800 dark:text-slate-100">
           {/* Saved Toast Indicator */}
           <div className="h-6 relative">
             {showSavedToast && (
@@ -1636,40 +1640,32 @@ export default function ITThemeProvider({
             )}
           </div>
 
-          {/* Row for presets & appearance */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start pb-4 border-b border-slate-200 dark:border-slate-700">
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
-                Apariencia
-              </h4>
-              <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg w-fit gap-1">
-                {(["light", "dark", "system"] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    onClick={() => setDarkModeMode(mode)}
-                    className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-                      darkModeMode === mode
-                        ? "bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm"
-                        : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
-                    }`}
-                  >
-                    {mode === "light"
-                      ? "Claro"
-                      : mode === "dark"
-                        ? "Oscuro"
-                        : "Sistema"}
-                  </button>
-                ))}
+          {/* Top section: Appearance + Presets in a 2-col grid */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 items-start">
+            <div className="md:col-span-2 space-y-4">
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
+                  Apariencia
+                </h4>
+                <ITSegmentedControl
+                  options={[
+                    { value: "light", label: "Claro" },
+                    { value: "dark", label: "Oscuro" },
+                    { value: "system", label: "Sistema" },
+                  ]}
+                  value={darkModeMode}
+                  onChange={(val) => setDarkModeMode(val as "dark" | "light" | "system")}
+                  size="sm"
+                />
               </div>
 
-              {/* Mis Temas */}
+              {/* Mis Temas Guardados */}
               {customPresets.length > 0 && (
-                <div className="mt-4">
+                <div>
                   <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
                     Mis Temas Guardados
                   </h4>
-                  <div className="grid grid-cols-2 gap-1.5 max-h-[110px] overflow-y-auto pr-1">
+                  <div className="grid grid-cols-2 gap-1.5 max-h-[120px] overflow-y-auto pr-1">
                     {customPresets.map((preset) => {
                       const isSelected =
                         JSON.stringify(preset.colors) ===
@@ -1723,13 +1719,13 @@ export default function ITThemeProvider({
               )}
             </div>
 
-            <div>
+            {/* Right: Built-in Presets */}
+            <div className="md:col-span-3">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
                 Ajustes Rápidos (Presets)
               </h4>
-              <div className="flex flex-col gap-2 max-h-[160px] overflow-y-auto pr-1">
-                {/* Oficiales */}
-                <div className="grid grid-cols-2 gap-1.5">
+              <div className="flex flex-col gap-2 max-h-[170px] overflow-y-auto pr-1">
+                <div className="grid grid-cols-3 gap-1.5">
                   {PRESETS.map((preset) => {
                     const isSelected =
                       JSON.stringify(preset.colors) === JSON.stringify(palette);
@@ -1772,8 +1768,10 @@ export default function ITThemeProvider({
             </div>
           </div>
 
-          {/* ITTabs content */}
-          <div className="mt-2">
+          <ITDivider />
+
+          {/* ITTabs content — takes remaining space */}
+          <div className="flex-1 min-h-0">
             <ITTabs
               variant="pill"
               items={[
@@ -1781,7 +1779,7 @@ export default function ITThemeProvider({
                   id: "brand",
                   label: "Colores de Marca",
                   content: (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 mt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-h-[40vh] overflow-y-auto pr-2 mt-2">
                       {[
                         "primary",
                         "secondary",
@@ -1799,7 +1797,7 @@ export default function ITThemeProvider({
                   id: "layout",
                   label: "Sidebar & Topbar",
                   content: (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 mt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-h-[40vh] overflow-y-auto pr-2 mt-2">
                       {[
                         "layout.sidebarBg",
                         "layout.sidebarText",
@@ -1813,7 +1811,7 @@ export default function ITThemeProvider({
                   id: "tables",
                   label: "Tablas",
                   content: (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 mt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-h-[40vh] overflow-y-auto pr-2 mt-2">
                       {[
                         "table.headerBg",
                         "table.headerText",
@@ -1827,17 +1825,20 @@ export default function ITThemeProvider({
             />
           </div>
 
+          <ITDivider />
+
           {/* Inline Save Preset Area */}
           {isSavingPreset && (
-            <div className="flex gap-2 items-center bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 mt-2">
-              <input
-                type="text"
+            <div className="flex gap-2 items-center bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+              <ITInput
+                name="presetName"
                 placeholder="Nombre de tu tema..."
                 value={newPresetName}
                 onChange={(e) => setNewPresetName(e.target.value)}
-                className="flex-1 px-3 py-1.5 text-xs rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 outline-none focus:border-cyan-500"
                 autoFocus
-                onKeyDown={(e) => {
+                containerClassName="flex-1 mb-0"
+                className="text-xs"
+                onKeyDown={(e: React.KeyboardEvent) => {
                   if (e.key === "Enter") handleSavePreset();
                   if (e.key === "Escape") {
                     setIsSavingPreset(false);
@@ -1845,53 +1846,57 @@ export default function ITThemeProvider({
                   }
                 }}
               />
-              <button
+              <ITButton
+                label="Guardar"
+                color="primary"
                 onClick={handleSavePreset}
                 disabled={!newPresetName.trim()}
-                className="px-3 py-1.5 text-xs font-bold rounded-md bg-cyan-600 dark:bg-cyan-500 text-white hover:bg-cyan-700 dark:hover:bg-cyan-600 disabled:opacity-50 transition-all"
-              >
-                Guardar
-              </button>
-              <button
+                size="small"
+              />
+              <ITButton
+                label="Cancelar"
+                variant="ghost"
                 onClick={() => {
                   setIsSavingPreset(false);
                   setNewPresetName("");
                 }}
-                className="px-3 py-1.5 text-xs font-semibold rounded-md border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-all"
-              >
-                Cancelar
-              </button>
+                size="small"
+              />
             </div>
           )}
 
           {/* Footer buttons */}
-          <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-700 mt-2">
+          <div className="flex items-center justify-between">
             <div className="flex gap-2">
-              <button
+              <ITButton
+                variant="ghost"
+                color="danger"
                 onClick={resetTheme}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-all"
+                size="small"
               >
-                <MdRefresh className="w-4 h-4" />
+                <MdRefresh className="w-4 h-4 mr-1" />
                 Restaurar por Defecto
-              </button>
+              </ITButton>
 
               {!isSavingPreset && (
-                <button
+                <ITButton
+                  variant="outlined"
+                  color="primary"
                   onClick={() => setIsSavingPreset(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md border border-cyan-250 dark:border-cyan-850 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition-all"
+                  size="small"
                 >
-                  <MdPalette className="w-4 h-4" />
+                  <MdPalette className="w-4 h-4 mr-1" />
                   Guardar Tema
-                </button>
+                </ITButton>
               )}
             </div>
 
-            <button
+            <ITButton
+              label="Aceptar"
+              color="primary"
               onClick={() => setIsOpen(false)}
-              className="px-4 py-1.5 text-xs font-bold rounded-md bg-cyan-600 dark:bg-cyan-500 text-white hover:bg-cyan-700 dark:hover:bg-cyan-600 shadow-sm transition-all"
-            >
-              Aceptar
-            </button>
+              size="small"
+            />
           </div>
         </div>
       </ITDialog>

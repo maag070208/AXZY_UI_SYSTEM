@@ -1,3 +1,4 @@
+import { useTableState } from "@/hooks/useTableState";
 import { sizeStyles, variantStyles } from "@/types/table.types";
 import clsx from "clsx";
 import React, { useState, useEffect, useCallback, useRef } from "react";
@@ -32,22 +33,25 @@ export default function ITDataTable<T extends Record<string, unknown>>({
   defaultItemsPerPage = 10,
   title,
 }: ITDataTableProps<T>) {
-  // Server-Side States
   const [data, setData] = useState<T[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const [isLoading, setIsLoading] = useState(fetchOnMount);
-  
-  // Table Interaction States
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(defaultItemsPerPage);
-  const [filters, setFilters] = useState<Record<string, string | boolean | number>>({});
-  const [sortConfig, setSortConfig] = useState<{
-    key: string;
-    direction: "asc" | "desc";
-  } | null>(null);
 
-  // Debouncing logic ref
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const {
+    currentPage,
+    itemsPerPage,
+    filters,
+    sortConfig,
+    totalPages,
+    goToPage,
+    handleFilterChange,
+    handleSort,
+    handleItemsPerPageChange,
+  } = useTableState({ defaultItemsPerPage });
+
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const computedTotalPages = Math.ceil(totalItems / itemsPerPage) || 1;
 
   const performFetch = useCallback(async () => {
     setIsLoading(true);
@@ -67,19 +71,12 @@ export default function ITDataTable<T extends Record<string, unknown>>({
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, itemsPerPage, filters, sortConfig, fetchData]);
+  }, [currentPage, itemsPerPage, filters, sortConfig, fetchData, externalFilters]);
 
-  // Main Effect: Triggers fetch on structural changes (page, sort, limit, reloadTrigger)
-  // Filters are debounced separately
   useEffect(() => {
-    // If not fetchOnMount and this is the first render, skip
-    if (!fetchOnMount && data.length === 0 && !isLoading) {
-      return;
-    }
+    if (!fetchOnMount && data.length === 0 && !isLoading) return;
 
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
 
     debounceTimerRef.current = setTimeout(() => {
       performFetch();
@@ -88,46 +85,8 @@ export default function ITDataTable<T extends Record<string, unknown>>({
     return () => {
       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     };
-  }, [currentPage, itemsPerPage, sortConfig, filters, externalFilters, reloadTrigger, fetchOnMount]); // Notice dependencies
+  }, [currentPage, itemsPerPage, sortConfig, filters, externalFilters, reloadTrigger, fetchOnMount, performFetch]);
 
-  const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
-
-  const goToPage = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
-  const handleItemsPerPageChange = (value: number) => {
-    setItemsPerPage(value);
-    setCurrentPage(1); // Reset to first page when items per page changes
-  };
-
-  const handleFilterChange = (key: string, value: string | boolean | number | undefined) => {
-    setFilters((prev) => {
-      if (value === undefined || value === null || value === "") {
-        const newFilters = { ...prev };
-        delete newFilters[key];
-        return newFilters;
-      }
-      return { ...prev, [key]: value };
-    });
-    setCurrentPage(1);
-  };
-
-  const handleSort = (key: string) => {
-    const column = columns.find((col) => col.key === key);
-    if (!column || !column.sortable) return;
-
-    let direction: "asc" | "desc" = "asc";
-    if (sortConfig?.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    }
-    setSortConfig({ key, direction });
-    setCurrentPage(1); // Usually sorting resets to page 1
-  };
-
-  // Rendering Helpers (Identical to ITTable)
   const renderFilterInput = (col: Column<T>) => {
     if (!col.filter) return null;
 
@@ -237,7 +196,6 @@ export default function ITDataTable<T extends Record<string, unknown>>({
   return (
     <div className={clsx("space-y-4 w-full relative", containerClassName)}>
       <div className="rounded-xl shadow-sm border border-secondary-200 overflow-hidden" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
-        {/* Header outside overflow */}
         {title && (
           <div className="px-6 py-5 border-b border-secondary-100 flex justify-between items-center" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
             <h2 className="text-xl font-bold text-secondary-900 leading-tight">{title}</h2>
@@ -249,7 +207,6 @@ export default function ITDataTable<T extends Record<string, unknown>>({
           </div>
         )}
 
-        {/* Scrollable Table */}
         <div className="overflow-x-auto relative min-h-[200px]">
           {isLoading && (
             <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/40 backdrop-blur-[2px] transition-all duration-300">
@@ -263,7 +220,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                </div>
             </div>
           )}
-          
+
           <table
             className={clsx(
               "min-w-max w-full text-sm text-left text-secondary-600 transition-opacity duration-300",
@@ -278,7 +235,6 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                 {columns.map((col) => (
                   <th key={col.key} scope="col" className={clsx("px-4 py-4 align-top", col.className)}>
                     <div className="flex flex-col gap-3 min-w-[150px]">
-                      {/* Column header */}
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-secondary-700 font-bold">{col.label}</span>
                         {col.sortable && col.type !== "actions" && (
@@ -297,7 +253,6 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                         )}
                       </div>
 
-                      {/* Filter section */}
                       <div className="w-full">{col.filter ? renderFilterInput(col) : null}</div>
                     </div>
                   </th>
@@ -340,11 +295,10 @@ export default function ITDataTable<T extends Record<string, unknown>>({
         </div>
       </div>
 
-      {/* Pagination */}
       <div className="rounded-b-xl border-t border-secondary-200 px-6 py-4" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
         <ITPagination
           currentPage={currentPage}
-          totalPages={totalPages}
+          totalPages={computedTotalPages}
           onPageChange={goToPage}
           color="primary"
           itemsPerPageOptions={itemsPerPageOptions}

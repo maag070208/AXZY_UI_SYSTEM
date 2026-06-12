@@ -1,6 +1,7 @@
+import { useEditableRow } from "@/hooks/useEditableRow";
 import { formatCurrencyMX } from "@/utils/table.utils";
 import clsx from "clsx";
-import React, { useMemo, useState } from "react";
+import React from "react";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { SearchColumn } from "../searchTable.props";
 import EditableCell from "./EditableCell";
@@ -30,122 +31,21 @@ export default function TableRow<T>({
   isEditing = false,
   onEdit,
 }: TableRowProps<T>) {
-  const [isHovered, setIsHovered] = useState(false);
-  const [editedRow, setEditedRow] = useState<T>({ ...row });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const {
+    editedRow,
+    errors,
+    isHovered,
+    setIsHovered,
+    hasErrors,
+    handleEdit,
+    handleSave,
+    handleCancel,
+    handleChange,
+  } = useEditableRow({ row, columns, getNestedValue, validationSchema });
 
-  const validateAll = async (rowData: T): Promise<Record<string, string>> => {
-    const newErrors: Record<string, string> = {};
-
-    // Primero validación con Yup schema si está disponible
-    if (validationSchema) {
-      try {
-        await validationSchema.validate(rowData, { abortEarly: false });
-      } catch (yupError) {
-        if (yupError instanceof yup.ValidationError) {
-          yupError.inner.forEach((error) => {
-            if (error.path) {
-              newErrors[error.path] = error.message;
-            }
-          });
-        }
-      }
-    }
-
-    // Luego validación individual de columnas (solo si no hay error de Yup para esa columna)
-    columns.forEach((col) => {
-      if (col.editable && col.validation && !newErrors[col.key]) {
-        const value = getNestedValue(rowData, col.key);
-        const error = col.validation(value, rowData);
-        if (error) newErrors[col.key] = error;
-      }
-    });
-
-    return newErrors;
-  };
-
-  // Al entrar a modo edición, validar el estado inicial
-  const handleEdit = async () => {
-    if (onEdit) {
-      onEdit(row);
-      const clone = { ...row };
-      setEditedRow(clone);
-      const initialErrors = await validateAll(clone);
-      setErrors(initialErrors);
-    }
-  };
-
-  const handleSave = async () => {
-    // Validación final
-    const finalErrors = await validateAll(editedRow);
-
-    if (Object.keys(finalErrors).length > 0) {
-      setErrors(finalErrors);
-      return;
-    }
-
-    if (onSave) onSave(editedRow);
-  };
-
-  const handleCancel = () => {
-    if (onCancel) onCancel();
-    setEditedRow({ ...row });
-    setErrors({});
-  };
-
-  const handleChange = async (key: string, value: any, error?: string) => {
-    const column = columns.find((col) => col.key === key);
-    let processedValue = value;
-
-    if (column) {
-      switch (column.type) {
-        case "number":
-          // vacío = null, si no convierte a número
-          processedValue =
-            value === "" || value === null ? null : Number(value);
-          break;
-
-        case "boolean":
-          // forzamos siempre a true/false
-          if (value === "" || value === null || value === undefined) {
-            processedValue = false;
-          } else if (typeof value === "string") {
-            processedValue = value === "true" || value === "1";
-          } else {
-            processedValue = Boolean(value);
-          }
-          break;
-
-        case "date":
-          // puedes normalizar fechas a string ISO o null
-          processedValue = value ? new Date(value).toISOString() : null;
-          break;
-
-        case "catalog":
-          // por lo general será un id, se mantiene tal cual
-          processedValue = value ?? null;
-          break;
-
-        default:
-          // string o cualquier otro tipo
-          processedValue = value ?? "";
-          break;
-      }
-    }
-
-    const updatedRow = {
-      ...editedRow,
-      [key]: processedValue,
-    };
-
-    setEditedRow(updatedRow);
-
-    // Validar el nuevo estado completo después del cambio
-    const newErrors = await validateAll(updatedRow);
-    setErrors(newErrors);
-  };
-
-  const hasErrors = useMemo(() => Object.keys(errors).length > 0, [errors]);
+  const onEditAction = () => handleEdit(onEdit);
+  const onSaveAction = () => handleSave(onSave);
+  const onCancelAction = () => handleCancel(onCancel);
 
   const renderCellContent = (col: SearchColumn<T>, rowData: T) => {
     const value = getNestedValue(rowData, col.key);
@@ -172,12 +72,12 @@ export default function TableRow<T>({
       case "actions":
         if (isEditing && col.saveActions) {
           return col.saveActions(rowData, {
-            onSave: handleSave,
-            onCancel: handleCancel,
+            onSave: onSaveAction,
+            onCancel: onCancelAction,
             hasErrors,
           });
         } else if (col.actions) {
-          return col.actions(rowData, { onEdit: handleEdit });
+          return col.actions(rowData, { onEdit: onEditAction });
         }
         return null;
 
@@ -218,7 +118,7 @@ export default function TableRow<T>({
             <EditableCell
               column={col}
               value={getNestedValue(editedRow, col.key)}
-              onChange={(value, error) => handleChange(col.key, value, error)}
+              onChange={(value) => handleChange(col.key, value)}
               error={errors[col.key]}
               row={editedRow}
             />
