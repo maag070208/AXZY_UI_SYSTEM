@@ -23,6 +23,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { ITCalendarProps, CalendarEvent } from './calendar.props';
+import ITText from "@/components/text/text";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -263,7 +264,8 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
           borderBottomColor: 'var(--calendar-border, #e2e8f0)'
         }}
       >
-        <h2 
+        <ITText
+            as="h2"
             className="text-sm font-bold capitalize cursor-pointer transition-colors select-none px-2 py-1 rounded"
             style={{ 
               color: 'var(--calendar-header-text, #1e293b)',
@@ -280,7 +282,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
             ? `${years[0]} - ${years[years.length - 1]}` 
             : format(currentDate, 'MMMM yyyy', { locale: es })
           }
-        </h2>
+        </ITText>
         <div className="flex items-center gap-1">
           <button 
             onClick={handlePrev} 
@@ -300,7 +302,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
             onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--calendar-header-hover, #f1f5f9)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
           >
-            Hoy
+            <ITText as="span">Hoy</ITText>
           </button>
           <button 
             onClick={handleNext} 
@@ -347,7 +349,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                               setView('calendar');
                           }}
                       >
-                          {year}
+                          <ITText as="span">{year}</ITText>
                       </button>
                   ))}
               </div>
@@ -355,11 +357,11 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
            <div className="p-4">
              {/* Weekday Headers */}
              <div className="grid grid-cols-7 mb-2">
-               {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map(day => (
-                 <div key={day} className="text-center text-xs font-semibold text-gray-400 uppercase py-1">
-                   {day}
-                 </div>
-               ))}
+                {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map(day => (
+                  <ITText key={day} as="div" className="text-center text-xs font-semibold text-gray-400 uppercase py-1">
+                    {day}
+                  </ITText>
+                ))}
              </div>
              {/* Days Grid */}
               <div className="grid grid-cols-7 gap-1">
@@ -400,7 +402,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                         fontWeight: isSelected || isRangeStart || isRangeEnd || isToday(day) ? '700' : '400',
                       }}
                     >
-                      {format(day, 'd')}
+                      <ITText as="span">{format(day, 'd')}</ITText>
                       
                       {/* Connection for range selection to make it look continuous */}
                       {selectionMode === 'range' && isRangeStart && endDate && (
@@ -428,9 +430,9 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                {TIME_SLOTS.map((hour) => (
                  hour < END_HOUR && (
                    <div key={hour} className="h-20 relative text-right pr-2">
-                     <span className="text-xs text-slate-400 dark:text-slate-500 -mt-2 inline-block transform -translate-y-1/2">
-                       {format(new Date().setHours(hour, 0), 'HH:mm')}
-                     </span>
+                      <ITText as="span" className="text-xs text-slate-400 dark:text-slate-500 -mt-2 inline-block transform -translate-y-1/2">
+                        {format(new Date().setHours(hour, 0), 'HH:mm')}
+                      </ITText>
                    </div>
                  )
                ))}
@@ -453,7 +455,8 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                       borderBottom: '1px solid var(--calendar-border, #e2e8f0)',
                     }}
                   >
-                    <span 
+                    <ITText
+                      as="span"
                       className="text-xs font-semibold uppercase"
                       style={{
                         color: isToday(day) ? 'var(--calendar-today-text, #2563eb)' : 'var(--calendar-days-text, #334155)',
@@ -461,8 +464,9 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                       }}
                     >
                       {format(day, 'EEE', { locale: es })}
-                    </span>
-                    <span 
+                    </ITText>
+                    <ITText
+                      as="span"
                       className="text-sm font-bold w-6 h-6 flex items-center justify-center rounded-full mt-0.5"
                       style={{
                         color: isToday(day) ? 'var(--calendar-selected-text, #ffffff)' : 'var(--calendar-days-text, #334155)',
@@ -470,7 +474,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                       }}
                     >
                       {format(day, 'd')}
-                    </span>
+                    </ITText>
                   </div>
 
                   {/* Slots Grid */}
@@ -569,11 +573,11 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                               onEventClick && onEventClick(event);
                             }}
                           >
-                            <div className="font-semibold truncate">{event.title}</div>
-                            <div className="opacity-80 truncate">
+                            <ITText as="div" className="font-semibold truncate">{event.title}</ITText>
+                            <ITText as="div" className="opacity-80 truncate">
                               {format(typeof event.start === 'string' ? parseISO(event.start) : event.start, 'HH:mm')} - 
                               {format(typeof event.end === 'string' ? parseISO(event.end) : event.end, 'HH:mm')}
-                            </div>
+                            </ITText>
                           </div>
                         );
                       })}

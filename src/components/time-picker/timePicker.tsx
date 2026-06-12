@@ -6,6 +6,7 @@ import ITButton from "../button/button";
 import useClickOutside from "@/hooks/useClickOutside";
 import { theme } from "@/theme/theme";
 import { ITTimePickerProps } from "./timePicker.props";
+import ITText from "@/components/text/text";
 
 export default function ITTimePicker({
   name,
@@ -212,10 +213,10 @@ export default function ITTimePicker({
           }}
         >
           <div className="flex bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            <div className="flex-1 text-center py-2 border-r border-gray-100">
+            <ITText as="div" className="flex-1 text-center py-2 border-r border-gray-100">
               Horas
-            </div>
-            <div className="flex-1 text-center py-2">Minutos</div>
+            </ITText>
+            <ITText as="div" className="flex-1 text-center py-2">Minutos</ITText>
           </div>
 
           <div className="flex h-56 relative bg-white">
@@ -306,7 +307,7 @@ export default function ITTimePicker({
               size="small"
               onClick={handleConfirm}
             >
-              Aceptar
+              <ITText as="span">Aceptar</ITText>
             </ITButton>
           </div>
         </div>

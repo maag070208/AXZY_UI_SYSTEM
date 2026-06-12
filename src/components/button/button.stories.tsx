@@ -86,12 +86,22 @@ export const RaisedText: Story = {
   },
 };
 
-// 7. Icon Only
+// 7. With Icon (icon prop + label)
+export const WithIcon: Story = {
+  args: {
+    label: 'Guardar',
+    color: 'primary',
+    variant: 'filled',
+    icon: <span style={{ fontSize: '1em' }}>💾</span>,
+  },
+};
+
+// 8. Icon Only
 export const IconOnly: Story = {
   args: {
     color: 'danger',
     variant: 'icon-only',
-    children: <span style={{ fontSize: '1.2em' }}>★</span>, // Simple inline icon representation
+    children: <span style={{ fontSize: '1.2em' }}>★</span>,
     ariaLabel: 'Favorite',
   },
 };

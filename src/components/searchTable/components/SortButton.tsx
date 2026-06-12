@@ -1,5 +1,6 @@
 import React from "react";
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
+import ITText from "@/components/text/text";
 
 interface SortButtonProps {
   sortConfig?: {
@@ -37,13 +38,13 @@ export default function SortButton({
       ) : (
         <FaSort className="w-4 h-4 text-gray-500" />
       )}
-      <span className="text-sm font-medium text-gray-700">
+      <ITText as="span" className="text-sm font-medium text-gray-700">
         {sortConfig
           ? sortConfig.direction === "asc"
             ? "Asc ↑"
             : "Desc ↓"
           : "Ordenar"}
-      </span>
+      </ITText>
     </button>
   );
 }

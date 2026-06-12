@@ -12,6 +12,7 @@ import ITInput from "../input/input";
 import ITPagination from "../pagination/pagination";
 import ITSelect from "../select/select";
 import { Column, ITTableProps } from "./table.props";
+import ITText from "@/components/text/text";
 
 const getNestedValue = (obj: unknown, path: string) => {
   return path.split(".").reduce((acc, part) => acc && acc[part], obj);
@@ -185,7 +186,7 @@ export default function ITTable<T extends Record<string, unknown>>({
        }
 
       if (col.catalogOptions.error) {
-        return <span className="text-red-500 text-xs">Error cargando</span>;
+        return <ITText as="span" className="text-red-500 text-xs">Error cargando</ITText>;
       }
 
       return (
@@ -266,7 +267,7 @@ export default function ITTable<T extends Record<string, unknown>>({
     {/* Header outside overflow */}
     {title && (
       <div className="px-6 py-5 border-b border-secondary-100" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
-        <h2 className="text-xl font-bold text-secondary-900 leading-tight">{title}</h2>
+        <ITText as="h2" className="text-xl font-bold text-secondary-900 leading-tight">{title}</ITText>
       </div>
     )}
 
@@ -291,7 +292,7 @@ export default function ITTable<T extends Record<string, unknown>>({
                    <div className="flex flex-col gap-3 min-w-[150px]">
                      {/* Column header */}
                      <div className="flex items-center justify-between gap-2">
-                       <span className="text-secondary-700 font-bold">{col.label}</span>
+                        <ITText as="span" className="text-secondary-700 font-bold">{col.label}</ITText>
                        {col.sortable && col.type !== "actions" && (
                          <button
                            onClick={() => handleSort(col.key)}
@@ -345,8 +346,8 @@ export default function ITTable<T extends Record<string, unknown>>({
               <tr>
                 <td colSpan={columns.length} className="px-6 py-12 text-center">
                   <div className="flex flex-col items-center justify-center text-secondary-400">
-                    <span className="text-lg">No se encontraron resultados</span>
-                    <span className="text-sm mt-1">Intenta ajustar los filtros</span>
+                    <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
+                    <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
                   </div>
                 </td>
               </tr>

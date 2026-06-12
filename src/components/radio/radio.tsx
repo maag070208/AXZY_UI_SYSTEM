@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { ITRadioGroupProps } from "./radio.props";
+import ITText from "@/components/text/text";
 
 export default function ITRadioGroup({
   name,
@@ -48,7 +49,7 @@ export default function ITRadioGroup({
             >
               {isSelected && <div className="w-2 h-2 rounded-full bg-primary-500" />}
             </div>
-            <span className="text-sm text-slate-700 dark:text-slate-300">{opt.label}</span>
+            <ITText as="span" className="text-sm text-slate-700 dark:text-slate-300">{opt.label}</ITText>
           </label>
         );
       })}

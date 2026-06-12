@@ -5,6 +5,7 @@ import { SizesTypes } from "@app/types/sizes.types";
 export interface ITButtonProps {
   label?: string
   children?: React.ReactNode;
+  icon?: React.ReactNode;
   onClick?: () => void;
   color?: ColorsTypes;
   size?: SizesTypes;

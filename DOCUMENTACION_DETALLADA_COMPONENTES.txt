@@ -47,6 +47,8 @@ mediante variables CSS a través de ITThemeProvider.
 33. ITStatCard (Tarjeta de Métrica con Valor y Tendencia)
 34. ITSegmentedControl (Selector Segmentado Exclusivo)
 35. ITDivider (Divisor Visual Horizontal / Vertical)
+36. ITPageHeader (Encabezado de Página)
+37. ITPage (Template de Página)
 
 ================================================================================
 1. ITThemeProvider
@@ -349,6 +351,7 @@ Botón de acción con variedad de variantes estéticas y colores semánticos.
 export interface ITButtonProps {
   label?: string;
   children?: React.ReactNode;
+  icon?: React.ReactNode;
   onClick?: () => void;
   color?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'purple' | 'error' | 'gray';
   size?: 'small' | 'medium' | 'large';
@@ -356,7 +359,19 @@ export interface ITButtonProps {
   disabled?: boolean;
   className?: string;
   type?: 'submit' | 'reset' | 'button';
+  ariaLabel?: string;
+  title?: string;
 }
+
+### Uso con icono
+```tsx
+<ITButton
+  label="Guardar Cambios"
+  color="primary"
+  icon={<FaSave />}
+  onClick={handleSave}
+/>
+```
 ```
 
 ### Ejemplo Real
@@ -1878,4 +1893,87 @@ export default function SettingsPanel() {
     </ITStack>
   );
 }
+```
+
+===============================================================================
+36. ITPageHeader
+===============================================================================
+Encabezado estandarizado para pantallas. Incluye título, descripción, breadcrumbs, botón de volver y área de acciones.
+
+### Props (ITPageHeaderProps)
+```typescript
+export interface ITPageHeaderProps {
+  title: string;
+  description?: string;
+  breadcrumbs?: ITBreadcrumbItem[];
+  actions?: ReactNode;
+  backAction?: () => void;
+
+### Usage
+```tsx
+<ITPageHeader
+  title="Usuarios"
+  description="Gestiona los usuarios del sistema"
+  breadcrumbs={[
+    { label: "Inicio", href: "#" },
+    { label: "Usuarios" },
+  ]}
+  actions={<ITButton label="Nuevo Usuario" size="small" />}
+/>
+```
+
+### Variants
+- **Solo título**: `<ITPageHeader title="Dashboard" />`
+- **Con descripción**: `<ITPageHeader title="Dashboard" description="Resumen de métricas" />`
+- **Con breadcrumbs**: breadcrumbs array con items que pueden tener href o onClick
+- **Con acciones**: actions ReactNode (botones, dropdowns, etc.)
+- **Con volver**: backAction renderiza un botón de flecha izquierda con icono claro
+
+===============================================================================
+37. ITPage
+===============================================================================
+Template completo de página con manejo de estados: carga, error, vacío y contenido normal. Envuelve toda pantalla estandarizando el layout con ITPageHeader integrado.
+
+### Props (ITPageProps)
+```typescript
+export interface ITPageProps {
+  title?: string;
+  description?: string;
+  breadcrumbs?: ITBreadcrumbItem[];
+  actions?: ReactNode;
+  backAction?: () => void;
+  loading?: boolean;
+  error?: string | null;
+  onRetry?: () => void;
+  empty?: boolean;
+  emptyTitle?: string;
+  emptyDescription?: string;
+  emptyAction?: ReactNode;
+  className?: string;
+  children: ReactNode;
+}
+
+### Usage
+```tsx
+<ITPage
+  title="Dashboard"
+  description="Resumen de actividad"
+  breadcrumbs={[{ label: "Dashboard" }]}
+  loading={isLoading}
+  error={error}
+  onRetry={refetch}
+>
+  <ITGrid container spacing={3}>
+    <ITGrid item xs={12} sm={6} lg={3}>
+      <ITStatCard label="Usuarios" value="1,245" />
+    </ITGrid>
+  </ITGrid>
+</ITPage>
+```
+
+### Estados
+- **loading**: Muestra skeletons automáticos (título + 3 rectángulos)
+- **error**: Muestra ITEmptyState con mensaje de error y botón de reintento (si onRetry está definido)
+- **empty**: Muestra ITEmptyState con título/descripción/action personalizables
+- **normal**: Renderiza ITPageHeader + children
 ```

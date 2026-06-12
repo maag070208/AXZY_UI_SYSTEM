@@ -10,6 +10,7 @@ import TableRow from "./components/TableRow";
 import { getNestedValue } from "@/utils/table.utils";
 import TableEmptyState from "./components/TableEmptyState";
 import PaginationControls from "./components/PaginationControls";
+import ITText from "@/components/text/text";
 
 interface CustomITSearchTableProps<T> extends ITSearchTableProps<T> {
   editingRow?: number | null;
@@ -106,9 +107,9 @@ return (
       {/* Header fijo */}
       {title && (
         <div className="bg-teal-500 text-white px-6 py-4">
-          <h2 className="text-xl font-bold text-center whitespace-nowrap">
+          <ITText as="h2" className="text-xl font-bold text-center whitespace-nowrap">
             {title}
-          </h2>
+          </ITText>
         </div>
       )}
 

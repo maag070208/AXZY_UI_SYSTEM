@@ -4,6 +4,7 @@ import { ITStepperProps, Step } from "./stepper.props";
 import { theme } from "@/theme/theme";
 import ITButton from "../button/button";
 import { FaChevronLeft, FaChevronRight, FaCheck } from "react-icons/fa";
+import ITText from "@/components/text/text";
 
 export default function ITStepper({
   steps,
@@ -105,7 +106,7 @@ export default function ITStepper({
       );
     }
 
-    return <span className="text-sm font-semibold">{index + 1}</span>;
+    return <ITText as="span" className="text-sm font-semibold">{index + 1}</ITText>;
   };
 
   return (
@@ -152,7 +153,8 @@ export default function ITStepper({
                     {renderStepContent(idx, isCompleted, isActive)}
                   </div>
 
-                  <span
+                  <ITText
+                    as="span"
                     className={clsx(
                       "mt-2 text-xs sm:text-sm font-medium transition-colors text-center",
                       isCompleted ? "text-slate-400" : !isActive && "text-gray-400"
@@ -160,7 +162,7 @@ export default function ITStepper({
                     style={isActive ? { color: resolvedColor } : undefined}
                   >
                     {step.label}
-                  </span>
+                  </ITText>
                 </div>
               </button>
             );
@@ -198,14 +200,14 @@ export default function ITStepper({
         >
           <div className="flex items-center gap-2">
             <FaChevronLeft />
-            Atrás
+            <ITText as="span">Atrás</ITText>
           </div>
         </ITButton>
 
         <div className="flex items-center gap-3">
-          <div className="text-sm text-gray-500 mr-2 hidden sm:block">
+          <ITText as="div" className="text-sm text-gray-500 mr-2 hidden sm:block">
             Paso {currentStep + 1} de {steps.length}
-          </div>
+          </ITText>
           
           <ITButton
             variant="solid"
@@ -214,7 +216,7 @@ export default function ITStepper({
             onClick={nextStep}
           >
             <div className="flex items-center gap-2">
-              {currentStep === steps.length - 1 ? "Finalizar" : "Siguiente"}
+              <ITText as="span">{currentStep === steps.length - 1 ? "Finalizar" : "Siguiente"}</ITText>
               {currentStep === steps.length - 1 ? <FaCheck /> : <FaChevronRight />}
             </div>
           </ITButton>

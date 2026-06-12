@@ -3,6 +3,7 @@ import { ITDrawerProps } from "./drawer.props";
 import { FaTimes } from "react-icons/fa";
 import useClickOutside from "@/hooks/useClickOutside";
 import { useRef } from "react";
+import ITText from "@/components/text/text";
 
 export default function ITDrawer({
   isOpen,
@@ -34,7 +35,7 @@ export default function ITDrawer({
           >
             {title && (
               <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-700">
-                <h2 className="text-lg font-bold text-slate-800 dark:text-white">{title}</h2>
+                <ITText as="h2" className="text-lg font-bold text-slate-800 dark:text-white">{title}</ITText>
                 <button
                   onClick={onClose}
                   className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 transition-colors"

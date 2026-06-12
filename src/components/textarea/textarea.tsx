@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { ITTextareaProps } from "./textarea.props";
 import { inputLabel, inputError } from "@/utils/styles";
+import ITText from "@/components/text/text";
 
 const resizeMap = {
   none: "resize-none",
@@ -25,9 +26,9 @@ export default function ITTextarea({
   return (
     <div className={clsx("flex flex-col gap-1.5", className)}>
       {label && (
-        <label className={inputLabel(!!error)} htmlFor={name}>
+        <ITText as="label" className={inputLabel(!!error)} htmlFor={name}>
           {label}
-        </label>
+        </ITText>
       )}
       <textarea
         id={name}
@@ -48,7 +49,7 @@ export default function ITTextarea({
           disabled && "opacity-50 cursor-not-allowed bg-gray-100 dark:bg-slate-800"
         )}
       />
-      {error && <span className={inputError}>{error}</span>}
+      {error && <ITText as="span" className={inputError}>{error}</ITText>}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ITTabsProps } from './tabs.props';
 import { clsx } from 'clsx';
+import ITText from "@/components/text/text";
 
 const ITTabs: React.FC<ITTabsProps> = ({
   items,
@@ -56,7 +57,7 @@ const ITTabs: React.FC<ITTabsProps> = ({
               )}
             >
               {item.icon && <span className="w-4 h-4">{item.icon}</span>}
-              {item.label}
+              <ITText as="span">{item.label}</ITText>
             </button>
           );
         })}

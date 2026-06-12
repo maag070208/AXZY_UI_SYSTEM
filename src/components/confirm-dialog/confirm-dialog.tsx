@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { ITConfirmDialogProps } from "./confirm-dialog.props";
 import ITButton from "../button/button";
 import { FaExclamationTriangle } from "react-icons/fa";
+import ITText from "@/components/text/text";
 
 export default function ITConfirmDialog({
   isOpen,
@@ -30,8 +31,8 @@ export default function ITConfirmDialog({
             <FaExclamationTriangle className="text-amber-600" size={18} />
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-bold text-slate-800 dark:text-white">{title}</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{message}</p>
+            <ITText as="h3" className="text-lg font-bold text-slate-800 dark:text-white">{title}</ITText>
+            <ITText as="p" className="text-sm text-slate-500 dark:text-slate-400 mt-1">{message}</ITText>
           </div>
         </div>
         <div className="flex justify-end gap-3 mt-6">

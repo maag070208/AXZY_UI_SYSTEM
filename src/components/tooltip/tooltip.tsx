@@ -1,6 +1,7 @@
 import { useState } from "react";
 import clsx from "clsx";
 import { ITTooltipProps, TooltipPosition } from "./tooltip.props";
+import ITText from "@/components/text/text";
 
 const positionClasses: Record<TooltipPosition, string> = {
   top: "bottom-full left-1/2 -translate-x-1/2 mb-2",
@@ -44,7 +45,7 @@ export default function ITTooltip({
       {visible && (
         <div className={clsx("absolute z-[200] pointer-events-none", positionClasses[position])}>
           <div className="bg-slate-800 dark:bg-slate-700 text-white text-xs rounded-lg px-2.5 py-1.5 whitespace-nowrap shadow-lg">
-            {content}
+            <ITText as="span">{content}</ITText>
           </div>
           <div className={clsx("absolute", arrowClasses[position])} />
         </div>

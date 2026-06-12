@@ -5,6 +5,7 @@ import {
   badgeSizes,
 } from "@/types/badget.types";
 import { theme } from "@/theme/theme";
+import ITText from "@/components/text/text";
 
 export default function ITBadget({
   children,
@@ -54,7 +55,7 @@ export default function ITBadget({
       )}
       style={getStyle()}
     >
-      {children || <span className={clsx("font-semibold")}>{label}</span>}
+      {children || <ITText as="span" className={clsx("font-semibold")}>{label}</ITText>}
     </span>
   );
 }

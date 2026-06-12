@@ -29,6 +29,8 @@ import ITGrid from "./components/grid/grid";
 import ITImage from "./components/image/image";
 import ITInput from "./components/input/input";
 import ITNavbar from "./components/navbar/navbar";
+import ITPage from "./components/page/page";
+import ITPageHeader from "./components/page-header/page-header";
 import ITPagination from "./components/pagination/pagination";
 import ITPopover from "./components/popover/popover";
 import ITProgress from "./components/progress/progress";
@@ -73,6 +75,8 @@ import type { ITGridProps } from "./components/grid/grid.props";
 import type { ITImageProps } from "./components/image/image.props";
 import type { ITInputProps } from "./components/input/input.props";
 import type { ITNavbarProps } from "./components/navbar/navbar.props";
+import type { ITPageProps } from "./components/page/page.props";
+import type { ITPageHeaderProps } from "./components/page-header/page-header.props";
 import type { ITPaginationProps } from "./components/pagination/pagination.props";
 import type { ITPopoverProps } from "./components/popover/popover.props";
 import type { ITProgressProps } from "./components/progress/progress.props";
@@ -122,7 +126,7 @@ export {
   ITCard, ITCheckbox, ITConfirmDialog, ITDataTable, ITDatePicker,
   ITDialog, ITDivider, ITDrawer,
   ITDropfile, ITEmptyState, ITFlex, ITFormBuilder, ITFormHeader, ITGrid, ITImage, ITInput, ITLayout,
-  ITLoader, ITNavbar, ITPagination, ITPopover, ITProgress,
+  ITLoader,   ITNavbar, ITPage, ITPageHeader, ITPagination, ITPopover, ITProgress,
   ITRadioGroup, ITSelect, ITSearchSelect,
   ITSearchTable,
   ITSegmentedControl, ITSidebar, ITSkeleton, ITSlideToggle, ITSlider, ITStack, ITStatCard, ITStepper,
@@ -145,6 +149,7 @@ export {
     ITFormBuilderProps, ITFormHeaderProps,
     ITGridProps, ITImageProps, ITInputProps,
     ITLayoutProps, ITLoaderProps, ITNavbarProps,
+    ITPageProps, ITPageHeaderProps,
     ITNavigationItem, ITNavigationSubItem,
     ITPaginationProps, ITPopoverProps, ITProgressProps,
     ITRadioGroupProps, ITRadioOption, ITSelectProps, ITSearchSelectProps,

@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { ITCheckboxProps } from "./checkbox.props";
+import ITText from "@/components/text/text";
 
 export default function ITCheckbox({
   checked = false,
@@ -45,7 +46,7 @@ export default function ITCheckbox({
           <div className="w-2 h-0.5 bg-slate-500 rounded" />
         )}
       </div>
-      {label && <span className="text-sm text-slate-700 dark:text-slate-300">{label}</span>}
+      {label && <ITText as="span" className="text-sm text-slate-700 dark:text-slate-300">{label}</ITText>}
     </label>
   );
 }

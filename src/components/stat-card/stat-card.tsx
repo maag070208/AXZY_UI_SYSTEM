@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { ITStatCardProps } from "./stat-card.props";
+import ITText from "@/components/text/text";
 
 const trendColors = {
   up: "text-emerald-600 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-950/30",
@@ -27,15 +28,15 @@ export default function ITStatCard({
       tabIndex={onClick ? 0 : undefined}
     >
       <div className="flex items-start justify-between mb-1">
-        <span className="text-xs font-medium text-slate-400 dark:text-slate-500">{label}</span>
+        <ITText as="span" className="text-xs font-medium text-slate-400 dark:text-slate-500">{label}</ITText>
         {icon && <span className="text-slate-400">{icon}</span>}
       </div>
       <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-bold text-slate-800 dark:text-white">{value}</span>
+        <ITText as="span" className="text-2xl font-bold text-slate-800 dark:text-white">{value}</ITText>
         {trend && (
-          <span className={clsx("text-[11px] font-semibold px-1.5 py-0.5 rounded-md", trendColors[trendDirection])}>
+          <ITText as="span" className={clsx("text-[11px] font-semibold px-1.5 py-0.5 rounded-md", trendColors[trendDirection])}>
             {trend}
-          </span>
+          </ITText>
         )}
       </div>
     </div>

@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { ITSegmentedControlProps } from "./segmented-control.props";
+import ITText from "@/components/text/text";
 
 const sizeMap = {
   sm: { button: "px-2.5 py-1.5 text-[11px]", container: "p-0.5" },
@@ -42,7 +43,7 @@ export default function ITSegmentedControl({
             )}
           >
             {opt.icon && <span>{opt.icon}</span>}
-            {opt.label}
+            <ITText as="span">{opt.label}</ITText>
           </button>
         );
       })}

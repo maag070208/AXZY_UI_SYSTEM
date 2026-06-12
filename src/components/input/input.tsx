@@ -4,6 +4,7 @@ import { ITInputProps } from "./input.props";
 import { KeyboardEvent, useState, useEffect, useRef, useCallback } from "react";
 import { theme } from "@/theme/theme";
 import { disabledOverlay, iconAbsoluteLeft, iconAbsoluteRight, inputError, inputLabel } from "@/utils/styles";
+import ITText from "@/components/text/text";
 
 export default function ITInput({
   name,
@@ -447,7 +448,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
               />
               {label && (
                 <label htmlFor={name} className="text-sm text-gray-700 dark:text-slate-300 select-none">
-                  {label} {required && <span className="text-red-500">*</span>}
+                  {label} {required && <ITText as="span" className="text-red-500">*</ITText>}
                 </label>
               )}
            </div>
@@ -463,7 +464,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                   )}
                 >
                   {label}
-                  {required && <span className="text-red-500 ml-1">*</span>}
+                  {required && <ITText as="span" className="text-red-500 ml-1">*</ITText>}
                 </label>
              )}
              
@@ -590,23 +591,23 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
              {/* Validation message aligned with input */}
        {hasError && !isCheckboxOrRadio && (
          <div className="flex-shrink-0 min-w-[140px] flex items-center pt-3">
-           <p className={inputError}>{errorMessage}</p>
+           <ITText as="p" className={inputError}>{errorMessage}</ITText>
          </div>
        )}
        
        {/* Length hint below if needed */}
        {showHintLength && (minLength || maxLength) && !isCheckboxOrRadio && (
          <div className="mt-1 text-xs">
-           <p className="text-gray-500">
-             {currentLength}{maxLength && `/${maxLength}`}
-           </p>
+<ITText as="p" className="text-gray-500">
+              {currentLength}{maxLength && `/${maxLength}`}
+            </ITText>
          </div>
        )}
        
        {/* Validation for checkbox/radio - keep below */}
        {isCheckboxOrRadio && hasError && (
          <div className="mt-1 text-xs">
-           <p className="text-red-500">{errorMessage}</p>
+           <ITText as="p" className="text-red-500">{errorMessage}</ITText>
          </div>
        )}
     </div>

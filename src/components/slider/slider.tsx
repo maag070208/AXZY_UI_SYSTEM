@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { ITSliderProps } from "./slider.props";
+import ITText from "@/components/text/text";
 
 export default function ITSlider({
   value,
@@ -14,9 +15,9 @@ export default function ITSlider({
   return (
     <div className={clsx("flex flex-col gap-1.5", className)}>
       {label && (
-        <label className="text-xs font-semibold text-gray-600 dark:text-gray-400">
+        <ITText as="label" className="text-xs font-semibold text-gray-600 dark:text-gray-400">
           {label}: {value}
-        </label>
+        </ITText>
       )}
       <div className="relative w-full h-5 flex items-center">
         <input

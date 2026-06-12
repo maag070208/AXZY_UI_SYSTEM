@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { ITTripleFilterProps } from "./tripleFilter.props";
 import { ColorsTypes } from "@/types/colors.types";
+import ITText from "@/components/text/text";
 
 const colorMap: Record<ColorsTypes, string> = {
   primary: "text-primary-600",
@@ -39,7 +40,7 @@ export const ITTripleFilter = <T extends string | boolean>({
               : "text-slate-400 hover:text-slate-600"
           )}
         >
-          {option.label}
+          <ITText as="span">{option.label}</ITText>
         </button>
       ))}
     </div>

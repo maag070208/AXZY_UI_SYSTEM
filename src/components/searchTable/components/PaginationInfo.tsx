@@ -1,4 +1,5 @@
 import React from "react";
+import ITText from "@/components/text/text";
 
 interface PaginationInfoProps {
   currentCount: number;
@@ -12,8 +13,8 @@ export default function PaginationInfo({
   className = "",
 }: PaginationInfoProps) {
   return (
-    <span className={`text-sm text-gray-700 ${className}`}>
+    <ITText as="span" className={`text-sm text-gray-700 ${className}`}>
       Mostrando {currentCount} de {totalCount} resultados
-    </span>
+    </ITText>
   );
 }

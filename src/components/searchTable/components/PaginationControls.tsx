@@ -3,6 +3,7 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import PaginationInfo from "./PaginationInfo";
 import ITSelect from "@/components/select/select";
 import ITButton from "@/components/button/button";
+import ITText from "@/components/text/text";
 
 interface PaginationControlsProps {
   pageIndex: number;
@@ -35,7 +36,7 @@ export default function PaginationControls({
         <PaginationInfo currentCount={currentCount} totalCount={totalCount} />
 
         <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-700">Mostrar:</span>
+          <ITText as="span" className="text-sm text-gray-700">Mostrar:</ITText>
           <ITSelect
             name="itemsPerPage"
             options={itemsPerPageOptions.map((option) => ({
@@ -64,9 +65,9 @@ export default function PaginationControls({
           <FaArrowLeft aria-hidden="true" />
         </ITButton>
 
-        <span className="px-4 py-2 text-sm text-gray-700" aria-live="polite">
+        <ITText as="span" className="px-4 py-2 text-sm text-gray-700" aria-live="polite">
           Página {pageIndex} de {totalPages}
-        </span>
+        </ITText>
 
         <ITButton
           size="small"

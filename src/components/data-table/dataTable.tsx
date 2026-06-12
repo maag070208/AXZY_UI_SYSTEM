@@ -10,6 +10,7 @@ import ITSelect from "../select/select";
 import { Column } from "../table/table.props";
 import { formatCurrencyMX } from "../table/table";
 import { ITDataTableProps } from "./dataTable.props";
+import ITText from "@/components/text/text";
 
 const getNestedValue = (obj: unknown, path: string) => {
   return path.split(".").reduce((acc, part) => acc && acc[part], obj);
@@ -130,7 +131,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
         return <FaSpinner className="animate-spin" aria-label="Cargando opciones" title="Cargando opciones" />;
       }
       if (col.catalogOptions.error) {
-        return <span className="text-red-500 text-xs">Error cargando</span>;
+        return <ITText as="span" className="text-red-500 text-xs">Error cargando</ITText>;
       }
       return (
         <ITSelect
@@ -198,7 +199,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
       <div className="rounded-xl shadow-sm border border-secondary-200 overflow-hidden" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
         {title && (
           <div className="px-6 py-5 border-b border-secondary-100 flex justify-between items-center" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
-            <h2 className="text-xl font-bold text-secondary-900 leading-tight">{title}</h2>
+            <ITText as="h2" className="text-xl font-bold text-secondary-900 leading-tight">{title}</ITText>
             {isLoading && (
               <div className="text-secondary-400">
                 {loadingIndicator || <FaSpinner className="animate-spin text-primary-500 text-xl" />}
@@ -214,7 +215,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                   {loadingIndicator || (
                     <>
                       <FaSpinner className="animate-spin text-primary-500 text-4xl" />
-                      <span className="text-sm font-semibold text-secondary-600 animate-pulse">Cargando datos...</span>
+                      <ITText as="span" className="text-sm font-semibold text-secondary-600 animate-pulse">Cargando datos...</ITText>
                     </>
                   )}
                </div>
@@ -236,7 +237,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                   <th key={col.key} scope="col" className={clsx("px-4 py-4 align-top", col.className)}>
                     <div className="flex flex-col gap-3 min-w-[150px]">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-secondary-700 font-bold">{col.label}</span>
+                        <ITText as="span" className="text-secondary-700 font-bold">{col.label}</ITText>
                         {col.sortable && col.type !== "actions" && (
                           <button
                             onClick={() => handleSort(col.key)}
@@ -283,8 +284,8 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                   <td colSpan={columns.length} className="px-6 py-20 text-center">
                     {!isLoading && (
                       <div className="flex flex-col items-center justify-center text-secondary-400">
-                        <span className="text-lg">No se encontraron resultados</span>
-                        <span className="text-sm mt-1">Intenta ajustar los filtros</span>
+                        <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
+                        <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
                       </div>
                     )}
                   </td>

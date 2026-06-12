@@ -8,6 +8,7 @@ import ITDatePicker from "../date-picker/datePicker";
 import ITTimePicker from "../time-picker/timePicker";
 import { useFieldRules } from "./useFormBuilder";
 import { getColSpanClass, getGridColsClass } from "@/utils/styles";
+import ITText from "@/components/text/text";
 
 
 
@@ -177,9 +178,9 @@ const ITFieldRenderer = ({
         return (
           <div className={clsx("w-full col-span-full", activeConfig.className)}>
             {label && (
-              <h4 className="text-lg font-semibold text-gray-800 mb-4">
+              <ITText as="h4" className="text-lg font-semibold text-gray-800 mb-4">
                 {label}
-              </h4>
+              </ITText>
             )}
             <div className={clsx("grid gap-y-6 gap-x-5", getGridColsClass(columns as any))}>
               {activeConfig.fields?.map((childConfig) => (
@@ -196,9 +197,9 @@ const ITFieldRenderer = ({
       case "array":
         return (
           <div className="p-4 border-2 border-dashed border-gray-200 rounded-xl">
-            <p className="text-sm text-gray-500 text-center">
+            <ITText as="p" className="text-sm text-gray-500 text-center">
               Array Field: {label}
-            </p>
+            </ITText>
           </div>
         );
 

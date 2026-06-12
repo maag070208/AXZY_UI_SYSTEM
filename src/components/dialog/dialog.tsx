@@ -5,6 +5,7 @@ import { FaRegTimesCircle } from "react-icons/fa";
 import { ITDialogProps } from "./dialog.props";
 import useClickOutside from "@/hooks/useClickOutside";
 import ITFormHeader from "../form-header/form-header";
+import ITText from "@/components/text/text";
 
 export default function ITDialog({
   isOpen,
@@ -75,7 +76,7 @@ export default function ITDialog({
             >
               <FaRegTimesCircle />
             </button>
-            {title && <h2 className="text-xl font-semibold mb-4">{title}</h2>}
+            {title && <ITText as="h2" className="text-xl font-semibold mb-4">{title}</ITText>}
             <div>{children}</div>
           </>
         )}

@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { ITAlertProps, AlertVariant } from "./alert.props";
 import { FaInfoCircle, FaCheckCircle, FaExclamationTriangle, FaTimesCircle, FaTimes } from "react-icons/fa";
 import { theme } from "@/theme/theme";
+import ITText from "@/components/text/text";
 
 const config: Record<AlertVariant, { icon: React.ReactNode; classes: string }> = {
   info: {
@@ -39,8 +40,8 @@ export default function ITAlert({
     >
       <span className="mt-0.5 flex-shrink-0">{icon || cfg.icon}</span>
       <div className="flex-1 min-w-0">
-        {title && <p className="text-sm font-bold mb-0.5">{title}</p>}
-        {children && <div className="text-sm opacity-90">{children}</div>}
+        {title && <ITText as="p" className="text-sm font-bold mb-0.5">{title}</ITText>}
+        {children && <ITText as="div" className="text-sm opacity-90">{children}</ITText>}
       </div>
       {dismissible && onDismiss && (
         <button onClick={onDismiss} className="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity">

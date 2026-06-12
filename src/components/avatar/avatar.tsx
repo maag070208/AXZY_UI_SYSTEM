@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { ITAvatarProps, AvatarSize } from "./avatar.props";
+import ITText from "@/components/text/text";
 
 const sizeMap: Record<AvatarSize, { container: string; text: string }> = {
   xs: { container: "w-6 h-6", text: "text-[10px]" },
@@ -39,7 +40,7 @@ export default function ITAvatar({
         />
       ) : (
         <div className={clsx("w-full h-full rounded-full flex items-center justify-center text-white font-semibold", text, color)}>
-          {initials || alt.charAt(0).toUpperCase() || "?"}
+          <ITText as="span">{initials || alt.charAt(0).toUpperCase() || "?"}</ITText>
         </div>
       )}
       {badge && (

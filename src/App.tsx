@@ -27,6 +27,10 @@ import {
   ScreenCardGridShowcase,
 } from "./showcases/LayoutPrimitivesShowcases";
 import {
+  PageHeaderShowcase,
+  PageShowcase,
+} from "./showcases/PageShowcases";
+import {
   ButtonShowcase,
   InputShowcase,
   SelectShowcase,
@@ -82,6 +86,8 @@ function App() {
         { id: "grid", label: "ITGrid" },
         { id: "card", label: "ITCard" },
         { id: "text", label: "ITText" },
+        { id: "pageheader", label: "ITPageHeader" },
+        { id: "page", label: "ITPage" },
         { id: "screen-dashboard", label: "Dashboard Ejemplo" },
         { id: "screen-form", label: "Formulario Ejemplo" },
         { id: "screen-cardgrid", label: "Grid Tarjetas Ejemplo" },
@@ -225,6 +231,10 @@ function App() {
         return <CardShowcase />;
       case "text":
         return <TextShowcase />;
+      case "pageheader":
+        return <PageHeaderShowcase />;
+      case "page":
+        return <PageShowcase />;
       case "screen-dashboard":
         return <ScreenDashboardShowcase />;
       case "screen-form":
@@ -331,8 +341,7 @@ function App() {
                 />
               </div>
             </div>
-          </div>Diseñador de Temas ITTheme
-
+          </div>
           <div className="bg-white/50 dark:bg-slate-950/10 border border-slate-100 dark:border-slate-900 rounded-3xl p-6 md:p-8 backdrop-blur-sm min-h-[500px]">
             {renderShowcase()}
           </div>
