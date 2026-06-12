@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { FaSync } from "react-icons/fa";
+import { FaSync, FaSave, FaTrash, FaEdit } from "react-icons/fa";
 import {
   ITButton,
   ITInput,
@@ -21,14 +21,15 @@ export const ButtonShowcase = () => {
   const [size, setSize] = useState<any>("medium");
   const [variant, setVariant] = useState<any>("filled");
   const [disabled, setDisabled] = useState(false);
+  const [withIcon, setWithIcon] = useState(false);
   const [clickCount, setClickCount] = useState(0);
 
-  const code = `<ITButton\n  label="Hacer Click"\n  color="${color}"\n  size="${size}"\n  variant="${variant}"\n  disabled={${disabled}}\n  onClick={() => console.log('Click!')}\n/>`;
+  const code = `<ITButton\n  label="Hacer Click"\n  color="${color}"\n  size="${size}"\n  variant="${variant}"${withIcon ? '\n  icon={<FaSync />}' : ""}\n  disabled={${disabled}}\n  onClick={() => console.log('Click!')}\n/>`;
 
   return (
     <ShowcaseLayout
       title="ITButton"
-      description="Botón premium con soporte completo de variantes, colores del tema y estados."
+      description="Botón premium con soporte completo de variantes, colores del tema, icono y estados."
       code={code}
       demo={
         <div className="flex flex-col items-center gap-3">
@@ -38,6 +39,7 @@ export const ButtonShowcase = () => {
             size={size}
             variant={variant}
             disabled={disabled}
+            icon={withIcon ? <FaSync /> : undefined}
             onClick={() => setClickCount(c => c + 1)}
           />
           {clickCount > 0 && (
@@ -92,6 +94,10 @@ export const ButtonShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between pt-2">
+            <span className="text-sm font-semibold text-gray-700">Con Icono</span>
+            <ITSlideToggle isOn={withIcon} onToggle={setWithIcon} size="sm" />
+          </div>
+          <div className="flex items-center justify-between">
             <span className="text-sm font-semibold text-gray-700">Deshabilitado</span>
             <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
           </div>
@@ -99,6 +105,15 @@ export const ButtonShowcase = () => {
       }
       gallery={
         <div className="space-y-6">
+          <div>
+            <h4 className="text-sm font-bold text-slate-700 mb-3">Con Icono</h4>
+            <div className="flex flex-wrap gap-3">
+              <ITButton label="Guardar" icon={<FaSave />} color="success" />
+              <ITButton label="Editar" icon={<FaEdit />} color="info" />
+              <ITButton label="Eliminar" icon={<FaTrash />} color="danger" variant="outlined" />
+              <ITButton label="Sincronizar" icon={<FaSync />} variant="text" />
+            </div>
+          </div>
           <div>
             <h4 className="text-sm font-bold text-slate-700 mb-3">Variantes</h4>
             <div className="flex flex-wrap gap-3">

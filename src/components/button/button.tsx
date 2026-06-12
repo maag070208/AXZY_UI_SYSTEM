@@ -6,10 +6,12 @@ import clsx from "clsx";
 import { useState } from "react";
 import { theme } from "@/theme/theme";
 import { ITButtonProps } from "./button.props";
+import ITText from "@/components/text/text";
 
 export default function ITButton({
   children,
   label,
+  icon,
   onClick,
   type = "button",
   color = "primary",
@@ -69,9 +71,9 @@ export default function ITButton({
       style.backgroundColor = (isHovered && !disabled) ? `${mainColor}10` : "transparent";
       style.color = mainColor;
     } else if (isRaisedText) {
-      style.backgroundColor = "#ffffff";
+      style.backgroundColor = "var(--card-bg, #ffffff)";
       style.color = mainColor;
-      if (isHovered && !disabled) style.backgroundColor = "#f8fafc"; 
+      if (isHovered && !disabled) style.backgroundColor = "var(--card-header-bg, #f8fafc)"; 
     }
 
     // Apply focus style from theme (box-shadow ring)
@@ -105,8 +107,9 @@ export default function ITButton({
       title={title || ariaLabel || label}
     >
       {children || (
-        <span className={clsx("font-semibold", { "opacity-50": disabled })}>
-          {label}
+        <span className={clsx("inline-flex items-center gap-1.5 font-semibold", { "opacity-50": disabled })}>
+          {icon && <span className="flex-shrink-0">{icon}</span>}
+          <ITText as="span">{label}</ITText>
         </span>
       )}
     </button>

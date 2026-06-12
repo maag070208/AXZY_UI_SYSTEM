@@ -1,8 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { MdPalette, MdClose, MdRefresh, MdCheck } from "react-icons/md";
+import { MdPalette, MdClose, MdRefresh } from "react-icons/md";
 import { ITThemeProviderProps, ITThemePalette } from "./themeProvider.props";
 import ITDialog from "../dialog/dialog";
 import ITTabs from "../tabs/tabs";
+import ITButton from "../button/button";
+import ITInput from "../input/input";
+import ITSegmentedControl from "../segmented-control/segmented-control";
+import ITDivider from "../divider/divider";
+import ITText from "@/components/text/text";
 
 // ============================================================================
 // DEFAULT PALETTE & PRESETS CONFIG
@@ -35,131 +40,127 @@ export const DEFAULT_PALETTE: ITThemePalette = {
 
 export const PRESETS: { name: string; colors: ITThemePalette }[] = [
   {
-    name: "Midnight Nova 🌌",
+    name: "Midnight Indigo 🌌",
     colors: {
-      primary: "#6366f1", // Indigo
-      secondary: "#475569", // Slate
-      ternary: "#f472b6", // Pink (was Purple — now distinct from primary)
-      danger: "#ef4444", // Red
-      success: "#34d399", // Emerald (distinct green tone)
-      info: "#38bdf8", // Sky
-      alert: "#fb923c", // Orange
-      warning: "#fbbf24", // Amber
+      primary: "#6366f1",
+      secondary: "#475569",
+      ternary: "#f472b6",
+      danger: "#ef4444",
+      success: "#34d399",
+      info: "#06b6d4",
+      alert: "#fb923c",
+      warning: "#fbbf24",
       layout: {
-        sidebarBg: "#020617",
-        sidebarText: "#cbd5e1",
+        sidebarBg: "#0b1120",
+        sidebarText: "#94a3b8",
         navbarBg: "#0f172a",
-        navbarText: "#f8fafc",
+        navbarText: "#f1f5f9",
       },
       table: {
-        headerBg: "#f8fafc",
+        headerBg: "#f1f5f9",
         headerText: "#334155",
         rowBg: "#ffffff",
-        rowText: "#1e293b",
+        rowText: "#0f172a",
       },
     },
   },
-
   {
-    name: "Tokyo Drift 🏎️",
+    name: "Coral Reef 🪸",
     colors: {
-      primary: "#f43f5e", // Rose
-      secondary: "#64748b", // Slate
-      ternary: "#fb923c", // Orange
-      danger: "#b91c1c", // Dark Red (distinct from Rose primary)
-      success: "#2dd4bf", // Teal (NOT green — avoids confusion with primary hue)
-      info: "#818cf8", // Indigo (distinct from sky/cyan)
-      alert: "#f59e0b", // Amber (distinct from orange ternary)
-      warning: "#fde047", // Yellow
+      primary: "#f43f5e",
+      secondary: "#57534e",
+      ternary: "#f97316",
+      danger: "#b91c1c",
+      success: "#14b8a6",
+      info: "#6366f1",
+      alert: "#eab308",
+      warning: "#fde047",
       layout: {
-        sidebarBg: "#0f050b",
+        sidebarBg: "#0c0808",
         sidebarText: "#fda4af",
-        navbarBg: "#1c0a15",
-        navbarText: "#ffe4e6",
+        navbarBg: "#1c1212",
+        navbarText: "#fff1f2",
       },
       table: {
-        headerBg: "#f8fafc",
-        headerText: "#334155",
+        headerBg: "#fff1f2",
+        headerText: "#881337",
         rowBg: "#ffffff",
-        rowText: "#1e293b",
+        rowText: "#1c1212",
       },
     },
   },
-
   {
-    name: "Ocean Core 🌊",
+    name: "Oceanic Teal 🌊",
     colors: {
-      primary: "#0ea5e9", // Sky
-      secondary: "#64748b", // Slate
-      ternary: "#a78bfa", // Violet (distinct from Sky primary)
-      danger: "#f43f5e", // Rose (distinct red, not plain red)
-      success: "#34d399", // Emerald
-      info: "#6366f1", // Indigo (distinct from Sky primary)
-      alert: "#fb923c", // Orange
-      warning: "#fbbf24", // Amber
+      primary: "#0d9488",
+      secondary: "#64748b",
+      ternary: "#a78bfa",
+      danger: "#e11d48",
+      success: "#22c55e",
+      info: "#0284c7",
+      alert: "#ea580c",
+      warning: "#ca8a04",
       layout: {
-        sidebarBg: "#031b2f",
-        sidebarText: "#7dd3fc",
-        navbarBg: "#0b253c",
-        navbarText: "#e0f2fe",
+        sidebarBg: "#042f2e",
+        sidebarText: "#5eead4",
+        navbarBg: "#062b2a",
+        navbarText: "#ccfbf1",
       },
       table: {
-        headerBg: "#f8fafc",
-        headerText: "#334155",
+        headerBg: "#f0fdfa",
+        headerText: "#115e59",
         rowBg: "#ffffff",
-        rowText: "#1e293b",
+        rowText: "#042f2e",
       },
     },
   },
-
   {
-    name: "Matrix Pulse 💚",
+    name: "Golden Hour ☀️",
     colors: {
-      primary: "#10b981", // Emerald
-      secondary: "#64748b", // Slate
-      ternary: "#84cc16", // Lime (yellow-green, distinct from emerald)
-      danger: "#ef4444", // Red
-      success: "#2dd4bf", // Teal (distinct cyan-green, NOT another green)
-      info: "#38bdf8", // Sky blue (distinct from greens)
-      alert: "#f97316", // Orange
-      warning: "#fbbf24", // Amber (distinct from orange)
+      primary: "#d97706",
+      secondary: "#78716c",
+      ternary: "#db2777",
+      danger: "#dc2626",
+      success: "#65a30d",
+      info: "#2563eb",
+      alert: "#f97316",
+      warning: "#facc15",
       layout: {
-        sidebarBg: "#022c1b",
-        sidebarText: "#6ee7b7",
-        navbarBg: "#043e26",
-        navbarText: "#d1fae5",
+        sidebarBg: "#fefce8",
+        sidebarText: "#713f12",
+        navbarBg: "#fffbeb",
+        navbarText: "#451a03",
       },
       table: {
-        headerBg: "#f8fafc",
-        headerText: "#334155",
+        headerBg: "#fefce8",
+        headerText: "#713f12",
         rowBg: "#ffffff",
-        rowText: "#1e293b",
+        rowText: "#292524",
       },
     },
   },
-
   {
-    name: "Royal Velvet 👑",
+    name: "Deep Forest 🌲",
     colors: {
-      primary: "#8b5cf6", // Violet
-      secondary: "#64748b", // Slate
-      ternary: "#ec4899", // Pink (distinct from violet)
-      danger: "#ef4444", // Red
-      success: "#34d399", // Emerald (clean green, distinct from violet)
-      info: "#38bdf8", // Sky (distinct from violet/pink)
-      alert: "#fb923c", // Orange
-      warning: "#fbbf24", // Amber
+      primary: "#16a34a",
+      secondary: "#57534e",
+      ternary: "#d946ef",
+      danger: "#dc2626",
+      success: "#14b8a6",
+      info: "#0ea5e9",
+      alert: "#f97316",
+      warning: "#eab308",
       layout: {
-        sidebarBg: "#1e0b36",
-        sidebarText: "#c084fc",
-        navbarBg: "#291048",
-        navbarText: "#f3e8ff",
+        sidebarBg: "#052e16",
+        sidebarText: "#86efac",
+        navbarBg: "#0b3b1c",
+        navbarText: "#dcfce7",
       },
       table: {
-        headerBg: "#f8fafc",
-        headerText: "#334155",
+        headerBg: "#f0fdf4",
+        headerText: "#166534",
         rowBg: "#ffffff",
-        rowText: "#1e293b",
+        rowText: "#052e16",
       },
     },
   },
@@ -278,8 +279,6 @@ export default function ITThemeProvider({
   });
 
   const [isOpen, setIsOpen] = useState(false);
-  const [showSavedToast, setShowSavedToast] = useState(false);
-
   const [customPresets, setCustomPresets] = useState<
     { name: string; colors: ITThemePalette }[]
   >(() => {
@@ -305,7 +304,6 @@ export default function ITThemeProvider({
     localStorage.setItem("it-theme-custom-presets", JSON.stringify(updated));
     setNewPresetName("");
     setIsSavingPreset(false);
-    setShowSavedToast(true);
   };
 
   const handleDeletePreset = (nameToDelete: string, e: React.MouseEvent) => {
@@ -502,6 +500,8 @@ export default function ITThemeProvider({
         --color-alert: ${palette.alert};
         --color-warning: ${palette.warning};
         --color-heading-default: #1e293b;
+        --color-text-default: var(--color-secondary-900);
+        --color-text-muted: var(--color-secondary-600);
 
         /* Generated scales for primary */
         --color-primary-50: color-mix(in srgb, var(--color-primary) 5%, #ffffff);
@@ -699,6 +699,13 @@ export default function ITThemeProvider({
         --topbar-border: color-mix(in srgb, var(--color-navbarBg) 85%, #000000);
         --topbar-icon: color-mix(in srgb, var(--color-navbarText) 80%, transparent);
         --topbar-icon-hover: var(--color-navbarText);
+        --topbar-user-bg: var(--topbar-bg);
+        --topbar-user-hover: color-mix(in srgb, var(--color-navbarText) 10%, transparent);
+        --topbar-user-text: var(--color-navbarText);
+        --topbar-user-subtitle: color-mix(in srgb, var(--color-navbarText) 65%, transparent);
+        --topbar-user-dropdown-bg: color-mix(in srgb, var(--color-navbarBg) 100%, #ffffff);
+        --topbar-user-dropdown-border: color-mix(in srgb, var(--color-navbarBg) 92%, #000000);
+        --topbar-user-item-hover: color-mix(in srgb, var(--color-navbarText) 6%, transparent);
 
         --layout-bg: var(--color-secondary-50);
         --input-text-color: var(--color-secondary-900);
@@ -713,6 +720,8 @@ export default function ITThemeProvider({
       /* Dark mode overrides */
       .dark, [data-theme="dark"] {
         --color-heading-default: #f8fafc;
+        --color-text-default: #cbd5e1;
+        --color-text-muted: #64748b;
         --layout-bg: #090f1d;
         --card-bg: #111827;
         --card-border: #1f2937;
@@ -826,6 +835,8 @@ export default function ITThemeProvider({
       /* Light mode overrides inside forced light subtree */
       [data-theme="light"] {
         color: #334155;
+        --color-text-default: #1e293b;
+        --color-text-muted: #475569;
         --layout-bg: var(--color-secondary-50);
         --card-bg: #ffffff;
         --card-border: #f1f5f9;
@@ -1494,9 +1505,6 @@ export default function ITThemeProvider({
       }
     `;
 
-    setShowSavedToast(true);
-    const timer = setTimeout(() => setShowSavedToast(false), 1500);
-    return () => clearTimeout(timer);
   }, [palette, resolvedTheme]);
 
   const updateColor = (key: string, value: string) => {
@@ -1535,45 +1543,93 @@ export default function ITThemeProvider({
     setPaletteState(basePalette as ITThemePalette);
   };
 
-  const renderColorRow = (key: string) => {
-    const isNested = key.includes(".");
-    const displayLabel = isNested ? key.split(".")[1] : key;
-    const value = getNestedValue(palette, key);
+  const ColorRow = ({ colorKey }: { colorKey: string }) => {
+    const isNested = colorKey.includes(".");
+    const label = isNested ? colorKey.split(".")[1] : colorKey;
+    const value = getNestedValue(palette, colorKey);
 
     return (
       <div
-        key={key}
-        className="flex items-center justify-between p-2 rounded-lg border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 gap-2"
+        key={colorKey}
+        className="flex items-center justify-between p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 gap-3 hover:border-slate-200 dark:hover:border-slate-700 transition-colors"
       >
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="relative w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 overflow-hidden cursor-pointer flex items-center justify-center shadow-inner flex-shrink-0">
+          <div className="relative w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 overflow-hidden cursor-pointer flex-shrink-0 shadow-sm hover:scale-105 transition-transform">
             <input
               type="color"
               value={value}
-              onChange={(e) => updateColor(key, e.target.value)}
+              onChange={(e) => updateColor(colorKey, e.target.value)}
               className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
             />
-            <div
-              className="w-full h-full rounded-full"
-              style={{ backgroundColor: value }}
-            />
+            <div className="w-full h-full" style={{ backgroundColor: value }} />
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 truncate">
-              {displayLabel}
-            </span>
-            <span className="font-mono text-[9px] text-slate-400">{value}</span>
+            <ITText as="span" className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate capitalize">
+              {label.replace(/([A-Z])/g, " $1").trim()}
+            </ITText>
+            <div className="flex items-center gap-2 mt-0.5">
+              <span
+                className="w-3 h-3 rounded-full border border-slate-200 dark:border-slate-600"
+                style={{ backgroundColor: value }}
+              />
+              <ITText as="span" className="font-mono text-[11px] text-slate-400">{value}</ITText>
+            </div>
           </div>
         </div>
-
         <input
           type="text"
           value={value}
-          onChange={(e) => updateColor(key, e.target.value)}
-          placeholder="#000000"
-          className="w-20 px-2 py-1 text-xs font-mono text-center rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 outline-none focus:border-cyan-500"
+          onChange={(e) => updateColor(colorKey, e.target.value)}
+          className="w-24 px-2.5 py-1.5 text-xs font-mono text-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500 transition-all"
         />
       </div>
+    );
+  };
+
+  const PresetCard = ({
+    preset,
+    isCustom,
+  }: {
+    preset: { name: string; colors: ITThemePalette };
+    isCustom?: boolean;
+  }) => {
+    const isSelected =
+      JSON.stringify(preset.colors) === JSON.stringify(palette);
+    return (
+      <button
+        type="button"
+        onClick={() => applyPreset(preset.colors)}
+        className={`relative flex flex-col items-start p-2.5 rounded-xl border text-left transition-all group ${
+          isSelected
+            ? "border-primary-500 bg-primary-500/5 shadow-sm ring-1 ring-primary-500/20"
+            : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/50 hover:border-slate-300 dark:hover:border-slate-600"
+        }`}
+      >
+        {isCustom && (
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDeletePreset(preset.name, e);
+            }}
+            className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 p-0.5 rounded-md hover:bg-red-500/10 hover:text-red-500 text-slate-400 dark:text-slate-500 cursor-pointer transition-all z-10"
+            title="Eliminar"
+          >
+            <MdClose size={12} />
+          </span>
+        )}
+        <ITText as="span" className="text-xs font-semibold truncate w-full mb-1.5 pr-4 text-slate-700 dark:text-slate-300">
+          {preset.name}
+        </ITText>
+        <div className="flex gap-1">
+          {(["primary", "secondary", "ternary", "success"] as const).map((c) => (
+            <span
+              key={c}
+              className="w-3 h-3 rounded-full border border-black/10"
+              style={{ backgroundColor: preset.colors[c] }}
+            />
+          ))}
+        </div>
+      </button>
     );
   };
 
@@ -1593,308 +1649,205 @@ export default function ITThemeProvider({
     >
       {children}
 
-      {/* FAB (Floating Action Button) */}
       {showFab && (
         <button
           onClick={() => setIsOpen((prev) => !prev)}
           className="it-theme-fab it-theme-bounce"
-          style={{
-            backgroundColor: "var(--color-primary)",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--color-primary-hover)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--color-primary)";
-          }}
+          style={{ backgroundColor: "var(--color-primary)" }}
           aria-label="Configurar Paleta de Colores"
-          title="Configurar Paleta de Colores"
         >
-          <MdPalette style={{ width: "28px", height: "28px" }} />
+          <MdPalette size={28} />
         </button>
       )}
 
-      {/* Dialog Configurator */}
       {showFab && (
         <ITDialog
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          title="Diseñador de Temas ITTheme"
-          useFormHeader={true}
-          className="max-w-2xl w-full"
+          title="Diseñador de Temas"
+          useFormHeader
         >
-          <div className="flex flex-col gap-4 text-slate-800 dark:text-slate-100">
-          {/* Saved Toast Indicator */}
-          <div className="h-6 relative">
-            {showSavedToast && (
-              <div className="absolute inset-0 flex justify-center items-center">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full bg-green-500/10 text-green-500 border border-green-500/20 animate-fade-in-out">
-                  <MdCheck className="w-4 h-4" />
-                  Auto-guardado en LocalStorage
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Row for presets & appearance */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start pb-4 border-b border-slate-200 dark:border-slate-700">
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
-                Apariencia
-              </h4>
-              <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg w-fit gap-1">
-                {(["light", "dark", "system"] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    onClick={() => setDarkModeMode(mode)}
-                    className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-                      darkModeMode === mode
-                        ? "bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm"
-                        : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
-                    }`}
-                  >
-                    {mode === "light"
-                      ? "Claro"
-                      : mode === "dark"
-                        ? "Oscuro"
-                        : "Sistema"}
-                  </button>
-                ))}
+          <div className="flex gap-6 h-[580px]">
+            {/* LEFT: Mode + Presets */}
+            <div className="w-64 flex-shrink-0 flex flex-col gap-5 overflow-y-auto pr-1">
+              <div>
+                <ITText as="span" className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2.5 block">
+                  Apariencia
+                </ITText>
+                <ITSegmentedControl
+                  options={[
+                    { value: "light", label: "☀️" },
+                    { value: "dark", label: "🌙" },
+                    { value: "system", label: "💻" },
+                  ]}
+                  value={darkModeMode}
+                  onChange={(val) => setDarkModeMode(val as "dark" | "light" | "system")}
+                  size="sm"
+                />
               </div>
 
-              {/* Mis Temas */}
+              <div>
+                <div className="flex items-center justify-between mb-2.5">
+                  <ITText as="span" className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    Presets
+                  </ITText>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {PRESETS.map((preset) => (
+                    <PresetCard key={preset.name} preset={preset} />
+                  ))}
+                </div>
+              </div>
+
               {customPresets.length > 0 && (
-                <div className="mt-4">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
-                    Mis Temas Guardados
-                  </h4>
-                  <div className="grid grid-cols-2 gap-1.5 max-h-[110px] overflow-y-auto pr-1">
-                    {customPresets.map((preset) => {
-                      const isSelected =
-                        JSON.stringify(preset.colors) ===
-                        JSON.stringify(palette);
-                      return (
-                        <button
-                          key={preset.name}
-                          type="button"
-                          onClick={() => applyPreset(preset.colors)}
-                          className={`relative flex flex-col items-start p-2 rounded-lg border text-left transition-all group ${
-                            isSelected
-                              ? "border-cyan-500 bg-cyan-500/5 dark:bg-cyan-400/5 shadow-sm"
-                              : "border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 hover:border-slate-300 dark:hover:border-slate-600"
-                          }`}
-                        >
-                          <span
-                            onClick={(e) => handleDeletePreset(preset.name, e)}
-                            className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-0.5 rounded-full hover:bg-red-500/10 hover:text-red-500 text-slate-400 dark:text-slate-500 cursor-pointer transition-all z-10"
-                            title="Eliminar Tema"
-                          >
-                            <MdClose className="w-3 h-3" />
-                          </span>
-                          <span className="text-[10px] font-semibold truncate w-full mb-1 pr-4">
-                            {preset.name}
-                          </span>
-                          <div className="flex gap-1">
-                            <span
-                              className="w-2.5 h-2.5 rounded-full border border-black/10"
-                              style={{ backgroundColor: preset.colors.primary }}
-                            />
-                            <span
-                              className="w-2.5 h-2.5 rounded-full border border-black/10"
-                              style={{
-                                backgroundColor: preset.colors.secondary,
-                              }}
-                            />
-                            <span
-                              className="w-2.5 h-2.5 rounded-full border border-black/10"
-                              style={{ backgroundColor: preset.colors.ternary }}
-                            />
-                            <span
-                              className="w-2.5 h-2.5 rounded-full border border-black/10"
-                              style={{ backgroundColor: preset.colors.success }}
-                            />
-                          </div>
-                        </button>
-                      );
-                    })}
+                <div>
+                  <ITText as="span" className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2.5 block">
+                    Mis Temas
+                  </ITText>
+                  <div className="flex flex-col gap-1.5">
+                    {customPresets.map((preset) => (
+                      <PresetCard key={preset.name} preset={preset} isCustom />
+                    ))}
                   </div>
                 </div>
               )}
+
+              {/* Save preset inline */}
+              {isSavingPreset && (
+                <div className="flex flex-col gap-2 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/50">
+                  <ITInput
+                    name="presetName"
+                    placeholder="Nombre del tema..."
+                    value={newPresetName}
+                    onChange={(e: any) => setNewPresetName(e.target.value)}
+                    containerClassName="mb-0"
+                    className="text-xs"
+                    onKeyDown={(e: React.KeyboardEvent) => {
+                      if (e.key === "Enter") handleSavePreset();
+                      if (e.key === "Escape") {
+                        setIsSavingPreset(false);
+                        setNewPresetName("");
+                      }
+                    }}
+                  />
+                  <div className="flex gap-2">
+                    <ITButton
+                      label="Guardar"
+                      color="primary"
+                      onClick={handleSavePreset}
+                      disabled={!newPresetName.trim()}
+                      size="small"
+                      className="flex-1"
+                    />
+                    <ITButton
+                      label="X"
+                      variant="ghost"
+                      onClick={() => {
+                        setIsSavingPreset(false);
+                        setNewPresetName("");
+                      }}
+                      size="small"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {!isSavingPreset && (
+                <ITButton
+                  variant="outlined"
+                  icon={<MdPalette size={14} />}
+                  label="Guardar actual"
+                  onClick={() => setIsSavingPreset(true)}
+                  size="small"
+                />
+              )}
+
+              <ITButton
+                variant="outlined"
+                color="danger"
+                icon={<MdRefresh size={14} />}
+                label="Restaurar default"
+                onClick={resetTheme}
+                size="small"
+              />
             </div>
 
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
-                Ajustes Rápidos (Presets)
-              </h4>
-              <div className="flex flex-col gap-2 max-h-[160px] overflow-y-auto pr-1">
-                {/* Oficiales */}
-                <div className="grid grid-cols-2 gap-1.5">
-                  {PRESETS.map((preset) => {
-                    const isSelected =
-                      JSON.stringify(preset.colors) === JSON.stringify(palette);
-                    return (
-                      <button
-                        key={preset.name}
-                        onClick={() => applyPreset(preset.colors)}
-                        className={`flex flex-col items-start p-2 rounded-lg border text-left transition-all ${
-                          isSelected
-                            ? "border-cyan-500 bg-cyan-500/5 dark:bg-cyan-400/5 shadow-sm"
-                            : "border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 hover:border-slate-300 dark:hover:border-slate-600"
-                        }`}
-                      >
-                        <span className="text-[10px] font-semibold truncate w-full mb-1">
-                          {preset.name}
-                        </span>
-                        <div className="flex gap-1">
-                          <span
-                            className="w-2.5 h-2.5 rounded-full border border-black/10"
-                            style={{ backgroundColor: preset.colors.primary }}
-                          />
-                          <span
-                            className="w-2.5 h-2.5 rounded-full border border-black/10"
-                            style={{ backgroundColor: preset.colors.secondary }}
-                          />
-                          <span
-                            className="w-2.5 h-2.5 rounded-full border border-black/10"
-                            style={{ backgroundColor: preset.colors.ternary }}
-                          />
-                          <span
-                            className="w-2.5 h-2.5 rounded-full border border-black/10"
-                            style={{ backgroundColor: preset.colors.success }}
-                          />
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
+            <ITDivider orientation="vertical" />
+
+            {/* RIGHT: Color editor */}
+            <div className="flex-1 flex flex-col min-w-0">
+              <ITTabs
+                variant="pill"
+                items={[
+                  {
+                    id: "brand",
+                    label: "Marca",
+                    content: (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[480px] overflow-y-auto pr-2 mt-3">
+                        {[
+                          "primary",
+                          "secondary",
+                          "ternary",
+                          "danger",
+                          "success",
+                          "info",
+                          "alert",
+                          "warning",
+                        ].map((key) => (
+                          <ColorRow key={key} colorKey={key} />
+                        ))}
+                      </div>
+                    ),
+                  },
+                  {
+                    id: "layout",
+                    label: "Nav & Sidebar",
+                    content: (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[480px] overflow-y-auto pr-2 mt-3">
+                        {[
+                          "layout.sidebarBg",
+                          "layout.sidebarText",
+                          "layout.navbarBg",
+                          "layout.navbarText",
+                        ].map((key) => (
+                          <ColorRow key={key} colorKey={key} />
+                        ))}
+                      </div>
+                    ),
+                  },
+                  {
+                    id: "tables",
+                    label: "Tablas",
+                    content: (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[480px] overflow-y-auto pr-2 mt-3">
+                        {[
+                          "table.headerBg",
+                          "table.headerText",
+                          "table.rowBg",
+                          "table.rowText",
+                        ].map((key) => (
+                          <ColorRow key={key} colorKey={key} />
+                        ))}
+                      </div>
+                    ),
+                  },
+                ]}
+              />
+
+              <div className="flex items-center justify-end gap-3 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800">
+                <ITText as="p" className="text-[11px] text-slate-400 mr-auto">
+                  Los cambios se guardan automáticamente
+                </ITText>
+                <ITButton
+                  label="Cerrar"
+                  color="primary"
+                  onClick={() => setIsOpen(false)}
+                  size="small"
+                />
               </div>
             </div>
           </div>
-
-          {/* ITTabs content */}
-          <div className="mt-2">
-            <ITTabs
-              variant="pill"
-              items={[
-                {
-                  id: "brand",
-                  label: "Colores de Marca",
-                  content: (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 mt-2">
-                      {[
-                        "primary",
-                        "secondary",
-                        "ternary",
-                        "danger",
-                        "success",
-                        "info",
-                        "alert",
-                        "warning",
-                      ].map((key) => renderColorRow(key))}
-                    </div>
-                  ),
-                },
-                {
-                  id: "layout",
-                  label: "Sidebar & Topbar",
-                  content: (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 mt-2">
-                      {[
-                        "layout.sidebarBg",
-                        "layout.sidebarText",
-                        "layout.navbarBg",
-                        "layout.navbarText",
-                      ].map((key) => renderColorRow(key))}
-                    </div>
-                  ),
-                },
-                {
-                  id: "tables",
-                  label: "Tablas",
-                  content: (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 mt-2">
-                      {[
-                        "table.headerBg",
-                        "table.headerText",
-                        "table.rowBg",
-                        "table.rowText",
-                      ].map((key) => renderColorRow(key))}
-                    </div>
-                  ),
-                },
-              ]}
-            />
-          </div>
-
-          {/* Inline Save Preset Area */}
-          {isSavingPreset && (
-            <div className="flex gap-2 items-center bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 mt-2">
-              <input
-                type="text"
-                placeholder="Nombre de tu tema..."
-                value={newPresetName}
-                onChange={(e) => setNewPresetName(e.target.value)}
-                className="flex-1 px-3 py-1.5 text-xs rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 outline-none focus:border-cyan-500"
-                autoFocus
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleSavePreset();
-                  if (e.key === "Escape") {
-                    setIsSavingPreset(false);
-                    setNewPresetName("");
-                  }
-                }}
-              />
-              <button
-                onClick={handleSavePreset}
-                disabled={!newPresetName.trim()}
-                className="px-3 py-1.5 text-xs font-bold rounded-md bg-cyan-600 dark:bg-cyan-500 text-white hover:bg-cyan-700 dark:hover:bg-cyan-600 disabled:opacity-50 transition-all"
-              >
-                Guardar
-              </button>
-              <button
-                onClick={() => {
-                  setIsSavingPreset(false);
-                  setNewPresetName("");
-                }}
-                className="px-3 py-1.5 text-xs font-semibold rounded-md border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-all"
-              >
-                Cancelar
-              </button>
-            </div>
-          )}
-
-          {/* Footer buttons */}
-          <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-700 mt-2">
-            <div className="flex gap-2">
-              <button
-                onClick={resetTheme}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-all"
-              >
-                <MdRefresh className="w-4 h-4" />
-                Restaurar por Defecto
-              </button>
-
-              {!isSavingPreset && (
-                <button
-                  onClick={() => setIsSavingPreset(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md border border-cyan-250 dark:border-cyan-850 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition-all"
-                >
-                  <MdPalette className="w-4 h-4" />
-                  Guardar Tema
-                </button>
-              )}
-            </div>
-
-            <button
-              onClick={() => setIsOpen(false)}
-              className="px-4 py-1.5 text-xs font-bold rounded-md bg-cyan-600 dark:bg-cyan-500 text-white hover:bg-cyan-700 dark:hover:bg-cyan-600 shadow-sm transition-all"
-            >
-              Aceptar
-            </button>
-          </div>
-        </div>
-      </ITDialog>
+        </ITDialog>
       )}
     </ITThemeContext.Provider>
   );

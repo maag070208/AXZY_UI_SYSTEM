@@ -2,8 +2,6 @@ import { useState } from "react";
 import ITTopBar from "../topbar/topbar";
 import ITSidebar from "../sidebar/sidebar";
 import { ITLayoutProps } from "./layout.props";
-import { theme } from "@/theme/theme";
-
 export default function ITLayout({
   topBar,
   sidebar,
@@ -28,7 +26,7 @@ export default function ITLayout({
         onToggleMobileMenu={() => setMobileSidebarOpen(v => !v)}
       />
 
-      <div className="flex flex-1 overflow-hidden relative" style={{ backgroundColor: theme.layout?.backgroundColor || '#f8fafc' }}>
+      <div className="flex flex-1 overflow-hidden relative" style={{ backgroundColor: "var(--layout-bg, #f8fafc)" }}>
         
         {/* DESKTOP SIDEBAR - Floating over content when expanded */}
         <div className="hidden lg:block relative z-40 h-full">
@@ -71,11 +69,8 @@ export default function ITLayout({
 
         {/* MAIN CONTENT AREA */}
         <main className="flex-1 overflow-y-auto w-full custom-scrollbar relative z-0">
-          <div 
-             className={`mx-auto w-full h-full ${contentClassName}`}
-             style={{ padding: theme.layout?.contentPadding || '1.5rem' }}
-          >
-             {children}
+          <div className={`mx-auto w-full h-full ${contentClassName}`}>
+            {children}
           </div>
         </main>
 

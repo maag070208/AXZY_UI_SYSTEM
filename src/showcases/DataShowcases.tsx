@@ -227,7 +227,7 @@ export const ImageShowcase = () => {
   const [broken, setBroken] = useState(false);
   const src = broken ? "https://nonexistent.image.site/broken.jpg" : "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80";
 
-  const code = `<ITImage\n  src="${src}"\n  alt="Imagen Abstracta"\n  fallbackSrc="https://placehold.co/400x200?text=No+Preview"\n  className="rounded-xl object-cover h-40"\n/>`;
+  const code = `<ITImage\n  src="${src}"\n  alt="Imagen Abstracta"\n  fallback="https://placehold.co/400x200?text=No+Preview"\n  className="rounded-xl object-cover h-40"\n/>`;
 
   return (
     <ShowcaseLayout
@@ -239,7 +239,7 @@ export const ImageShowcase = () => {
           <ITImage
             src={src}
             alt="Demo abstracta"
-            fallbackSrc="https://placehold.co/400x200?text=Error+Carga+Imagen"
+            fallback="https://placehold.co/400x200?text=Error+Carga+Imagen"
             className="rounded-xl object-cover h-40 w-full shadow-md"
           />
           <span className="text-xs text-slate-500 font-mono">

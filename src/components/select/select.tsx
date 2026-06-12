@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { useState } from "react";
 import { FaAngleDown } from "react-icons/fa";
 import { ITSelectProps } from "./select.props";
+import ITText from "@/components/text/text";
 
 /**
  * Componente de selección (select) con soporte para opciones personalizadas, validación y personalización de estilo.
@@ -79,16 +80,17 @@ export default function ITSelect({
         "flex flex-col gap-1.5": label,
       })}>
         {label && (
-          <label
+          <ITText
+            as="label"
             htmlFor={name}
             className={clsx(
               "text-sm font-medium text-gray-700 dark:text-slate-300 pt-0",
               { "text-red-500": hasError }
             )}
           >
-            {label}
-            {required && <span className="text-red-500 ml-1">*</span>}
-          </label>
+            <ITText as="span">{label}</ITText>
+            {required && <ITText as="span" className="text-red-500 ml-1">*</ITText>}
+          </ITText>
         )}
         <div className="flex flex-col w-full">
           <div className="relative flex-1">
@@ -111,11 +113,11 @@ export default function ITSelect({
               )}
               style={getStyle()}
             >
-              <option value="">{placeholder || "Selecciona una opción"}</option>
+              <option value=""><ITText as="span">{placeholder || "Selecciona una opción"}</ITText></option>
               {
                 readOnly ? (
                   <option value={value} disabled>
-                    {options.find((option) => option[valueField] === value)?.[labelField]}
+                    <ITText as="span">{options.find((option) => option[valueField] === value)?.[labelField]}</ITText>
                   </option>
                 ) : (
                   options.map((option) => (
@@ -124,7 +126,7 @@ export default function ITSelect({
                       value={option[valueField]}
                       title={option[labelField]}
                     >
-                      {option[labelField]}
+                      <ITText as="span">{option[labelField]}</ITText>
                     </option>
                   ))
                 )
@@ -137,7 +139,7 @@ export default function ITSelect({
           {/* Validation message aligned with select */}
           {hasError && (
             <div className="flex-shrink-0 min-w-[140px] flex items-center pt-3">
-              <p className="text-red-500 text-xs">{errorMessage}</p>
+              <ITText as="p" className="text-red-500 text-xs">{errorMessage}</ITText>
             </div>
           )}
         </div>

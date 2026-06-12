@@ -1,6 +1,7 @@
 import { theme } from "@/theme/theme";
 import { LoaderSize, sizeClasses } from "@/types/loader.types";
 import { LoaderProps } from "./loader.props";
+import ITText from "@/components/text/text";
 
 export default function ITLoader({
   size = "md",
@@ -32,9 +33,9 @@ export default function ITLoader({
         role="status"
         style={style}
       >
-        <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+        <ITText as="span" className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
           Loading...
-        </span>
+        </ITText>
       </div>
     );
   }

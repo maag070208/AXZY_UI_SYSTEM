@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { ITImageProps } from "./image.props";
 
 const ITImage = ({
   src,
   alt,
   className = "",
-  fallbackSrc = "",
-}) => {
+  fallback = "",
+}: ITImageProps) => {
   const [imageError, setImageError] = useState(false);
 
   const handleImageError = () => {
@@ -18,7 +19,7 @@ const ITImage = ({
     >
       {imageError ? (
         <img
-          src={fallbackSrc}
+          src={fallback}
           alt="Fallback"
           className="w-full h-full object-cover"
         />

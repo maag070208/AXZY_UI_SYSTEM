@@ -2,6 +2,7 @@ import useClickOutside from "@/hooks/useClickOutside";
 import { useRef, useState } from "react";
 import { FaChevronDown, FaChevronRight, FaUserCircle } from "react-icons/fa";
 import { ITNavbarProps, ITNavigationItem } from "./navbar.props";
+import ITText from "@/components/text/text";
 
 export default function ITNavbar({
   logo,
@@ -56,9 +57,9 @@ export default function ITNavbar({
             <div className="flex items-center space-x-3 rtl:space-x-reverse">
               {logo && <div className="h-8">{logo}</div>}
               {logoText && (
-                <span className="self-center text-2xl font-semibold whitespace-nowrap text-gray-900">
+                <ITText as="span" className="self-center text-2xl font-semibold whitespace-nowrap text-gray-900">
                   {logoText}
-                </span>
+                </ITText>
               )}
             </div>
 
@@ -90,12 +91,12 @@ export default function ITNavbar({
                         className="z-50 absolute right-0 mt-2 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm"
                       >
                         <div className="px-4 py-3">
-                          <span className="block text-sm text-gray-900">
+                          <ITText as="span" className="block text-sm text-gray-900">
                             {userMenu.userName}
-                          </span>
-                          <span className="block text-sm text-gray-500 truncate">
+                          </ITText>
+                          <ITText as="span" className="block text-sm text-gray-500 truncate">
                             {userMenu.userEmail}
-                          </span>
+                          </ITText>
                         </div>
                         <ul className="py-2">
                           {userMenu.menuItems.map((item, index) => (
@@ -107,8 +108,8 @@ export default function ITNavbar({
                                 }}
                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                               >
-                                {item.label}
-                              </button>
+                                 <ITText as="span">{item.label}</ITText>
+                                </button>
                             </li>
                           ))}
                         </ul>
@@ -139,23 +140,18 @@ export default function ITNavbar({
 
   // New sidebar design
   return (
-    <div className="flex h-screen bg-gray-50 font-sans">
+    <div className="flex h-screen font-sans" style={{ backgroundColor: "var(--layout-bg, #f8fafc)" }}>
       {/* Sidebar */}
-      <aside className="w-72 bg-secondary-900 shadow-xl flex flex-col transition-all duration-300 ease-in-out">
+      <aside className="w-72 shadow-xl flex flex-col transition-all duration-300 ease-in-out" style={{ backgroundColor: "var(--sidebar-bg, #0f172a)", borderRight: "1px solid var(--sidebar-border, #1e293b)" }}>
         {/* Logo Section */}
-        <div className="p-6 border-b border-secondary-800/50 flex items-center gap-3">
+        <div className="p-6 flex items-center gap-3" style={{ borderBottom: "1px solid var(--sidebar-border, #1e293b)" }}>
           {logo && <div className="h-8 w-auto object-contain transition-transform hover:scale-105">{logo}</div>}
           {logoText && (
-            <span className="text-lg font-bold text-white tracking-wide">
+            <ITText as="span" className="text-lg font-bold tracking-wide" style={{ color: "var(--sidebar-active-color, #ffffff)" }}>
               {logoText}
-            </span>
+            </ITText>
           )}
         </div>
-
-        {/* Menu Title (Optional or remove for pure minimalism) */}
-        {/* <div className="px-6 py-4">
-          <h2 className="text-xs uppercase tracking-wider font-semibold text-secondary-500">Menu</h2>
-        </div> */}
 
         {/* Navigation Items */}
         <nav className="flex-1 px-4 py-6 overflow-y-auto custom-scrollbar">
@@ -165,26 +161,45 @@ export default function ITNavbar({
                 <div
                   className={`group flex items-center justify-between px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 border-l-4 ${
                     item.isActive 
-                      ? 'bg-secondary-800/60 border-primary-500 text-white shadow-sm' 
-                      : 'border-transparent text-secondary-400 hover:bg-secondary-800 hover:text-white'
+                      ? 'shadow-sm' 
+                      : 'hover:shadow-sm'
                   }`}
                   onClick={() => handleItemClick(item)}
+                  style={{
+                    backgroundColor: item.isActive ? "var(--sidebar-active-bg, rgba(255,255,255,0.1))" : "transparent",
+                    borderColor: item.isActive ? "var(--sidebar-active-icon, #3b82f6)" : "transparent",
+                    color: item.isActive ? "var(--sidebar-active-color, #ffffff)" : "var(--sidebar-label-color, #94a3b8)"
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!item.isActive) {
+                      e.currentTarget.style.backgroundColor = "var(--sidebar-hover-bg, rgba(255,255,255,0.05))";
+                      e.currentTarget.style.color = "var(--sidebar-active-color, #ffffff)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!item.isActive) {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                      e.currentTarget.style.color = "var(--sidebar-label-color, #94a3b8)";
+                    }
+                  }}
                 >
                   <div className="flex items-center gap-3">
                     {/* Icon */}
                     {item.icon && (
-                      <div className={`text-xl transition-colors ${item.isActive ? 'text-primary-400' : 'text-secondary-500 group-hover:text-white'}`}>
+                      <div className="text-xl transition-colors" style={{
+                        color: item.isActive ? "var(--sidebar-active-icon, #3b82f6)" : "var(--sidebar-icon-color, #64748b)"
+                      }}>
                         {item.icon}
                       </div>
                     )}
                     
                     {/* Label */}
-                    <span className={`font-medium text-sm ${item.isActive ? 'font-semibold' : ''}`}>{item.label}</span>
+                    <ITText as="span" className={`font-medium text-sm ${item.isActive ? 'font-semibold' : ''}`}>{item.label}</ITText>
                   </div>
 
                   {/* Chevron for expandable items */}
                   {item.subitems && item.subitems.length > 0 && (
-                    <div className="text-secondary-500 group-hover:text-white transition-transform">
+                    <div className="transition-transform" style={{ color: "var(--sidebar-icon-color, #64748b)" }}>
                       {expandedItems.has(item.id) ? (
                         <FaChevronDown className="w-3 h-3" />
                       ) : (
@@ -198,18 +213,28 @@ export default function ITNavbar({
                 {item.subitems && 
                  item.subitems.length > 0 && 
                  expandedItems.has(item.id) && (
-                  <ul className="mt-1 ml-4 pl-4 border-l border-secondary-800 space-y-1">
+                  <ul className="mt-1 ml-4 pl-4 space-y-1" style={{ borderLeft: "1px solid var(--sidebar-border, #1e293b)" }}>
                     {item.subitems.map((subitem) => (
                       <li key={subitem.id}>
                         <button
                           onClick={subitem.action}
-                          className={`block w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all duration-200 ${
-                            subitem.isActive
-                              ? 'text-primary-400 font-medium bg-secondary-800/30'
-                              : 'text-secondary-400 hover:text-white hover:bg-secondary-800/30'
-                          }`}
+                          className="block w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all duration-200"
+                          style={{
+                            color: subitem.isActive ? "var(--sidebar-active-color, #ffffff)" : "var(--sidebar-label-color, #94a3b8)",
+                            backgroundColor: subitem.isActive ? "var(--sidebar-active-bg, rgba(255,255,255,0.1))" : "transparent"
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!subitem.isActive) {
+                              e.currentTarget.style.backgroundColor = "var(--sidebar-hover-bg, rgba(255,255,255,0.05))";
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!subitem.isActive) {
+                              e.currentTarget.style.backgroundColor = "transparent";
+                            }
+                          }}
                         >
-                          {subitem.label}
+                          <ITText as="span">{subitem.label}</ITText>
                         </button>
                       </li>
                     ))}
@@ -222,47 +247,52 @@ export default function ITNavbar({
 
         {/* User Menu */}
         {userMenu && (
-          <div className="p-4 border-t border-secondary-800">
+          <div className="p-4" style={{ borderTop: "1px solid var(--sidebar-border, #1e293b)" }}>
             <div className="relative">
               <button
                 type="button"
-                className="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-secondary-800 transition-colors duration-200 group"
+                className="flex items-center gap-3 w-full p-3 rounded-xl transition-colors duration-200 group"
+                style={{ color: "var(--sidebar-label-color, #94a3b8)" }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "var(--sidebar-hover-bg, rgba(255,255,255,0.05))"; e.currentTarget.style.color = "var(--sidebar-active-color, #ffffff)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "var(--sidebar-label-color, #94a3b8)"; }}
                 onClick={toggleUserMenu}
               >
                 {userMenu.userImage ? (
                   <img
-                    className="w-10 h-10 rounded-full border-2 border-secondary-700 group-hover:border-primary-500 transition-colors"
+                    className="w-10 h-10 rounded-full border-2 transition-colors"
                     src={userMenu.userImage}
                     alt="user photo"
+                    style={{ borderColor: "var(--sidebar-border, #1e293b)" }}
                   />
                 ) : (
-                  <div className="w-10 h-10 rounded-full bg-secondary-800 flex items-center justify-center text-secondary-400 group-hover:text-white group-hover:bg-secondary-700 transition-colors">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center transition-colors" style={{ backgroundColor: "var(--sidebar-hover-bg, rgba(255,255,255,0.1))", color: "var(--sidebar-icon-color, #64748b)" }}>
                       <FaUserCircle className="w-6 h-6" />
                   </div>
                 )}
                 <div className="flex-1 text-left overflow-hidden">
-                  <div className="text-white font-medium text-sm truncate group-hover:text-primary-400 transition-colors">
+                  <ITText as="div" className="font-medium text-sm truncate" style={{ color: "var(--sidebar-active-color, #ffffff)" }}>
                     {userMenu.userName}
-                  </div>
-                  <div className="text-secondary-500 text-xs truncate">
+                  </ITText>
+                  <ITText as="div" className="text-xs truncate" style={{ color: "var(--sidebar-label-color, #94a3b8)" }}>
                     {userMenu.userEmail}
-                  </div>
+                  </ITText>
                 </div>
-                <FaChevronRight className="text-secondary-600 w-3 h-3 group-hover:text-white transition-colors" />
+                <FaChevronRight className="w-3 h-3" style={{ color: "var(--sidebar-icon-color, #64748b)" }} />
               </button>
 
               {isUserMenuOpen && (
                 <div
                   ref={userMenuRef}
-                  className="absolute bottom-full left-0 mb-3 w-full bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden transform transition-all duration-200 origin-bottom"
+                  className="absolute bottom-full left-0 mb-3 w-full rounded-xl shadow-2xl overflow-hidden transform transition-all duration-200 origin-bottom"
+                  style={{ backgroundColor: "var(--topbar-user-dropdown-bg, #ffffff)", border: "1px solid var(--topbar-user-dropdown-border, #e2e8f0)" }}
                 >
-                  <div className="bg-gray-50 px-4 py-3 border-b border-gray-100">
-                      <span className="block text-sm font-semibold text-gray-800">
+                  <div className="px-4 py-3" style={{ backgroundColor: "var(--topbar-user-bg, #f8fafc)", borderBottom: "1px solid var(--topbar-user-dropdown-border, #e2e8f0)" }}>
+                      <ITText as="span" className="block text-sm font-semibold" style={{ color: "var(--topbar-user-text, #0f172a)" }}>
                         {userMenu.userName}
-                      </span>
-                      <span className="block text-xs text-gray-500 truncate">
+                      </ITText>
+                      <ITText as="span" className="block text-xs truncate" style={{ color: "var(--topbar-user-subtitle, #64748b)" }}>
                         {userMenu.userEmail}
-                      </span>
+                      </ITText>
                   </div>
                   <ul className="py-1">
                     {userMenu.menuItems.map((item, index) => (
@@ -272,9 +302,12 @@ export default function ITNavbar({
                             item.onClick();
                             setIsUserMenuOpen(false);
                           }}
-                          className="flex items-center w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary-600 transition-colors"
+                          className="flex items-center w-full px-4 py-2.5 text-sm transition-colors"
+                          style={{ color: "var(--topbar-user-text, #334155)" }}
+                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "var(--topbar-user-item-hover, #f8fafc)"; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
                         >
-                          {item.label}
+                          <ITText as="span">{item.label}</ITText>
                         </button>
                       </li>
                     ))}
@@ -287,8 +320,7 @@ export default function ITNavbar({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto bg-gray-50/50 relative">
-        {/* Subtle top bar or just content area */}
+      <main className="flex-1 overflow-y-auto relative" style={{ backgroundColor: "var(--layout-bg, #f8fafc)" }}>
         {children}
       </main>
     </div>

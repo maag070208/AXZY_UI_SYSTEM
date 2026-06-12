@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import "./toast.css";
 import { ITToastProps } from "./toast.props";
 import { FaTimesCircle, FaCheckCircle, FaExclamationTriangle, FaInfoCircle, FaTimes } from "react-icons/fa";
+import ITText from "@/components/text/text";
 
 export default function ITToast({
   message,
@@ -72,7 +73,7 @@ export default function ITToast({
     >
       <div className="flex items-center gap-3">
         <TypeIcon />
-        <span className="font-medium text-sm sm:text-base leading-snug">{message}</span>
+        <ITText as="span" className="font-medium text-sm sm:text-base leading-snug">{message}</ITText>
       </div>
       <button
         onClick={handleClose}

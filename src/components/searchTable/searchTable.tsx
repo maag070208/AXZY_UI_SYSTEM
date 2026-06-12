@@ -1,5 +1,6 @@
+import { useDebouncedSearch } from "@/hooks/useDebouncedSearch";
 import clsx from "clsx";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useState } from "react";
 
 import { sizeStyles, variantStyles } from "@/types/table.types";
 import { ITSearchTableProps } from "./searchTable.props";
@@ -9,6 +10,7 @@ import TableRow from "./components/TableRow";
 import { getNestedValue } from "@/utils/table.utils";
 import TableEmptyState from "./components/TableEmptyState";
 import PaginationControls from "./components/PaginationControls";
+import ITText from "@/components/text/text";
 
 interface CustomITSearchTableProps<T> extends ITSearchTableProps<T> {
   editingRow?: number | null;
@@ -53,59 +55,28 @@ export default function ITSearchTable<T extends Record<string, unknown>>({
   onCancel,
 }: CustomITSearchTableProps<T>) {
   const [itemsPerPage, setItemsPerPage] = useState(defaultItemsPerPage);
-  const [searchTerm, setSearchTerm] = useState<string>(searchTermInitial);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const { searchTerm, handleSearchChange, handleClearSearch } = useDebouncedSearch({
+    initialValue: searchTermInitial,
+    onSearch: (value) => {
+      if (onFilterChange) {
+        onFilterChange(value ? { query: value } : {});
+      }
+    },
+  });
 
   const handleItemsPerPageChange = (value: number) => {
     setItemsPerPage(value);
-    if (onItemsPerPageChange) {
-      onItemsPerPageChange(value);
-    }
+    onItemsPerPageChange?.(value);
   };
 
   const goToPage = (page: number) => {
-    if (onPageChange) {
-      onPageChange(page);
-    }
+    onPageChange?.(page);
   };
-
-  const debouncedSearch = useCallback(
-    (value: string) => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      timeoutRef.current = setTimeout(() => {
-        if (onFilterChange) {
-          onFilterChange(value ? { query: value } : {});
-        }
-      }, 500);
-    },
-    [onFilterChange]
-  );
-
-  const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
-    debouncedSearch(value);
-  };
-
-const handleClearSearch = () => {
-  setSearchTerm("");
-  if (onClearSearch) {
-    onClearSearch();
-  }
-  if (onFilterChange) {
-    onFilterChange({});
-  }
-  if (timeoutRef.current) {
-    clearTimeout(timeoutRef.current);
-  }
-};
 
   const handleGlobalSort = () => {
     const newDirection = sortConfig?.direction === "asc" ? "desc" : "asc";
-    if (onSortChange) {
-      onSortChange({ key: "id", direction: newDirection });
-    }
+    onSortChange?.({ key: "id", direction: newDirection });
   };
 
   const handleSort = (key: string) => {
@@ -117,36 +88,17 @@ const handleClearSearch = () => {
       newDirection = sortConfig.direction === "asc" ? "desc" : "asc";
     }
 
-    if (onSortChange) {
-      onSortChange({ key, direction: newDirection });
-    }
+    onSortChange?.({ key, direction: newDirection });
   };
 
-  const handleEdit = (row: T, index: number) => {
-    if (onEdit) {
-      onEdit(row, index);
-    }
-  };
+  const handleEdit = (row: T, index: number) => onEdit?.(row, index);
+  const handleSave = (updatedRow: T, index: number) => onSave?.(updatedRow, index);
+  const handleCancelEdit = () => onCancel?.();
 
-  const handleSave = (updatedRow: T, index: number) => {
-    if (onSave) {
-      onSave(updatedRow, index);
-    }
+  const handleClearSearchWithClear = () => {
+    handleClearSearch();
+    onClearSearch?.();
   };
-
-  const handleCancelEdit = () => {
-    if (onCancel) {
-      onCancel();
-    }
-  };
-
-  React.useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
 
 return (
   <div className={clsx("space-y-4 w-full", containerClassName)}>
@@ -155,9 +107,9 @@ return (
       {/* Header fijo */}
       {title && (
         <div className="bg-teal-500 text-white px-6 py-4">
-          <h2 className="text-xl font-bold text-center whitespace-nowrap">
+          <ITText as="h2" className="text-xl font-bold text-center whitespace-nowrap">
             {title}
-          </h2>
+          </ITText>
         </div>
       )}
 
@@ -168,7 +120,7 @@ return (
           <SearchAndSortBar
             searchTerm={searchTerm}
             onSearchChange={handleSearchChange}
-            onClearSearch={handleClearSearch}
+             onClearSearch={handleClearSearchWithClear}
             onGlobalSort={handleGlobalSort}
             sortConfig={sortConfig}
             searchInputPlaceholder={searchInputPlaceholder}

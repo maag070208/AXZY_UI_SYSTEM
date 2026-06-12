@@ -4,6 +4,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { ITPaginationProps } from "./pagination.props";
 import { theme } from "@/theme/theme";
 import ITSelect from "../select/select";
+import ITText from "@/components/text/text";
 
 const DOTS = "...";
 
@@ -141,19 +142,21 @@ export default function ITPagination({
       {paginationRange?.map((pageNumber, idx) => {
         if (pageNumber === DOTS) {
           return (
-            <div
+            <ITText
+              as="div"
               key={`dots-${idx}`}
               className="flex items-center justify-center w-8 h-8 select-none text-gray-400"
             >
               &#8230;
-            </div>
+            </ITText>
           );
         }
 
         const isActive = pageNumber === currentPage;
 
         return (
-          <div
+          <ITText
+            as="div"
             key={pageNumber}
             className={clsx(
               baseItemClass,
@@ -166,8 +169,8 @@ export default function ITPagination({
             onClick={() => onPageChange(pageNumber as number)}
             title={`Page ${pageNumber}`}
           >
-            {pageNumber}
-          </div>
+            <ITText as="span">{pageNumber}</ITText>
+          </ITText>
         );
       })}
 
@@ -196,7 +199,7 @@ export default function ITPagination({
       <div className={clsx("flex flex-col sm:flex-row justify-between items-center gap-4 w-full", className)}>
         <div className="flex items-center gap-4 text-sm text-gray-500">
           <div className="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded-lg border border-gray-200">
-            <span className="text-xs font-medium">Mostrar</span>
+            <ITText as="span" className="text-xs font-medium">Mostrar</ITText>
             <ITSelect
               name="itemsPerPage"
               options={itemsPerPageOptions.map((option) => ({
@@ -214,10 +217,10 @@ export default function ITPagination({
           
           {totalItems !== undefined && (
             <>
-              <span className="text-gray-300">|</span>
-              <span className="text-xs">
-                <span className="font-semibold text-gray-700">{startItem}</span> - <span className="font-semibold text-gray-700">{endItem}</span> de <span className="font-semibold text-gray-900">{totalItems}</span>
-              </span>
+              <ITText as="span" className="text-gray-300">|</ITText>
+              <ITText as="span" className="text-xs">
+                <ITText as="span" className="font-semibold text-gray-700">{startItem}</ITText><ITText as="span"> - </ITText><ITText as="span" className="font-semibold text-gray-700">{endItem}</ITText><ITText as="span"> de </ITText><ITText as="span" className="font-semibold text-gray-900">{totalItems}</ITText>
+              </ITText>
             </>
           )}
         </div>

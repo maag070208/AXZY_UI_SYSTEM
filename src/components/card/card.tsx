@@ -1,13 +1,8 @@
 import clsx from "clsx";
 import { ITCardProps } from "./card.props";
-import { theme } from "@/theme/theme";
 import { useState } from "react";
-import { useITThemeSafe } from "../theme-provider/themeProvider";
-import { getContrastTextColor } from "@/utils/color.utils";
+import ITText from "@/components/text/text";
 
-/**
- * Componente de tarjeta (Card) personalizable.
- */
 export default function ITCard({
   title,
   image,
@@ -22,33 +17,23 @@ export default function ITCard({
   onClick,
 }: ITCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const cardTheme = theme.card;
-
-  const themeContext = useITThemeSafe();
-  const isDarkMode = themeContext?.resolvedTheme === "dark";
-  const palette = themeContext?.palette;
-  const textColorClass = getContrastTextColor(
-    cardTheme.backgroundColor || "#ffffff",
-    palette,
-    isDarkMode
-  );
 
   const containerStyle: React.CSSProperties = {
-    backgroundColor: cardTheme.backgroundColor,
-    borderColor: cardTheme.borderColor,
-    borderWidth: cardTheme.borderWidth,
-    borderRadius: cardTheme.borderRadius,
+    backgroundColor: "var(--card-bg, #ffffff)",
+    borderColor: "var(--card-border, #e2e8f0)",
+    borderWidth: "1px",
+    borderRadius: "var(--card-radius, 0.75rem)",
     boxShadow: onClick
       ? isHovered
-        ? cardTheme.hover.shadow
-        : cardTheme.shadow
+        ? "0 8px 25px -5px rgba(0, 0, 0, 0.1)"
+        : "0 1px 3px 0 rgba(0, 0, 0, 0.05)"
       : "none",
     transition: onClick ? "all 0.2s ease-in-out" : "none",
     cursor: onClick ? "pointer" : "default",
   };
 
   const bodyStyle: React.CSSProperties = {
-    padding: cardTheme.body.padding,
+    padding: "1.25rem",
   };
 
   return (
@@ -69,18 +54,14 @@ export default function ITCard({
 
       <div className={clsx(contentClassName)} style={bodyStyle}>
         {title && (
-          <h3
-            className={clsx(
-              "text-xl font-semibold mb-2",
-              textColorClass,
-              titleClassName,
-            )}
-            style={{ color: "inherit" }}
+          <ITText
+            as="h3"
+            className={clsx("text-xl font-semibold mb-2", titleClassName)}
           >
             {title}
-          </h3>
+          </ITText>
         )}
-        <div className="text-gray-600">{children}</div>
+        <ITText as="div" className="text-gray-600">{children}</ITText>
       </div>
       {actions && (
         <div

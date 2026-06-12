@@ -1,6 +1,7 @@
+import { useTableState } from "@/hooks/useTableState";
 import { sizeStyles, variantStyles } from "@/types/table.types";
 import clsx from "clsx";
-import React, { useState } from "react";
+import React from "react";
 import {
   FaCheck,
   FaSpinner,
@@ -11,6 +12,7 @@ import ITInput from "../input/input";
 import ITPagination from "../pagination/pagination";
 import ITSelect from "../select/select";
 import { Column, ITTableProps } from "./table.props";
+import ITText from "@/components/text/text";
 
 const getNestedValue = (obj: unknown, path: string) => {
   return path.split(".").reduce((acc, part) => acc && acc[part], obj);
@@ -32,15 +34,16 @@ export default function ITTable<T extends Record<string, unknown>>({
   defaultItemsPerPage = 10,
   title,
 }: ITTableProps<T>) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(defaultItemsPerPage);
-  const [filters, setFilters] = useState<
-    Record<string, string | boolean | number>
-  >({});
-  const [sortConfig, setSortConfig] = useState<{
-    key: string;
-    direction: "asc" | "desc";
-  } | null>(null);
+  const {
+    currentPage,
+    itemsPerPage,
+    filters,
+    sortConfig,
+    goToPage,
+    handleFilterChange,
+    handleSort,
+    handleItemsPerPageChange,
+  } = useTableState({ defaultItemsPerPage });
 
   const sortedData = React.useMemo(() => {
     const safeData = Array.isArray(data) ? data : [];
@@ -124,48 +127,11 @@ export default function ITTable<T extends Record<string, unknown>>({
     })
   );
 
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const computedTotalPages = Math.ceil(filteredData.length / itemsPerPage) || 1;
   const currentData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-
-  const goToPage = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
-  const handleItemsPerPageChange = (value: number) => {
-    setItemsPerPage(value);
-    setCurrentPage(1); // Reset to first page when items per page changes
-  };
-
-  const handleFilterChange = (
-    key: string,
-    value: string | boolean | number
-  ) => {
-    setFilters((prev) => {
-      if (value === undefined || value === null || value === "") {
-        const newFilters = { ...prev };
-        delete newFilters[key];
-        return newFilters;
-      }
-      return { ...prev, [key]: value };
-    });
-    setCurrentPage(1);
-  };
-
-  const handleSort = (key: string) => {
-    const column = columns.find((col) => col.key === key);
-    if (!column || !column.sortable) return;
-
-    let direction: "asc" | "desc" = "asc";
-    if (sortConfig?.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    }
-    setSortConfig({ key, direction });
-  };
 
   const renderFilterInput = (col: Column<T>) => {
     if (!col.filter) return null;
@@ -220,7 +186,7 @@ export default function ITTable<T extends Record<string, unknown>>({
        }
 
       if (col.catalogOptions.error) {
-        return <span className="text-red-500 text-xs">Error cargando</span>;
+        return <ITText as="span" className="text-red-500 text-xs">Error cargando</ITText>;
       }
 
       return (
@@ -301,7 +267,7 @@ export default function ITTable<T extends Record<string, unknown>>({
     {/* Header outside overflow */}
     {title && (
       <div className="px-6 py-5 border-b border-secondary-100" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
-        <h2 className="text-xl font-bold text-secondary-900 leading-tight">{title}</h2>
+        <ITText as="h2" className="text-xl font-bold text-secondary-900 leading-tight">{title}</ITText>
       </div>
     )}
 
@@ -326,7 +292,7 @@ export default function ITTable<T extends Record<string, unknown>>({
                    <div className="flex flex-col gap-3 min-w-[150px]">
                      {/* Column header */}
                      <div className="flex items-center justify-between gap-2">
-                       <span className="text-secondary-700 font-bold">{col.label}</span>
+                        <ITText as="span" className="text-secondary-700 font-bold">{col.label}</ITText>
                        {col.sortable && col.type !== "actions" && (
                          <button
                            onClick={() => handleSort(col.key)}
@@ -380,8 +346,8 @@ export default function ITTable<T extends Record<string, unknown>>({
               <tr>
                 <td colSpan={columns.length} className="px-6 py-12 text-center">
                   <div className="flex flex-col items-center justify-center text-secondary-400">
-                    <span className="text-lg">No se encontraron resultados</span>
-                    <span className="text-sm mt-1">Intenta ajustar los filtros</span>
+                    <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
+                    <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
                   </div>
                 </td>
               </tr>
@@ -395,7 +361,7 @@ export default function ITTable<T extends Record<string, unknown>>({
       <div className="rounded-b-xl border-t border-secondary-200 px-6 py-4" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
         <ITPagination
           currentPage={currentPage}
-          totalPages={totalPages || 1}
+          totalPages={computedTotalPages}
           onPageChange={goToPage}
           color="primary"
           itemsPerPageOptions={itemsPerPageOptions}

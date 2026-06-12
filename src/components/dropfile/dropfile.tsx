@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 // import pdfjsLib from "@/hooks/pdf"; // Disabled as hook is missing
 import clsx from "clsx";
+import ITText from "@/components/text/text";
 
 /** Enum con tipos de archivo permitidos */
 export enum FileTypeEnum {
@@ -168,9 +169,9 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
     return (
       <div className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-full border ${color}`}>
         <div className={`w-2 h-2 rounded-full ${dotColor}`}></div>
-        <span className="text-xs font-medium flex items-center gap-1.5">
+        <ITText as="span" className="text-xs font-medium flex items-center gap-1.5">
           {label}
-        </span>
+        </ITText>
       </div>
     );
   };
@@ -268,7 +269,7 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
     <div className={clsx("w-full transition-all duration-300", containerClassName)}>
       <div className="flex items-center justify-between mb-2">
         <label className="block text-sm font-semibold text-gray-700">
-          Subir archivo <span className="text-gray-400 font-normal text-xs">({getFileExtensions()})</span>
+          <ITText as="span">Subir archivo </ITText><ITText as="span" className="text-gray-400 font-normal text-xs">({getFileExtensions()})</ITText>
         </label>
         
         {showStatusBadge && selectedFile && (
@@ -301,9 +302,9 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
           </div>
 
           <div className="text-center space-y-1">
-            <p className={`text-sm font-medium transition-colors duration-300 ${isDragActive ? 'text-primary-700' : 'text-gray-700'}`}>
+            <ITText as="p" className={`text-sm font-medium transition-colors duration-300 ${isDragActive ? 'text-primary-700' : 'text-gray-700'}`}>
               {isDragActive ? "¡Suelta aquí!" : "Haz clic o arrastra"}
-            </p>
+            </ITText>
           </div>
         </div>
       ) : (
@@ -322,12 +323,12 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
                   )}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs font-medium text-gray-900 truncate" title={selectedFile?.name || "Imagen cargada"}>
+                  <ITText as="p" className="text-xs font-medium text-gray-900 truncate" title={selectedFile?.name || "Imagen cargada"}>
                     {selectedFile?.name || "Imagen cargada"}
-                  </p>
-                  <p className="text-[10px] text-gray-500">
+                  </ITText>
+                  <ITText as="p" className="text-[10px] text-gray-500">
                     {selectedFile ? (selectedFile.size / 1024 / 1024).toFixed(2) + " MB" : ""}
-                  </p>
+                  </ITText>
                 </div>
              </div>
           </div>
@@ -344,7 +345,7 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
                 <svg className="w-10 h-10 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
-                <span className="text-xs">Sin vista previa</span>
+                <ITText as="span" className="text-xs">Sin vista previa</ITText>
               </div>
             )}
           </div>
@@ -357,14 +358,14 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
                   onClick={handleCancel}
                   className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  Cancelar
+                  <ITText as="span">Cancelar</ITText>
                 </button>
                 <button
                   type="button"
                   onClick={handleConfirm}
                   className="px-3 py-1.5 text-xs font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 shadow-sm transition-colors flex items-center gap-1"
                 >
-                  <span>Confirmar</span>
+                  <ITText as="span">Confirmar</ITText>
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -379,7 +380,7 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
                 <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
-                <span>Eliminar</span>
+                <ITText as="span">Eliminar</ITText>
               </button>
             )}
           </div>

@@ -7,6 +7,8 @@ import {
   ITInput,
   ITSelect,
   ITLoader,
+  ITGrid,
+  ITStack,
   useITTheme
 } from "../index";
 import { PRESETS } from "../components/theme-provider/themeProvider";
@@ -189,7 +191,7 @@ export const LoaderShowcase = () => {
 export const ThemeProviderShowcase = () => {
   const { applyPreset, resolvedTheme, darkModeMode, setDarkModeMode } = useITTheme();
 
-  const code = `// En index.tsx o App.tsx\n<ITThemeProvider>\n  <App />\n</ITThemeProvider>\n\n// En tu componente para obtener la paleta y cambiar modo:\nconst { palette, resolvedTheme, darkModeMode, setDarkModeMode, applyPreset } = useITTheme();`;
+  const code = `// En index.tsx o App.tsx\n<ITThemeProvider>\n  <App />\n</ITThemeProvider>\n\n// En tu componente:\nconst { palette, resolvedTheme, darkModeMode, setDarkModeMode, applyPreset } = useITTheme();`;
 
   return (
     <ShowcaseLayout
@@ -197,45 +199,69 @@ export const ThemeProviderShowcase = () => {
       description="Inyector dinámico de tokens CSS que gestiona el modo oscuro/claro y las paletas de colores unificadas."
       code={code}
       demo={
-        <div className="w-full max-w-md space-y-6 bg-white dark:bg-slate-900 border p-6 rounded-2xl shadow-sm border-slate-100 dark:border-slate-800">
+        <ITStack spacing={5} className="w-full max-w-md">
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Modo de Apariencia</h4>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3 block">
+              Modo de Apariencia
+            </span>
             <div className="flex flex-wrap gap-2">
               {(["light", "dark", "system"] as const).map((mode) => (
                 <ITButton
                   key={mode}
-                  label={mode === "light" ? "Claro ☀️" : mode === "dark" ? "Oscuro 🌙" : "Sistema 🖥️"}
+                  label={mode === "light" ? "☀️ Claro" : mode === "dark" ? "🌙 Oscuro" : "💻 Sistema"}
                   color={darkModeMode === mode ? "primary" : "secondary"}
                   onClick={() => setDarkModeMode(mode)}
                   size="small"
                 />
               ))}
             </div>
-            <p className="text-xs text-slate-400 mt-2">
-              Tema resuelto actualmente: <strong>{resolvedTheme === "dark" ? "Oscuro" : "Claro"}</strong>
+            <p className="text-xs text-slate-500 mt-2">
+              Tema actual: <strong>{resolvedTheme === "dark" ? "Oscuro" : "Claro"}</strong>
             </p>
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Cambiar Preset del Sistema</h4>
-            <div className="grid grid-cols-2 gap-2">
-              {PRESETS.map((preset) => (
-                <button
-                  key={preset.name}
-                  onClick={() => applyPreset(preset.colors)}
-                  className="p-2 border rounded-xl text-xs font-semibold text-left hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800"
-                >
-                  {preset.name}
-                </button>
-              ))}
-            </div>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3 block">
+              Presets Rápidos
+            </span>
+            <ITGrid container spacing={2}>
+              {PRESETS.map((preset) => {
+                const dotColors = [preset.colors.primary, preset.colors.secondary, preset.colors.ternary, preset.colors.success];
+                return (
+                  <ITGrid key={preset.name} item xs={6}>
+                    <button
+                      onClick={() => applyPreset(preset.colors)}
+                      className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/50 hover:border-slate-300 dark:hover:border-slate-600 transition-colors text-left"
+                    >
+                      <div className="flex -space-x-1">
+                        {dotColors.map((c, i) => (
+                          <span
+                            key={i}
+                            className="w-3.5 h-3.5 rounded-full border border-white dark:border-slate-800"
+                            style={{ backgroundColor: c }}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate">
+                        {preset.name.replace(/ [\w]+$/, "")}
+                      </span>
+                    </button>
+                  </ITGrid>
+                );
+              })}
+            </ITGrid>
           </div>
-        </div>
+        </ITStack>
       }
       controls={
-        <div className="space-y-3 text-xs text-slate-500">
-          <p>Usa la burbuja de la paleta de colores flotante (FAB) en la parte inferior derecha para configurar a fondo cada color.</p>
-        </div>
+        <ITStack spacing={3}>
+          <p className="text-xs text-slate-500">
+            Haz clic en el botón flotante de paleta 🎨 en la esquina inferior derecha para abrir el diseñador completo.
+          </p>
+          <p className="text-xs text-slate-500">
+            Allí puedes ajustar cada color, guardar temas personalizados y alternar entre modo claro/oscuro.
+          </p>
+        </ITStack>
       }
     />
   );

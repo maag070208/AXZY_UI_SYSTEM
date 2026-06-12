@@ -1,29 +1,46 @@
+import clsx from "clsx";
 import { ITTripleFilterProps } from "./tripleFilter.props";
+import { ColorsTypes } from "@/types/colors.types";
+import ITText from "@/components/text/text";
+
+const colorMap: Record<ColorsTypes, string> = {
+  primary: "text-primary-600",
+  secondary: "text-secondary-600",
+  success: "text-success-600",
+  danger: "text-danger-600",
+  warning: "text-warning-600",
+  info: "text-info-600",
+  purple: "text-purple-600",
+  error: "text-danger-600",
+  gray: "text-secondary-600",
+};
 
 /**
- * @description Generic triple/segmented filter component following AXZY Emerald/Slate theme.
+ * @description Generic triple/segmented filter component with color support.
  */
 export const ITTripleFilter = <T extends string | boolean>({
   value,
   onChange,
   options,
-  className = "",
+  color = "primary",
+  className,
 }: ITTripleFilterProps<T>) => {
   return (
     <div
-      className={`flex bg-slate-100 p-1 rounded-xl gap-1 w-fit ${className}`}
+      className={clsx("flex bg-slate-100 p-1 rounded-xl gap-1 w-fit", className)}
     >
       {options.map((option) => (
         <button
           key={String(option.value)}
           onClick={() => onChange(option.value)}
-          className={`px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${
+          className={clsx(
+            "px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 whitespace-nowrap",
             value === option.value
-              ? "bg-white text-emerald-600 shadow-sm"
+              ? clsx("bg-white shadow-sm", colorMap[color])
               : "text-slate-400 hover:text-slate-600"
-          }`}
+          )}
         >
-          {option.label}
+          <ITText as="span">{option.label}</ITText>
         </button>
       ))}
     </div>

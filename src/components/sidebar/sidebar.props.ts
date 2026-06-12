@@ -22,7 +22,7 @@ export interface ITSidebarProps {
   visibleOnMobile?: boolean; 
   onItemClick?: (item: ITNavigationItem) => void;
   onSubItemClick?: (subitem: ITNavigationSubItem) => void;
-  subitemConnector?: 'lines' | 'dots' | '|' | 'none';
+  subitemConnector?: 'dot' | '|' | 'none';
   className?: string;
 }
 

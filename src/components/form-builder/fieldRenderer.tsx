@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from "react";
+import React, { memo, useCallback, useEffect } from "react";
 import clsx from "clsx";
 import { FieldConfigV2 } from "@/types/field.types";
 import { useITFormBuilderContext } from "./formBuilder.context";
@@ -7,69 +7,40 @@ import ITSelect from "../select/select";
 import ITDatePicker from "../date-picker/datePicker";
 import ITTimePicker from "../time-picker/timePicker";
 import { useFieldRules } from "./useFormBuilder";
+import { getColSpanClass, getGridColsClass } from "@/utils/styles";
+import ITText from "@/components/text/text";
 
-const gridColsClasses = {
-  1: "grid-cols-1",
-  2: "grid-cols-2",
-  3: "grid-cols-3",
-  4: "grid-cols-4",
-  6: "grid-cols-6",
-  8: "grid-cols-8",
-  12: "grid-cols-12",
-};
 
-const getGridColsClass = (columns: keyof typeof gridColsClasses) =>
-  gridColsClasses[columns] || "grid-cols-12";
-
-const getColSpanClass = (
-  span: number | { sm?: number; md?: number; lg?: number; xl?: number } = 12,
-  maxCols: number
-) => {
-  if (typeof span === "object") {
-    const classes = [];
-    if (span.sm) classes.push(`col-span-${Math.min(span.sm, maxCols)}`);
-    if (span.md) classes.push(`md:col-span-${Math.min(span.md, maxCols)}`);
-    if (span.lg) classes.push(`lg:col-span-${Math.min(span.lg, maxCols)}`);
-    if (span.xl) classes.push(`xl:col-span-${Math.min(span.xl, maxCols)}`);
-    return classes.join(" ") || `col-span-${maxCols}`;
-  }
-
-  return `col-span-${Math.min(span, maxCols)}`;
-};
 
 interface ITFieldRendererProps {
   config: FieldConfigV2;
   columns?: number;
+  value?: any;
+  error?: string;
+  touched?: boolean;
+  dependentValues?: Record<string, any>;
 }
 
-const ITFieldRenderer = ({ config, columns = 12 }: ITFieldRendererProps) => {
+const ITFieldRenderer = ({
+  config,
+  columns = 12,
+  value,
+  error,
+  touched,
+  dependentValues = {},
+}: ITFieldRendererProps) => {
   const context = useITFormBuilderContext();
   const { isVisible, isRequired, isDisabled, dynamicProps } = useFieldRules(
-    config.name,
-    config.dependsOn
+    config,
+    dependentValues,
   );
-
-  /* ============================
-     ✅ REGISTER FIELD (ONLY ONCE)
-  ============================ */
 
   useEffect(() => {
     context.registerField(config.name, config);
-
     return () => {
       context.unregisterField(config.name);
     };
-  }, [config.name]); // 🔥 SOLO NAME
-
-  /* ============================
-     ✅ UPDATE CONFIG IF CHANGES
-  ============================ */
-
-  // useEffect(() => {
-  //   if (context.updateFieldConfig) {
-  //     context.updateFieldConfig(config.name, config);
-  //   }
-  // }, [config]); // solo actualiza config, no registra/desregistra
+  }, [config.name]);
 
   if (!isVisible) return null;
 
@@ -94,19 +65,16 @@ const ITFieldRenderer = ({ config, columns = 12 }: ITFieldRendererProps) => {
     rightIcon,
   } = activeConfig;
 
-  const value = context.values[name];
-  const error = context.errors[name];
-  const touched = context.touched[name];
-
-  const handleChangeWrapper = async (val: any) => {
-    const finalValue = val?.target ? val.target.value : val;
-
-    await context.setFieldValue(name, finalValue);
-
-    if (activeConfig.onChangeAction) {
-      await activeConfig.onChangeAction(finalValue, context);
-    }
-  };
+  const handleChangeWrapper = useCallback(
+    async (val: any) => {
+      const finalValue = val?.target ? val.target.value : val;
+      await context.setFieldValue(name, finalValue);
+      if (activeConfig.onChangeAction) {
+        await activeConfig.onChangeAction(finalValue, context);
+      }
+    },
+    [name, context]
+  );
 
   const renderField = () => {
     switch (type) {
@@ -121,11 +89,7 @@ const ITFieldRenderer = ({ config, columns = 12 }: ITFieldRendererProps) => {
             label={label || ""}
             placeholder={placeholder}
             disabled={isDisabled as boolean}
-            value={
-              value !== undefined
-                ? value
-                : activeConfig.defaultValue || ""
-            }
+            value={value !== undefined ? value : activeConfig.defaultValue || ""}
             onChange={handleChangeWrapper}
             onBlur={context.handleBlur}
             currencyFormat={activeConfig.currencyFormat}
@@ -150,11 +114,7 @@ const ITFieldRenderer = ({ config, columns = 12 }: ITFieldRendererProps) => {
             disabled={isDisabled as boolean}
             label={label || ""}
             placeholder={placeholder}
-            value={
-              value !== undefined
-                ? value
-                : activeConfig.defaultValue || ""
-            }
+            value={value !== undefined ? value : activeConfig.defaultValue || ""}
             valueField={valueField}
             labelField={labelField}
             onChange={handleChangeWrapper}
@@ -216,23 +176,13 @@ const ITFieldRenderer = ({ config, columns = 12 }: ITFieldRendererProps) => {
 
       case "section":
         return (
-          <div
-            className={clsx(
-              "w-full col-span-full",
-              activeConfig.className
-            )}
-          >
+          <div className={clsx("w-full col-span-full", activeConfig.className)}>
             {label && (
-              <h4 className="text-lg font-semibold text-gray-800 mb-4">
+              <ITText as="h4" className="text-lg font-semibold text-gray-800 mb-4">
                 {label}
-              </h4>
+              </ITText>
             )}
-            <div
-              className={clsx(
-                "grid gap-y-6 gap-x-5",
-                getGridColsClass(columns as any)
-              )}
-            >
+            <div className={clsx("grid gap-y-6 gap-x-5", getGridColsClass(columns as any))}>
               {activeConfig.fields?.map((childConfig) => (
                 <ITFieldRenderer
                   key={childConfig.name}
@@ -247,9 +197,9 @@ const ITFieldRenderer = ({ config, columns = 12 }: ITFieldRendererProps) => {
       case "array":
         return (
           <div className="p-4 border-2 border-dashed border-gray-200 rounded-xl">
-            <p className="text-sm text-gray-500 text-center">
+            <ITText as="p" className="text-sm text-gray-500 text-center">
               Array Field: {label}
-            </p>
+            </ITText>
           </div>
         );
 
@@ -259,19 +209,10 @@ const ITFieldRenderer = ({ config, columns = 12 }: ITFieldRendererProps) => {
   };
 
   return (
-    <div
-      className={clsx(
-        getColSpanClass(activeConfig.column, columns),
-        activeConfig.className
-      )}
-    >
+    <div className={clsx(getColSpanClass(activeConfig.column, columns), activeConfig.className)}>
       {renderField()}
     </div>
   );
 };
-
-/* =====================================
-   ✅ MEMO SEGURO
-===================================== */
 
 export default memo(ITFieldRenderer);

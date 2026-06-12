@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { FaAngleDown, FaSearch, FaTimes } from "react-icons/fa";
 import { ITSearchSelectProps, ITSearchSelectOption } from "./search-select.props";
 import { theme } from "@/theme/theme";
+import ITText from "@/components/text/text";
 
 /**
  * ITSearchSelect - Un componente de selección con buscador integrado.
@@ -156,14 +157,15 @@ export default function ITSearchSelect({
   return (
     <div className={clsx("w-full flex flex-col gap-1.5", className, isOpen && "relative z-30")} ref={containerRef}>
       {label && (
-        <label
+        <ITText
+          as="label"
           className={clsx("text-sm font-medium text-gray-700 dark:text-slate-300", {
             "text-red-500": hasError,
           })}
         >
-          {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
-        </label>
+          <ITText as="span">{label}</ITText>
+          {required && <ITText as="span" className="text-red-500 ml-1">*</ITText>}
+        </ITText>
       )}
 
       <div className="relative">
@@ -194,7 +196,8 @@ export default function ITSearchSelect({
             <div className="max-h-60 overflow-y-auto">
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => (
-                  <div
+                  <ITText
+                    as="div"
                     key={option[valueField]}
                     onClick={() => handleSelect(option)}
                     className={clsx(
@@ -204,13 +207,13 @@ export default function ITSearchSelect({
                         : "hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300"
                     )}
                   >
-                    {option[labelField]}
-                  </div>
+                    <ITText as="span">{option[labelField]}</ITText>
+                  </ITText>
                 ))
               ) : (
-                <div className="px-4 py-6 text-sm text-center text-gray-500 italic">
+                <ITText as="div" className="px-4 py-6 text-sm text-center text-gray-500 italic">
                   {isLoading ? "Cargando..." : noResultsMessage}
-                </div>
+                </ITText>
               )}
             </div>
           </div>
@@ -219,7 +222,7 @@ export default function ITSearchSelect({
 
       {/* Error Message */}
       {hasError && (
-        <p className="text-red-500 text-xs mt-1">{errorMessage}</p>
+        <ITText as="p" className="text-red-500 text-xs mt-1">{errorMessage}</ITText>
       )}
     </div>
   );

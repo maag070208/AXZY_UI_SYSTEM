@@ -2,7 +2,7 @@ import { FaUserCircle, FaBars } from "react-icons/fa";
 import useClickOutside from "../../hooks/useClickOutside";
 import { useRef, useState } from "react";
 import { ITTopBarProps } from "./topbar.props";
-import { theme } from "@/theme/theme";
+import ITText from "@/components/text/text";
 
 export default function ITTopBar({
   logo,
@@ -22,9 +22,9 @@ export default function ITTopBar({
     <header 
       className="sticky top-0 z-40 backdrop-blur-md transition-all duration-300"
       style={{
-        backgroundColor: theme.topbar?.backgroundColor || 'rgba(255, 255, 255, 0.9)',
-        borderBottom: `1px solid ${theme.topbar?.borderColor || '#e2e8f0'}`,
-        boxShadow: theme.topbar?.shadow || 'none',
+        backgroundColor: "var(--topbar-bg, rgba(255, 255, 255, 0.9))",
+        borderBottom: "1px solid var(--topbar-border, #e2e8f0)",
+        boxShadow: "none",
       }}
     >
       <div className="flex items-center justify-between h-[72px] px-6 lg:px-8">
@@ -37,10 +37,10 @@ export default function ITTopBar({
             <button
               className="lg:hidden p-2.5 rounded-xl transition-colors duration-200"
               style={{
-                 color: theme.topbar?.iconColor || '#64748b',
+                 color: "var(--topbar-icon, #64748b)",
               }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = theme.topbar?.userMenu?.hoverBackground || '#f1f5f9'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--topbar-user-hover, #f1f5f9)"}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               onClick={onToggleMobileMenu}
             >
               <FaBars className="w-[1.125rem] h-[1.125rem]" />
@@ -56,36 +56,36 @@ export default function ITTopBar({
             )}
   
             {logoText && (
-              <span 
+              <ITText as="span" 
                  className="text-[1.15rem] font-bold tracking-tight"
-                 style={{ color: theme.topbar?.textHoverColor || '#0f172a' }}
+                 style={{ color: "var(--topbar-text, #0f172a)" }}
               >
                 {logoText}
-              </span>
+              </ITText>
             )}
           </div>
 
           {/* Top Navigation Items (Desktop) */}
           {navItems && navItems.length > 0 && (
-            <nav className="hidden md:flex ml-8 space-x-1 border-l pl-8" style={{ borderColor: theme.topbar?.borderColor || '#e2e8f0' }}>
+            <nav className="hidden md:flex ml-8 space-x-1 border-l pl-8" style={{ borderColor: "var(--topbar-border, #e2e8f0)" }}>
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => onNavItemClick?.(item.id)}
                   className="px-4 py-2 rounded-lg font-medium text-[0.9rem] transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)]"
-                  style={{ color: theme.topbar?.textColor || '#475569' }}
+                  style={{ color: "var(--topbar-text, #475569)" }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.color = theme.topbar?.textHoverColor || '#0f172a';
-                    e.currentTarget.style.backgroundColor = theme.topbar?.userMenu?.hoverBackground || '#f1f5f9';
+                    e.currentTarget.style.color = "var(--topbar-text, #0f172a)";
+                    e.currentTarget.style.backgroundColor = "var(--topbar-user-hover, #f1f5f9)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.color = theme.topbar?.textColor || '#475569';
-                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = "var(--topbar-text, #475569)";
+                    e.currentTarget.style.backgroundColor = "transparent";
                   }}
                 >
                   <div className="flex items-center gap-2">
                     {item.icon && <span className="opacity-70">{item.icon}</span>}
-                    {item.label}
+                    <ITText as="span">{item.label}</ITText>
                   </div>
                 </button>
               ))}
@@ -100,13 +100,13 @@ export default function ITTopBar({
               type="button"
               className="flex items-center gap-3 rounded-full pl-2 pr-4 py-1.5 transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] border border-transparent hover:border-gray-200"
               style={{
-                backgroundColor: isUserMenuOpen ? (theme.topbar?.userMenu?.hoverBackground || '#f1f5f9') : 'transparent',
+                backgroundColor: isUserMenuOpen ? "var(--topbar-user-hover, #f1f5f9)" : "transparent",
               }}
               onMouseEnter={(e) => {
-                if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = theme.topbar?.userMenu?.hoverBackground || '#f1f5f9';
+                if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = "var(--topbar-user-hover, #f1f5f9)";
               }}
               onMouseLeave={(e) => {
-                if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = 'transparent';
+                if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = "transparent";
               }}
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
             >
@@ -120,7 +120,7 @@ export default function ITTopBar({
                   />
                 ) : (
                   <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center ring-2 ring-white shadow-sm">
-                     <FaUserCircle className="w-6 h-6" style={{ color: theme.topbar?.iconColor || '#94a3b8' }} />
+                     <FaUserCircle className="w-6 h-6" style={{ color: "var(--topbar-icon, #94a3b8)" }} />
                   </div>
                 )}
                 {/* Active dot indicator */}
@@ -129,18 +129,18 @@ export default function ITTopBar({
 
               {/* Name Details */}
               <div className="hidden sm:flex flex-col text-left py-0.5">
-                <span 
+                <ITText as="span" 
                   className="font-semibold text-[0.85rem] leading-tight"
-                  style={{ color: theme.topbar?.userMenu?.textColor || '#0f172a' }}
+                  style={{ color: "var(--topbar-user-text, #0f172a)" }}
                 >
                   {userMenu.userName}
-                </span>
-                <span 
+                </ITText>
+                <ITText as="span" 
                   className="text-[0.7rem] font-medium"
-                  style={{ color: theme.topbar?.userMenu?.subtitleColor || '#64748b' }}
+                  style={{ color: "var(--topbar-user-subtitle, #64748b)" }}
                 >
                   {userMenu.userEmail}
-                </span>
+                </ITText>
               </div>
             </button>
 
@@ -152,18 +152,18 @@ export default function ITTopBar({
                 ${isUserMenuOpen ? "scale-100 opacity-100 translate-y-0" : "scale-95 opacity-0 -translate-y-2 pointer-events-none"}
               `}
               style={{ 
-                backgroundColor: theme.topbar?.userMenu?.dropdown?.backgroundColor || '#ffffff',
-                border: `1px solid ${theme.topbar?.userMenu?.dropdown?.borderColor || '#f1f5f9'}`
+                backgroundColor: "var(--topbar-user-dropdown-bg, #ffffff)",
+                border: "1px solid var(--topbar-user-dropdown-border, #f1f5f9)"
               }}
             >
                {/* Dropdown Header */}
-              <div className="px-5 py-4 border-b bg-slate-50/50" style={{ borderColor: theme.topbar?.userMenu?.dropdown?.borderColor || '#f1f5f9' }}>
-                <span className="block font-bold text-[0.9rem]" style={{ color: theme.topbar?.userMenu?.textColor || '#0f172a' }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: "var(--topbar-user-dropdown-border, #f1f5f9)", backgroundColor: "var(--topbar-user-bg, #f8fafc)" }}>
+                <ITText as="span" className="block font-bold text-[0.9rem]" style={{ color: "var(--topbar-user-text, #0f172a)" }}>
                   {userMenu.userName}
-                </span>
-                <span className="block text-xs font-medium truncate mt-0.5" style={{ color: theme.topbar?.userMenu?.subtitleColor || '#64748b' }}>
+                </ITText>
+                <ITText as="span" className="block text-xs font-medium truncate mt-0.5" style={{ color: "var(--topbar-user-subtitle, #64748b)" }}>
                   {userMenu.userEmail}
-                </span>
+                </ITText>
               </div>
               
               {/* Dropdown Items */}
@@ -173,7 +173,6 @@ export default function ITTopBar({
                   
                   return (
                     <li key={i} className="px-2">
-                       {/* Add a subtle divider before logout if it's the last item */}
                        {i === userMenu.menuItems.length - 1 && isDestructive && i > 0 && (
                           <div className="h-px bg-slate-100 my-1 mx-2"></div>
                        )}
@@ -182,16 +181,16 @@ export default function ITTopBar({
                            m.onClick();
                            setIsUserMenuOpen(false);
                         }}
-                        className={`block w-full text-left px-3 py-2.5 rounded-xl text-[0.875rem] font-medium transition-colors duration-150`}
-                        style={{ color: isDestructive ? '#ef4444' : (theme.topbar?.userMenu?.textColor || '#334155') }}
+                        className="block w-full text-left px-3 py-2.5 rounded-xl text-[0.875rem] font-medium transition-colors duration-150"
+                        style={{ color: isDestructive ? '#ef4444' : "var(--topbar-user-text, #334155)" }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = isDestructive ? '#fef2f2' : (theme.topbar?.userMenu?.dropdown?.itemHoverBackground || '#f8fafc');
+                          e.currentTarget.style.backgroundColor = isDestructive ? '#fef2f2' : "var(--topbar-user-item-hover, #f8fafc)";
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.backgroundColor = "transparent";
                         }}
                       >
-                        {m.label}
+                        <ITText as="span">{m.label}</ITText>
                       </button>
                     </li>
                   )

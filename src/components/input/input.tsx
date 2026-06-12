@@ -3,6 +3,8 @@ import clsx from "clsx";
 import { ITInputProps } from "./input.props";
 import { KeyboardEvent, useState, useEffect, useRef, useCallback } from "react";
 import { theme } from "@/theme/theme";
+import { disabledOverlay, iconAbsoluteLeft, iconAbsoluteRight, inputError, inputLabel } from "@/utils/styles";
+import ITText from "@/components/text/text";
 
 export default function ITInput({
   name,
@@ -22,6 +24,7 @@ export default function ITInput({
   required = false,
   autoFocus = false,
   onClick,
+  onKeyDown,
   iconLeft,
   iconRight,
   maxLength,
@@ -431,6 +434,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                   setLocalTouched(true);
                   onBlur?.(e);
                 }}
+                onKeyDown={onKeyDown}
                 disabled={disabled}
                 required={required}
                 className={clsx(
@@ -438,13 +442,13 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                   "form-radio h-4 w-4 text-slate-600 focus:ring-slate-500 transition-all duration-200",
                    type === "checkbox" && "form-checkbox rounded",
                    className,
-                   { "opacity-50 cursor-not-allowed": disabled },
+                   { [disabledOverlay]: disabled },
                    { "border-red-500": hasError }
                 )}
               />
               {label && (
                 <label htmlFor={name} className="text-sm text-gray-700 dark:text-slate-300 select-none">
-                  {label} {required && <span className="text-red-500">*</span>}
+                  {label} {required && <ITText as="span" className="text-red-500">*</ITText>}
                 </label>
               )}
            </div>
@@ -455,22 +459,21 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                 <label
                   htmlFor={name}
                   className={clsx(
-                    "text-sm font-medium text-gray-700 dark:text-slate-300",
-                    { "text-red-500": hasError },
+                    inputLabel(hasError),
                     labelClassName
                   )}
                 >
                   {label}
-                  {required && <span className="text-red-500 ml-1">*</span>}
+                  {required && <ITText as="span" className="text-red-500 ml-1">*</ITText>}
                 </label>
              )}
              
              <div className="relative w-full">
-                {iconLeft && (
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 z-10">
-                    {iconLeft}
-                  </div>
-                )}
+                 {iconLeft && (
+                   <div className={iconAbsoluteLeft}>
+                     {iconLeft}
+                   </div>
+                 )}
 
                 {isTextArea ? (
                   <textarea
@@ -484,6 +487,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                       setLocalTouched(true);
                       onBlur?.(e);
                     }}
+                    onKeyDown={onKeyDown}
                     readOnly={readOnly}
                     maxLength={maxLength}
                     minLength={minLength}
@@ -536,7 +540,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                               onBlur?.(e);
                             }
                       }
-                      onKeyDown={isNumberType ? handleKeyDown : undefined}
+                      onKeyDown={isNumberType ? handleKeyDown : onKeyDown}
                       readOnly={readOnly}
                       maxLength={isNumberType && !currencyFormat ? maxLength : undefined}
                       minLength={minLength}
@@ -576,7 +580,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                 )}
 
                 {iconRight && type !== "password" && (
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 z-10">
+                  <div className={iconAbsoluteRight}>
                     {iconRight}
                   </div>
                 )}
@@ -587,23 +591,23 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
              {/* Validation message aligned with input */}
        {hasError && !isCheckboxOrRadio && (
          <div className="flex-shrink-0 min-w-[140px] flex items-center pt-3">
-           <p className="text-red-500 text-xs">{errorMessage}</p>
+           <ITText as="p" className={inputError}>{errorMessage}</ITText>
          </div>
        )}
        
        {/* Length hint below if needed */}
        {showHintLength && (minLength || maxLength) && !isCheckboxOrRadio && (
          <div className="mt-1 text-xs">
-           <p className="text-gray-500">
-             {currentLength}{maxLength && `/${maxLength}`}
-           </p>
+<ITText as="p" className="text-gray-500">
+              {currentLength}{maxLength && `/${maxLength}`}
+            </ITText>
          </div>
        )}
        
        {/* Validation for checkbox/radio - keep below */}
        {isCheckboxOrRadio && hasError && (
          <div className="mt-1 text-xs">
-           <p className="text-red-500">{errorMessage}</p>
+           <ITText as="p" className="text-red-500">{errorMessage}</ITText>
          </div>
        )}
     </div>

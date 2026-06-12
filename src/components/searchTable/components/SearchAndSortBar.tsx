@@ -2,6 +2,7 @@ import React from "react";
 import SearchInput from "./SearchInput";
 import SortButton from "./SortButton";
 import ITButton from "@/components/button/button";
+import ITText from "@/components/text/text";
 
 interface SearchAndSortBarProps {
   searchTerm: string;
@@ -43,7 +44,7 @@ export default function SearchAndSortBar({
             ariaLabel="Limpiar búsqueda"
             title="Limpiar búsqueda"
           >
-            Limpiar
+            <ITText as="span">Limpiar</ITText>
           </ITButton>
         )}
       </div>

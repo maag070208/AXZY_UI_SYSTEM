@@ -3,6 +3,7 @@ import { SearchColumn } from "../searchTable.props";
 import ITInput from "@/components/input/input";
 import ITSelect from "@/components/select/select";
 import ITDatePicker from "@/components/date-picker/datePicker";
+import ITText from "@/components/text/text";
 
 interface EditableCellProps<T> {
   column: SearchColumn<T>;
@@ -142,7 +143,7 @@ export default function EditableCell<T>({
   return (
     <div className="w-full">
       {renderInput()}
-      {error && <div className="text-red-500 text-xs mt-1">{error}</div>}
+      {error && <div className="text-red-500 text-xs mt-1"><ITText as="span">{error}</ITText></div>}
     </div>
   );
 }

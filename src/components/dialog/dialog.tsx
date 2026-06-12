@@ -5,6 +5,7 @@ import { FaRegTimesCircle } from "react-icons/fa";
 import { ITDialogProps } from "./dialog.props";
 import useClickOutside from "@/hooks/useClickOutside";
 import ITFormHeader from "../form-header/form-header";
+import ITText from "@/components/text/text";
 
 export default function ITDialog({
   isOpen,
@@ -13,6 +14,7 @@ export default function ITDialog({
   className,
   title,
   useFormHeader = false,
+  fullScreen = false,
 }: ITDialogProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -38,17 +40,23 @@ export default function ITDialog({
   if (typeof document === "undefined") return null;
 
   const content = (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]">
+    <div
+      className={`fixed inset-0 flex ${
+        fullScreen ? "items-stretch" : "items-center justify-center"
+      } bg-black bg-opacity-50 z-[9999]`}
+    >
       <div
         ref={modalRef}
-        className={`overflow-hidden relative ${className} ${
-          useFormHeader ? 'p-0' : 'p-6'
+        className={`overflow-hidden relative ${
+          fullScreen
+            ? "w-screen h-screen max-w-none rounded-none m-0 flex flex-col"
+            : `${className || ""} ${useFormHeader ? "p-0" : "p-6"}`
         }`}
         style={{
              backgroundColor: theme.card.backgroundColor,
-             borderRadius: theme.card.borderRadius,
-             boxShadow: theme.card.shadow,
-             borderWidth: theme.card.borderWidth,
+             borderRadius: fullScreen ? "0" : theme.card.borderRadius,
+             boxShadow: fullScreen ? "none" : theme.card.shadow,
+             borderWidth: fullScreen ? "0" : theme.card.borderWidth,
              borderColor: theme.card.borderColor,
              borderStyle: 'solid',
         }}
@@ -56,7 +64,9 @@ export default function ITDialog({
         {useFormHeader && title ? (
           <>
             <ITFormHeader title={title} onClose={onClose} />
-            <div className="p-6">{children}</div>
+            <div className={fullScreen ? "flex-1 overflow-auto p-6" : "p-6"}>
+              {children}
+            </div>
           </>
         ) : (
           <>
@@ -66,7 +76,7 @@ export default function ITDialog({
             >
               <FaRegTimesCircle />
             </button>
-            {title && <h2 className="text-xl font-semibold mb-4">{title}</h2>}
+            {title && <ITText as="h2" className="text-xl font-semibold mb-4">{title}</ITText>}
             <div>{children}</div>
           </>
         )}

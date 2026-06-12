@@ -39,6 +39,16 @@ mediante variables CSS a través de ITThemeProvider.
 25. ITBadget (Etiquetas y Badges de Estatus)
 26. ITImage (Imagen con Fallback de Error)
 27. ITText (Tipografía Semántica)
+28. ITStack (Layout Flexbox con Dirección y Gap Uniforme)
+29. ITFlex (Contenedor Flexbox Completo)
+30. ITGrid (Sistema de Grid Responsivo 12 Columnas)
+31. ITSlider (Control Deslizante / Range)
+32. ITAvatar (Avatar con Imagen / Iniciales / Badge)
+33. ITStatCard (Tarjeta de Métrica con Valor y Tendencia)
+34. ITSegmentedControl (Selector Segmentado Exclusivo)
+35. ITDivider (Divisor Visual Horizontal / Vertical)
+36. ITPageHeader (Encabezado de Página)
+37. ITPage (Template de Página)
 
 ================================================================================
 1. ITThemeProvider
@@ -130,7 +140,7 @@ export default function AppShell() {
       { id: 'users', label: 'Usuarios', icon: <FaUsers />, isActive: activeTab === 'users', action: () => setActiveTab('users') },
       { id: 'settings', label: 'Configuración', icon: <FaCog />, isActive: activeTab === 'settings', action: () => setActiveTab('settings') }
     ],
-    subitemConnector: 'lines' as const
+    subitemConnector: 'dot' as const
   };
 
   const topBarProps = {
@@ -239,7 +249,7 @@ export interface ITSidebarProps {
   visibleOnMobile?: boolean;
   onItemClick?: (item: ITNavigationItem) => void;
   onSubItemClick?: (subitem: ITNavigationSubItem) => void;
-  subitemConnector?: 'lines' | 'dots' | '|' | 'none';
+  subitemConnector?: 'dot' | '|' | 'none';
   className?: string;
 }
 ```
@@ -279,7 +289,7 @@ export default function CustomSidebar() {
       navigationItems={items}
       isCollapsed={collapsed}
       onToggleCollapse={() => setCollapsed(!collapsed)}
-      subitemConnector="dots" // Prueba con 'lines', 'dots', '|', o 'none'
+      subitemConnector="dot" // Prueba con 'dot', '|', o 'none'
       className="h-screen"
     />
   );
@@ -341,6 +351,7 @@ Botón de acción con variedad de variantes estéticas y colores semánticos.
 export interface ITButtonProps {
   label?: string;
   children?: React.ReactNode;
+  icon?: React.ReactNode;
   onClick?: () => void;
   color?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'purple' | 'error' | 'gray';
   size?: 'small' | 'medium' | 'large';
@@ -348,7 +359,19 @@ export interface ITButtonProps {
   disabled?: boolean;
   className?: string;
   type?: 'submit' | 'reset' | 'button';
+  ariaLabel?: string;
+  title?: string;
 }
+
+### Uso con icono
+```tsx
+<ITButton
+  label="Guardar Cambios"
+  color="primary"
+  icon={<FaSave />}
+  onClick={handleSave}
+/>
+```
 ```
 
 ### Ejemplo Real
@@ -1486,4 +1509,471 @@ export default function TextShowcase() {
     </div>
   );
 }
+```
+
+================================================================================
+28. ITStack
+================================================================================
+Layout basado en flexbox con dirección y espaciado uniforme. Ideal para secciones verticales, toolbars horizontales, listas de items y composición rápida de layouts con gap consistente.
+
+### Props (ITStackProps)
+```typescript
+export type StackDirection = "row" | "column" | "row-reverse" | "column-reverse";
+export type StackAlignment = "start" | "end" | "center" | "stretch" | "baseline";
+export type StackJustify = "start" | "end" | "center" | "between" | "around" | "evenly";
+export type StackWrap = "nowrap" | "wrap" | "wrap-reverse";
+
+export interface ITStackProps {
+  children?: ReactNode;
+  direction?: StackDirection;       // "column" por defecto
+  spacing?: number;                  // Unidades de 0.25rem (4px). Ej: spacing={4} = 1rem
+  alignItems?: StackAlignment;
+  justifyContent?: StackJustify;
+  flexWrap?: StackWrap;
+  divider?: ReactNode;               // Nodo renderizado entre hijos
+  className?: string;
+  style?: CSSProperties;
+  as?: ElementType;                  // Tag root (ej: "section", "nav")
+}
+```
+
+### Ejemplo Real
+```tsx
+import { ITStack, ITFlex } from 'axzy-ui-system';
+
+export default function ProfileSection() {
+  return (
+    <ITStack spacing={4}>
+      <h2 className="text-xl font-bold">Perfil</h2>
+      <ITStack direction="row" spacing={3} alignItems="center">
+        <ITAvatar initials="JD" size="lg" />
+        <div>
+          <p className="font-semibold">John Doe</p>
+          <p className="text-sm text-slate-500">john@acme.com</p>
+        </div>
+      </ITStack>
+      <ITStack spacing={2} divider={<div className="h-px bg-slate-200" />}>
+        <div>Opción 1</div>
+        <div>Opción 2</div>
+        <div>Opción 3</div>
+      </ITStack>
+    </ITStack>
+  );
+}
+```
+
+================================================================================
+29. ITFlex
+================================================================================
+Contenedor flexbox completo con control sobre alineación, distribución, wrap y propiedades flex (grow/shrink/basis). Para layouts que requieren más control que ITStack.
+
+### Props (ITFlexProps)
+```typescript
+export type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
+export type FlexAlign = "start" | "end" | "center" | "stretch" | "baseline";
+export type FlexJustify = "start" | "end" | "center" | "between" | "around" | "evenly";
+export type FlexWrap = "nowrap" | "wrap" | "wrap-reverse";
+
+export interface ITFlexProps {
+  children?: ReactNode;
+  direction?: FlexDirection;         // "row" por defecto
+  align?: FlexAlign;
+  justify?: FlexJustify;
+  wrap?: FlexWrap;
+  gap?: number;                      // Unidades de 0.25rem (4px)
+  grow?: boolean | number;           // true = flex-grow: 1; número = valor exacto
+  shrink?: boolean | number;
+  basis?: string | number;           // string = CSS directo; number = en unidades de 0.25rem
+  className?: string;
+  style?: CSSProperties;
+  as?: ElementType;
+  onClick?: (e: React.MouseEvent) => void;
+}
+```
+
+### Ejemplo Real
+```tsx
+import { ITFlex } from 'axzy-ui-system';
+
+export default function Toolbar() {
+  return (
+    <ITFlex justify="between" align="center" className="p-4 bg-white rounded-xl border">
+      <ITFlex gap={3} align="center">
+        <ITAvatar initials="AX" size="sm" />
+        <span className="font-bold">Proyecto Alpha</span>
+      </ITFlex>
+      <ITFlex gap={2}>
+        <button className="px-3 py-1.5 text-sm bg-slate-100 rounded-lg">Editar</button>
+        <button className="px-3 py-1.5 text-sm bg-primary-500 text-white rounded-lg">Guardar</button>
+      </ITFlex>
+    </ITFlex>
+  );
+}
+```
+
+================================================================================
+30. ITGrid
+================================================================================
+Sistema de grid responsivo de 12 columnas con patrón container/item similar a MUI Grid v2. Ideal para dashboards, galerías, formularios y layouts de página completos.
+
+### Props (ITGridProps)
+```typescript
+export interface ITGridProps {
+  children?: ReactNode;
+  container?: boolean;    // Define el contenedor grid con display:grid
+  item?: boolean;          // Define un item del grid con col-span
+  spacing?: number;        // Gap entre items (unidades de 0.25rem)
+  columns?: number;        // Número de columnas del grid (default 12)
+  xs?: number;             // Columnas en mobile (< 640px)
+  sm?: number;             // Columnas en sm (>= 640px)
+  md?: number;             // Columnas en md (>= 768px)
+  lg?: number;             // Columnas en lg (>= 1024px)
+  xl?: number;             // Columnas en xl (>= 1280px)
+  className?: string;
+  style?: CSSProperties;
+  as?: ElementType;
+}
+```
+
+### Ejemplo Real
+```tsx
+import { ITGrid, ITCard } from 'axzy-ui-system';
+
+const products = [
+  { id: 1, name: 'Design Pro', price: '$19.99' },
+  { id: 2, name: 'Dev Kit', price: '$29.99' },
+  { id: 3, name: 'UI Bundle', price: '$39.99' },
+  { id: 4, name: 'Cloud Sync', price: '$49.99' },
+];
+
+export default function ProductGrid() {
+  return (
+    <ITGrid container spacing={4}>
+      {products.map(product => (
+        <ITGrid key={product.id} item xs={12} sm={6} md={4} lg={3}>
+          <ITCard title={product.name}>
+            <p className="text-2xl font-bold">{product.price}</p>
+          </ITCard>
+        </ITGrid>
+      ))}
+    </ITGrid>
+  );
+}
+```
+
+================================================================================
+31. ITSlider
+================================================================================
+Control deslizante (range slider) estilizado con track y thumb personalizados. Sincronizado con Tailwind para colores primarios. Ideal para controles de filtros, rango de precios, o inputs numéricos interactivos.
+
+### Props (ITSliderProps)
+```typescript
+export interface ITSliderProps {
+  value: number;
+  onChange: (value: number) => void;
+  min?: number;        // Default: 0
+  max?: number;        // Default: 100
+  step?: number;       // Default: 1
+  label?: string;      // Muestra "label: valor" arriba del slider
+  disabled?: boolean;
+  className?: string;
+}
+```
+
+### Ejemplo Real
+```tsx
+import { useState } from 'react';
+import { ITSlider } from 'axzy-ui-system';
+
+export default function PriceFilter() {
+  const [price, setPrice] = useState(50);
+
+  return (
+    <div className="p-4 space-y-4">
+      <ITSlider
+        label="Precio máximo"
+        value={price}
+        onChange={setPrice}
+        min={0}
+        max={500}
+        step={10}
+      />
+      <p className="text-sm text-slate-500">Filtrando hasta: ${price}</p>
+    </div>
+  );
+}
+```
+
+================================================================================
+32. ITAvatar
+================================================================================
+Avatar versátil que muestra imagen o iniciales con fallback automático. Soporta badge superpuesto (ideal para estados online/offline) y múltiples tamaños.
+
+### Props (ITAvatarProps)
+```typescript
+export type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl";
+
+export interface ITAvatarProps {
+  src?: string;          // URL de imagen (se oculta en error, muestra initials)
+  alt?: string;          // Alt text + fallback: primer carácter
+  initials?: string;     // Iniciales forzadas (ej: "JD")
+  size?: AvatarSize;     // Default: "md" (w-10 h-10)
+  color?: string;        // Clase Tailwind bg-* para el fallback de iniciales
+  className?: string;
+  badge?: ReactNode;     // Elemento superpuesto en esquina inferior derecha
+  onClick?: () => void;
+}
+```
+
+### Ejemplo Real
+```tsx
+import { ITAvatar, ITFlex } from 'axzy-ui-system';
+import { FaCircle } from 'react-icons/fa';
+
+export default function UserList() {
+  const users = [
+    { name: 'Ana López', initials: 'AL', online: true },
+    { name: 'Carlos Ruiz', initials: 'CR', online: false },
+    { name: 'María García', initials: 'MG', online: true },
+  ];
+
+  return (
+    <ITStack spacing={3}>
+      {users.map(user => (
+        <ITFlex key={user.name} gap={3} align="center">
+          <ITAvatar
+            initials={user.initials}
+            size="sm"
+            badge={user.online ? <FaCircle className="text-emerald-500 text-[10px]" /> : undefined}
+          />
+          <span className="text-sm font-medium">{user.name}</span>
+        </ITFlex>
+      ))}
+    </ITStack>
+  );
+}
+```
+
+================================================================================
+33. ITStatCard
+================================================================================
+Tarjeta de métrica compacta con label, valor numérico y tendencia. Ideal para dashboards y paneles de KPIs.
+
+### Props (ITStatCardProps)
+```typescript
+export interface ITStatCardProps {
+  label: string;                    // "Usuarios Activos"
+  value: string | number;           // "1,245" o 1245
+  trend?: string;                   // "+12.5%"
+  trendDirection?: "up" | "down" | "neutral";  // Determina color del trend
+  icon?: ReactNode;                 // Icono opcional en esquina superior
+  color?: string;                   // Clase bg-* Tailwind (default: bg-primary-50)
+  className?: string;
+  style?: CSSProperties;
+  onClick?: () => void;
+}
+```
+
+### Ejemplo Real
+```tsx
+import { ITStatCard, ITGrid } from 'axzy-ui-system';
+
+const stats = [
+  { label: 'Usuarios Activos', value: '1,245', trend: '+12%', dir: 'up' as const },
+  { label: 'Ventas Hoy', value: '$4,320', trend: '+5.4%', dir: 'up' as const },
+  { label: 'Órdenes', value: '89', trend: '-2.1%', dir: 'down' as const },
+  { label: 'Tickets Abiertos', value: '12', trend: '-8%', dir: 'down' as const },
+];
+
+export default function DashboardStats() {
+  return (
+    <ITGrid container spacing={3}>
+      {stats.map(stat => (
+        <ITGrid key={stat.label} item xs={12} sm={6} lg={3}>
+          <ITStatCard
+            label={stat.label}
+            value={stat.value}
+            trend={stat.trend}
+            trendDirection={stat.dir}
+          />
+        </ITGrid>
+      ))}
+    </ITGrid>
+  );
+}
+```
+
+================================================================================
+34. ITSegmentedControl
+================================================================================
+Selector segmentado de opciones exclusivas. Reemplaza grupos de radio buttons o toggle buttons con una UI limpia. Soporta iconos y tamaño small/medium.
+
+### Props (ITSegmentedControlProps)
+```typescript
+export type SegmentedControlSize = "sm" | "md";
+
+export interface ISegmentedOption {
+  value: string;
+  label: string;
+  icon?: ReactNode;
+}
+
+export interface ITSegmentedControlProps {
+  options: ISegmentedOption[];
+  value: string;
+  onChange: (value: string) => void;
+  size?: SegmentedControlSize;    // Default: "md"
+  className?: string;
+  disabled?: boolean;
+}
+```
+
+### Ejemplo Real
+```tsx
+import { useState } from 'react';
+import { ITSegmentedControl } from 'axzy-ui-system';
+import { FaList, FaTh } from 'react-icons/fa';
+
+export default function ViewToggle() {
+  const [view, setView] = useState('list');
+
+  return (
+    <ITSegmentedControl
+      options={[
+        { value: 'list', label: 'Lista', icon: <FaList size={10} /> },
+        { value: 'grid', label: 'Grid', icon: <FaTh size={10} /> },
+      ]}
+      value={view}
+      onChange={setView}
+      size="sm"
+    />
+  );
+}
+```
+
+================================================================================
+35. ITDivider
+================================================================================
+Divisor visual simple para separar secciones. Soporta orientación horizontal (ancho completo) y vertical (alto completo del contenedor padre).
+
+### Props (ITDividerProps)
+```typescript
+export type DividerOrientation = "horizontal" | "vertical";
+
+export interface ITDividerProps {
+  orientation?: DividerOrientation;  // Default: "horizontal"
+  className?: string;
+  color?: string;                    // Clase bg-* Tailwind (default: bg-slate-200)
+  thickness?: string;                // "h-px" o "w-px" por defecto según orientation
+}
+```
+
+### Ejemplo Real
+```tsx
+import { ITDivider, ITStack, ITFlex } from 'axzy-ui-system';
+
+export default function SettingsPanel() {
+  return (
+    <ITStack spacing={4}>
+      <section>
+        <h3 className="font-bold">Configuración General</h3>
+        <p className="text-sm text-slate-500">Opciones básicas del sistema</p>
+      </section>
+      <ITDivider />
+      <section>
+        <h3 className="font-bold">Configuración Avanzada</h3>
+        <p className="text-sm text-slate-500">Opciones para desarrolladores</p>
+      </section>
+      <ITDivider color="bg-primary-200" />
+      <ITFlex gap={3} className="h-8 items-center">
+        <span>Izquierda</span>
+        <ITDivider orientation="vertical" />
+        <span>Derecha</span>
+      </ITFlex>
+    </ITStack>
+  );
+}
+```
+
+===============================================================================
+36. ITPageHeader
+===============================================================================
+Encabezado estandarizado para pantallas. Incluye título, descripción, breadcrumbs, botón de volver y área de acciones.
+
+### Props (ITPageHeaderProps)
+```typescript
+export interface ITPageHeaderProps {
+  title: string;
+  description?: string;
+  breadcrumbs?: ITBreadcrumbItem[];
+  actions?: ReactNode;
+  backAction?: () => void;
+
+### Usage
+```tsx
+<ITPageHeader
+  title="Usuarios"
+  description="Gestiona los usuarios del sistema"
+  breadcrumbs={[
+    { label: "Inicio", href: "#" },
+    { label: "Usuarios" },
+  ]}
+  actions={<ITButton label="Nuevo Usuario" size="small" />}
+/>
+```
+
+### Variants
+- **Solo título**: `<ITPageHeader title="Dashboard" />`
+- **Con descripción**: `<ITPageHeader title="Dashboard" description="Resumen de métricas" />`
+- **Con breadcrumbs**: breadcrumbs array con items que pueden tener href o onClick
+- **Con acciones**: actions ReactNode (botones, dropdowns, etc.)
+- **Con volver**: backAction renderiza un botón de flecha izquierda con icono claro
+
+===============================================================================
+37. ITPage
+===============================================================================
+Template completo de página con manejo de estados: carga, error, vacío y contenido normal. Envuelve toda pantalla estandarizando el layout con ITPageHeader integrado.
+
+### Props (ITPageProps)
+```typescript
+export interface ITPageProps {
+  title?: string;
+  description?: string;
+  breadcrumbs?: ITBreadcrumbItem[];
+  actions?: ReactNode;
+  backAction?: () => void;
+  loading?: boolean;
+  error?: string | null;
+  onRetry?: () => void;
+  empty?: boolean;
+  emptyTitle?: string;
+  emptyDescription?: string;
+  emptyAction?: ReactNode;
+  className?: string;
+  children: ReactNode;
+}
+
+### Usage
+```tsx
+<ITPage
+  title="Dashboard"
+  description="Resumen de actividad"
+  breadcrumbs={[{ label: "Dashboard" }]}
+  loading={isLoading}
+  error={error}
+  onRetry={refetch}
+>
+  <ITGrid container spacing={3}>
+    <ITGrid item xs={12} sm={6} lg={3}>
+      <ITStatCard label="Usuarios" value="1,245" />
+    </ITGrid>
+  </ITGrid>
+</ITPage>
+```
+
+### Estados
+- **loading**: Muestra skeletons automáticos (título + 3 rectángulos)
+- **error**: Muestra ITEmptyState con mensaje de error y botón de reintento (si onRetry está definido)
+- **empty**: Muestra ITEmptyState con título/descripción/action personalizables
+- **normal**: Renderiza ITPageHeader + children
 ```
