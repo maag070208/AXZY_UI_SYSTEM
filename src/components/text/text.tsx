@@ -11,7 +11,7 @@ export default function ITText({
   return (
     <Tag
       className={className}
-      style={muted ? { color: "var(--color-text-muted)", ...style } : { color: "var(--color-text-default)", ...style }}
+      style={muted ? { color: "var(--color-text-muted)", ...style } : style}
       {...rest}
     >
       {children}
