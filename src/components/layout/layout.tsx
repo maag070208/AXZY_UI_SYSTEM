@@ -1,4 +1,5 @@
 import { useState } from "react";
+import clsx from "clsx";
 import ITTopBar from "../topbar/topbar";
 import ITSidebar from "../sidebar/sidebar";
 import { ITLayoutProps } from "./layout.props";
@@ -69,7 +70,7 @@ export default function ITLayout({
 
         {/* MAIN CONTENT AREA */}
         <main className="flex-1 overflow-y-auto w-full custom-scrollbar relative z-0">
-          <div className={`mx-auto w-full h-full ${contentClassName}`}>
+          <div className={`mx-auto w-full max-w-7xl px-4 py-6 h-full sm:px-6 lg:px-8 ${contentClassName}`}>
             {children}
           </div>
         </main>

@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { FaChevronLeft } from "react-icons/fa";
 import { ITPageHeaderProps } from "./page-header.props";
 import ITBreadcrumbs from "../breadcrumbs/breadcrumbs";
@@ -15,7 +14,7 @@ export default function ITPageHeader({
   const showTopRow = breadcrumbs?.length || backAction;
 
   return (
-    <div className={clsx(className)}>
+    <div className={className}>
       {showTopRow && (
         <div className="flex items-center justify-between gap-4 mb-1">
           <div className="flex items-center gap-2 min-w-0">

@@ -6,51 +6,66 @@ import ITEmptyState from "../empty-state/empty-state";
 import ITButton from "../button/button";
 import ITStack from "../stack/stack";
 
-export default function ITPage({
-  title,
-  description,
-  breadcrumbs,
-  actions,
-  backAction,
-  loading = false,
-  error = null,
-  onRetry,
-  empty = false,
-  emptyTitle,
-  emptyDescription,
-  emptyAction,
-  className,
-  children,
-}: ITPageProps) {
+const hasHeader = (props: ITPageProps) =>
+  !!(props.title || props.description || props.breadcrumbs || props.actions || props.backAction);
+
+const renderHeader = (props: ITPageProps) => {
+  if (!hasHeader(props)) return null;
+  return (
+    <ITPageHeader
+      title={props.title || ""}
+      description={props.description}
+      breadcrumbs={props.breadcrumbs}
+      actions={props.actions}
+      backAction={props.backAction}
+    />
+  );
+};
+
+export default function ITPage(props: ITPageProps) {
+  const {
+    loading = false,
+    error = null,
+    errorTitle,
+    errorActionLabel,
+    onRetry,
+    empty = false,
+    emptyTitle,
+    emptyDescription,
+    emptyAction,
+    className,
+    children,
+  } = props;
+
+  const wrapperClass = clsx("space-y-6", className);
+
   if (loading) {
     return (
-      <div className={className}>
-        {title && (
-          <ITPageHeader title={title} />
-        )}
-        <div className="mt-6">
-          <ITStack spacing={4}>
-            <ITSkeleton variant="rectangular" height={40} width="40%" />
-            <ITSkeleton variant="rectangular" height={200} />
-            <ITSkeleton variant="rectangular" height={200} />
-          </ITStack>
-        </div>
+      <div className={wrapperClass}>
+        {renderHeader(props)}
+        <ITStack spacing={4}>
+          <ITSkeleton variant="rectangular" height={40} width="40%" />
+          <ITSkeleton variant="rectangular" height={200} />
+          <ITSkeleton variant="rectangular" height={200} />
+        </ITStack>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className={className}>
-        {title && (
-          <ITPageHeader title={title} />
-        )}
+      <div className={wrapperClass}>
+        {renderHeader(props)}
         <ITEmptyState
-          title="Error"
+          title={errorTitle || "Error"}
           description={error}
           action={
             onRetry ? (
-              <ITButton label="Reintentar" onClick={onRetry} size="small" />
+              <ITButton
+                label={errorActionLabel || "Reintentar"}
+                onClick={onRetry}
+                size="small"
+              />
             ) : undefined
           }
         />
@@ -60,10 +75,8 @@ export default function ITPage({
 
   if (empty) {
     return (
-      <div className={className}>
-        {title && (
-          <ITPageHeader title={title} />
-        )}
+      <div className={wrapperClass}>
+        {renderHeader(props)}
         <ITEmptyState
           title={emptyTitle || "Sin datos"}
           description={emptyDescription || "No hay información para mostrar"}
@@ -74,16 +87,8 @@ export default function ITPage({
   }
 
   return (
-    <div className={clsx("space-y-6", className)}>
-      {(title || breadcrumbs || actions || backAction) && (
-        <ITPageHeader
-          title={title || ""}
-          description={description}
-          breadcrumbs={breadcrumbs}
-          actions={actions}
-          backAction={backAction}
-        />
-      )}
+    <div className={wrapperClass}>
+      {renderHeader(props)}
       {children}
     </div>
   );

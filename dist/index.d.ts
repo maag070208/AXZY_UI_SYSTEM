@@ -812,6 +812,8 @@ interface ITPageProps {
     backAction?: () => void;
     loading?: boolean;
     error?: string | null;
+    errorTitle?: string;
+    errorActionLabel?: string;
     onRetry?: () => void;
     empty?: boolean;
     emptyTitle?: string;
@@ -821,7 +823,7 @@ interface ITPageProps {
     children: ReactNode;
 }
 
-declare function ITPage({ title, description, breadcrumbs, actions, backAction, loading, error, onRetry, empty, emptyTitle, emptyDescription, emptyAction, className, children, }: ITPageProps): react_jsx_runtime.JSX.Element;
+declare function ITPage(props: ITPageProps): react_jsx_runtime.JSX.Element;
 
 interface ITPageHeaderProps {
     title: string;

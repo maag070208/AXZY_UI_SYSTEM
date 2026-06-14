@@ -9,6 +9,8 @@ export interface ITPageProps {
   backAction?: () => void;
   loading?: boolean;
   error?: string | null;
+  errorTitle?: string;
+  errorActionLabel?: string;
   onRetry?: () => void;
   empty?: boolean;
   emptyTitle?: string;
