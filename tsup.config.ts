@@ -7,9 +7,5 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: ["react", "react-dom"],
-  esbuildOptions(options) {
-    options.conditions ??= [];
-    options.conditions.push("style");
-  },
+  external: ["react", "react-dom", "tailwindcss"],
 });
