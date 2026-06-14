@@ -1,49 +1,59 @@
 # AXZY UI System
 
-A modern, enterprise-ready React component library powered by Tailwind CSS. Built specifically for high-density data applications, hospital management software, and complex dashboards.
-
-## Installation
-
-```bash
-npm install @axzydev/axzy_ui_system
-```
-
-## Basic Setup
-
-Then, you must tell your own `tailwind.config.ts` to scan the library for its dynamic classes:
-
-```ts
-// tailwind.config.ts
-import type { Config } from 'tailwindcss'
-
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/@axzydev/axzy_ui_system/dist/**/*.{js,ts,jsx,tsx}" // <--- ADD THIS LINE
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
-```
+A modern, enterprise-ready React component library powered by **Tailwind CSS v4**. Built specifically for high-density data applications, hospital management software, and complex dashboards.
 
 ---
 
-## Dynamic Theming (ITThemeProvider)
+## Quick Start
 
-`AXZY_UI_SYSTEM` uses a powerful CSS Variables engine under the hood. You can override the entire color palette of all components instantly without recompiling the library by using the `<ITThemeProvider>`.
+### 1. Crear un proyecto nuevo con Vite + React + TypeScript
 
-Wrap your application root with the provider and pass your custom brand JSON object:
+```bash
+npm create vite@latest mi-app -- --template react-ts
+cd mi-app
+npm install
+```
+
+### 2. Instalar Tailwind CSS v4 y AXZY UI System
+
+```bash
+npm install @axzydev/axzy_ui_system
+npm install -D tailwindcss @tailwindcss/vite
+```
+
+### 3. Configurar Vite
+
+Edita `vite.config.ts`:
+
+```ts
+import { defineConfig } from "vite"
+import react from "@vitejs/plugin-react-swc"
+import tailwindcss from "@tailwindcss/vite"
+
+export default defineConfig({
+  plugins: [tailwindcss(), react()],
+})
+```
+
+### 4. Agregar directivas de Tailwind
+
+En `src/index.css`:
+
+```css
+@import "tailwindcss";
+```
+
+### 5. Envolver la app con ITThemeProvider
 
 ```tsx
-import React from 'react';
-import { ITThemeProvider } from '@axzydev/axzy_ui_system';
-import App from './App';
+// src/main.tsx
+import React from "react"
+import ReactDOM from "react-dom/client"
+import { ITThemeProvider } from "@axzydev/axzy_ui_system"
+import App from "./App"
+import "./index.css"
 
-// Define your custom brand palette mapping
-const myEnterpriseTheme = {
+const myTheme = {
   colors: {
     primary: {
       50: "#fef2f2",
@@ -51,24 +61,78 @@ const myEnterpriseTheme = {
       200: "#fecaca",
       300: "#fca5a5",
       400: "#f87171",
-      500: "#ef4444", // Your Main Brand Color
+      500: "#ef4444",
       600: "#dc2626",
       700: "#b91c1c",
       800: "#991b1b",
       900: "#7f1d1d",
       950: "#450a0a",
     },
-    // You can optionally override secondary, success, danger, warning, purple, info
-  }
-};
+  },
+}
 
-export default function Main() {
-  return (
-    <ITThemeProvider theme={myEnterpriseTheme}>
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <ITThemeProvider theme={myTheme}>
       <App />
     </ITThemeProvider>
-  );
+  </React.StrictMode>
+)
+```
+
+### 6. ¡Usar componentes!
+
+```tsx
+// src/App.tsx
+import { ITButton } from "@axzydev/axzy_ui_system"
+
+export default function App() {
+  return (
+    <div className="p-8">
+      <ITButton variant="primary">Hola Mundo</ITButton>
+    </div>
+  )
 }
 ```
 
-> **Note:** You do not need to provide all colors. Only provide the scales (e.g., `primary`) that you wish to override. Unprovided scales will gracefully fallback to the default AXZY palette.
+---
+
+## Theming
+
+El `ITThemeProvider` permite sobrescribir toda la paleta de colores en tiempo de ejecución sin recompilar.
+
+```tsx
+const myTheme = {
+  colors: {
+    primary: { 50: "..." , 500: "#ef4444", ... },
+    secondary: { 50: "...", 500: "#3b82f6", ... },
+    success: { 50: "...", 500: "#22c55e", ... },
+    danger: { 50: "...", 500: "#ef4444", ... },
+    warning: { 50: "...", 500: "#f59e0b", ... },
+    purple: { 50: "...", 500: "#a855f7", ... },
+    info: { 50: "...", 500: "#06b6d4", ... },
+  },
+}
+```
+
+Solo debes proveer los colores que quieras cambiar — el resto usa los valores por defecto.
+
+---
+
+## Scripts del proyecto
+
+| Comando | Descripción |
+|---------|-------------|
+| `npm run dev` | Inicia servidor de desarrollo |
+| `npm run build` | Compila para producción |
+| `npm run preview` | Previsualiza el build |
+| `npm run storybook` | Storybook para desarrollo |
+| `npm run lint` | Ejecuta ESLint |
+
+---
+
+## Requisitos
+
+- React 18+
+- Tailwind CSS 4.x + `@tailwindcss/vite`
+- Node.js 18+

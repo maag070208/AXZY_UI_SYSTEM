@@ -43,7 +43,7 @@ export default function ITDialog({
     <div
       className={`fixed inset-0 flex ${
         fullScreen ? "items-stretch" : "items-center justify-center"
-      } bg-black bg-opacity-50 z-[9999]`}
+      } bg-black/50 z-[9999]`}
     >
       <div
         ref={modalRef}
