@@ -70,7 +70,7 @@ export default function ITLayout({
 
         {/* MAIN CONTENT AREA */}
         <main className="flex-1 overflow-y-auto w-full custom-scrollbar relative z-0">
-          <div className={`mx-auto w-full max-w-7xl px-4 py-6 h-full sm:px-6 lg:px-8 ${contentClassName}`}>
+          <div className={clsx("mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 h-full", contentClassName)}>
             {children}
           </div>
         </main>
