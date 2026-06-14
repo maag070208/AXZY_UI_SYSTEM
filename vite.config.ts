@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import dts from "vite-plugin-dts";
-import tailwindcss from "tailwindcss";
+import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath } from 'node:url';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
@@ -11,17 +11,12 @@ const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(file
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
-  plugins: [react(), dts({
+  plugins: [tailwindcss(), react(), dts({
     entryRoot: "src",
     outDir: "dist",
     include: ["src/**/*"],
     insertTypesEntry: true
   })],
-  css: {
-    postcss: {
-      plugins: [tailwindcss()]
-    }
-  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

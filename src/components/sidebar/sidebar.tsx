@@ -242,7 +242,7 @@ export default function ITSidebar({
               {!isSidebarCollapsed && item.subitems && item.subitems.length > 0 && (
                 <div className={`overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] ${expandedItems.has(item.id) ? "max-h-[500px] opacity-100 mt-1" : "max-h-0 opacity-0"}`}>
                   <ul
-                    className="ml-5 space-y-0.5 py-1"
+                    className="ml-5 flex flex-col gap-0.5 py-1"
                     style={{
                       borderLeft: subitemConnector === '|'
                         ? "1px solid var(--sidebar-border, #e2e8f0)"

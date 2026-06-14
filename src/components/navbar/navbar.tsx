@@ -155,7 +155,7 @@ export default function ITNavbar({
 
         {/* Navigation Items */}
         <nav className="flex-1 px-4 py-6 overflow-y-auto custom-scrollbar">
-          <ul className="space-y-1.5">
+          <ul className="flex flex-col gap-1.5">
             {navigationItems.map((item) => (
               <li key={item.id}>
                 <div
