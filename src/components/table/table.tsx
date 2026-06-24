@@ -68,7 +68,7 @@ export default function ITTable<T extends Record<string, unknown>>({
           comparison =
             new Date(aValue as string).getTime() -
             new Date(bValue as string).getTime();
-          break; 
+          break;
         case "boolean":
           comparison = aValue === bValue ? 0 : aValue ? 1 : -1;
           break;
@@ -142,48 +142,48 @@ export default function ITTable<T extends Record<string, unknown>>({
         currentValue === undefined
           ? true
           : currentValue === true
-          ? false
-          : undefined;
+            ? false
+            : undefined;
 
-             const getToggleLabel = () => {
-         if (currentValue === undefined) return "Mostrar todos";
-         if (currentValue === true) return "Filtrar solo verdaderos";
-         return "Filtrar solo falsos";
-       };
+      const getToggleLabel = () => {
+        if (currentValue === undefined) return "Mostrar todos";
+        if (currentValue === true) return "Filtrar solo verdaderos";
+        return "Filtrar solo falsos";
+      };
 
-       return (
-         <button
-           className="flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 rounded-full p-1 transition-all duration-200"
-           onClick={() => handleFilterChange(col.key, nextValue)}
-           aria-label={`${getToggleLabel()} para ${col.label}`}
-           title={`${getToggleLabel()} para ${col.label}`}
-         >
-           <div className="relative w-10 h-5 bg-gray-300 rounded-full">
-             <div
-               className={clsx(
-                 "absolute top-0.5 w-4 h-4 rounded-full transition-all duration-300 shadow-sm",
-                 {
-                   "left-0.5 bg-gray-400": currentValue === undefined,
-                   "left-5 bg-slate-500": currentValue === true,
-                   "left-0.5 bg-gray-500": currentValue === false,
-                 }
-               )}
-             />
-           </div>
-         </button>
-       );
+      return (
+        <button
+          className="flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 rounded-full p-1 transition-all duration-200"
+          onClick={() => handleFilterChange(col.key, nextValue)}
+          aria-label={`${getToggleLabel()} para ${col.label}`}
+          title={`${getToggleLabel()} para ${col.label}`}
+        >
+          <div className="relative w-10 h-5 bg-gray-300 rounded-full">
+            <div
+              className={clsx(
+                "absolute top-0.5 w-4 h-4 rounded-full transition-all duration-300 shadow-sm",
+                {
+                  "left-0.5 bg-gray-400": currentValue === undefined,
+                  "left-5 bg-slate-500": currentValue === true,
+                  "left-0.5 bg-gray-500": currentValue === false,
+                }
+              )}
+            />
+          </div>
+        </button>
+      );
     }
 
-         if (col.filter === "catalog" && col.catalogOptions) {
-       if (col.catalogOptions.loading) {
-         return (
-           <FaSpinner 
-             className="animate-spin" 
-             aria-label="Cargando opciones"
-             title="Cargando opciones"
-           />
-         );
-       }
+    if (col.filter === "catalog" && col.catalogOptions) {
+      if (col.catalogOptions.loading) {
+        return (
+          <FaSpinner
+            className="animate-spin"
+            aria-label="Cargando opciones"
+            title="Cargando opciones"
+          />
+        );
+      }
 
       if (col.catalogOptions.error) {
         return <ITText as="span" className="text-red-500 text-xs">Error cargando</ITText>;
@@ -204,7 +204,7 @@ export default function ITTable<T extends Record<string, unknown>>({
             const value = e.target.value === "" ? undefined : e.target.value;
             handleFilterChange(col.key, value);
           }}
-          onBlur={() => {}}
+          onBlur={() => { }}
           className="w-full text-xs"
         />
       );
@@ -217,7 +217,7 @@ export default function ITTable<T extends Record<string, unknown>>({
         placeholder="Buscar..."
         value={String(filters[col.key] || "")}
         onChange={(e) => handleFilterChange(col.key, e.target.value)}
-        onBlur={() => {}}
+        onBlur={() => { }}
       />
     );
   };
@@ -230,22 +230,22 @@ export default function ITTable<T extends Record<string, unknown>>({
     }
 
     switch (col.type) {
-      case "number": 
-        return (typeof value === "number") && col.currencyMX ?formatCurrencyMX(value)  : value;
-             case "boolean":
-         return value ? (
-           <FaCheck 
-             className="text-green-500" 
-             aria-label="Verdadero"
-             title="Verdadero"
-           />
-         ) : (
-           <FaTimes 
-             className="text-red-500"
-             aria-label="Falso" 
-             title="Falso"
-           />
-         );
+      case "number":
+        return (typeof value === "number") && col.currencyMX ? formatCurrencyMX(value) : value;
+      case "boolean":
+        return value ? (
+          <FaCheck
+            className="text-green-500"
+            aria-label="Verdadero"
+            title="Verdadero"
+          />
+        ) : (
+          <FaTimes
+            className="text-red-500"
+            aria-label="Falso"
+            title="Falso"
+          />
+        );
       case "actions":
         return col.actions ? col.actions(row) : null;
       case "catalog":
@@ -261,116 +261,115 @@ export default function ITTable<T extends Record<string, unknown>>({
     }
   };
 
-     return (
-<div className={clsx("space-y-4 w-full", containerClassName)}>
-  <div className="rounded-xl shadow-sm border border-secondary-200 overflow-hidden" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
-    {/* Header outside overflow */}
-    {title && (
-      <div className="px-6 py-5 border-b border-secondary-100" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
-        <ITText as="h2" className="text-xl font-bold text-secondary-900 leading-tight">{title}</ITText>
-      </div>
-    )}
-
-    {/* Scrollable Table */}
-    <div className="overflow-x-auto">
-      <table
-        className={clsx(
-          "min-w-max w-full text-sm text-left text-secondary-600",
-          variantStyles[variant],
-          sizeStyles[size]
+  return (
+    <div className={clsx("space-y-4 w-full", containerClassName)}>
+      <div className="rounded-xl shadow-sm overflow-hidden" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
+        {/* Header outside overflow */}
+        {title && (
+          <div className="px-6 py-5 border-b border-secondary-100" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
+            <ITText as="h2" className="text-xl font-bold text-secondary-900 leading-tight">{title}</ITText>
+          </div>
         )}
-      >
 
-           <thead>
-             <tr className="bg-secondary-50 border-b border-secondary-200 text-xs uppercase tracking-wider font-semibold text-secondary-500">
-               {columns.map((col) => (
-                 <th
-                   key={col.key}
-                   scope="col"
-                   className={clsx("px-4 py-4 align-top", col.className)}
-                 >
-                   <div className="flex flex-col gap-3 min-w-[150px]">
-                     {/* Column header */}
-                     <div className="flex items-center justify-between gap-2">
-                        <ITText as="span" className="text-secondary-700 font-bold">{col.label}</ITText>
-                       {col.sortable && col.type !== "actions" && (
-                         <button
-                           onClick={() => handleSort(col.key)}
-                           className={`p-1 rounded-md transition-colors ${
-                             sortConfig?.key === col.key
-                               ? "bg-secondary-200 text-secondary-900" 
-                               : "hover:bg-secondary-200 text-secondary-400 hover:text-secondary-700"
-                           }`}
-                           title={`Ordenar por ${col.label}`}
-                         >
-                           <MdOutlineSwapVert className="w-4 h-4" aria-hidden="true" />
-                         </button>
-                       )}
-                     </div>
-                     
-                     {/* Filter section */}
-                     <div className="w-full">
-                       {col.filter ? renderFilterInput(col) : null}
-                     </div>
-                   </div>
-                 </th>
-               ))}
-             </tr>
-           </thead>
-          <tbody className="divide-y divide-secondary-100">
-            {currentData.length > 0 ? (
-                             currentData.map((row, rowIndex) => (
-                 <tr
-                   key={rowIndex}
-                   className="hover:bg-secondary-50/50 transition-colors duration-150 group"
-                 >
-                                     {columns.map((col) => (
-                     <td
-                       key={`${rowIndex}-${col.key}`}
-                       className={clsx("px-4 py-3 align-middle", col.className)}
-                     >
-                       {col.type === "actions" ? (
-                         <div className="flex items-center justify-center gap-2">
-                           {renderCellContent(col, row) as React.ReactNode}
-                         </div>
-                       ) : (
-                         <div className="text-secondary-700 font-medium">
-                            {renderCellContent(col, row) as React.ReactNode}
-                         </div>
-                       )}
-                     </td>
-                   ))}
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={columns.length} className="px-6 py-12 text-center">
-                  <div className="flex flex-col items-center justify-center text-secondary-400">
-                    <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
-                    <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
-                  </div>
-                </td>
-              </tr>
+        {/* Scrollable Table */}
+        <div className="overflow-x-auto">
+          <table
+            className={clsx(
+              "min-w-max w-full text-sm text-left text-secondary-600",
+              variantStyles[variant],
+              sizeStyles[size]
             )}
-          </tbody>
-        </table>
-      </div>
+          >
+
+            <thead>
+              <tr className="bg-secondary-50 border-b border-secondary-200 text-xs uppercase tracking-wider font-semibold text-secondary-500">
+                {columns.map((col) => (
+                  <th
+                    key={col.key}
+                    scope="col"
+                    className={clsx("px-4 py-4 align-top", col.className)}
+                  >
+                    <div className="flex flex-col gap-3 min-w-[150px]">
+                      {/* Column header */}
+                      <div className="flex items-center justify-between gap-2">
+                        <ITText as="span" className="text-secondary-700 font-bold">{col.label}</ITText>
+                        {col.sortable && col.type !== "actions" && (
+                          <button
+                            onClick={() => handleSort(col.key)}
+                            className={`p-1 rounded-md transition-colors ${sortConfig?.key === col.key
+                                ? "bg-secondary-200 text-secondary-900"
+                                : "hover:bg-secondary-200 text-secondary-400 hover:text-secondary-700"
+                              }`}
+                            title={`Ordenar por ${col.label}`}
+                          >
+                            <MdOutlineSwapVert className="w-4 h-4" aria-hidden="true" />
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Filter section */}
+                      <div className="w-full">
+                        {col.filter ? renderFilterInput(col) : null}
+                      </div>
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-secondary-100">
+              {currentData.length > 0 ? (
+                currentData.map((row, rowIndex) => (
+                  <tr
+                    key={rowIndex}
+                    className="hover:bg-secondary-50/50 transition-colors duration-150 group"
+                  >
+                    {columns.map((col) => (
+                      <td
+                        key={`${rowIndex}-${col.key}`}
+                        className={clsx("px-4 py-3 align-middle", col.className)}
+                      >
+                        {col.type === "actions" ? (
+                          <div className="flex items-center justify-center gap-2">
+                            {renderCellContent(col, row) as React.ReactNode}
+                          </div>
+                        ) : (
+                          <div className="text-secondary-700 font-medium">
+                            {renderCellContent(col, row) as React.ReactNode}
+                          </div>
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={columns.length} className="px-6 py-12 text-center">
+                    <div className="flex flex-col items-center justify-center text-secondary-400">
+                      <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
+                      <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
 
-      {/* Pagination */}
-      <div className="rounded-b-xl border-t border-secondary-200 px-6 py-4" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
-        <ITPagination
-          currentPage={currentPage}
-          totalPages={computedTotalPages}
-          onPageChange={goToPage}
-          color="primary"
-          itemsPerPageOptions={itemsPerPageOptions}
-          itemsPerPage={itemsPerPage}
-          onItemsPerPageChange={handleItemsPerPageChange}
-          totalItems={filteredData.length}
-        />
+        {/* Pagination */}
+        <div className="rounded-b-xl border-t border-secondary-200 px-6 py-4" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
+          <ITPagination
+            currentPage={currentPage}
+            totalPages={computedTotalPages}
+            onPageChange={goToPage}
+            color="primary"
+            itemsPerPageOptions={itemsPerPageOptions}
+            itemsPerPage={itemsPerPage}
+            onItemsPerPageChange={handleItemsPerPageChange}
+            totalItems={filteredData.length}
+          />
+        </div>
       </div>
     </div>
-</div>
   );
 }

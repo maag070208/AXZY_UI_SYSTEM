@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import {
   FaCreditCard,
-  FaHome,
+FaHome,
   FaKeyboard,
   FaRegBell,
   FaSearch,

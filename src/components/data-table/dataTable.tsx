@@ -196,7 +196,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
 
   return (
     <div className={clsx("space-y-4 w-full relative", containerClassName)}>
-      <div className="rounded-xl shadow-sm border border-secondary-200 overflow-hidden" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
+      <div className="rounded-xl shadow-sm overflow-hidden" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
         {title && (
           <div className="px-6 py-5 border-b border-secondary-100 flex justify-between items-center" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
             <ITText as="h2" className="text-xl font-bold text-secondary-900 leading-tight">{title}</ITText>
@@ -232,7 +232,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
             )}
           >
             <thead>
-              <tr className="bg-secondary-50 border-b border-secondary-200 text-xs uppercase tracking-wider font-semibold text-secondary-500">
+              <tr className="bg-white border-b border-secondary-200 text-xs uppercase tracking-wider font-semibold text-secondary-500">
                 {columns.map((col) => (
                   <th key={col.key} scope="col" className={clsx("px-4 py-4 align-top", col.className)}>
                     <div className="flex flex-col gap-3 min-w-[150px]">

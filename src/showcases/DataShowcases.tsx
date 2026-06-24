@@ -49,7 +49,7 @@ export const TableShowcase = () => {
       description="Base de renderizado de tablas estructuradas con soporte de alineamiento y tipado estricto."
       code={code}
       demo={
-        <div className="w-full bg-white dark:bg-slate-900 border rounded-xl overflow-hidden shadow-sm">
+        <div className="w-full bg-white dark:bg-slate-900  rounded-xl overflow-hidden shadow-sm">
           <ITTable
             columns={columns}
             data={data}
