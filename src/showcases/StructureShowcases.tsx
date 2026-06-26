@@ -1,6 +1,29 @@
 import React, { useState } from "react";
-import { FaCheckCircle } from "react-icons/fa";
-import { ITCard, ITButton, ITInput, ITSlideToggle, ITText, ITNavbar } from "../index";
+import {
+  FaCheckCircle,
+  FaHome,
+  FaUsers,
+  FaShoppingCart,
+  FaCog,
+  FaBoxOpen,
+  FaChartLine,
+  FaFileAlt,
+  FaBell,
+} from "react-icons/fa";
+import {
+  ITCard,
+  ITButton,
+  ITInput,
+  ITSlideToggle,
+  ITText,
+  ITNavbar,
+  ITLayout,
+  ITStack,
+  ITStatCard,
+  ITGrid,
+  ITPageHeader,
+  ITPage,
+} from "../index";
 import { ShowcaseLayout, CodeViewer } from "./ShowcaseLayout";
 
 // 1. ITCard Showcase
@@ -110,43 +133,189 @@ const ITSelectStub = ({ name, label, value, onChange, options }: any) => {
 
 // 3. ITLayout & ITNavbar Showcase
 export const LayoutShowcase = () => {
-  const code = `<ITLayout\n  topBar={topBarProps}\n  sidebar={sidebarProps}\n>\n  {/* Tu Contenido aquí */}\n</ITLayout>`;
+  const [collapsed, setCollapsed] = useState(false);
+  const [activeId, setActiveId] = useState("dashboard");
+
+  const topBar = {
+    logo: <div className="w-9 h-9 rounded-lg bg-primary-500 flex items-center justify-center text-white font-bold">A</div>,
+    logoText: "AXZY Console",
+    navItems: [
+      { id: "home", label: "Inicio", icon: <FaHome />, action: () => setActiveId("home") },
+      { id: "docs", label: "Documentos", icon: <FaFileAlt />, action: () => setActiveId("docs") },
+      { id: "alerts", label: "Alertas", icon: <FaBell />, action: () => setActiveId("alerts") },
+    ],
+    onNavItemClick: (id: string) => setActiveId(id),
+    userMenu: {
+      userName: "Auditor AXZY",
+      userEmail: "auditor@axzy.dev",
+      menuItems: [
+        { label: "Ajustes", onClick: () => {} },
+        { label: "Cerrar sesión", onClick: () => {} },
+      ],
+    },
+  };
+
+  const sidebar = {
+    navigationItems: [
+      { id: "dashboard", label: "Dashboard", icon: <FaChartLine />, isActive: activeId === "dashboard", action: () => setActiveId("dashboard") },
+      { id: "users", label: "Usuarios", icon: <FaUsers />, isActive: activeId === "users", action: () => setActiveId("users") },
+      {
+        id: "sales",
+        label: "Ventas",
+        icon: <FaShoppingCart />,
+        isActive: activeId === "sales" || activeId === "orders",
+        subitems: [
+          { id: "orders", label: "Órdenes", action: () => setActiveId("orders") },
+          { id: "invoices", label: "Facturas", action: () => setActiveId("invoices") },
+        ],
+      },
+      { id: "products", label: "Productos", icon: <FaBoxOpen />, isActive: activeId === "products", action: () => setActiveId("products"), badge: "3" },
+      { id: "settings", label: "Configuración", icon: <FaCog />, isActive: activeId === "settings", action: () => setActiveId("settings") },
+    ],
+    isCollapsed: collapsed,
+    onToggleCollapse: () => setCollapsed(v => !v),
+  };
+
+  const code = `<ITLayout
+  topBar={{
+    logo: <Logo />,
+    logoText: "AXZY Console",
+    userMenu: { userName, userEmail, menuItems }
+  }}
+  sidebar={{
+    navigationItems: [...],
+    isCollapsed: false,
+    onToggleCollapse: () => {}
+  }}
+>
+  {/* Tu contenido */}
+</ITLayout>`;
+
+  const navbarCode = `<ITNavbar
+  logoText="AXZY"
+  navigationItems={[
+    { id: "1", label: "Inicio", icon: <FaHome />, isActive: true },
+    { id: "2", label: "Auditoría" }
+  ]}
+  userMenu={{
+    userName: "Auditor AXZY",
+    userEmail: "auditor@axzy.dev",
+    menuItems: [{ label: "Ajustes", onClick: () => {} }]
+  }}
+/>`;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-extrabold text-slate-800 dark:text-white">ITLayout & ITNavbar</h1>
-        <p className="text-slate-500 mt-1.5 text-sm md:text-base">El chasis estructural del portal administrativo con control responsivo y colapso de sidebar.</p>
-      </div>
-
-      <ITCard title="Layout Estructural">
-        <div className="space-y-4">
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            Este componente es el contenedor raíz de toda la suite que estás navegando en este momento. Proporciona:
-          </p>
-          <ul className="list-disc pl-5 space-y-2 text-sm text-slate-600 dark:text-slate-300">
-            <li>Menú superior (Navbar) con avatar del usuario, correo y menú desplegable.</li>
-            <li>Barra de navegación lateral interactiva (Sidebar) colapsable con sub-ítems y badges.</li>
-            <li>Fondo dinámico adaptado a presets claros y oscuros.</li>
-          </ul>
-          <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-900 border rounded-xl">
-            <h5 className="font-bold text-xs uppercase text-slate-400 mb-2">Simulación de Barra de Navegación Horizontal (ITNavbar)</h5>
-            <ITNavbar
-              logoText="PREVIEW NAVBAR"
-              navigationItems={[
-                { id: "1", label: "Inicio", isActive: true },
-                { id: "2", label: "Auditoría" }
-              ]}
-              userMenu={{
-                userName: "Auditor AXZY",
-                userEmail: "auditor@axzy.dev",
-                menuItems: [{ label: "Ajustes", onClick: () => { } }]
-              }}
-            />
-          </div>
-          <CodeViewer code={code} />
+    <ShowcaseLayout
+      title="ITLayout & ITNavbar"
+      description="Chasis estructural del portal con barra superior y lateral colapsable. Totalmente responsivo con drawer móvil."
+      code={code}
+      demo={
+        <div className="w-full h-[640px] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-md">
+          <ITLayout topBar={topBar} sidebar={sidebar}>
+            <ITStack spacing={5}>
+              <ITPageHeader
+                title="Dashboard"
+                description="Resumen general del sistema"
+                icon={<FaChartLine size={20} />}
+                iconColor="#6366f1"
+              />
+              <ITGrid container spacing={3}>
+                <ITGrid item xs={12} sm={6} lg={3}>
+                  <ITStatCard label="Usuarios" value="1,245" trend="+12%" trendDirection="up" />
+                </ITGrid>
+                <ITGrid item xs={12} sm={6} lg={3}>
+                  <ITStatCard label="Ventas Hoy" value="$4,320" trend="+5.4%" trendDirection="up" color="bg-blue-50 dark:bg-blue-950/20" />
+                </ITGrid>
+                <ITGrid item xs={12} sm={6} lg={3}>
+                  <ITStatCard label="Órdenes" value="89" trend="-2.1%" trendDirection="down" color="bg-amber-50 dark:bg-amber-950/20" />
+                </ITGrid>
+                <ITGrid item xs={12} sm={6} lg={3}>
+                  <ITStatCard label="Tickets" value="12" trend="-8%" trendDirection="down" color="bg-rose-50 dark:bg-rose-950/20" />
+                </ITGrid>
+              </ITGrid>
+              <ITCard title="Actividad reciente">
+                <ITText className="text-sm text-slate-600 dark:text-slate-300">
+                  El layout se adapta al colapsar/expandir el sidebar y muestra un drawer en móvil.
+                </ITText>
+              </ITCard>
+            </ITStack>
+          </ITLayout>
         </div>
-      </ITCard>
-    </div>
+      }
+      controls={
+        <ITStack spacing={4}>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Sidebar colapsado</span>
+            <ITSlideToggle isOn={collapsed} onToggle={setCollapsed} size="sm" />
+          </div>
+          <div className="text-xs text-slate-500">
+            En móvil (&lt;lg) el sidebar se abre como drawer con un fondo oscuro. Usa el botón ☰ del topbar.
+          </div>
+        </ITStack>
+      }
+      gallery={
+        <ITStack spacing={6}>
+          <div>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">ITNavbar (standalone)</h4>
+            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden h-[420px]">
+              <ITNavbar
+                logoText="AXZY"
+                navigationItems={[
+                  { id: "1", label: "Inicio", icon: <FaHome />, isActive: true },
+                  { id: "2", label: "Documentos", icon: <FaFileAlt /> },
+                  { id: "3", label: "Alertas", icon: <FaBell /> },
+                ]}
+                userMenu={{
+                  userName: "Auditor AXZY",
+                  userEmail: "auditor@axzy.dev",
+                  menuItems: [
+                    { label: "Ajustes", onClick: () => {} },
+                    { label: "Cerrar sesión", onClick: () => {} },
+                  ],
+                }}
+              >
+                <div className="p-8 text-center text-slate-500 text-sm">
+                  Contenido principal (children)
+                </div>
+              </ITNavbar>
+            </div>
+            <div className="mt-3">
+              <CodeViewer code={navbarCode} />
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">ITNavbar con submenús</h4>
+            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden h-[420px]">
+              <ITNavbar
+                logoText="Admin"
+                navigationItems={[
+                  { id: "u", label: "Usuarios", icon: <FaUsers /> },
+                  {
+                    id: "s",
+                    label: "Ventas",
+                    icon: <FaShoppingCart />,
+                    subitems: [
+                      { id: "o", label: "Órdenes", action: () => {} },
+                      { id: "i", label: "Facturas", action: () => {} },
+                    ],
+                  },
+                  { id: "c", label: "Configuración", icon: <FaCog /> },
+                ]}
+                userMenu={{
+                  userName: "Admin",
+                  userEmail: "admin@axzy.dev",
+                  menuItems: [{ label: "Salir", onClick: () => {} }],
+                }}
+              >
+                <div className="p-8 text-center text-slate-500 text-sm">
+                  Click en "Ventas" para expandir el submenú
+                </div>
+              </ITNavbar>
+            </div>
+          </div>
+        </ITStack>
+      }
+    />
   );
 };

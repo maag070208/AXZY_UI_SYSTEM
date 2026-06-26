@@ -13,6 +13,11 @@ function breakpointSpan(span: number | undefined, bp: string, cols: number) {
   return `${bp}:col-span-${clamped}`;
 }
 
+function gridColsClass(cols: number) {
+  const clamped = Math.min(Math.max(cols, 1), 12);
+  return `grid-cols-${clamped}`;
+}
+
 export default function ITGrid({
   children,
   container,
@@ -31,9 +36,8 @@ export default function ITGrid({
   if (container) {
     return (
       <Component
-        className={clsx("grid", className)}
+        className={clsx("grid", gridColsClass(columns), className)}
         style={{
-          gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
           gap: spacing > 0 ? `${spacing * 0.25}rem` : undefined,
           ...style,
         }}
@@ -47,6 +51,7 @@ export default function ITGrid({
     return (
       <Component
         className={clsx(
+          "col-span-full",
           colSpanClass(xs ?? sm, columns),
           sm !== undefined && breakpointSpan(sm, "sm", columns),
           md !== undefined && breakpointSpan(md, "md", columns),

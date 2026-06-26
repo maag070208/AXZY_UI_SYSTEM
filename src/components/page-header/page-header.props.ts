@@ -7,5 +7,7 @@ export interface ITPageHeaderProps {
   breadcrumbs?: ITBreadcrumbItem[];
   actions?: ReactNode;
   backAction?: () => void;
+  icon?: ReactNode;
+  iconColor?: string;
   className?: string;
 }

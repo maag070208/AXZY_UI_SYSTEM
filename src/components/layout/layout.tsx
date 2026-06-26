@@ -3,6 +3,8 @@ import clsx from "clsx";
 import ITTopBar from "../topbar/topbar";
 import ITSidebar from "../sidebar/sidebar";
 import { ITLayoutProps } from "./layout.props";
+import { theme } from "@/theme/theme";
+
 export default function ITLayout({
   topBar,
   sidebar,
@@ -10,37 +12,33 @@ export default function ITLayout({
   className = "",
   contentClassName = "",
 }: ITLayoutProps) {
-
-  // Desktop states
-  const [desktopCollapsed, setDesktopCollapsed] = useState(true); // Default to collapsed
-
-  // Mobile drawer state
+  const [desktopCollapsed, setDesktopCollapsed] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  const layoutTokens = theme.layout;
 
   return (
     <div className={`flex flex-col h-screen overflow-hidden w-full ${className}`}>
-      
-      {/* TOPBAR - Full Width at Top */}
       <ITTopBar
         {...topBar}
         showMobileMenuButton
         onToggleMobileMenu={() => setMobileSidebarOpen(v => !v)}
       />
 
-      <div className="flex flex-1 overflow-hidden relative" style={{ backgroundColor: "var(--layout-bg, #f8fafc)" }}>
-        
-        {/* DESKTOP SIDEBAR - Floating over content when expanded */}
+      <div
+        className="flex flex-1 overflow-hidden relative"
+        style={{ backgroundColor: layoutTokens.backgroundColor }}
+      >
+        {/* DESKTOP SIDEBAR */}
         <div className="hidden lg:block relative z-40 h-full">
-          {/* Spacer to keep main content from shifting. Width matches collapsed sidebar. */}
           <div className="w-[88px] h-full flex-shrink-0" />
-          
           <div className="absolute top-0 left-0 h-full">
             <ITSidebar
               {...sidebar}
               isCollapsed={desktopCollapsed}
               onToggleCollapse={() => setDesktopCollapsed(v => !v)}
               visibleOnMobile={false}
-              className={`h-full drop-shadow-2xl transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] flex-shrink-0`}
+              className="h-full drop-shadow-2xl transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] flex-shrink-0"
             />
           </div>
         </div>
@@ -51,11 +49,11 @@ export default function ITLayout({
             className="lg:hidden fixed inset-0 z-50 transition-opacity duration-300 backdrop-blur-sm bg-black/40"
             onClick={() => setMobileSidebarOpen(false)}
           >
-            <div 
+            <div
               className="h-full w-fit flex transform transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)]"
-              onClick={(e) => e.stopPropagation()} 
+              onClick={(e) => e.stopPropagation()}
             >
-               <ITSidebar
+              <ITSidebar
                 {...sidebar}
                 isCollapsed={false}
                 visibleOnMobile={true}
@@ -74,7 +72,6 @@ export default function ITLayout({
             {children}
           </div>
         </main>
-
       </div>
     </div>
   );

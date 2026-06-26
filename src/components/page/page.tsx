@@ -7,7 +7,7 @@ import ITButton from "../button/button";
 import ITStack from "../stack/stack";
 
 const hasHeader = (props: ITPageProps) =>
-  !!(props.title || props.description || props.breadcrumbs || props.actions || props.backAction);
+  !!(props.title || props.description || props.breadcrumbs || props.actions || props.backAction || props.icon);
 
 const renderHeader = (props: ITPageProps) => {
   if (!hasHeader(props)) return null;
@@ -18,6 +18,8 @@ const renderHeader = (props: ITPageProps) => {
       breadcrumbs={props.breadcrumbs}
       actions={props.actions}
       backAction={props.backAction}
+      icon={props.icon}
+      iconColor={props.iconColor}
     />
   );
 };
@@ -35,18 +37,26 @@ export default function ITPage(props: ITPageProps) {
     emptyAction,
     className,
     children,
+    maxWidth = "7xl",
+    noPadding = false,
   } = props;
 
-  const wrapperClass = clsx("space-y-6", className);
+  const wrapperClass = clsx(
+    "mx-auto w-full",
+    !noPadding && "px-4 sm:px-6 lg:px-8 py-6",
+    `max-w-${maxWidth}`,
+    "space-y-8",
+    className
+  );
 
   if (loading) {
     return (
       <div className={wrapperClass}>
         {renderHeader(props)}
-        <ITStack spacing={4}>
-          <ITSkeleton variant="rectangular" height={40} width="40%" />
-          <ITSkeleton variant="rectangular" height={200} />
-          <ITSkeleton variant="rectangular" height={200} />
+        <ITStack spacing={6}>
+          <ITSkeleton variant="rectangular" height={40} width="40%" className="rounded-lg" />
+          <ITSkeleton variant="rectangular" height={200} className="rounded-lg" />
+          <ITSkeleton variant="rectangular" height={200} className="rounded-lg" />
         </ITStack>
       </div>
     );

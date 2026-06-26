@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { FaUsers } from "react-icons/fa";
 import ITPageHeader from "./page-header";
 import ITButton from "../button/button";
 
@@ -57,5 +58,18 @@ export const WithBackAction: Story = {
       { label: "Detalle" },
     ],
     actions: <ITButton label="Editar" size="small" />,
+  },
+};
+
+export const WithIcon: Story = {
+  args: {
+    title: "Usuarios",
+    description: "Gestiona los usuarios del sistema",
+    icon: <FaUsers size={20} />,
+    iconColor: "#6366f1",
+    breadcrumbs: [
+      { label: "Inicio", href: "#" },
+      { label: "Usuarios" },
+    ],
   },
 };

@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { FaChevronDown, FaChevronRight, FaUserCircle } from "react-icons/fa";
 import { ITNavbarProps, ITNavigationItem } from "./navbar.props";
 import ITText from "@/components/text/text";
+import { theme } from "@/theme/theme";
 
 export default function ITNavbar({
   logo,
@@ -139,15 +140,21 @@ export default function ITNavbar({
   }
 
   // New sidebar design
+  const sidebar = theme.sidebar;
+  const topbar = theme.topbar;
+
   return (
-    <div className="flex h-screen font-sans" style={{ backgroundColor: "var(--layout-bg, #f8fafc)" }}>
+    <div className="flex h-screen font-sans" style={{ backgroundColor: theme.layout.backgroundColor }}>
       {/* Sidebar */}
-      <aside className="w-72 shadow-xl flex flex-col transition-all duration-300 ease-in-out" style={{ backgroundColor: "var(--sidebar-bg, #0f172a)", borderRight: "1px solid var(--sidebar-border, #1e293b)" }}>
+      <aside
+        className="w-72 shadow-xl flex flex-col transition-all duration-300 ease-in-out"
+        style={{ backgroundColor: sidebar.backgroundColor, borderRight: `1px solid ${sidebar.borderColor}` }}
+      >
         {/* Logo Section */}
-        <div className="p-6 flex items-center gap-3" style={{ borderBottom: "1px solid var(--sidebar-border, #1e293b)" }}>
+        <div className="p-6 flex items-center gap-3" style={{ borderBottom: `1px solid ${sidebar.borderColor}` }}>
           {logo && <div className="h-8 w-auto object-contain transition-transform hover:scale-105">{logo}</div>}
           {logoText && (
-            <ITText as="span" className="text-lg font-bold tracking-wide" style={{ color: "var(--sidebar-active-color, #ffffff)" }}>
+            <ITText as="span" className="text-lg font-bold tracking-wide" style={{ color: sidebar.active.color }}>
               {logoText}
             </ITText>
           )}
@@ -160,46 +167,42 @@ export default function ITNavbar({
               <li key={item.id}>
                 <div
                   className={`group flex items-center justify-between px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 border-l-4 ${
-                    item.isActive 
-                      ? 'shadow-sm' 
+                    item.isActive
+                      ? 'shadow-sm'
                       : 'hover:shadow-sm'
                   }`}
                   onClick={() => handleItemClick(item)}
                   style={{
-                    backgroundColor: item.isActive ? "var(--sidebar-active-bg, rgba(255,255,255,0.1))" : "transparent",
-                    borderColor: item.isActive ? "var(--sidebar-active-icon, #3b82f6)" : "transparent",
-                    color: item.isActive ? "var(--sidebar-active-color, #ffffff)" : "var(--sidebar-label-color, #94a3b8)"
+                    backgroundColor: item.isActive ? sidebar.active.backgroundColor : "transparent",
+                    borderColor: item.isActive ? sidebar.active.iconColor : "transparent",
+                    color: item.isActive ? sidebar.active.color : sidebar.label.color
                   }}
                   onMouseEnter={(e) => {
                     if (!item.isActive) {
-                      e.currentTarget.style.backgroundColor = "var(--sidebar-hover-bg, rgba(255,255,255,0.05))";
-                      e.currentTarget.style.color = "var(--sidebar-active-color, #ffffff)";
+                      e.currentTarget.style.backgroundColor = sidebar.hover.backgroundColor;
+                      e.currentTarget.style.color = sidebar.active.color;
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!item.isActive) {
                       e.currentTarget.style.backgroundColor = "transparent";
-                      e.currentTarget.style.color = "var(--sidebar-label-color, #94a3b8)";
+                      e.currentTarget.style.color = sidebar.label.color;
                     }
                   }}
                 >
                   <div className="flex items-center gap-3">
-                    {/* Icon */}
                     {item.icon && (
                       <div className="text-xl transition-colors" style={{
-                        color: item.isActive ? "var(--sidebar-active-icon, #3b82f6)" : "var(--sidebar-icon-color, #64748b)"
+                        color: item.isActive ? sidebar.active.iconColor : sidebar.icon.color
                       }}>
                         {item.icon}
                       </div>
                     )}
-                    
-                    {/* Label */}
                     <ITText as="span" className={`font-medium text-sm ${item.isActive ? 'font-semibold' : ''}`}>{item.label}</ITText>
                   </div>
 
-                  {/* Chevron for expandable items */}
                   {item.subitems && item.subitems.length > 0 && (
-                    <div className="transition-transform" style={{ color: "var(--sidebar-icon-color, #64748b)" }}>
+                    <div className="transition-transform" style={{ color: sidebar.icon.color }}>
                       {expandedItems.has(item.id) ? (
                         <FaChevronDown className="w-3 h-3" />
                       ) : (
@@ -209,23 +212,22 @@ export default function ITNavbar({
                   )}
                 </div>
 
-                {/* Submenu */}
-                {item.subitems && 
-                 item.subitems.length > 0 && 
+                {item.subitems &&
+                 item.subitems.length > 0 &&
                  expandedItems.has(item.id) && (
-                  <ul className="mt-1 ml-4 pl-4 space-y-1" style={{ borderLeft: "1px solid var(--sidebar-border, #1e293b)" }}>
+                  <ul className="mt-1 ml-4 pl-4 space-y-1" style={{ borderLeft: `1px solid ${sidebar.borderColor}` }}>
                     {item.subitems.map((subitem) => (
                       <li key={subitem.id}>
                         <button
                           onClick={subitem.action}
                           className="block w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all duration-200"
                           style={{
-                            color: subitem.isActive ? "var(--sidebar-active-color, #ffffff)" : "var(--sidebar-label-color, #94a3b8)",
-                            backgroundColor: subitem.isActive ? "var(--sidebar-active-bg, rgba(255,255,255,0.1))" : "transparent"
+                            color: subitem.isActive ? sidebar.active.color : sidebar.label.color,
+                            backgroundColor: subitem.isActive ? sidebar.active.backgroundColor : "transparent"
                           }}
                           onMouseEnter={(e) => {
                             if (!subitem.isActive) {
-                              e.currentTarget.style.backgroundColor = "var(--sidebar-hover-bg, rgba(255,255,255,0.05))";
+                              e.currentTarget.style.backgroundColor = sidebar.hover.backgroundColor;
                             }
                           }}
                           onMouseLeave={(e) => {
@@ -247,14 +249,14 @@ export default function ITNavbar({
 
         {/* User Menu */}
         {userMenu && (
-          <div className="p-4" style={{ borderTop: "1px solid var(--sidebar-border, #1e293b)" }}>
+          <div className="p-4" style={{ borderTop: `1px solid ${sidebar.borderColor}` }}>
             <div className="relative">
               <button
                 type="button"
                 className="flex items-center gap-3 w-full p-3 rounded-xl transition-colors duration-200 group"
-                style={{ color: "var(--sidebar-label-color, #94a3b8)" }}
-                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "var(--sidebar-hover-bg, rgba(255,255,255,0.05))"; e.currentTarget.style.color = "var(--sidebar-active-color, #ffffff)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "var(--sidebar-label-color, #94a3b8)"; }}
+                style={{ color: sidebar.label.color }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = sidebar.hover.backgroundColor; e.currentTarget.style.color = sidebar.active.color; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = sidebar.label.color; }}
                 onClick={toggleUserMenu}
               >
                 {userMenu.userImage ? (
@@ -262,37 +264,40 @@ export default function ITNavbar({
                     className="w-10 h-10 rounded-full border-2 transition-colors"
                     src={userMenu.userImage}
                     alt="user photo"
-                    style={{ borderColor: "var(--sidebar-border, #1e293b)" }}
+                    style={{ borderColor: sidebar.borderColor }}
                   />
                 ) : (
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center transition-colors" style={{ backgroundColor: "var(--sidebar-hover-bg, rgba(255,255,255,0.1))", color: "var(--sidebar-icon-color, #64748b)" }}>
-                      <FaUserCircle className="w-6 h-6" />
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+                    style={{ backgroundColor: sidebar.hover.backgroundColor, color: sidebar.icon.color }}
+                  >
+                    <FaUserCircle className="w-6 h-6" />
                   </div>
                 )}
                 <div className="flex-1 text-left overflow-hidden">
-                  <ITText as="div" className="font-medium text-sm truncate" style={{ color: "var(--sidebar-active-color, #ffffff)" }}>
+                  <ITText as="div" className="font-medium text-sm truncate" style={{ color: sidebar.active.color }}>
                     {userMenu.userName}
                   </ITText>
-                  <ITText as="div" className="text-xs truncate" style={{ color: "var(--sidebar-label-color, #94a3b8)" }}>
+                  <ITText as="div" className="text-xs truncate" style={{ color: sidebar.label.color }}>
                     {userMenu.userEmail}
                   </ITText>
                 </div>
-                <FaChevronRight className="w-3 h-3" style={{ color: "var(--sidebar-icon-color, #64748b)" }} />
+                <FaChevronRight className="w-3 h-3" style={{ color: sidebar.icon.color }} />
               </button>
 
               {isUserMenuOpen && (
                 <div
                   ref={userMenuRef}
                   className="absolute bottom-full left-0 mb-3 w-full rounded-xl shadow-2xl overflow-hidden transform transition-all duration-200 origin-bottom"
-                  style={{ backgroundColor: "var(--topbar-user-dropdown-bg, #ffffff)", border: "1px solid var(--topbar-user-dropdown-border, #e2e8f0)" }}
+                  style={{ backgroundColor: topbar.userMenu.dropdown.backgroundColor, border: `1px solid ${topbar.userMenu.dropdown.borderColor}` }}
                 >
-                  <div className="px-4 py-3" style={{ backgroundColor: "var(--topbar-user-bg, #f8fafc)", borderBottom: "1px solid var(--topbar-user-dropdown-border, #e2e8f0)" }}>
-                      <ITText as="span" className="block text-sm font-semibold" style={{ color: "var(--topbar-user-text, #0f172a)" }}>
-                        {userMenu.userName}
-                      </ITText>
-                      <ITText as="span" className="block text-xs truncate" style={{ color: "var(--topbar-user-subtitle, #64748b)" }}>
-                        {userMenu.userEmail}
-                      </ITText>
+                  <div className="px-4 py-3" style={{ backgroundColor: topbar.userMenu.backgroundColor, borderBottom: `1px solid ${topbar.userMenu.dropdown.borderColor}` }}>
+                    <ITText as="span" className="block text-sm font-semibold" style={{ color: topbar.userMenu.textColor }}>
+                      {userMenu.userName}
+                    </ITText>
+                    <ITText as="span" className="block text-xs truncate" style={{ color: topbar.userMenu.subtitleColor }}>
+                      {userMenu.userEmail}
+                    </ITText>
                   </div>
                   <ul className="py-1">
                     {userMenu.menuItems.map((item, index) => (
@@ -303,8 +308,8 @@ export default function ITNavbar({
                             setIsUserMenuOpen(false);
                           }}
                           className="flex items-center w-full px-4 py-2.5 text-sm transition-colors"
-                          style={{ color: "var(--topbar-user-text, #334155)" }}
-                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "var(--topbar-user-item-hover, #f8fafc)"; }}
+                          style={{ color: topbar.userMenu.textColor }}
+                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = topbar.userMenu.dropdown.itemHoverBackground; }}
                           onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
                         >
                           <ITText as="span">{item.label}</ITText>
@@ -320,7 +325,7 @@ export default function ITNavbar({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto relative" style={{ backgroundColor: "var(--layout-bg, #f8fafc)" }}>
+      <main className="flex-1 overflow-y-auto relative" style={{ backgroundColor: theme.layout.backgroundColor }}>
         {children}
       </main>
     </div>
