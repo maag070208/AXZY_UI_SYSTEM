@@ -4,6 +4,17 @@ import { useITThemeSafe } from "../theme-provider/themeProvider";
 import { getContrastTextColor } from "@/utils/color.utils";
 import ITText from "@/components/text/text";
 
+/**
+ * Colored header bar for modals and forms with an optional close button.
+ * Uses the theme's primary color as the background and automatically
+ * calculates a contrasting text color for readability.
+ *
+ * @example
+ * <ITFormHeader title="Create User" onClose={() => setOpen(false)} />
+ *
+ * @example
+ * <ITFormHeader title="Details" className="rounded-none" />
+ */
 export default function ITFormHeader({
   title,
   onClose,

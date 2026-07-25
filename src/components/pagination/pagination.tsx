@@ -74,6 +74,23 @@ const usePagination = ({
   }, [totalPages, currentPage, siblingCount]);
 };
 
+/**
+ * Page navigation controls with previous/next buttons, page number display, and optional items-per-page selector.
+ *
+ * @example
+ * ```tsx
+ * <ITPagination
+ *   currentPage={1}
+ *   totalPages={10}
+ *   onPageChange={(page) => setPage(page)}
+ *   color="primary"
+ *   itemsPerPageOptions={[10, 25, 50]}
+ *   itemsPerPage={10}
+ *   onItemsPerPageChange={(value) => setItemsPerPage(value)}
+ *   totalItems={95}
+ * />
+ * ```
+ */
 export default function ITPagination({
   currentPage,
   totalPages,

@@ -1,0 +1,46 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './slide.stories';
+
+<Meta of={Stories} />
+
+# ITSlideToggle
+
+iOS-style toggle switch for boolean settings. Supports controlled and uncontrolled modes.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `checked` | `boolean` | — | Controlled checked state |
+| `defaultChecked` | `boolean` | `false` | Uncontrolled default state |
+| `onChange` | `(checked: boolean) => void` | — | Change handler |
+| `label` | `string` | — | Label text |
+| `labelPosition` | `'left' \| 'right'` | `'right'` | Label placement |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Toggle size |
+| `color` | `'primary' \| 'secondary' \| 'success' \| 'warning' \| 'danger' \| 'info' \| 'neutral'` | `'primary'` | Color theme when checked |
+| `disabled` | `boolean` | `false` | Disables the toggle |
+
+## Usage
+
+```tsx
+import { ITSlideToggle } from '@axzydev/axzy_ui_system';
+
+<ITSlideToggle />
+<ITSlideToggle label="Enable notifications" defaultChecked />
+<ITSlideToggle label="Dark mode" labelPosition="left" size="sm" color="success" />
+<ITSlideToggle disabled label="Locked" />
+```
+
+## Notes
+
+- Controlled mode via `checked` + `onChange`
+- Uncontrolled mode via `defaultChecked`
+- Label renders alongside the toggle with configurable position
+- Seven semantic color themes available
+- Three sizes: sm (small), md (medium), lg (large)
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

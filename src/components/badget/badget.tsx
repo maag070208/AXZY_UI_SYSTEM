@@ -7,6 +7,17 @@ import {
 import { theme } from "@/theme/theme";
 import ITText from "@/components/text/text";
 
+/**
+ * Small status tag or label with theme-based colors and filled/outlined variants.
+ *
+ * @example
+ * <ITBadget label="Active" color="success" variant="filled" />
+ *
+ * @example
+ * <ITBadget color="danger" variant="outlined" size="small">
+ *   <span className="flex items-center gap-1">3 new</span>
+ * </ITBadget>
+ */
 export default function ITBadget({
   children,
   label,

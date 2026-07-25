@@ -3,40 +3,28 @@ import { useDropzone } from "react-dropzone";
 // import pdfjsLib from "@/hooks/pdf"; // Disabled as hook is missing
 import clsx from "clsx";
 import ITText from "@/components/text/text";
+import { ITDropfileProps, FileTypeEnum, UploadStatus } from "./dropfile.props";
+export { FileTypeEnum, UploadStatus } from "./dropfile.props";
 
-/** Enum con tipos de archivo permitidos */
-export enum FileTypeEnum {
-  PDF = "application/pdf",
-  XLS = "application/vnd.ms-excel",
-  XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  CSV = "text/csv",
-  PNG = "image/png",
-  JPG = "image/jpg",
-  JPEG = "image/jpeg",
-}
-
-/** Enum para el estado de subida */
-export enum UploadStatus {
-  PENDING = "pendiente",
-  UPLOADING = "subiendo",
-  UPLOADED = "subido",
-  ERROR = "error",
-}
-
-/** Props del componente */
-export interface ITDropfileProps {
-  onFileSelect: (file: File | null) => void;
-  onCancel?: () => void;
-  onSubmit?: (file: File) => void;
-  acceptedFileTypes?: FileTypeEnum[];
-  contentClassName?: string;
-  containerClassName?: string;
-  showStatusBadge?: boolean;
-  uploadStatus?: UploadStatus;
-  onStatusChange?: (status: UploadStatus) => void;
-  initialPreviewUrl?: string | null;
-}
-
+/**
+ * Drag-and-drop file uploader with preview, status tracking, and confirmation flow.
+ *
+ * Supports configurable accepted file types (PDF, Excel, CSV, images), visual
+ * drag-active feedback, image previews, and a three-step workflow: select →
+ * confirm → upload. Upload status is tracked internally or controlled
+ * externally via the `uploadStatus` prop. Re-exports `FileTypeEnum` and
+ * `UploadStatus` enums for consuming code.
+ *
+ * @example
+ * ```tsx
+ * <ITDropfile
+ *   onFileSelect={(file) => setSelectedFile(file)}
+ *   onSubmit={(file) => uploadToServer(file)}
+ *   acceptedFileTypes={[FileTypeEnum.PDF, FileTypeEnum.XLSX]}
+ *   showStatusBadge
+ * />
+ * ```
+ */
 const ITDropfile: React.FC<ITDropfileProps> = ({
   onFileSelect,
   onCancel,

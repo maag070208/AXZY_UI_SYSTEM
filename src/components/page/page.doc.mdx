@@ -1,0 +1,80 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './page.stories';
+
+<Meta of={Stories} />
+
+# ITPage
+
+A page template component that wraps an ITPageHeader with content area and built-in state handling for loading, error, and empty states. Provides automatic skeleton placeholders during loading, an error boundary with retry action, and a customizable empty state with action.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `string` | `undefined` | Page title passed to the header. |
+| `description` | `string` | `undefined` | Description text shown below the title. |
+| `breadcrumbs` | `ITBreadcrumbItem[]` | `undefined` | Breadcrumb navigation items. |
+| `actions` | `ReactNode` | `undefined` | Action buttons rendered in the header. |
+| `backAction` | `() => void` | `undefined` | Callback for the back button. |
+| `icon` | `ReactNode` | `undefined` | Icon displayed next to the title. |
+| `iconColor` | `string` | `undefined` | Custom color for the icon. |
+| `loading` | `boolean` | `false` | When true, shows skeleton placeholders instead of content. |
+| `error` | `string \| null` | `null` | Error message. When provided, shows an error state with retry button. |
+| `errorTitle` | `string` | `'Error'` | Custom title for the error state. |
+| `errorActionLabel` | `string` | `'Reintentar'` | Label for the retry button in the error state. |
+| `onRetry` | `() => void` | `undefined` | Callback when the retry button is clicked. |
+| `empty` | `boolean` | `false` | When true, shows an empty state placeholder. |
+| `emptyTitle` | `string` | `'Sin datos'` | Custom title for the empty state. |
+| `emptyDescription` | `string` | `undefined` | Custom description for the empty state. |
+| `emptyAction` | `ReactNode` | `undefined` | Custom action element for the empty state. |
+| `children` | `ReactNode` | required | Content rendered when no special state (loading/error/empty) is active. |
+| `maxWidth` | `'2xl' \| '3xl' \| '4xl' \| '5xl' \| '6xl' \| '7xl'` | `'7xl'` | Maximum width of the page content container. |
+| `noPadding` | `boolean` | `false` | When true, removes default padding from the page wrapper. |
+| `className` | `string` | `undefined` | Additional CSS classes for the page wrapper. |
+
+## Usage
+
+```tsx
+import { ITPage } from '@axzydev/axzy_ui_system';
+
+<ITPage title="Users" description="Manage system users" actions={<ITButton label="Add" />}>
+  <p>Your page content</p>
+</ITPage>
+
+<ITPage title="Dashboard" loading>
+  <p>Content not shown while loading</p>
+</ITPage>
+
+<ITPage
+  title="Orders"
+  error="Failed to load orders"
+  onRetry={() => refetch()}
+>
+  <p>Content not shown while error</p>
+</ITPage>
+
+<ITPage
+  title="Notifications"
+  empty
+  emptyTitle="No notifications"
+  emptyAction={<ITButton label="Refresh" />}
+>
+  <p>Content not shown while empty</p>
+</ITPage>
+```
+
+## Notes
+
+- State priority: `error` > `loading` > `empty` > `children`.
+- The loading state renders animated skeleton blocks matching common page patterns.
+- The error state renders a centered error icon, message, and a retry button.
+- The empty state renders a centered placeholder with optional title, description, and action.
+- All header props (`title`, `description`, `breadcrumbs`, `actions`, `backAction`, `icon`) are forwarded to ITPageHeader.
+- Content maximum width is controlled by Tailwind max-width classes via `maxWidth`.
+- `noPadding` is useful for full-bleed layouts like dashboards.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

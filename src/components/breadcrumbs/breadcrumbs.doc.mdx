@@ -1,0 +1,57 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './breadcrumbs.stories';
+
+<Meta of={Stories} />
+
+# ITBreadcrumbs
+
+Navigation breadcrumb trail component that displays the user's current location within a site hierarchy. Each item can be a link (`href`) or a button (`onClick`), with the last item automatically rendered as plain inactive text. Supports a custom separator between segments.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `ITBreadcrumbItem[]` | required | Ordered array of breadcrumb segments. The last item is rendered as plain text. |
+| `separator` | `ReactNode` | `<FaChevronRight size={10} />` | Custom separator element rendered between items. |
+| `className` | `string` | — | Additional CSS class names for the `<nav>` container. |
+
+### ITBreadcrumbItem
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | required | Display text for the breadcrumb segment. |
+| `href` | `string` | — | URL for the breadcrumb link. Renders an `<a>` tag. |
+| `onClick` | `() => void` | — | Click handler. Renders a `<button>` when no `href` is set. |
+
+## Usage
+
+```tsx
+import { ITBreadcrumbs } from '@axzydev/axzy_ui_system';
+
+<ITBreadcrumbs
+  items={[
+    { label: "Inicio", href: "#" },
+    { label: "Usuarios", href: "#" },
+    { label: "Editar Perfil" },
+  ]}
+/>
+
+<ITBreadcrumbs
+  items={[...]}
+  separator={<FaArrowRight size={10} />}
+/>
+```
+
+## Variants / Notes
+
+- The last item in the `items` array is always rendered as plain, non-interactive text representing the current page.
+- Items with an `href` render as anchor tags (`<a>`), while items with only `onClick` render as buttons (`<button>`).
+- Default separator is a chevron-right icon from FontAwesome (`FaChevronRight`).
+- Wrapped in a semantic `<nav>` element for accessibility.
+- The component is purely presentational — routing/navigation logic is handled by `href` or `onClick` props.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

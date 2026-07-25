@@ -1,0 +1,53 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './popover.stories';
+
+<Meta of={Stories} />
+
+# ITPopover
+
+Floating content panel triggered by click on a trigger element. Supports four position placements and offers both uncontrolled (click toggle) and controlled (`isOpen`/`onClose`) modes.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `trigger` | `ReactNode` | — | Element that triggers the popover when clicked. |
+| `children` | `ReactNode` | — | Content rendered inside the popover panel. |
+| `position` | `"top" \| "bottom" \| "left" \| "right"` | `"bottom"` | Position of the popover relative to the trigger element. |
+| `isOpen` | `boolean` | — | Controlled open state. When provided, the component acts in controlled mode. |
+| `onClose` | `() => void` | — | Callback fired when the popover is closed in controlled mode. |
+| `className` | `string` | — | Additional CSS classes for the container. |
+
+## Usage
+
+```tsx
+import { ITPopover } from '@axzydev/axzy_ui_system';
+
+<ITPopover trigger={<ITButton label="Abrir" />}>
+  <button>Editar</button>
+  <button>Eliminar</button>
+</ITPopover>
+
+<ITPopover
+  trigger={<ITButton label="Controlled" />}
+  position="top"
+  isOpen={open}
+  onClose={() => setOpen(false)}
+>
+  <p>Contenido controlado</p>
+</ITPopover>
+```
+
+## Notes
+
+- Default mode is uncontrolled: clicking the trigger toggles the popover open/closed.
+- Controlled mode via `isOpen` and `onClose` allows external state management.
+- Four positions available: `top`, `bottom`, `left`, `right` relative to the trigger element.
+- Popover is dismissed automatically when clicking outside the panel.
+- Ideal for dropdown menus, action lists, and contextual tool panels.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

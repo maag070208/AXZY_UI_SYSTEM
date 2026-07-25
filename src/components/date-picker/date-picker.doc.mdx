@@ -1,0 +1,65 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './date-picker.stories';
+
+<Meta of={Stories} />
+
+# ITDatePicker
+
+A date picker supporting single date and date range selection. Includes built-in validation error display, min/max date constraints, and placeholder formatting.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `name` | `string` | — | Unique name attribute for the input. |
+| `value` | `Date \| [Date \| null, Date \| null]` | — | Selected date or start–end tuple when `range` is true. |
+| `onChange` | `(event) => void` | — | Callback with `{ target: { name, value } }` on date selection. |
+| `onBlur` | `(event) => void` | — | Callback when the input loses focus. |
+| `range` | `boolean` | `false` | Enable date-range selection mode. |
+| `variant` | `ColorsTypes` | `"primary"` | Color variant from design system. |
+| `size` | `SizesTypes` | `"medium"` | Size variant from design system. |
+| `className` | `string` | — | CSS classes for the wrapper. |
+| `calendarClassName` | `string` | — | CSS classes for the calendar popover. |
+| `disabled` | `boolean` | `false` | Disables the date picker. |
+| `placeholder` | `string` | — | Placeholder text when no date is selected. |
+| `label` | `string` | — | Accessible label rendered above the input. |
+| `required` | `boolean` | — | Marks the field as required. |
+| `touched` | `boolean` | — | Visually indicates the field has been interacted with. |
+| `error` | `string \| boolean` | — | Error message string or `true` for default error styling. |
+| `minDate` | `Date` | — | Earliest selectable date. |
+| `maxDate` | `Date` | — | Latest selectable date. |
+
+## Usage
+
+```tsx
+import { ITDatePicker } from '@axzydev/axzy_ui_system';
+
+<ITDatePicker
+  name="birthdate"
+  label="Birth Date"
+  placeholder="DD/MM/YYYY"
+  value={date}
+  onChange={(e) => setDate(e.target.value)}
+/>
+
+<ITDatePicker
+  range
+  name="audit_range"
+  label="Audit Range"
+  value={range}
+  onChange={(e) => setRange(e.target.value)}
+/>
+```
+
+## Notes
+
+- When `range` is true, `value` must be a tuple `[startDate, endDate]` and the onChange target value will be the same shape.
+- The component emits a synthetic event with `target.name` and `target.value`, compatible with Formik integration.
+- Error state is shown when both `error` and `touched` are truthy.
+- Date format follows the locale configuration; placeholder text like `DD/MM/YYYY` guides the user.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

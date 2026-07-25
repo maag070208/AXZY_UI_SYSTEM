@@ -25,6 +25,29 @@ interface CustomITSearchTableProps<T> extends ITSearchTableProps<T> {
   };
 }
 
+/**
+ * Server-side data table with global search, column sorting, inline editing, and pagination.
+ *
+ * @example
+ * ```tsx
+ * <ITSearchTable
+ *   columns={[
+ *     { key: "name", label: "Name", type: "string", sortable: true, editable: true },
+ *     { key: "status", label: "Status", type: "string", filter: true },
+ *   ]}
+ *   data={rows}
+ *   title="Users"
+ *   pageIndex={0}
+ *   totalCount={100}
+ *   totalPages={10}
+ *   hasPreviousPage={false}
+ *   hasNextPage={true}
+ *   onPageChange={(p) => fetchPage(p)}
+ *   onSortChange={(s) => sortData(s)}
+ *   onFilterChange={(f) => filterData(f)}
+ * />
+ * ```
+ */
 export default function ITSearchTable<T extends Record<string, unknown>>({
   columns,
   data,

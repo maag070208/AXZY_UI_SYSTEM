@@ -1,0 +1,72 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './search-select.stories';
+
+<Meta of={Stories} />
+
+# ITSearchSelect
+
+Searchable dropdown select with support for local client-side filtering and remote API search. Includes validation error display, label support, and customizable field mapping.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `name` | `string` | — | Name attribute for form integrations. |
+| `label` | `string` | — | Label displayed above the select input. |
+| `placeholder` | `string` | — | Placeholder text shown when no value is selected. |
+| `value` | `string \| number` | — | Currently selected value (controlled). |
+| `options` | `ITSearchSelectOption[]` | — | Array of options for static or remote data. `{ label, value, ...custom }`. |
+| `valueField` | `string` | `"value"` | Field used as the option value. |
+| `labelField` | `string` | `"label"` | Field used as the option display label. |
+| `onChange` | `(value: string \| number, option?: ITSearchSelectOption) => void` | — | Callback fired when selection changes. |
+| `onBlur` | `(e: FocusEvent<any>) => void` | — | Callback fired when input loses focus. |
+| `disabled` | `boolean` | `false` | Whether the component is disabled. |
+| `className` | `string` | — | Additional CSS classes for the container. |
+| `touched` | `boolean` | — | Whether the field has been touched (for form validation). |
+| `required` | `boolean` | `false` | Whether the field is required. Shows a red asterisk. |
+| `error` | `string \| boolean` | — | Error message or boolean indicating an error state. |
+| `readOnly` | `boolean` | `false` | Whether the field is read-only. |
+| `onSearch` | `(query: string) => void` | — | Callback for server-side search. Receives the search query string. |
+| `isLoading` | `boolean` | `false` | Whether options are being loaded from an external API. |
+| `noResultsMessage` | `string` | `"No se encontraron resultados"` | Message displayed when no results match the search. |
+
+## Usage
+
+```tsx
+import { ITSearchSelect } from '@axzydev/axzy_ui_system';
+
+<ITSearchSelect
+  name="user"
+  label="Select User"
+  placeholder="Search user..."
+  options={users}
+  value={selected}
+  onChange={(val) => setSelected(val)}
+/>
+
+<ITSearchSelect
+  name="remote"
+  label="API Search"
+  placeholder="Type to search..."
+  options={remoteOptions}
+  isLoading={loading}
+  onSearch={(query) => fetchResults(query)}
+  value={selected}
+  onChange={(val) => setSelected(val)}
+/>
+```
+
+## Notes
+
+- **Static mode**: provide an `options` array and the component filters client-side as the user types.
+- **Remote mode**: provide an `onSearch` callback and manage `options`/`isLoading` externally for API-driven searches.
+- `valueField` and `labelField` allow custom option object structures beyond `{ value, label }`.
+- Validation states: `error` string displays inline, `touched` gates error visibility, `required` adds a red asterisk.
+- `readOnly` mode renders the selected value as non-interactive text.
+- Supports `className` for style overrides and width control.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

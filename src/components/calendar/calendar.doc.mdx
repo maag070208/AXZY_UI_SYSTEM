@@ -1,0 +1,75 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './calendar.stories';
+
+<Meta of={Stories} />
+
+# ITCalendar
+
+A full-featured calendar and date picker component with week, day, and month views. Supports event display with colored indicators, date selection (single and range modes), drag-to-select time ranges, and min/max date boundaries with month/year navigation.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `events` | `CalendarEvent[]` | `[]` | Array of calendar events to display in the scheduler view. |
+| `mode` | `"week" \| "day" \| "month"` | auto | Display mode. Auto-detected as `"month"` when `onChange` is provided. |
+| `onEventClick` | `(event: CalendarEvent) => void` | — | Callback fired when an event is clicked. |
+| `onSlotClick` | `(date: Date) => void` | — | Callback fired when an empty time slot is clicked. |
+| `onSlotHover` | `(date: Date) => void` | — | Callback fired when the mouse enters a time slot. |
+| `onSelectRange` | `(start: Date, end: Date) => void` | — | Callback fired when a time range is selected via drag. |
+| `value` | `Date` | — | Currently selected date (picker mode). |
+| `onChange` | `(date: Date) => void` | — | Callback fired when a date is selected in picker mode. |
+| `selectionMode` | `"single" \| "range"` | `"single"` | Selection mode for the date picker. |
+| `startDate` | `Date` | — | Start date for range selection. |
+| `endDate` | `Date` | — | End date for range selection. |
+| `minDate` | `Date` | — | Minimum selectable date (dates before are disabled). |
+| `maxDate` | `Date` | — | Maximum selectable date (dates after are disabled). |
+| `className` | `string` | — | Additional CSS class names for the calendar container. |
+| `disabled` | `boolean` | `false` | Whether the calendar is in a disabled state. |
+| `variant` | `ColorsTypes` | `"primary"` | Accent color theme for selection highlights. |
+
+### CalendarEvent
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `id` | `string` | required | Unique identifier for the event. |
+| `title` | `string` | required | Event display title. |
+| `start` | `Date \| string` | required | Event start date/time. |
+| `end` | `Date \| string` | required | Event end date/time. |
+| `color` | `string` | — | Event indicator color (hex or CSS value). |
+| `data` | `any` | — | Arbitrary extra data passed through to event callbacks. |
+
+## Usage
+
+```tsx
+import { ITCalendar } from '@axzydev/axzy_ui_system';
+
+<ITCalendar mode="month" onChange={(date) => console.log(date)} variant="primary" />
+
+<ITCalendar
+  mode="week"
+  events={[
+    { id: "1", title: "Reunión", start: new Date(), end: new Date(), color: "#3b82f6" }
+  ]}
+  onEventClick={(evt) => console.log(evt)}
+  className="h-[600px]"
+/>
+```
+
+## Variants / Notes
+
+- **month** — Traditional month grid with date picker, single and range selection modes.
+- **week** — 7-column time grid from 6 AM to 10 PM with event overlays and drag-to-select range.
+- **day** — Single-column time grid for focused daily scheduling.
+- **years** — Click the month/year header to switch to a year selection view (12-year grid).
+- Uses `date-fns` with Spanish locale (`es`) for month and weekday names.
+- Month view supports `minDate`/`maxDate` boundaries — out-of-range dates are disabled and dimmed.
+- Events render as colored bars in week/day views with customizable `color` prop.
+- Week/day views show the current time as a red indicator line when viewing today.
+- Drag-to-select time ranges is enabled when `onSelectRange` is provided.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

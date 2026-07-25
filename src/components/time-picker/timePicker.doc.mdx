@@ -1,0 +1,68 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './timePicker.stories';
+
+<Meta of={Stories} />
+
+# ITTimePicker
+
+Time selection input with a dual-column dropdown (hours / minutes). Supports manual typing with auto-formatting to `HH:MM`, validation, 12h and 24h format display, configurable minute steps, and keyboard-friendly picker navigation.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `name` | `string` | — | Form field name attribute and key for the change event. |
+| `value` | `string` | — | Controlled time value in `"HH:MM"` format. |
+| `label` | `string` | — | Label text displayed above the input. |
+| `placeholder` | `string` | `"HH:MM"` | Placeholder text when no value is set. |
+| `onChange` | `(e: any) => void` | — | Callback fired on valid time selection, receives event-like object with `target.name` and `target.value`. |
+| `onBlur` | `(e: any) => void` | — | Callback fired when the input loses focus. |
+| `required` | `boolean` | — | Marks the field as required. |
+| `touched` | `boolean` | — | Whether the input has been interacted with. |
+| `error` | `string \| boolean` | — | Validation error message or boolean to show error state. |
+| `disabled` | `boolean` | `false` | Disables the time picker when true. |
+| `className` | `string` | — | Additional CSS classes for the wrapper. |
+| `size` | `"small" \| "medium" \| "large"` | `"medium"` | Size preset controlling padding and font size. |
+| `variant` | `"primary" \| "secondary" \| "danger" \| "success" \| "warning" \| "info" \| "purple"` | `"primary"` | Style variant for the input. |
+| `color` | `"primary" \| "secondary" \| "danger" \| "success" \| "warning" \| "info" \| "purple" \| string` | `"primary"` | Theme color used for the dropdown highlight and confirm button. Accepts semantic keys or raw hex. |
+
+## Usage
+
+```tsx
+import { ITTimePicker } from '@axzydev/axzy_ui_system';
+
+<ITTimePicker
+  name="startTime"
+  label="Start Time"
+  value={startTime}
+  onChange={(e) => setStartTime(e.target.value)}
+  color="primary"
+/>
+
+<ITTimePicker
+  name="endTime"
+  label="End Time"
+  value={endTime}
+  onChange={(e) => setEndTime(e.target.value)}
+  error={isInvalid ? "Invalid time range" : undefined}
+  touched={true}
+/>
+```
+
+## Notes
+
+- The dropdown opens on input focus and can be navigated via scroll or keyboard.
+- Hour and minute columns scroll independently for quick selection.
+- A **Set** button at the bottom of the dropdown confirms the selection.
+- Supports both 12-hour and 24-hour format display via the internal formatting logic.
+- **minuteStep** is available internally (1, 5, 10, 15, 30 minutes) for granular control over the minute column.
+- Invalid times (e.g., "25:99") trigger validation and display an error state.
+- **touched** prop combined with an empty value or bad time forces error visibility.
+- Clearable via clearing the input field; the dropdown resets accordingly.
+- Colors available: primary, secondary, success, danger, warning, info, purple — plus any raw hex string.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

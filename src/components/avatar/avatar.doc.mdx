@@ -1,0 +1,48 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './avatar.stories';
+
+<Meta of={Stories} />
+
+# ITAvatar
+
+Circular avatar component for displaying user profile pictures, initials, or generic placeholder content. Falls back to displaying initials when the image fails to load or is not provided. Supports five sizes and an optional badge overlay for status indicators.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `src` | `string` | — | Image source URL for the avatar. |
+| `alt` | `string` | — | Alt text for the image. Also used as fallback initial when no `initials` or `src` is provided. |
+| `initials` | `string` | — | Initials to display when no image is available (max 2 characters recommended). |
+| `size` | `"xs" \| "sm" \| "md" \| "lg" \| "xl"` | `"md"` | Avatar dimensions. |
+| `color` | `string` | `"bg-primary-500"` | Background color class for the initials fallback. |
+| `className` | `string` | — | Additional CSS class names for the avatar container. |
+| `badge` | `ReactNode` | — | React node rendered as a badge overlay at the bottom-right corner. |
+| `onClick` | `() => void` | — | Click handler. When provided, the avatar becomes interactive (`role="button"`). |
+
+## Usage
+
+```tsx
+import { ITAvatar } from '@axzydev/axzy_ui_system';
+
+<ITAvatar src="https://i.pravatar.cc/150" alt="User" size="md" />
+
+<ITAvatar initials="JD" size="lg" badge={<FaCircle className="text-emerald-500" />} />
+```
+
+## Variants / Notes
+
+- **xs** — Extra small (ideal for inline lists or compact UIs).
+- **sm** — Small (useful in table rows or sidebars).
+- **md** — Medium, the default size suitable for most use cases.
+- **lg** — Large (prominent display or profile pages).
+- **xl** — Extra large (hero sections or standalone profile views).
+- Shows initials text fallback when `src` is missing or the image fails (`onError`).
+- Badge slot positioned at bottom-right using absolute positioning.
+- Becomes interactive with click handler and hover cursor when `onClick` is provided.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

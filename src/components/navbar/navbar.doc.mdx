@@ -1,0 +1,77 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './navbar.stories';
+
+<Meta of={Stories} />
+
+# ITNavbar
+
+A full sidebar navigation shell for application layouts. Provides collapsible submenus with expand/collapse animation, active state highlighting via `isActive`, and an optional user menu dropdown with avatar, name, and email.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `navigationItems` | `ITNavigationItem[]` | `undefined` | Navigation items with labels, icons, subitems, and active states. |
+| `logo` | `ReactNode` | `undefined` | Logo element rendered in the sidebar header. |
+| `logoText` | `string` | `undefined` | Text displayed next to the logo. |
+| `userMenu` | `{ userImage?, userName, userEmail, menuItems }` | `undefined` | User dropdown configuration. |
+| `children` | `ReactNode` | `undefined` | Main content rendered next to the sidebar. |
+| `navItems` | `ReactNode` | `undefined` | **Deprecated.** Use `navigationItems` instead. |
+| `showSidebar` | `boolean` | `undefined` | **Deprecated.** Legacy flag. |
+| `showSidebarOnMobile` | `boolean` | `undefined` | **Deprecated.** Legacy flag. |
+| `sidebarItems` | `ReactNode` | `undefined` | **Deprecated.** Use `navigationItems` instead. |
+
+### ITNavigationItem
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `id` | `string` | required | Unique identifier. |
+| `label` | `string` | required | Display label. |
+| `icon` | `ReactNode` | `undefined` | Icon rendered next to the label. |
+| `action` | `() => void` | `undefined` | Callback on click. |
+| `isActive` | `boolean` | `false` | Whether the item is currently highlighted as active. |
+| `subitems` | `ITNavigationSubItem[]` | `undefined` | Nested items shown on expand. |
+
+### ITNavigationSubItem
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `id` | `string` | required | Unique identifier. |
+| `label` | `string` | required | Display label. |
+| `action` | `() => void` | required | Callback on click. |
+| `isActive` | `boolean` | `false` | Whether the sub-item is highlighted. |
+
+## Usage
+
+```tsx
+import { ITNavbar } from '@axzydev/axzy_ui_system';
+import { FaHome, FaChartBar } from 'react-icons/fa';
+
+<ITNavbar
+  logoText="AXZY"
+  navigationItems={[
+    { id: 'home', label: 'Dashboard', icon: <FaHome />, isActive: true },
+    { id: 'analytics', label: 'Analytics', icon: <FaChartBar />,
+      subitems: [{ id: 'reports', label: 'Reports', action: () => {} }]
+    }
+  ]}
+  userMenu={{ userName: 'John', userEmail: 'john@axzy.dev', menuItems: [...] }}
+>
+  <div>Content area</div>
+</ITNavbar>
+```
+
+## Notes
+
+- Sidebar has a collapsed state where only icons are visible; expanding shows labels.
+- Submenus animate open/closed with a height transition.
+- Items with `isActive` are visually highlighted.
+- `userMenu` renders a dropdown at the bottom of the sidebar with user info and action items.
+- Legacy props (`navItems`, `showSidebar`, etc.) are maintained for backward compatibility but should be migrated to `navigationItems`.
+- Supports dark mode via CSS variables from the theme provider.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

@@ -1,0 +1,44 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './image.stories';
+
+<Meta of={Stories} />
+
+# ITImage
+
+An image component with automatic fallback on load error. Uses a native `<img>` element with an error boundary that swaps the source to a fallback URL when the primary image fails to load.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `src` | `string` | required | Source URL of the image. |
+| `alt` | `string` | `undefined` | Alt text for accessibility. |
+| `className` | `string` | `undefined` | Additional CSS classes for the wrapper. |
+| `fallback` | `string` | `undefined` | Fallback image URL shown when `src` fails to load. |
+| `onClick` | `() => void` | `undefined` | Click handler on the image. |
+
+## Usage
+
+```tsx
+import { ITImage } from '@axzydev/axzy_ui_system';
+
+<ITImage
+  src="https://example.com/photo.jpg"
+  alt="Profile photo"
+  fallback="https://example.com/default-avatar.jpg"
+/>
+<ITImage src="https://example.com/logo.png" />
+```
+
+## Notes
+
+- Handles `onerror` internally to swap to the `fallback` URL.
+- The wrapper is an inline-block `div` with full width/height for responsive sizing within a sized parent.
+- If no `fallback` is provided and the image errors, the broken image icon is shown.
+- Uses `object-cover` to fill the container while maintaining aspect ratio.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

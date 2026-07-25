@@ -7,6 +7,36 @@ import ITInput from "../input/input";
 import { ITDatePickerProps } from "./date-picker.props";
 import { theme } from "@/theme/theme";
 
+/**
+ * Date picker component with single-date and date-range modes.
+ *
+ * Supports manual text input (DD/MM/YYYY format) and a calendar popover.
+ * In range mode the user selects a start date then an end date; the calendar
+ * highlights the interval. Position-aware popover flips above the input when
+ * near the bottom of the viewport.
+ *
+ * @example
+ * ```tsx
+ * <ITDatePicker
+ *   name="birthDate"
+ *   label="Date of birth"
+ *   value={date}
+ *   onChange={(e) => setDate(e.target.value)}
+ *   maxDate={new Date()}
+ * />
+ * ```
+ *
+ * @example
+ * ```tsx
+ * <ITDatePicker
+ *   name="travelRange"
+ *   label="Travel dates"
+ *   range
+ *   value={[startDate, endDate]}
+ *   onChange={(e) => setRange(e.target.value)}
+ * />
+ * ```
+ */
 export default function ITDatePicker({
   name,
   value,
@@ -257,7 +287,7 @@ export default function ITDatePicker({
           <span>
             <FaCalendarAlt
               onClick={handleIconClick}
-              className="text-slate-900 cursor-pointer"
+              className="text-slate-500 dark:text-slate-400 cursor-pointer"
             />
           </span>
         }

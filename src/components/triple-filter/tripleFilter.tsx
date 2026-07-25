@@ -16,6 +16,38 @@ const colorMap: Record<ColorsTypes, string> = {
 };
 
 /**
+ * ITTripleFilter — generic segmented toggle filter bar for quick data filtering.
+ *
+ * Renders a row of pill-shaped buttons where exactly one is active at a time.
+ * Supports any string or boolean value type and configurable color theming.
+ * Commonly used for "All / Active / Inactive" or similar tri-state filters.
+ *
+ * @example
+ * // Boolean triple filter
+ * <ITTripleFilter<boolean>
+ *   value={showActive}
+ *   onChange={setShowActive}
+ *   options={[
+ *     { label: "All", value: false },
+ *     { label: "Active", value: true },
+ *   ]}
+ * />
+ *
+ * @example
+ * // String triple filter with danger color
+ * <ITTripleFilter<string>
+ *   value={status}
+ *   onChange={setStatus}
+ *   options={[
+ *     { label: "Pending", value: "pending" },
+ *     { label: "Approved", value: "approved" },
+ *     { label: "Rejected", value: "rejected" },
+ *   ]}
+ *   color="danger"
+ *   className="my-4"
+ * />
+ */
+/**
  * @description Generic triple/segmented filter component with color support.
  */
 export const ITTripleFilter = <T extends string | boolean>({

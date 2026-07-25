@@ -1,0 +1,70 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './input.stories';
+
+<Meta of={Stories} />
+
+# ITInput
+
+A versatile form input component supporting text, password, email, number, textarea, checkbox, and radio types. Features labels, validation errors, left/right icons, helper text with character count, currency formatting, and configurable sizes.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `name` | `string` | required | Field name used for form identification. |
+| `type` | `'text' \| 'password' \| 'number' \| 'email' \| 'checkbox' \| 'radio' \| 'textarea'` | `'text'` | Input type. |
+| `label` | `string` | `undefined` | Label displayed above the input. |
+| `placeholder` | `string` | `undefined` | Placeholder text. |
+| `value` | `any` | `undefined` | Current input value. |
+| `onChange` | `(event: any) => void` | required | Change event handler. |
+| `onBlur` | `(event) => void` | `undefined` | Blur event handler. |
+| `onKeyDown` | `(event) => void` | `undefined` | Keydown event handler. |
+| `error` | `string \| boolean` | `undefined` | Validation error message. Pass `true` for generic error styling. |
+| `touched` | `boolean` | `undefined` | Whether the field has been touched by the user. |
+| `required` | `boolean` | `false` | Mark the field as required (adds asterisk to label). |
+| `disabled` | `boolean` | `false` | Disable the input. |
+| `size` | `SizesTypes` | `'md'` | Size preset: `xs`, `sm`, `md`, `lg`, `xl`. |
+| `variant` | `ColorsTypes` | `undefined` | Color variant from the theme palette. |
+| `iconLeft` | `ReactNode` | `undefined` | Icon element rendered on the left side. |
+| `iconRight` | `ReactNode` | `undefined` | Icon element rendered on the right side. |
+| `maxLength` | `number` | `undefined` | Maximum allowed character length. |
+| `minLength` | `number` | `undefined` | Minimum allowed character length. |
+| `showHintLength` | `boolean` | `false` | Show character count hint below the input. |
+| `currencyFormat` | `boolean` | `false` | Enable currency formatting for number inputs (MX locale). |
+| `formatNumber` | `boolean` | `false` | Enable number formatting on blur. |
+| `autoFocus` | `boolean` | `false` | Auto-focus the input on mount. |
+| `focusContent` | `boolean` | `false` | Select all content on click/focus. |
+| `readOnly` | `boolean` | `false` | Render the input in read-only mode. |
+| `min` | `number` | `undefined` | Minimum numeric value for number inputs. |
+| `max` | `number` | `undefined` | Maximum numeric value for number inputs. |
+| `rows` | `number` | `undefined` | Number of visible rows for textarea. |
+| `checked` | `boolean` | `undefined` | Checked state for checkbox and radio types. |
+| `containerClassName` | `string` | `undefined` | Additional CSS classes for the outer container. |
+| `labelClassName` | `string` | `undefined` | Additional CSS classes for the label. |
+| `className` | `string` | `undefined` | Additional CSS classes for the input element. |
+| `onClick` | `() => void` | `undefined` | Click handler for the input. |
+
+## Usage
+
+```tsx
+import { ITInput } from '@axzydev/axzy_ui_system';
+
+<ITInput name="email" label="Email" type="email" placeholder="example@mail.com" />
+<ITInput name="password" label="Password" type="password" iconLeft={<FaLock />} />
+<ITInput name="bio" label="Bio" type="textarea" rows={4} />
+<ITInput name="qty" label="Quantity" type="number" min={0} max={100} />
+```
+
+## Notes
+
+- Error message only displays when both `error` and `touched` are truthy.
+- `showHintLength` with `maxLength` displays a counter (e.g. "45/200").
+- Currency formatting uses MX locale by default when `currencyFormat` is true.
+- Icons rendered via `iconLeft`/`iconRight` can be clickable React nodes (e.g. a toggle visibility button).
+- Checkbox and radio types render inline labels instead of stacked layout.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

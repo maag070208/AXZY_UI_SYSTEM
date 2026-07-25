@@ -20,6 +20,37 @@ function buildDependentValues(
   return deps;
 }
 
+/**
+ * Dynamic form generator from field definitions with validation support.
+ * Renders a responsive grid of inputs, selects, and date pickers based on
+ * the provided field configuration. Supports both legacy (`fields`) and
+ * V2 (`config`) field definition formats.
+ *
+ * @example
+ * <ITFormBuilder
+ *   fields={[
+ *     { name: "email", label: "Email", type: "text", required: true, column: 6 },
+ *     { name: "role", label: "Role", type: "select", options: [{ id: 1, label: "Admin" }], column: 6 },
+ *   ]}
+ *   values={formValues}
+ *   handleChange={handleChange}
+ *   handleBlur={handleBlur}
+ *   touched={touched}
+ *   errors={errors}
+ *   columns={12}
+ * />
+ *
+ * @example
+ * <ITFormBuilder
+ *   config={v2FieldConfigs}
+ *   values={formValues}
+ *   handleChange={handleChange}
+ *   handleBlur={handleBlur}
+ *   touched={touched}
+ *   errors={errors}
+ *   isSubmitting={loading}
+ * />
+ */
 export default function ITFormBuilder({
   fields,
   config,

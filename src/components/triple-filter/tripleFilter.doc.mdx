@@ -1,0 +1,62 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './tripleFilter.stories';
+
+<Meta of={Stories} />
+
+# ITTripleFilter
+
+Generic segmented toggle filter bar for quick data filtering. Renders a row of pill-shaped buttons where exactly one is active at a time. Supports any string or boolean value type, configurable color theming, and full-width mode. Commonly used for "All / Active / Inactive" or similar tri-state filters in tables, lists, and dashboards.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `T extends string \| boolean` | — | Currently selected value. Must match one of the option values. |
+| `onChange` | `(value: T) => void` | — | Called when the user selects a different option. Receives the new value. |
+| `options` | `ITTripleFilterOption<T>[]` | — | Array of filter options to render (typically 2–4 items). Each has `label: string` and `value: T`. |
+| `color` | `ColorsTypes` | `"primary"` | Color theme for the active indicator. One of `primary`, `secondary`, `success`, `danger`, `warning`, `info`, `purple`, `error`, `gray`. |
+| `className` | `string` | — | Additional CSS classes applied to the outermost container. |
+
+## Usage
+
+```tsx
+import { ITTripleFilter } from '@axzydev/axzy_ui_system';
+
+<ITTripleFilter<string>
+  value={status}
+  onChange={setStatus}
+  options={[
+    { label: 'All', value: 'all' },
+    { label: 'Active', value: 'active' },
+    { label: 'Inactive', value: 'inactive' },
+  ]}
+  color="success"
+/>
+
+<ITTripleFilter<boolean>
+  value={showActive}
+  onChange={setShowActive}
+  options={[
+    { label: 'All', value: false },
+    { label: 'Active', value: true },
+  ]}
+  color="danger"
+/>
+```
+
+## Notes
+
+- Generic component — works with `string` or `boolean` value types.
+- Active option receives a full background fill matching the `color` prop, while inactive options use a subtle outlined style.
+- Exactly **one** option is always active; selecting the already-active option is a no-op.
+- **color** accepts all semantic color tokens: `primary`, `secondary`, `success`, `danger`, `warning`, `info`, `purple`, `error`, `gray`.
+- Both `error` and `danger` map to the same danger color.
+- Use `className` to control width — for full-width mode, apply `w-full`.
+- The filter bar is rendered as a horizontal inline-flex row; options wrap naturally on narrow containers.
+- Ideal for filter bars above data tables, alongside search inputs and date pickers.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

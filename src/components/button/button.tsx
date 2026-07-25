@@ -8,6 +8,17 @@ import { theme } from "@/theme/theme";
 import { ITButtonProps } from "./button.props";
 import ITText from "@/components/text/text";
 
+/**
+ * Highly configurable action button supporting 8 visual variants, theme colors, 3 sizes, icons, and hover/focus states.
+ *
+ * @example
+ * <ITButton label="Submit" color="primary" variant="filled" onClick={() => {}} />
+ *
+ * @example
+ * <ITButton color="danger" variant="outlined" size="small" icon={<FaTrash />}>
+ *   Delete
+ * </ITButton>
+ */
 export default function ITButton({
   children,
   label,

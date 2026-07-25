@@ -10,6 +10,19 @@ const positionClasses: Record<PopoverPosition, string> = {
   right: "left-full top-1/2 -translate-y-1/2 ml-2",
 };
 
+/**
+ * Floating content panel triggered by click on a trigger element, with position control and click-outside dismissal.
+ *
+ * @example
+ * ```tsx
+ * <ITPopover trigger={<ITButton label="Options" />} position="bottom">
+ *   <ul>
+ *     <li><button onClick={handleEdit}>Edit</button></li>
+ *     <li><button onClick={handleDelete}>Delete</button></li>
+ *   </ul>
+ * </ITPopover>
+ * ```
+ */
 export default function ITPopover({
   trigger,
   children,

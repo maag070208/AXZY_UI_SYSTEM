@@ -1,0 +1,54 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './checkbox.stories';
+
+<Meta of={Stories} />
+
+# ITCheckbox
+
+A checkbox input component with a custom visual style and a visually hidden native `<input>` for full accessibility. Supports checked, unchecked, and indeterminate states with an optional label. The disabled state reduces opacity and prevents interaction.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `checked` | `boolean` | `false` | Controlled checked state. |
+| `onChange` | `(checked: boolean) => void` | — | Callback fired when the checkbox value changes. |
+| `label` | `ReactNode` | — | Label text or element rendered next to the checkbox. |
+| `disabled` | `boolean` | `false` | Disables interaction and applies reduced opacity. |
+| `indeterminate` | `boolean` | `false` | Renders a dash indicator for partial selection. No effect when `checked` is `true`. |
+| `className` | `string` | — | Additional CSS class names for the label wrapper. |
+| `name` | `string` | — | HTML name attribute for the native `<input>` element. |
+
+## Usage
+
+```tsx
+import { ITCheckbox } from '@axzydev/axzy_ui_system';
+
+<ITCheckbox
+  checked={agreed}
+  onChange={setAgreed}
+  label="Acepto los términos y condiciones"
+/>
+
+<ITCheckbox
+  indeterminate={someChecked && !allChecked}
+  onChange={toggleAll}
+  label="Seleccionar todo"
+/>
+```
+
+## Variants / Notes
+
+- **Checked** — Blue filled square with a white checkmark SVG icon.
+- **Unchecked** — White background with a slate gray border.
+- **Indeterminate** — A horizontal dash line rendered when `indeterminate` is `true` and `checked` is `false`. Useful for "select all" parent checkboxes.
+- The native `<input>` is visually hidden (`sr-only`) but remains interactive via the parent `<label>`, ensuring keyboard navigation and screen reader support.
+- When disabled, the entire label wrapper gets `opacity-50` and `cursor-not-allowed`.
+- Renders a focus ring (`ring-2 ring-primary-200`) on the custom visual element when the input is focused (unless disabled).
+- Uses a `ref` callback to set `indeterminate` on the underlying DOM input for compliance with the HTML spec.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

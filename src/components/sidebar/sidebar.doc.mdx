@@ -1,0 +1,86 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './sidebar.stories';
+
+<Meta of={Stories} />
+
+# ITSidebar
+
+Vertical navigation sidebar with collapsible submenus, tooltips when collapsed, active item highlighting, badge support, and themed glassmorphism styling. Designed for admin panels and dashboard layouts.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `navigationItems` | `ITNavigationItem[]` | — | Navigation structure: top-level items with optional sub-items. |
+| `isCollapsed` | `boolean` | `false` | Whether the sidebar is collapsed to icon-only mode. |
+| `onToggleCollapse` | `() => void` | — | Callback when the user toggles collapse via the toggle button. |
+| `visibleOnMobile` | `boolean` | `false` | Force sidebar visible on mobile breakpoints. |
+| `onItemClick` | `(item: ITNavigationItem) => void` | — | Callback when a top-level navigation item is clicked. |
+| `onSubItemClick` | `(subitem: ITNavigationSubItem) => void` | — | Callback when a sub-navigation item is clicked. |
+| `subitemConnector` | `"dot" \| "\|" \| "none"` | `"dot"` | Visual connector style for sub-items. |
+| `className` | `string` | — | Additional CSS classes on the sidebar `<aside>`. |
+
+### ITNavigationItem
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `id` | `string` | Unique identifier. |
+| `label` | `string` | Display label. |
+| `icon` | `ReactNode` | Icon rendered left of the label. |
+| `action` | `() => void` | Click handler for top-level items without submenus. |
+| `isActive` | `boolean` | Whether this item is active/highlighted. |
+| `subitems` | `ITNavigationSubItem[]` | Nested sub-navigation items. |
+| `badge` | `string` | Badge text (e.g. notification count). |
+
+### ITNavigationSubItem
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `id` | `string` | Unique identifier. |
+| `label` | `string` | Display label. |
+| `action` | `() => void` | Click handler. |
+| `isActive` | `boolean` | Whether this sub-item is active/highlighted. |
+
+## Usage
+
+```tsx
+import { ITSidebar } from '@axzydev/axzy_ui_system';
+import { FaHome, FaUsers, FaCog } from 'react-icons/fa';
+
+const items = [
+  { id: 'dashboard', label: 'Dashboard', icon: <FaHome />, isActive: true, action: () => {} },
+  {
+    id: 'users',
+    label: 'Users',
+    icon: <FaUsers />,
+    badge: '3',
+    subitems: [
+      { id: 'users-list', label: 'User List', action: () => {} },
+      { id: 'users-roles', label: 'Roles', action: () => {}, isActive: true },
+    ],
+  },
+];
+
+<ITSidebar
+  navigationItems={items}
+  isCollapsed={false}
+  onToggleCollapse={toggleCollapse}
+  subitemConnector="dot"
+/>
+```
+
+## Notes
+
+- Collapsed mode shrinks to icon-only; tooltips show labels on hover with glassmorphism style.
+- Submenus expand/collapse with smooth transitions when a parent item is clicked.
+- Active item highlighting uses a colored left-border accent and subtle background tint.
+- Badge support renders a notification-style counter on the item.
+- `subitemConnector` styles the visual link between parent and sub-items: `dot` (default), `|` (vertical bar), or `none`.
+- `visibleOnMobile` forces sidebar visibility on smaller screens for responsive layouts.
+- Themed via CSS variables for consistent colors, shadows, and glassmorphism effects across light and dark modes.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

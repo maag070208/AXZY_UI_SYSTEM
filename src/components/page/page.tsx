@@ -24,6 +24,24 @@ const renderHeader = (props: ITPageProps) => {
   );
 };
 
+/**
+ * Page template combining a page header and content area with built-in states for loading, error, and empty.
+ *
+ * @example
+ * ```tsx
+ * <ITPage
+ *   title="Dashboard"
+ *   description="Overview of your account"
+ *   breadcrumbs={[{ label: 'Home' }, { label: 'Dashboard' }]}
+ *   actions={<ITButton label="Refresh" />}
+ *   loading={isLoading}
+ *   error={errorMessage}
+ *   onRetry={fetchData}
+ * >
+ *   <ITCard>Dashboard content</ITCard>
+ * </ITPage>
+ * ```
+ */
 export default function ITPage(props: ITPageProps) {
   const {
     loading = false,

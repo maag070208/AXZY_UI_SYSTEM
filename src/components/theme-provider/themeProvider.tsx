@@ -246,6 +246,20 @@ const isVeryDarkColor = (hex: string) => {
   return brightness < 50;
 };
 
+/**
+ * Root theme context provider that injects CSS custom properties for all components,
+ * supports custom color palettes, dark/light mode, and an optional in-app theme designer FAB.
+ *
+ * @example
+ * <ITThemeProvider theme={{ primary: "#3b82f6", danger: "#ef4444" }}>
+ *   <App />
+ * </ITThemeProvider>
+ *
+ * @example
+ * <ITThemeProvider showFab={false}>
+ *   <Dashboard />
+ * </ITThemeProvider>
+ */
 export default function ITThemeProvider({
   children,
   theme,

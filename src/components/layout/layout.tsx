@@ -5,6 +5,29 @@ import ITSidebar from "../sidebar/sidebar";
 import { ITLayoutProps } from "./layout.props";
 import { theme } from "@/theme/theme";
 
+/**
+ * Main application shell with sidebar, topbar, and content area.
+ * Provides a responsive layout with a collapsible desktop sidebar,
+ * a sliding mobile sidebar overlay, and a scrollable main content region.
+ *
+ * @example
+ * <ITLayout
+ *   topBar={{ title: "Dashboard", userMenu: [...] }}
+ *   sidebar={{ items: [...], activeKey: "overview" }}
+ * >
+ *   <p>Page content goes here</p>
+ * </ITLayout>
+ *
+ * @example
+ * <ITLayout
+ *   topBar={{ title: "Settings" }}
+ *   sidebar={{ items: navItems }}
+ *   className="min-h-screen"
+ *   contentClassName="max-w-5xl"
+ * >
+ *   <SettingsPage />
+ * </ITLayout>
+ */
 export default function ITLayout({
   topBar,
   sidebar,
@@ -12,8 +35,12 @@ export default function ITLayout({
   className = "",
   contentClassName = "",
 }: ITLayoutProps) {
-  const [desktopCollapsed, setDesktopCollapsed] = useState(true);
+  const [internalCollapsed, setInternalCollapsed] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  const isControlled = sidebar.isCollapsed !== undefined;
+  const desktopCollapsed = isControlled ? sidebar.isCollapsed : internalCollapsed;
+  const handleToggleCollapse = isControlled ? (sidebar.onToggleCollapse ?? (() => {})) : () => setInternalCollapsed(v => !v);
 
   const layoutTokens = theme.layout;
 
@@ -36,7 +63,7 @@ export default function ITLayout({
             <ITSidebar
               {...sidebar}
               isCollapsed={desktopCollapsed}
-              onToggleCollapse={() => setDesktopCollapsed(v => !v)}
+              onToggleCollapse={handleToggleCollapse}
               visibleOnMobile={false}
               className="h-full drop-shadow-2xl transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] flex-shrink-0"
             />

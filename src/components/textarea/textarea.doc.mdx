@@ -1,0 +1,64 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './textarea.stories';
+
+<Meta of={Stories} />
+
+# ITTextarea
+
+Multi-line text input with label, validation error display, character limit, and configurable resize behavior. Built on native `<textarea>` with consistent styling and focus ring effects.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | — | Controlled value of the textarea. |
+| `onChange` | `(value: string) => void` | — | Callback fired when the value changes, receiving the new string. |
+| `label` | `string` | — | Label text rendered above the textarea. |
+| `placeholder` | `string` | — | Placeholder text shown when the textarea is empty. |
+| `rows` | `number` | `4` | Number of visible text rows. |
+| `disabled` | `boolean` | `false` | Disables the textarea when true. |
+| `error` | `string` | — | Validation error message displayed below the textarea. |
+| `className` | `string` | — | Additional CSS classes for the wrapper. |
+| `name` | `string` | — | Name attribute for form submission and label association via `htmlFor`. |
+| `maxLength` | `number` | — | Maximum number of characters allowed. |
+| `resize` | `"none" \| "vertical" \| "horizontal" \| "both"` | `"vertical"` | Resize behavior of the textarea. |
+
+## Usage
+
+```tsx
+import { ITTextarea } from '@axzydev/axzy_ui_system';
+
+<ITTextarea
+  name="bio"
+  label="Biography"
+  value={bio}
+  onChange={setBio}
+  maxLength={500}
+  rows={6}
+  resize="vertical"
+  error={bio.length > 500 ? "Max 500 characters" : undefined}
+/>
+
+<ITTextarea
+  name="comments"
+  label="Comments"
+  placeholder="Write your feedback..."
+  rows={3}
+  resize="none"
+  disabled
+/>
+```
+
+## Notes
+
+- **resize** controls the native CSS resize property: `none` (no resize handle), `vertical` (height only), `horizontal` (width only), or `both`.
+- **error** renders a red error message below the textarea and applies red border/ring styling.
+- **maxLength** enforces a hard character limit via the native `maxLength` attribute — no visual counter included.
+- **rows** only sets the initial visible height; combined with `resize`, the user can adjust as needed.
+- Disabled state applies `opacity-50` and `cursor-not-allowed` with a gray background.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

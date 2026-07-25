@@ -1,0 +1,41 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './text.stories';
+
+<Meta of={Stories} />
+
+# ITText
+
+Semantic typography wrapper rendering any HTML text element. Foundation for all text in the system.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `as` | `'p' \| 'span' \| 'h1' \| 'h2' \| 'h3' \| 'h4' \| 'h5' \| 'h6' \| 'small' \| 'label' \| 'strong' \| 'em'` | `'p'` | HTML element to render |
+| `muted` | `boolean` | `false` | Apply muted style via CSS variable |
+| `children` | `ReactNode` | — | Text content |
+
+## Usage
+
+```tsx
+import { ITText } from '@axzydev/axzy_ui_system';
+
+<ITText>Default paragraph text</ITText>
+<ITText as="h1">Heading level 1</ITText>
+<ITText as="span" muted>Muted secondary text</ITText>
+<ITText as="small">Small print</ITText>
+<ITText as="strong">Bold emphasis</ITText>
+```
+
+## Notes
+
+- Polymorphic `as` prop renders any HTML text-level element
+- `muted` toggles a CSS variable for reduced-importance text
+- Used as the foundational text component throughout the system
+- Renders default paragraph (`<p>`) when no `as` specified
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

@@ -6,6 +6,21 @@ import ITButton from "../button/button";
 import { FaChevronLeft, FaChevronRight, FaCheck } from "react-icons/fa";
 import ITText from "@/components/text/text";
 
+/**
+ * A step-by-step wizard / progress indicator with animated content transitions,
+ * clickable step navigation, and configurable icons.
+ *
+ * @example
+ * <ITStepper
+ *   steps={[
+ *     { label: "Details", content: <StepOneForm /> },
+ *     { label: "Review", content: <StepTwoReview />, icon: <FaClipboardCheck /> },
+ *   ]}
+ *   currentStep={0}
+ *   onStepChange={setStep}
+ *   onFinish={() => alert("Done!")}
+ * />
+ */
 export default function ITStepper({
   steps,
   currentStep,

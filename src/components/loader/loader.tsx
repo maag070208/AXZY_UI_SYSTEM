@@ -3,6 +3,23 @@ import { LoaderSize, sizeClasses } from "@/types/loader.types";
 import { LoaderProps } from "./loader.props";
 import ITText from "@/components/text/text";
 
+/**
+ * Loading indicators with multiple animation types: spinner, dots, pulse,
+ * and bar. Supports configurable size, color (theme semantic or custom),
+ * and inline/padded rendering.
+ *
+ * @example
+ * <ITLoader variant="spinner" size="lg" color="primary" />
+ *
+ * @example
+ * <ITLoader variant="dots" size="md" color="#06b6d4" />
+ *
+ * @example
+ * <ITLoader variant="bar" size="sm" color="secondary" className="w-48" />
+ *
+ * @example
+ * <ITLoader variant="pulse" size="xl" color="red-500" />
+ */
 export default function ITLoader({
   size = "md",
   variant = "spinner",

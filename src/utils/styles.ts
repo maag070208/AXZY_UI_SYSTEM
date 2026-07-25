@@ -88,9 +88,10 @@ export function getGridColsClass(columns: number) {
 }
 
 export function getColSpanClass(
-  span: number | number[] | { sm?: number; md?: number; lg?: number; xl?: number },
+  span: number | number[] | { sm?: number; md?: number; lg?: number; xl?: number } | undefined | null,
   maxCols: number
 ) {
+  if (span == null) return `col-span-${maxCols}`;
   if (typeof span === "number") {
     return `col-span-${Math.min(span, maxCols)}`;
   }

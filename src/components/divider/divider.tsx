@@ -1,6 +1,22 @@
 import clsx from "clsx";
 import { ITDividerProps } from "./divider.props";
 
+/**
+ * Horizontal or vertical separator line.
+ *
+ * Renders a thin full-width (horizontal) or full-height (vertical) bar using
+ * Tailwind utility classes. Supports custom color and thickness overrides.
+ *
+ * @example
+ * ```tsx
+ * <ITDivider />
+ * ```
+ *
+ * @example
+ * ```tsx
+ * <ITDivider orientation="vertical" color="bg-red-500" thickness="w-1" />
+ * ```
+ */
 export default function ITDivider({
   orientation = "horizontal",
   className,

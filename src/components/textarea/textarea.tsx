@@ -10,6 +10,22 @@ const resizeMap = {
   both: "resize",
 };
 
+/**
+ * Multi-line text input with optional label, validation error display,
+ * character limit, and configurable resize behavior.
+ *
+ * @example
+ * <ITTextarea
+ *   name="bio"
+ *   label="Biography"
+ *   value={bio}
+ *   onChange={setBio}
+ *   maxLength={500}
+ *   rows={6}
+ *   resize="vertical"
+ *   error={bio.length > 500 ? "Max 500 characters" : undefined}
+ * />
+ */
 export default function ITTextarea({
   value,
   onChange,

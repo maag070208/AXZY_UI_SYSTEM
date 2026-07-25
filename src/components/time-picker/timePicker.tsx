@@ -8,6 +8,27 @@ import { theme } from "@/theme/theme";
 import { ITTimePickerProps } from "./timePicker.props";
 import ITText from "@/components/text/text";
 
+/**
+ * Time selection input with a dual-column dropdown (hours / minutes).
+ * Supports manual typing with auto-formatting, validation, and keyboard-friendly picker.
+ *
+ * @example
+ * <ITTimePicker
+ *   name="startTime"
+ *   label="Start Time"
+ *   value={startTime}
+ *   onChange={(e) => setStartTime(e.target.value)}
+ *   color="primary"
+ * />
+ *
+ * @example
+ * <ITTimePicker
+ *   name="endTime"
+ *   value={endTime}
+ *   onChange={(e) => setEndTime(e.target.value)}
+ *   error={isInvalid ? "Invalid time range" : undefined}
+ * />
+ */
 export default function ITTimePicker({
   name,
   value,
@@ -197,7 +218,7 @@ export default function ITTimePicker({
               "cursor-pointer transition-colors",
               disabled
                 ? "text-slate-400 cursor-not-allowed"
-                : "text-slate-900 hover:text-slate-600"
+                : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
             )}
           />
         }

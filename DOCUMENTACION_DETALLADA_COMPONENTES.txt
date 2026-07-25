@@ -169,13 +169,29 @@ export default function AppShell() {
 ================================================================================
 3. ITNavbar
 ================================================================================
-Barra de navegación horizontal superior recomendada para plataformas de usuario final o portales limpios.
+Barra de navegación horizontal con sidebar vertical integrado. Soporta logo, navegación con submenús, menú de usuario colapsable y consume los tokens del theme (`theme.sidebar`, `theme.topbar`, `theme.layout`).
 
 ### Props (ITNavbarProps)
 ```typescript
+export interface ITNavigationItem {
+  id: string;
+  label: string;
+  icon?: React.ReactNode;
+  action?: () => void;
+  isActive?: boolean;
+  subitems?: ITNavigationSubItem[];
+}
+
+export interface ITNavigationSubItem {
+  id: string;
+  label: string;
+  action: () => void;
+  isActive?: boolean;
+}
+
 export interface ITNavbarProps {
+  logo?: React.ReactNode;
   logoText?: string;
-  logoUrl?: string;
   navigationItems?: ITNavigationItem[];
   userMenu?: {
     userName: string;
@@ -183,37 +199,51 @@ export interface ITNavbarProps {
     userImage?: string;
     menuItems: Array<{ label: string; onClick: () => void }>;
   };
-  className?: string;
+  children?: React.ReactNode;
+  // Legacy (backward compatibility)
+  navItems?: React.ReactNode;
+  showSidebar?: boolean;
+  showSidebarOnMobile?: boolean;
+  sidebarItems?: React.ReactNode;
 }
 ```
 
+### Tipos Literales
+- `isActive`: `boolean` — marca el item como activo (resaltado con `theme.sidebar.active.*`).
+- `subitems`: `ITNavigationSubItem[]` — al hacer click en un item con subitems se expande el submenú en lugar de ejecutar `action`.
+
 ### Ejemplo Real
 ```tsx
-import React from 'react';
 import { ITNavbar } from 'axzy-ui-system';
+import { FaHome, FaUsers, FaShoppingCart, FaCog } from 'react-icons/fa';
 
-export default function CustomerHeader() {
-  const navItems = [
-    { id: 'catalog', label: 'Catálogo', action: () => window.location.href = '/catalog' },
-    { id: 'orders', label: 'Mis Pedidos', action: () => window.location.href = '/orders' },
-  ];
-
-  const userMenu = {
-    userName: 'Cliente Preferente',
-    userEmail: 'cliente@axzy.com',
-    menuItems: [
-      { label: 'Direcciones', onClick: () => {} },
-      { label: 'Cerrar Sesión', onClick: () => {} }
-    ]
-  };
-
+export default function AdminNavbar() {
   return (
     <ITNavbar
-      logoText="AXZY Store"
-      navigationItems={navItems}
-      userMenu={userMenu}
-      className="shadow-sm"
-    />
+      logoText="AXZY Console"
+      navigationItems={[
+        { id: 'home', label: 'Inicio', icon: <FaHome />, isActive: true },
+        { id: 'users', label: 'Usuarios', icon: <FaUsers /> },
+        {
+          id: 'sales', label: 'Ventas', icon: <FaShoppingCart />,
+          subitems: [
+            { id: 'orders', label: 'Órdenes', action: () => navigate('/orders') },
+            { id: 'invoices', label: 'Facturas', action: () => navigate('/invoices') },
+          ],
+        },
+        { id: 'settings', label: 'Configuración', icon: <FaCog /> },
+      ]}
+      userMenu={{
+        userName: 'Auditor AXZY',
+        userEmail: 'auditor@axzy.dev',
+        menuItems: [
+          { label: 'Ajustes', onClick: () => {} },
+          { label: 'Cerrar sesión', onClick: () => {} },
+        ],
+      }}
+    >
+      <main className="p-8">Contenido principal</main>
+    </ITNavbar>
   );
 }
 ```
@@ -1897,8 +1927,8 @@ export default function SettingsPanel() {
 
 ===============================================================================
 36. ITPageHeader
-===============================================================================
-Encabezado estandarizado para pantallas. Incluye título, descripción, breadcrumbs, botón de volver y área de acciones.
+================================================================================
+Encabezado estandarizado para pantallas. Incluye título, descripción, icono, breadcrumbs, botón de volver y área de acciones. El icono se renderiza a la izquierda del título dentro de un contenedor cuadrado con fondo slate.
 
 ### Props (ITPageHeaderProps)
 ```typescript
@@ -1908,12 +1938,25 @@ export interface ITPageHeaderProps {
   breadcrumbs?: ITBreadcrumbItem[];
   actions?: ReactNode;
   backAction?: () => void;
+  icon?: ReactNode;
+  iconColor?: string;
+  className?: string;
+}
+```
+
+### Tipos Literales
+- `icon`: `ReactNode` — cualquier nodo (idealmente un icono de `react-icons`). Se muestra en un contenedor 10x10 con fondo `bg-slate-100 dark:bg-slate-800`.
+- `iconColor`: `string` — color CSS aplicado al icono. Si se define, el fondo del contenedor se vuelve transparente.
+- `actions`: `ReactNode` — área derecha para botones, dropdowns, etc.
+- `breadcrumbs`: `ITBreadcrumbItem[]` — items con `{ label, href?, onClick? }`.
 
 ### Usage
 ```tsx
 <ITPageHeader
   title="Usuarios"
   description="Gestiona los usuarios del sistema"
+  icon={<FaUsers size={20} />}
+  iconColor="#6366f1"
   breadcrumbs={[
     { label: "Inicio", href: "#" },
     { label: "Usuarios" },
@@ -1925,14 +1968,15 @@ export interface ITPageHeaderProps {
 ### Variants
 - **Solo título**: `<ITPageHeader title="Dashboard" />`
 - **Con descripción**: `<ITPageHeader title="Dashboard" description="Resumen de métricas" />`
-- **Con breadcrumbs**: breadcrumbs array con items que pueden tener href o onClick
-- **Con acciones**: actions ReactNode (botones, dropdowns, etc.)
-- **Con volver**: backAction renderiza un botón de flecha izquierda con icono claro
+- **Con icono**: añade `icon={<FaXxx />}` + opcional `iconColor="#hex"`.
+- **Con breadcrumbs**: array con items que pueden tener `href` o `onClick`.
+- **Con acciones**: `actions` es `ReactNode` (botones, dropdowns, etc.).
+- **Con volver**: `backAction` renderiza un botón de flecha izquierda.
 
-===============================================================================
+================================================================================
 37. ITPage
-===============================================================================
-Template completo de página con manejo de estados: carga, error, vacío y contenido normal. Envuelve toda pantalla estandarizando el layout con ITPageHeader integrado.
+================================================================================
+Template completo de página con manejo de estados: carga, error, vacío y contenido normal. Envuelve toda pantalla estandarizando el layout con `ITPageHeader` integrado. Reenvía `icon` e `iconColor` al header.
 
 ### Props (ITPageProps)
 ```typescript
@@ -1942,8 +1986,12 @@ export interface ITPageProps {
   breadcrumbs?: ITBreadcrumbItem[];
   actions?: ReactNode;
   backAction?: () => void;
+  icon?: ReactNode;
+  iconColor?: string;
   loading?: boolean;
   error?: string | null;
+  errorTitle?: string;
+  errorActionLabel?: string;
   onRetry?: () => void;
   empty?: boolean;
   emptyTitle?: string;
@@ -1952,28 +2000,54 @@ export interface ITPageProps {
   className?: string;
   children: ReactNode;
 }
+```
 
-### Usage
+### Tipos Literales
+- `loading`: `boolean` — muestra skeletons (título + 3 rectángulos).
+- `error`: `string | null` — mensaje a mostrar; si hay `onRetry` se renderiza botón de reintento.
+- `empty`: `boolean` — muestra `ITEmptyState` con `emptyTitle`/`emptyDescription`/`emptyAction` personalizables.
+- `icon` / `iconColor`: reenviados a `ITPageHeader`.
+
+### Usage — Dashboard real
 ```tsx
 <ITPage
   title="Dashboard"
-  description="Resumen de actividad"
-  breadcrumbs={[{ label: "Dashboard" }]}
+  description="Resumen general del sistema"
+  icon={<FaChartLine size={20} />}
+  iconColor="#6366f1"
+  breadcrumbs={[
+    { label: "Inicio", href: "#" },
+    { label: "Dashboard" },
+  ]}
   loading={isLoading}
   error={error}
+  empty={isEmpty}
+  emptyTitle="Sin datos"
+  emptyDescription="No hay información para mostrar"
   onRetry={refetch}
 >
   <ITGrid container spacing={3}>
     <ITGrid item xs={12} sm={6} lg={3}>
-      <ITStatCard label="Usuarios" value="1,245" />
+      <ITStatCard label="Ingresos" value="$48,250" trend="+12%" trendDirection="up" />
+    </ITGrid>
+    <ITGrid item xs={12} sm={6} lg={3}>
+      <ITStatCard label="Usuarios" value="1,245" trend="+5.4%" trendDirection="up" />
     </ITGrid>
   </ITGrid>
 </ITPage>
 ```
 
 ### Estados
-- **loading**: Muestra skeletons automáticos (título + 3 rectángulos)
-- **error**: Muestra ITEmptyState con mensaje de error y botón de reintento (si onRetry está definido)
-- **empty**: Muestra ITEmptyState con título/descripción/action personalizables
-- **normal**: Renderiza ITPageHeader + children
+- **loading**: skeletons automáticos (título + 3 rectángulos).
+- **error**: `ITEmptyState` con mensaje y botón de reintento (`errorActionLabel`, default "Reintentar").
+- **empty**: `ITEmptyState` con `emptyTitle`/`emptyDescription`/`emptyAction` personalizables.
+- **normal**: renderiza `ITPageHeader` + children.
+
+### Ejemplos Reales Incluidos
+- Dashboard con KPIs + gráfico de barras + actividad reciente.
+- Listado de Usuarios con búsqueda, filtros y acciones por fila.
+- Detalle de Producto con galería, precio, atributos y descripción.
+- Formulario de edición con foto + datos personales.
+- Configuración con sidebar de tabs (General, Notificaciones, Seguridad...).
+```
 ```

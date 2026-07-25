@@ -5,10 +5,6 @@ import { FaAngleDown } from "react-icons/fa";
 import { ITSelectProps } from "./select.props";
 import ITText from "@/components/text/text";
 
-/**
- * Componente de selección (select) con soporte para opciones personalizadas, validación y personalización de estilo.
- * Matches styles of ITInput.
- */
 export default function ITSelect({
   name,
   options,
@@ -53,7 +49,8 @@ export default function ITSelect({
       borderStyle: 'solid',
       transition: 'all 0.2s',
       color: 'var(--input-text-color, var(--color-secondary-900))',
-      appearance: 'none', // Important for custom styling
+      appearance: 'none',
+      colorScheme: 'light dark',
     };
 
     if (disabled) {

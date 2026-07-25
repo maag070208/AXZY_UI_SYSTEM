@@ -17,6 +17,25 @@ const arrowClasses: Record<TooltipPosition, string> = {
   right: "right-full top-1/2 -translate-y-1/2 border-t-4 border-b-4 border-r-4 border-transparent border-r-slate-800",
 };
 
+/**
+ * ITTooltip — hover / focus info tooltip with position control and optional arrow indicator.
+ *
+ * Wraps a trigger element and displays a small popup with explanatory text
+ * after a configurable delay. Supports "top", "bottom", "left", and "right" placement
+ * with a triangular arrow pointing toward the trigger.
+ *
+ * @example
+ * // Basic tooltip
+ * <ITTooltip content="Click to save" position="bottom">
+ *   <button>Save</button>
+ * </ITTooltip>
+ *
+ * @example
+ * // Tooltip with custom delay
+ * <ITTooltip content="Delete this item?" position="top" delay={500}>
+ *   <IconButton icon={TrashIcon} />
+ * </ITTooltip>
+ */
 export default function ITTooltip({
   content,
   children,

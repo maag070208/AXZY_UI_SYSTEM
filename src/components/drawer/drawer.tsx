@@ -5,6 +5,26 @@ import useClickOutside from "@/hooks/useClickOutside";
 import { useRef } from "react";
 import ITText from "@/components/text/text";
 
+/**
+ * Sliding panel drawer from the left or right screen edge.
+ *
+ * Renders an overlay backdrop with a horizontally-anchored panel that slides
+ * in. Includes an optional title bar with close button and a scrollable body
+ * area. Uses the `useClickOutside` hook for overlay dismissal.
+ *
+ * @example
+ * ```tsx
+ * <ITDrawer
+ *   isOpen={menuOpen}
+ *   onClose={() => setMenuOpen(false)}
+ *   title="Navigation"
+ *   position="left"
+ *   size="w-72"
+ * >
+ *   <NavMenu />
+ * </ITDrawer>
+ * ```
+ */
 export default function ITDrawer({
   isOpen,
   onClose,

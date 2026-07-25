@@ -1,0 +1,42 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './divider.stories';
+
+<Meta of={Stories} />
+
+# ITDivider
+
+A thin horizontal or vertical separator line for visually dividing content sections. Supports custom color and thickness via Tailwind utility classes.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Direction the divider flows. |
+| `className` | `string` | — | Additional CSS classes. |
+| `color` | `string` | `"bg-slate-200 dark:bg-slate-700"` | Tailwind background color class(es). |
+| `thickness` | `string` | `"h-px"` (horizontal) / `"w-px"` (vertical) | Tailwind width/height utility. |
+
+## Usage
+
+```tsx
+import { ITDivider } from '@axzydev/axzy_ui_system';
+
+<ITDivider />
+
+<ITDivider orientation="vertical" color="bg-red-500" thickness="w-1" />
+
+<ITDivider color="bg-primary-300" thickness="h-0.5" />
+```
+
+## Notes
+
+- Horizontal divider is full-width by default; vertical divider is full-height of its parent.
+- Use in combination with ITStack or ITFlex for consistent layout spacing between sections.
+- Auto-detects orientation for default thickness: `h-px` for horizontal, `w-px` for vertical.
+- The `color` prop accepts any valid Tailwind background color class, including dark mode variants.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

@@ -8,6 +8,16 @@ const trendColors = {
   neutral: "text-slate-500 bg-slate-100 dark:text-slate-400 dark:bg-slate-800",
 };
 
+/**
+ * A metric card displaying a value with an optional trend indicator and icon.
+ * Automatically detects trend direction from the trend string prefix.
+ *
+ * @example
+ * <ITStatCard label="Revenue" value="$12,430" trend="+12%" trendDirection="up" icon={<FaDollarSign />} />
+ *
+ * @example
+ * <ITStatCard label="Users" value={1042} trend="-3%" trendDirection="down" onClick={() => navigate("/users")} />
+ */
 export default function ITStatCard({
   label,
   value,

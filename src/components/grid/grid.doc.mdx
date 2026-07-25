@@ -1,0 +1,54 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './grid.stories';
+
+<Meta of={Stories} />
+
+# ITGrid
+
+A responsive 12-column CSS grid system for building flexible layouts. Supports grid container and item modes, configurable column spans per breakpoint, and customizable gap spacing.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | `undefined` | Child elements rendered inside the grid. |
+| `container` | `boolean` | `false` | When true, renders as a CSS grid parent. |
+| `item` | `boolean` | `false` | When true, renders as a CSS grid child with column span. |
+| `spacing` | `number` | `undefined` | Gap between children in units of 0.25rem. Container only. |
+| `columns` | `number` | `12` | Number of grid columns (1-12). Container only. |
+| `xs` | `number` | `undefined` | Column span at base breakpoint (mobile). Falls back to `sm`. |
+| `sm` | `number` | `undefined` | Column span at the `sm` breakpoint. |
+| `md` | `number` | `undefined` | Column span at the `md` breakpoint. |
+| `lg` | `number` | `undefined` | Column span at the `lg` breakpoint. |
+| `xl` | `number` | `undefined` | Column span at the `xl` breakpoint. |
+| `className` | `string` | `undefined` | Additional CSS classes. |
+| `style` | `CSSProperties` | `undefined` | Inline styles. |
+| `as` | `ElementType` | `'div'` | Custom HTML element type to render instead of div. |
+
+## Usage
+
+```tsx
+import { ITGrid } from '@axzydev/axzy_ui_system';
+
+<ITGrid container spacing={3}>
+  <ITGrid item xs={12} md={8}>
+    <div>Main content</div>
+  </ITGrid>
+  <ITGrid item xs={12} md={4}>
+    <div>Sidebar</div>
+  </ITGrid>
+</ITGrid>
+```
+
+## Notes
+
+- Uses CSS Grid under the hood with responsive breakpoint classes.
+- Omitting both `container` and `item` renders a plain `div` with no grid behavior.
+- Breakpoint spans cascade down: if `lg` is not set, it inherits `md`, then `sm`, then `xs`.
+- `spacing` multiplies by 0.25rem internally (spacing={2} = 0.5rem gap).
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

@@ -2,6 +2,24 @@ import clsx from "clsx";
 import { ITRadioGroupProps } from "./radio.props";
 import ITText from "@/components/text/text";
 
+/**
+ * Radio button group with configurable layout direction and themed selection styling.
+ *
+ * @example
+ * ```tsx
+ * <ITRadioGroup
+ *   name="color"
+ *   value={selectedColor}
+ *   onChange={(value) => setSelectedColor(value)}
+ *   options={[
+ *     { value: 'red', label: 'Red' },
+ *     { value: 'blue', label: 'Blue' },
+ *     { value: 'green', label: 'Green' },
+ *   ]}
+ *   direction="row"
+ * />
+ * ```
+ */
 export default function ITRadioGroup({
   name,
   value,

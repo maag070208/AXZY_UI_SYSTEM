@@ -3,6 +3,18 @@ import { ITBreadcrumbsProps } from "./breadcrumbs.props";
 import { FaChevronRight } from "react-icons/fa";
 import ITText from "@/components/text/text";
 
+/**
+ * Navigation breadcrumb trail with automatic link/button rendering and custom separator.
+ *
+ * @example
+ * <ITBreadcrumbs
+ *   items={[
+ *     { label: "Home", href: "/" },
+ *     { label: "Products", href: "/products" },
+ *     { label: "Details" },
+ *   ]}
+ * />
+ */
 export default function ITBreadcrumbs({
   items,
   separator = <FaChevronRight size={10} />,

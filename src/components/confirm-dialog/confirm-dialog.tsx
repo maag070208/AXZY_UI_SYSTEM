@@ -4,6 +4,25 @@ import ITButton from "../button/button";
 import { FaExclamationTriangle } from "react-icons/fa";
 import ITText from "@/components/text/text";
 
+/**
+ * Confirmation modal dialog for destructive or critical actions.
+ *
+ * Renders a centered overlay with a warning icon, title, message body, and
+ * confirm/cancel buttons. The dialog auto-hides when `isOpen` is false.
+ *
+ * @example
+ * ```tsx
+ * <ITConfirmDialog
+ *   isOpen={showConfirm}
+ *   onClose={() => setShowConfirm(false)}
+ *   onConfirm={handleDelete}
+ *   title="Delete record"
+ *   message="This action is permanent and cannot be undone."
+ *   variant="danger"
+ *   loading={isDeleting}
+ * />
+ * ```
+ */
 export default function ITConfirmDialog({
   isOpen,
   onClose,

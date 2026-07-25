@@ -44,6 +44,19 @@ const TIME_SLOTS = Array.from({ length: HOURS_COUNT + 1 }, (_, i) => START_HOUR 
 // Component
 // ----------------------------------------------------------------------
 
+/**
+ * Full-featured calendar and date picker with week/day/month views, event display, range selection, and drag-to-select.
+ *
+ * @example
+ * <ITCalendar mode="month" onChange={(date) => console.log(date)} variant="primary" />
+ *
+ * @example
+ * <ITCalendar
+ *   mode="week"
+ *   events={[{ id: "1", title: "Meeting", start: new Date(), end: new Date() }]}
+ *   onEventClick={(evt) => console.log(evt)}
+ * />
+ */
 export const ITCalendar: React.FC<ITCalendarProps> = ({
   events = [],
   mode: modeProp,

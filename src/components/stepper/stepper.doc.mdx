@@ -1,0 +1,54 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './stepper.stories';
+
+<Meta of={Stories} />
+
+# ITStepper
+
+Step-by-step wizard indicator for multi-step workflows with configurable layout and icons.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `steps` | `{ label: string; description?: string; icon?: ReactNode }[]` | — | Step definitions |
+| `activeStep` | `number` | `0` | Zero-indexed active step |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout orientation |
+| `variant` | `'default' \| 'dot' \| 'icon'` | `'default'` | Visual style variant |
+| `clickable` | `boolean` | `false` | Allow clicking steps to navigate |
+| `onStepClick` | `(index: number) => void` | — | Click handler for step navigation |
+| `color` | `string` | — | Color theme |
+
+## Usage
+
+```tsx
+import { ITStepper } from '@axzydev/axzy_ui_system';
+
+const steps = [
+  { label: 'Details', description: 'Enter your info' },
+  { label: 'Payment', description: 'Choose method' },
+  { label: 'Confirm', description: 'Review and submit' },
+];
+
+<ITStepper steps={steps} activeStep={0} />
+<ITStepper steps={steps} activeStep={1} variant="dot" orientation="vertical" />
+<ITStepper steps={[
+  { label: 'Upload', icon: <UploadIcon /> },
+  { label: 'Review', icon: <CheckIcon /> },
+]} variant="icon" />
+<ITStepper steps={steps} clickable onStepClick={(i) => console.log(i)} />
+```
+
+## Notes
+
+- `variant="default"` shows numbered step circles
+- `variant="dot"` shows minimal dot indicators
+- `variant="icon"` uses custom icons per step instead of numbers
+- `clickable` + `onStepClick` enables step-based navigation
+- Optional `description` renders below each step label
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

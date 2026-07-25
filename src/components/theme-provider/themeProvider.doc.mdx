@@ -1,0 +1,75 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './themeProvider.stories';
+
+<Meta of={Stories} />
+
+# ITThemeProvider
+
+Root theme context that injects CSS custom properties into the entire component tree. Provides a centralized color palette with semantic tokens (primary, secondary, ternary, danger, success, info, alert, warning) plus overridable layout and table sections. Includes a floating action button that opens an in-app real-time theme designer drawer for live palette editing, dark/light/system mode switching, and preset themes.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `theme` | `Partial<ITThemePalette>` | — | Partial palette overrides merged with the default theme. Supports primary, secondary, ternary, danger, success, info, alert, warning, layout, and table colors. |
+| `children` | `React.ReactNode` | — | The subtree that receives the theme context and CSS variables. |
+| `showFab` | `boolean` | `false` | Whether to show the floating action button for opening the theme designer drawer. |
+
+### ITThemePalette Shape
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `primary` | `string` | Primary color for buttons, links, active states. |
+| `secondary` | `string` | Secondary/muted color. |
+| `ternary` | `string` | Tertiary accent color. |
+| `danger` | `string` | Destructive action color. |
+| `success` | `string` | Positive/success color. |
+| `info` | `string` | Informational color. |
+| `alert` | `string` | Alert/warning highlight color. |
+| `warning` | `string` | Cautionary yellow color. |
+| `layout.sidebarBg` | `string` | Sidebar background color. |
+| `layout.sidebarText` | `string` | Sidebar text color. |
+| `layout.navbarBg` | `string` | Navbar background color. |
+| `layout.navbarText` | `string` | Navbar text color. |
+| `table.headerBg` | `string` | Table header background color. |
+| `table.headerText` | `string` | Table header text color. |
+| `table.rowBg` | `string` | Table row background color. |
+| `table.rowText` | `string` | Table row text color. |
+
+## Usage
+
+```tsx
+import { ITThemeProvider } from '@axzydev/axzy_ui_system';
+
+<ITThemeProvider
+  theme={{
+    primary: '#8b5cf6',
+    success: '#22c55e',
+    layout: {
+      sidebarBg: '#0b1120',
+      sidebarText: '#94a3b8',
+    },
+  }}
+>
+  <App />
+</ITThemeProvider>
+
+<ITThemeProvider showFab>
+  <App />
+</ITThemeProvider>
+```
+
+## Notes
+
+- Wrap your entire application in `ITThemeProvider` once at the root level.
+- The default palette uses cyan (`#06b6d4`) as primary and supports all semantic color tokens.
+- **showFab** renders a floating palette icon. Clicking it opens a drawer with color pickers for each token, dark/light/system mode toggle, preset theme cards, live preview, and persistent localStorage save.
+- Theme preferences are persisted to localStorage under the `it-theme-palette` key.
+- All child components consume theme colors via CSS custom properties (e.g., `var(--it-primary)`) injected by the provider.
+- Custom palettes can override any subset of tokens; unset keys fall back to the default palette.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

@@ -1,0 +1,54 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './card.stories';
+
+<Meta of={Stories} />
+
+# ITCard
+
+A versatile container component for grouping related content and actions. Supports an optional header image, title, body content, and a footer action area. Cards become interactive with hover shadow animation when an `onClick` handler is provided.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `onClick` | `() => void` | — | Click handler. When provided, the card becomes interactive with hover shadow effect. |
+| `title` | `string` | — | Card title displayed in the header area. |
+| `image` | `string` | — | Image source URL displayed at the top of the card. |
+| `alt` | `string` | `"Card Image"` | Alt text for the card image. |
+| `children` | `ReactNode` | — | Card body content, rendered below the title. |
+| `actions` | `ReactNode` | — | Action elements rendered in a footer section separated by a border. |
+| `className` | `string` | — | Additional CSS class names for the card container. |
+| `imageClassName` | `string` | — | Additional CSS class names for the image element. |
+| `titleClassName` | `string` | — | Additional CSS class names for the title element. |
+| `contentClassName` | `string` | — | Additional CSS class names for the content wrapper. |
+| `actionClassName` | `string` | — | Additional CSS class names for the actions footer. |
+
+## Usage
+
+```tsx
+import { ITCard } from '@axzydev/axzy_ui_system';
+
+<ITCard title="Bienvenido" image="/hero.jpg" actions={<ITButton label="Ver más" />}>
+  Contenido de la tarjeta.
+</ITCard>
+
+<ITCard onClick={() => navigate("/details")} className="max-w-sm">
+  Tarjeta interactiva con sombra al hover.
+</ITCard>
+```
+
+## Variants / Notes
+
+- **Default** — Clean container with theme-driven background, border, and border-radius via CSS custom properties.
+- **Interactive** — When `onClick` is provided, the card gains a subtle base shadow, a stronger shadow on hover, a pointer cursor, and smooth transition animation.
+- **With image** — The `image` prop renders a full-width image at the top with `object-cover` and a fixed height.
+- **With actions** — The `actions` prop renders a footer section with a top border, perfect for button groups.
+- Styling is driven by CSS custom properties (`--card-bg`, `--card-border`, `--card-radius`) for easy theming.
+- All style class names are customizable via the dedicated `*ClassName` props.
+- Card contents are wrapped with `ITText` for consistent typography.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

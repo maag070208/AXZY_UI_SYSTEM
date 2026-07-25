@@ -1,0 +1,62 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './pagination.stories';
+
+<Meta of={Stories} />
+
+# ITPagination
+
+Page navigation with current/total pages display, first/last buttons, sibling page count control, and an optional items-per-page selector with summary text.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `currentPage` | `number` | — | Current active page (1-indexed). |
+| `totalPages` | `number` | — | Total number of pages available. |
+| `onPageChange` | `(page: number) => void` | — | Callback fired when a page is clicked or prev/next is activated. |
+| `siblingCount` | `number` | `1` | Number of visible page siblings before and after the current page. |
+| `color` | `"primary" \| "secondary" \| "success" \| "danger" \| "warning" \| "info" \| "purple"` | `"primary"` | Semantic color for active page and buttons. |
+| `className` | `string` | — | Additional CSS classes for the container. |
+| `itemsPerPageOptions` | `number[]` | — | Available options for the items-per-page selector dropdown. |
+| `itemsPerPage` | `number` | — | Current items per page value. Required if `itemsPerPageOptions` is provided. |
+| `onItemsPerPageChange` | `(value: number) => void` | — | Callback fired when the items per page value is changed. |
+| `totalItems` | `number` | — | Total number of items across all pages. Used for the "1-10 of 50" summary text. |
+
+## Usage
+
+```tsx
+import { ITPagination } from '@axzydev/axzy_ui_system';
+
+<ITPagination
+  currentPage={1}
+  totalPages={5}
+  onPageChange={(page) => setCurrentPage(page)}
+/>
+
+<ITPagination
+  currentPage={1}
+  totalPages={50}
+  siblingCount={2}
+  color="primary"
+  onPageChange={(page) => setCurrentPage(page)}
+  itemsPerPageOptions={[10, 20, 30, 50]}
+  itemsPerPage={10}
+  onItemsPerPageChange={(val) => setItemsPerPage(val)}
+  totalItems={500}
+/>
+```
+
+## Notes
+
+- First and last page buttons are always visible for quick navigation.
+- Ellipsis indicators appear when sibling gaps exceed the page range.
+- The `siblingCount` prop controls how many page numbers appear around the current page.
+- All seven semantic colors are supported for the active page highlight.
+- When `itemsPerPageOptions` is provided, a dropdown and summary text render alongside pagination.
+- Compatible with server-side pagination via the `currentPage` and `onPageChange` controlled pattern.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

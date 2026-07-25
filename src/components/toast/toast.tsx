@@ -7,6 +7,27 @@ import { ITToastProps } from "./toast.props";
 import { FaTimesCircle, FaCheckCircle, FaExclamationTriangle, FaInfoCircle, FaTimes } from "react-icons/fa";
 import ITText from "@/components/text/text";
 
+/**
+ * ITToast — floating notification with automatic dismiss and severity-based styling.
+ *
+ * Renders a positioned alert with an icon, message, and close button.
+ * Supports "success", "error", "warning", "info", "primary", and "danger" types.
+ * Auto-dismisses after the configured duration and calls `onClose` on completion.
+ *
+ * @example
+ * // Basic info toast
+ * <ITToast message="Item saved" type="success" />
+ *
+ * @example
+ * // Error toast with custom position and duration
+ * <ITToast
+ *   message="Something went wrong"
+ *   type="error"
+ *   position="bottom-center"
+ *   duration={5000}
+ *   onClose={() => console.log("dismissed")}
+ * />
+ */
 export default function ITToast({
   message,
   type = "info",

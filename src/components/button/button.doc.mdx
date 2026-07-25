@@ -1,0 +1,59 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './button.stories';
+
+<Meta of={Stories} />
+
+# ITButton
+
+The primary action component for triggering user interactions. Supports 8 distinct visual variants, 7 semantic color themes, and 3 sizes. Can render with an icon alongside a label, as an icon-only control, as a text link, or with custom children for flexible content.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | — | Button text label. Overridden if `children` is provided. |
+| `children` | `ReactNode` | — | Custom content rendered inside the button. Takes precedence over `label`. |
+| `icon` | `ReactNode` | — | Icon element rendered before the label. |
+| `onClick` | `() => void` | — | Click handler for the button. |
+| `color` | `ColorsTypes` | `"primary"` | Color theme key (`"primary"`, `"secondary"`, `"success"`, `"danger"`, `"warning"`, `"purple"`, `"info"`). |
+| `size` | `SizesTypes` | `"medium"` | Button size (`"small"`, `"medium"`, `"large"`). |
+| `variant` | `"filled" \| "outlined" \| "raised" \| "rounded" \| "text" \| "raised-text" \| "icon-only" \| "link"` | `"filled"` | Visual style variant. |
+| `disabled` | `boolean` | `false` | Disables interaction and applies reduced opacity. |
+| `className` | `string` | — | Additional CSS class names for the button element. |
+| `type` | `"submit" \| "reset" \| "button"` | `"button"` | HTML button type attribute. |
+| `ariaLabel` | `string` | — | Accessible label for screen readers. Falls back to `label`. |
+| `title` | `string` | — | HTML title attribute for native tooltip. |
+
+## Usage
+
+```tsx
+import { ITButton } from '@axzydev/axzy_ui_system';
+
+<ITButton label="Guardar" color="primary" variant="filled" />
+
+<ITButton label="Descargar" color="success" variant="outlined" icon={<FaDownload />} />
+
+<ITButton color="danger" variant="icon-only" ariaLabel="Eliminar">
+  <FaTrash />
+</ITButton>
+```
+
+## Variants / Notes
+
+- **filled** — Solid background with shadow, the default and most prominent variant.
+- **outlined** — Transparent background with a colored border.
+- **raised** — Solid background with a pronounced box shadow for depth.
+- **rounded** — Like filled but with fully rounded (`rounded-full`) corners.
+- **text** — Minimal transparent background with hover highlight, suitable for toolbars.
+- **raised-text** — White background with subtle border and shadow, elevated appearance.
+- **icon-only** — Square aspect ratio with centered icon, no text label.
+- **link** — Renders as an inline text link with underline on hover.
+- Seven color themes: `primary`, `secondary`, `success`, `danger`, `warning`, `purple`, `info`.
+- When `disabled`, the button becomes non-interactive with reduced opacity.
+- Set `type="submit"` for form submission behavior.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

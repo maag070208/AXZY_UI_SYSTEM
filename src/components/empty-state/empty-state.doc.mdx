@@ -1,0 +1,50 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './empty-state.stories';
+
+<Meta of={Stories} />
+
+# ITEmptyState
+
+A placeholder component for displaying a message when no data is available. Configurable icon, title, description, and an action slot for contextual buttons.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `icon` | `ReactNode` | `<FaInbox size={40} />` | Icon or illustration displayed above the title. |
+| `title` | `string` | — | Primary heading text (required). |
+| `description` | `string` | — | Secondary explanatory text. |
+| `action` | `ReactNode` | — | Action element (typically a button) rendered below the description. |
+| `className` | `string` | — | Additional CSS classes for the wrapper. |
+
+## Usage
+
+```tsx
+import { ITEmptyState } from '@axzydev/axzy_ui_system';
+
+<ITEmptyState
+  title="No results"
+  description="No data found for the selected filters."
+  action={<ITButton label="Clear filters" variant="outlined" size="small" />}
+/>
+
+<ITEmptyState
+  icon={<FaDatabase size={48} />}
+  title="No records"
+  description="Create your first record to get started."
+  action={<ITButton label="Create Record" variant="primary" />}
+/>
+```
+
+## Notes
+
+- Default icon is `FaInbox` from react-icons — override with any ReactNode for custom illustrations.
+- The `action` slot accepts any ReactNode, most commonly an `ITButton` for navigation or reset actions.
+- Centers all content vertically and horizontally within its container.
+- Works well as a fallback inside tables, cards, and search result containers.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

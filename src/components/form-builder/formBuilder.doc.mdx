@@ -1,0 +1,124 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './formBuilder.stories';
+
+<Meta of={Stories} />
+
+# ITFormBuilder
+
+A dynamic form generator that renders fields from JSON-like configuration (V1 or V2). Integrates with Formik and Yup for validation. Supports conditional rendering, calculated fields, grid layout, async validation, and custom components.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `fields` | `FieldConfig[]` | — | Legacy V1 field definitions (backward compatible). |
+| `config` | `FieldConfigV2[]` | — | V2 field configuration array with conditional logic, dynamic props, and grid layout. |
+| `columns` | `number` | — | Number of grid columns (1–12). |
+| `values` | `any` | — | Current form values keyed by field name. |
+| `handleChange` | `(event) => void` | — | Change handler for input, select, and textarea elements. |
+| `handleBlur` | `(event) => void` | — | Blur handler for input, select, and textarea elements. |
+| `touched` | `any` | — | Touch state keyed by field name. |
+| `errors` | `any` | — | Validation errors keyed by field name. |
+| `setFieldValue` | `(field, value, shouldValidate?) => Promise<void>` | — | Programmatically set a field value. |
+| `setFieldTouched` | `(field, touched?, shouldValidate?) => Promise<void>` | — | Programmatically mark a field as touched. |
+| `setFieldError` | `(field, message?) => void` | — | Programmatically set a field-level error. |
+| `isSubmitting` | `boolean` | — | Whether the form is currently submitting. |
+
+### FieldConfigV2 Key Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `type` | `"text" \| "number" \| "password" \| "email" \| "select" \| "date" \| "time" \| "checkbox" \| "radio" \| "array" \| "section" \| "custom"` | Field input type. |
+| `column` | `number \| { sm?, md?, lg?, xl? }` | Grid column span (responsive object or single number). |
+| `dependsOn` | `string[]` | Sibling field names to watch for conditional re-evaluation. |
+| `renderWhen` | `(values) => boolean` | When false, the field is not rendered or submitted. |
+| `dynamicProps` | `(values) => Partial<FieldConfigV2>` | Dynamically override field props based on form state. |
+| `validation` | `Yup.AnySchema` | Per-field Yup validation schema. |
+| `asyncValidation` | `(value, values) => Promise<string \| null>` | Async per-field validation returning error string. |
+| `onChangeAction` | `(val, context) => void \| Promise<void>` | Lifecycle hook for side effects (e.g., calculate totals). |
+| `options` | `Array \| () => Promise<Array>` | Select/radio options, sync or async. |
+| `component` | `React.ComponentType` | Custom renderer for `type: "custom"`. |
+
+## Usage
+
+```tsx
+import { ITFormBuilder } from '@axzydev/axzy_ui_system';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+
+const schema = Yup.object({
+  email: Yup.string().email("Invalid email").required("Required"),
+  password: Yup.string().min(8).required("Required"),
+});
+
+const fields = [
+  { name: "email", label: "Email", type: "email", required: true, column: { sm: 12 } },
+  { name: "password", label: "Password", type: "password", required: true, column: { sm: 12 } },
+  {
+    name: "subtotal",
+    label: "Subtotal",
+    type: "number",
+    currencyFormat: true,
+    column: { sm: 12, md: 4 },
+    onChangeAction: (val, { setFieldValue }) => {
+      const num = parseFloat(val) || 0;
+      setFieldValue("total", (num * 1.16).toFixed(2));
+    },
+  },
+  {
+    name: "total",
+    label: "Total",
+    type: "number",
+    currencyFormat: true,
+    disabled: true,
+    column: { sm: 12, md: 4 },
+  },
+  {
+    name: "rfc",
+    label: "RFC",
+    type: "text",
+    dependsOn: ["country"],
+    renderWhen: (vals) => vals.country === "MX",
+    required: true,
+    column: { sm: 12, md: 6 },
+  },
+];
+
+<Formik
+  initialValues={{ email: "", password: "", subtotal: "", total: "", rfc: "" }}
+  validationSchema={schema}
+  onSubmit={handleSubmit}
+>
+  {(formikProps) => (
+    <form onSubmit={formikProps.handleSubmit}>
+      <ITFormBuilder
+        config={fields}
+        columns={12}
+        values={formikProps.values}
+        handleChange={formikProps.handleChange}
+        handleBlur={formikProps.handleBlur}
+        touched={formikProps.touched}
+        errors={formikProps.errors}
+        setFieldValue={formikProps.setFieldValue}
+      />
+      <button type="submit">Submit</button>
+    </form>
+  )}
+</Formik>
+```
+
+## Notes
+
+- Supports both legacy V1 (`fields` prop) and enterprise V2 (`config` prop) field configurations.
+- V2 fields support a powerful rules engine: `dependsOn`, `renderWhen`, and `dynamicProps` for conditional behavior.
+- `onChangeAction` enables real-time field calculations and cross-field updates.
+- Grid layout uses a responsive 12-column system with per-breakpoint column span configuration.
+- Field types include `section` (grouping with collapsible regions) and `array` (dynamic repeatable lists).
+- Fully Formik-compatible — requires Formik context wrapping for state management.
+- `custom` type allows injecting arbitrary React components for complete layout control.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

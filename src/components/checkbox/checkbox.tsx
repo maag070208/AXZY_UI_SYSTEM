@@ -2,6 +2,15 @@ import clsx from "clsx";
 import { ITCheckboxProps } from "./checkbox.props";
 import ITText from "@/components/text/text";
 
+/**
+ * Checkbox component with label, indeterminate state, and disabled support. Uses a visually hidden native input for accessibility.
+ *
+ * @example
+ * <ITCheckbox label="Accept terms" checked={agreed} onChange={setAgreed} />
+ *
+ * @example
+ * <ITCheckbox label="Select all" indeterminate={someChecked && !allChecked} onChange={toggleAll} />
+ */
 export default function ITCheckbox({
   checked = false,
   onChange,

@@ -1,0 +1,60 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './segmented-control.stories';
+
+<Meta of={Stories} />
+
+# ITSegmentedControl
+
+iOS-style segmented toggle for mutually exclusive options with optional icons. Supports two sizes and a disabled state. Ideal for filter and view switching.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `options` | `ISegmentedOption[]` | — | Array of mutually exclusive options: `{ value: string, label: string, icon?: ReactNode }`. |
+| `value` | `string` | — | Currently selected value (controlled). |
+| `onChange` | `(value: string) => void` | — | Callback fired when the user selects a different option. |
+| `size` | `"sm" \| "md"` | `"md"` | Control size. |
+| `className` | `string` | — | Additional CSS classes on the container. |
+| `disabled` | `boolean` | `false` | Whether the entire control is disabled. |
+
+## Usage
+
+```tsx
+import { ITSegmentedControl } from '@axzydev/axzy_ui_system';
+
+<ITSegmentedControl
+  options={[
+    { value: "day", label: "Day" },
+    { value: "week", label: "Week" },
+    { value: "month", label: "Month" },
+  ]}
+  value={selected}
+  onChange={setSelected}
+/>
+
+<ITSegmentedControl
+  size="sm"
+  options={[
+    { value: "list", label: "List", icon: <FaList /> },
+    { value: "grid", label: "Grid", icon: <FaTh /> },
+  ]}
+  value={view}
+  onChange={setView}
+/>
+```
+
+## Notes
+
+- Only one option can be selected at a time — mutually exclusive by design.
+- Each option may include an optional `icon` rendered alongside the label.
+- Two sizes available: `sm` (compact) and `md` (default).
+- `disabled` applies to all segments simultaneously.
+- Commonly used for view toggling (list/grid), date range selection (day/week/month), and filter switching.
+- Fully controlled component: `value` and `onChange` are required.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

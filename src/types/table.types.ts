@@ -4,7 +4,7 @@ export type TableSize = "sm" | "md" | "lg";
 
 export const variantStyles: Record<TableVariants, string> = {
   default: "",
-  striped: "divide-y divide-gray-200",
+  striped: "",
   bordered: "border border-gray-200",
 };
 

@@ -1,0 +1,43 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './loader.stories';
+
+<Meta of={Stories} />
+
+# ITLoader
+
+A loading indicator with four animation variants and customizable sizing and color. Useful for async operations, data fetching states, and any in-progress feedback.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'spinner' \| 'dots' \| 'bar' \| 'pulse'` | `'spinner'` | Animation style. |
+| `size` | `'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Size preset. |
+| `color` | `string` | `'primary'` | Color value. Accepts theme semantic keys (`primary`, `secondary`, `success`, `danger`, `warning`, `info`, `purple`), hex, rgb, or CSS class. |
+| `className` | `string` | `undefined` | Additional CSS classes. |
+
+## Usage
+
+```tsx
+import { ITLoader } from '@axzydev/axzy_ui_system';
+
+<ITLoader />
+<ITLoader variant="dots" color="secondary" size="lg" />
+<ITLoader variant="bar" color="success" />
+<ITLoader variant="pulse" color="danger" size="xl" />
+```
+
+## Notes
+
+- `spinner` — rotating circular indicator.
+- `dots` — bouncing dots sequence.
+- `pulse` — pulsing circle with scaling animation.
+- `bar` — horizontal indeterminate progress bar (intended for use in a container with explicit width).
+- Color mapping is handled through the theme system; semantic keys resolve to CSS custom properties.
+- All animations use CSS keyframes with GPU-accelerated transforms where possible.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

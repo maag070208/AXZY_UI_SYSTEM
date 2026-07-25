@@ -2,6 +2,21 @@ import clsx from "clsx";
 import { ITSliderProps } from "./slider.props";
 import ITText from "@/components/text/text";
 
+/**
+ * Range slider control with min/max/step and optional label displaying the current value.
+ *
+ * @example
+ * ```tsx
+ * <ITSlider
+ *   label="Volume"
+ *   value={volume}
+ *   onChange={setVolume}
+ *   min={0}
+ *   max={100}
+ *   step={5}
+ * />
+ * ```
+ */
 export default function ITSlider({
   value,
   onChange,

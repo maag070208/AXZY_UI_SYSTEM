@@ -1,0 +1,50 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './toast.stories';
+
+<Meta of={Stories} />
+
+# ITToast
+
+Floating notification with automatic dismiss and severity-based styling. Renders a positioned alert with an icon, message, and optional action button. Supports six on-screen positions and four semantic types — success, error, warning, and info — plus primary and danger variants.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `message` | `string` | — | Toast message text to display. |
+| `type` | `"success" \| "error" \| "warning" \| "info" \| "primary" \| "danger" \| string` | `"info"` | Severity type determining icon and background color. |
+| `duration` | `number` | `1500` | Auto-dismiss duration in milliseconds. |
+| `position` | `"top-right" \| "top-center" \| "top-left" \| "bottom-right" \| "bottom-center" \| "bottom-left"` | `"top-right"` | On-screen placement of the toast. |
+| `onClose` | `() => void` | — | Callback invoked after the toast finishes its dismiss transition animation. |
+
+## Usage
+
+```tsx
+import { ITToast } from '@axzydev/axzy_ui_system';
+
+<ITToast message="Operation completed successfully!" type="success" />
+
+<ITToast
+  message="There was a critical error processing your request."
+  type="error"
+  position="top-center"
+  duration={5000}
+  onClose={() => console.log("dismissed")}
+/>
+```
+
+## Notes
+
+- **type** values map to icons: `success` → check circle, `error` → times circle, `warning` → exclamation triangle, `info` → info circle. Unknown types fall back to the info icon.
+- **duration** starts counting after mount; the toast fades out with a 300ms transition after the timer expires.
+- The toast renders with `position: fixed`, so it overlays all page content at the chosen screen edge.
+- A close button (`×`) is always present for manual dismissal.
+- **onClose** fires after the fade-out transition completes — useful for unmounting the toast from a list.
+- For managing multiple toasts simultaneously, wrap with a toast provider context pattern outside `ITToast`.
+- All types also accept raw hex color strings, which get applied as background behind the themed icon.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

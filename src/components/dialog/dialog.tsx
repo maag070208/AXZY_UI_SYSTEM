@@ -7,6 +7,32 @@ import useClickOutside from "@/hooks/useClickOutside";
 import ITFormHeader from "../form-header/form-header";
 import ITText from "@/components/text/text";
 
+/**
+ * Modal dialog rendered via React portal with overlay backdrop.
+ *
+ * Supports Escape-key dismissal, click-outside-to-close, optional title bar
+ * (plain or ITFormHeader), and a full-screen variant. Content is portaled to
+ * `document.body` so it sits above all other page layers.
+ *
+ * @example
+ * ```tsx
+ * <ITDialog
+ *   isOpen={open}
+ *   onClose={() => setOpen(false)}
+ *   title="User details"
+ *   useFormHeader
+ * >
+ *   <UserForm />
+ * </ITDialog>
+ * ```
+ *
+ * @example
+ * ```tsx
+ * <ITDialog isOpen={open} onClose={close} fullScreen>
+ *   <FullPageEditor />
+ * </ITDialog>
+ * ```
+ */
 export default function ITDialog({
   isOpen,
   onClose,

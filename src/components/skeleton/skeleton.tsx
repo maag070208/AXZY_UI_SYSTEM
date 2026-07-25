@@ -7,6 +7,16 @@ const variantClasses: Record<SkeletonVariant, string> = {
   rectangular: "rounded-lg",
 };
 
+/**
+ * Content placeholder loader with pulse animation for text, circles, and rectangles.
+ *
+ * @example
+ * ```tsx
+ * <ITSkeleton variant="circular" width={40} height={40} />
+ * <ITSkeleton variant="text" count={3} />
+ * <ITSkeleton variant="rectangular" width="100%" height={200} />
+ * ```
+ */
 export default function ITSkeleton({
   variant = "text",
   width,

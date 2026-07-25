@@ -1,0 +1,54 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './dialog.stories';
+
+<Meta of={Stories} />
+
+# ITDialog
+
+Modal dialog rendered via a React portal with a semi-transparent overlay backdrop. Supports optional title bar (plain or ITFormHeader), Escape-key dismissal, and a full-screen variant.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `isOpen` | `boolean` | — | Controls dialog visibility. |
+| `onClose` | `() => void` | — | Called on overlay click, close button, or Escape key. |
+| `children` | `ReactNode` | — | Content rendered in the dialog body. |
+| `className` | `string` | — | CSS classes for the dialog panel (e.g., `"w-96"` for width). |
+| `title` | `string` | — | Optional heading at the top of the dialog. |
+| `useFormHeader` | `boolean` | `false` | When true and `title` is set, renders an ITFormHeader with colored styling. |
+| `fullScreen` | `boolean` | `false` | Makes the dialog fill the entire viewport. |
+
+## Usage
+
+```tsx
+import { ITDialog } from '@axzydev/axzy_ui_system';
+
+<ITDialog
+  isOpen={open}
+  onClose={() => setOpen(false)}
+  title="User Details"
+  useFormHeader
+  className="w-[500px]"
+>
+  <UserForm />
+</ITDialog>
+
+<ITDialog isOpen={open} onClose={close} fullScreen>
+  <FullPageEditor />
+</ITDialog>
+```
+
+## Notes
+
+- Content is portaled to `document.body` via `createPortal`, ensuring it renders above all page layers.
+- Click outside the dialog panel or pressing Escape dismisses it.
+- When `useFormHeader` is true, the header uses the ITFormHeader design pattern with brand coloring.
+- Control the dialog width via the `className` prop (e.g., `"w-96"`, `"w-[600px]"`).
+- The overlay uses `bg-black/50` for a darkened backdrop effect.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

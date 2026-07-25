@@ -23,6 +23,14 @@ const config: Record<AlertVariant, { icon: React.ReactNode; classes: string }> =
   },
 };
 
+/**
+ * Dismissible alert banner with 4 visual variants and optional custom icon.
+ *
+ * @example
+ * <ITAlert variant="success" title="Success" dismissible onDismiss={() => {}}>
+ *   Operation completed successfully.
+ * </ITAlert>
+ */
 export default function ITAlert({
   variant = "info",
   title,

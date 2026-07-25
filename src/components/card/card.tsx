@@ -3,6 +3,19 @@ import { ITCardProps } from "./card.props";
 import { useState } from "react";
 import ITText from "@/components/text/text";
 
+/**
+ * Versatile card container with optional image, title, body content, and action footer. Supports interactive hover states.
+ *
+ * @example
+ * <ITCard title="Welcome" image="/hero.jpg" actions={<ITButton label="Learn more" />}>
+ *   This is the card content.
+ * </ITCard>
+ *
+ * @example
+ * <ITCard onClick={() => {}} className="max-w-sm">
+ *   Clickable card with hover shadow.
+ * </ITCard>
+ */
 export default function ITCard({
   title,
   image,

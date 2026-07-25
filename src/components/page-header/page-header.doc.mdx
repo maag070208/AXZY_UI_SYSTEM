@@ -1,0 +1,54 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './page-header.stories';
+
+<Meta of={Stories} />
+
+# ITPageHeader
+
+A page title bar component that displays a heading with optional breadcrumbs, description text, action buttons, and a back navigation button. Designed to sit at the top of page content for consistent page-level navigation.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `string` | required | Page title displayed as the main heading. |
+| `description` | `string` | `undefined` | Optional description text shown below the title. |
+| `breadcrumbs` | `ITBreadcrumbItem[]` | `undefined` | Breadcrumb navigation items above the title. |
+| `actions` | `ReactNode` | `undefined` | Action buttons or elements rendered on the right side. |
+| `backAction` | `() => void` | `undefined` | Callback fired when the back button is clicked. |
+| `icon` | `ReactNode` | `undefined` | Optional icon displayed next to the title. |
+| `iconColor` | `string` | `undefined` | Custom CSS color value for the icon. |
+| `className` | `string` | `undefined` | Additional CSS classes for the container. |
+
+## Usage
+
+```tsx
+import { ITPageHeader } from '@axzydev/axzy_ui_system';
+import { FaUsers } from 'react-icons/fa';
+
+<ITPageHeader
+  title="Users"
+  description="Manage system users"
+  breadcrumbs={[{ label: 'Dashboard', href: '#' }, { label: 'Users' }]}
+  actions={<ITButton label="Add User" />}
+/>
+<ITPageHeader
+  title="Edit User"
+  backAction={() => navigate(-1)}
+  breadcrumbs={[{ label: 'Users', href: '/users' }, { label: 'Edit' }]}
+/>
+```
+
+## Notes
+
+- Breadcrumbs render above the title using the ITBreadcrumbs component.
+- `backAction` renders a left-arrow button before the content; breadcrumbs shift to the right of the back button.
+- The `icon` slot places an icon beside the title, colored by `iconColor` or the primary theme color.
+- Actions area accepts any React nodes; typically ITButton components with `small` sizing.
+- The component uses a flex layout: breadcrumbs + back button on the left, actions on the right.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

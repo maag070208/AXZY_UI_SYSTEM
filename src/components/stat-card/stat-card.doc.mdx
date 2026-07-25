@@ -1,0 +1,48 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './stat-card.stories';
+
+<Meta of={Stories} />
+
+# ITStatCard
+
+Metric card displaying a label, value, and optional trend indicator with color theme.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | — | Card label |
+| `value` | `string \| number` | — | Primary metric value |
+| `trend` | `'up' \| 'down' \| 'neutral'` | — | Trend direction |
+| `trendValue` | `string \| number` | — | Trend percentage or value |
+| `icon` | `ReactNode` | — | Icon displayed on the card |
+| `color` | `string` | — | Color theme |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Card size variant |
+| `subtitle` | `string` | — | Secondary descriptive text |
+| `loading` | `boolean` | `false` | Show loading skeleton |
+| `onClick` | `() => void` | — | Click handler |
+
+## Usage
+
+```tsx
+import { ITStatCard } from '@axzydev/axzy_ui_system';
+
+<ITStatCard label="Revenue" value="$12,430" trend="up" trendValue="12.5%" color="success" />
+<ITStatCard label="Users" value="1,024" icon={<UsersIcon />} size="lg" />
+<ITStatCard label="Bounce Rate" value="42%" trend="down" trendValue="3.1%" color="danger" subtitle="vs last week" />
+<ITStatCard label="Loading" loading />
+```
+
+## Notes
+
+- `trend` direction renders an arrow indicator with formatted `trendValue`
+- `loading` shows a skeleton placeholder for async data
+- Three sizes: sm, md, lg
+- Clickable via `onClick` for drill-down dashboards
+- `subtitle` provides supporting context below the value
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

@@ -1,0 +1,48 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './alert.stories';
+
+<Meta of={Stories} />
+
+# ITAlert
+
+Dismissible alert banners that provide contextual feedback messages to users. Supports four semantic variants — info, success, warning, and error — each with a distinct icon and color scheme. Alerts can optionally include a bold title, a custom icon override, and a dismiss button for user-dismissible notifications.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `"info" \| "success" \| "warning" \| "error"` | `"info"` | Visual style with corresponding icon and color scheme. |
+| `title` | `string` | — | Bold heading text displayed above the message. |
+| `children` | `ReactNode` | — | Alert message content. |
+| `dismissible` | `boolean` | `false` | Whether the alert can be dismissed by the user. |
+| `onDismiss` | `() => void` | — | Callback fired when the dismiss button is clicked. |
+| `icon` | `ReactNode` | — | Custom icon element that overrides the default variant icon. |
+| `className` | `string` | — | Additional CSS class names for the alert container. |
+
+## Usage
+
+```tsx
+import { ITAlert } from '@axzydev/axzy_ui_system';
+
+<ITAlert variant="success" title="Guardado" dismissible onDismiss={() => {}}>
+  Los cambios se guardaron correctamente.
+</ITAlert>
+
+<ITAlert variant="error">Ocurrió un error inesperado.</ITAlert>
+```
+
+## Variants / Notes
+
+- **info** — Neutral blue style for general informational messages.
+- **success** — Green style for positive confirmation and completion messages.
+- **warning** — Amber/yellow style for cautionary messages.
+- **error** — Red style for critical errors and failures.
+- All variants render with `role="alert"` for accessibility.
+- Supports dark mode with appropriate color adjustments.
+- The dismiss button only renders when both `dismissible` and `onDismiss` are set.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

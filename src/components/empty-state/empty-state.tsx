@@ -3,6 +3,22 @@ import { ITEmptyStateProps } from "./empty-state.props";
 import { FaInbox } from "react-icons/fa";
 import ITText from "@/components/text/text";
 
+/**
+ * Placeholder display for empty data sets.
+ *
+ * Shows a large icon, a title, an optional description, and an optional
+ * call-to-action element (usually a button). Centered vertically and
+ * horizontally within its container.
+ *
+ * @example
+ * ```tsx
+ * <ITEmptyState
+ *   title="No results found"
+ *   description="Try adjusting your search or filters."
+ *   action={<ITButton label="Clear filters" variant="outlined" onClick={clearFilters} />}
+ * />
+ * ```
+ */
 export default function ITEmptyState({
   icon = <FaInbox size={40} />,
   title,

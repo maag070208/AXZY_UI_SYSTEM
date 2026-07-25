@@ -22,7 +22,10 @@ export interface ITThemePalette {
 }
 
 export interface ITThemeProviderProps {
+  /** Partial palette overrides merged with the default theme. Supports primary, secondary, tertiary, danger, success, info, alert, warning, layout, and table colors. */
   theme?: Partial<ITThemePalette>;
+  /** The subtree that receives the theme context and CSS variables. */
   children: React.ReactNode;
+  /** Whether to show the floating action button for opening the theme designer drawer. */
   showFab?: boolean;
 }

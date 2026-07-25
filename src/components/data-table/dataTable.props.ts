@@ -59,11 +59,26 @@ export interface ITDataTableProps<T extends Record<string, unknown>> {
   reloadTrigger?: number | string | boolean;
 
   // Visual Inherited Props from ITTable
+  /** Additional CSS classes for the outer wrapper element. */
   containerClassName?: string;
+  /** Additional CSS classes applied directly to the `<table>` element. */
   className?: string;
+  /** Visual style variant: "default" | "striped" | "bordered" | "minimal". @default "default" */
   variant?: "default" | "striped" | "bordered" | "minimal";
+  /** Row density preset: "sm" | "md" | "lg". @default "md" */
   size?: "sm" | "md" | "lg";
+  /** Selectable page-size options for the paginator. @default [5, 10, 20] */
   itemsPerPageOptions?: number[];
+  /** Initial number of rows per page. @default 10 */
   defaultItemsPerPage?: number;
+  /** Optional heading displayed above the table. */
   title?: string | ReactNode;
+  /** Custom card renderer for mobile/tablet responsive view. Receives the row data. */
+  renderCard?: (row: T) => React.ReactNode;
+  /** Initial view mode. Defaults to "table". */
+  defaultView?: "table" | "cards";
+  /** Whether to show vertical borders between columns. Defaults to true. */
+  showVerticalBorder?: boolean;
+  /** Custom class for vertical borders (overrides the default subtle gray). */
+  verticalBorderClassname?: string;
 }

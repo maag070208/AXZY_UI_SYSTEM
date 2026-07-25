@@ -1,0 +1,62 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './radio.stories';
+
+<Meta of={Stories} />
+
+# ITRadioGroup
+
+Radio button group for selecting a single option from a set. Supports horizontal and vertical layouts, disabled state, and an options-array API for declarative rendering.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `name` | `string` | — | Name attribute for the radio input group. Used for form accessibility. |
+| `value` | `string` | — | Currently selected value (controlled). |
+| `onChange` | `(value: string) => void` | — | Callback fired when a radio option is selected. |
+| `options` | `ITRadioOption[]` | — | Array of radio options: `{ value: string, label: ReactNode }`. |
+| `disabled` | `boolean` | `false` | Whether the entire radio group is disabled. |
+| `direction` | `"row" \| "column"` | `"column"` | Layout direction of the radio options. |
+| `className` | `string` | — | Additional CSS classes for the container. |
+
+## Usage
+
+```tsx
+import { ITRadioGroup } from '@axzydev/axzy_ui_system';
+
+<ITRadioGroup
+  name="size"
+  value={selected}
+  onChange={setSelected}
+  options={[
+    { value: "sm", label: "Small" },
+    { value: "md", label: "Medium" },
+    { value: "lg", label: "Large" },
+  ]}
+/>
+
+<ITRadioGroup
+  name="layout"
+  value={selected}
+  onChange={setSelected}
+  direction="row"
+  options={[
+    { value: "option1", label: "Option 1" },
+    { value: "option2", label: "Option 2" },
+  ]}
+/>
+```
+
+## Notes
+
+- Fully controlled component: `value` and `onChange` must be provided.
+- `direction="column"` stacks options vertically; `direction="row"` lays them out horizontally.
+- `disabled` disables all radio inputs in the group at once.
+- Label accepts `ReactNode`, allowing rich content like icons or custom markup.
+- Group uses a shared `name` attribute, ensuring mutual exclusivity across options.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

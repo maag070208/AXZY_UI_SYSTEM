@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   FaCreditCard,
 FaHome,
@@ -24,7 +24,6 @@ import {
   GridShowcase,
   ScreenDashboardShowcase,
   ScreenFormShowcase,
-  ScreenCardGridShowcase,
 } from "./showcases/LayoutPrimitivesShowcases";
 import {
   PageHeaderShowcase,
@@ -62,11 +61,26 @@ import {
 } from "./showcases/FeedbackShowcases";
 
 function App() {
-  const [activeComponentId, setActiveComponentId] = useState("home");
+  const [activeComponentId, setActiveComponentId] = useState(
+    () => window.location.hash.replace("#", "") || "home"
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const [subitemConnector, setSubitemConnector] = useState<
     "dot" | "|" | "none"
   >("dot");
+
+  useEffect(() => {
+    const onHashChange = () => {
+      const id = window.location.hash.replace("#", "") || "home";
+      setActiveComponentId(id);
+    };
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  useEffect(() => {
+    window.location.hash = activeComponentId;
+  }, [activeComponentId]);
 
   // Group definitions for the sidebar
   const categories = [
@@ -90,7 +104,6 @@ function App() {
         { id: "page", label: "ITPage" },
         { id: "screen-dashboard", label: "Dashboard Ejemplo" },
         { id: "screen-form", label: "Formulario Ejemplo" },
-        { id: "screen-cardgrid", label: "Grid Tarjetas Ejemplo" },
       ],
     },
     {
@@ -239,8 +252,6 @@ function App() {
         return <ScreenDashboardShowcase />;
       case "screen-form":
         return <ScreenFormShowcase />;
-      case "screen-cardgrid":
-        return <ScreenCardGridShowcase />;
       // Forms
       case "button":
         return <ButtonShowcase />;
@@ -297,54 +308,8 @@ function App() {
   return (
     <ITThemeProvider showFab={true}>
       <ITLayout sidebar={sidebarProps} topBar={topBarProps}>
-        <div className="max-w-7xl mx-auto space-y-6">
-          {/* Glassmorphic Search Bar Header */}
-          <div className="relative p-6 rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 backdrop-blur-md shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h2 className="text-xl font-bold text-slate-800 dark:text-white">
-                Explorador de Componentes
-              </h2>
-              <p className="text-xs text-slate-500">
-                Selecciona o filtra en la lista lateral para inspeccionar e
-                interactuar.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              {/* Connector selection */}
-              <div className="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-950/40 p-1 rounded-xl border border-slate-200/50 dark:border-slate-800/80">
-                {(["dot", "|", "none"] as const).map((style) => (
-                  <button
-                    key={style}
-                    onClick={() => setSubitemConnector(style)}
-                    className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
-                      subitemConnector === style
-                        ? "bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-100 dark:border-slate-700/50"
-                        : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
-                    }`}
-                  >
-                    {style === "dot" ? "Punto" : style === "|" ? "Vertical" : "Normal"}
-                  </button>
-                ))}
-              </div>
-
-              <div className="relative w-full md:w-80">
-                <input
-                  type="text"
-                  placeholder="Buscar componente..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-slate-100/80 dark:bg-slate-950/40 text-slate-800 dark:text-white pl-10 pr-4 py-2 text-sm rounded-xl outline-none focus:ring-2 focus:ring-primary-500 border border-transparent focus:border-transparent transition-all"
-                />
-                <FaSearch
-                  className="absolute left-3 top-3 text-slate-400"
-                  size={14}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="bg-white/50 dark:bg-slate-950/10 border border-slate-100 dark:border-slate-900 rounded-3xl p-6 md:p-8 backdrop-blur-sm min-h-[500px]">
-            {renderShowcase()}
-          </div>
+        <div className="max-w-7xl mx-auto">
+          {renderShowcase()}
         </div>
       </ITLayout>
     </ITThemeProvider>

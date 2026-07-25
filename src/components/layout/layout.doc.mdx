@@ -1,0 +1,51 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './layout.stories';
+
+<Meta of={Stories} />
+
+# ITLayout
+
+The application shell layout component that combines a topbar, sidebar, and main content area into a full-page interface. The sidebar supports collapse/expand via hover, and all visual styles are driven by ITThemeProvider CSS variables.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `topBar` | `ITTopBarProps` | required | Top bar configuration including logo, nav items, and user menu. |
+| `sidebar` | `ITSidebarProps` | required | Sidebar configuration including navigation items. |
+| `children` | `ReactNode` | required | Main content rendered in the center area. |
+| `className` | `string` | `undefined` | Additional CSS classes for the outermost wrapper. |
+| `contentClassName` | `string` | `undefined` | Additional CSS classes for the content container. |
+
+## Usage
+
+```tsx
+import { ITLayout } from '@axzydev/axzy_ui_system';
+
+<ITLayout
+  topBar={{
+    logoText: 'AXZY',
+    userMenu: { userName: 'Jane', userEmail: 'jane@axzy.io', menuItems: [...] },
+    navItems: [...]
+  }}
+  sidebar={{
+    navigationItems: [...]
+  }}
+>
+  <div>Your page content here</div>
+</ITLayout>
+```
+
+## Notes
+
+- The topbar spans the full viewport width at the top of the page.
+- The sidebar sits under the topbar on the left and floats over content when expanded via hover.
+- Sidebar in collapsed state shows only icons; expanding reveals labels.
+- Themed entirely through CSS custom properties from ITThemeProvider.
+- Includes mobile responsive behavior with a hamburger-style toggle.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

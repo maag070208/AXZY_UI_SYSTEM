@@ -1,0 +1,59 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './drawer.stories';
+
+<Meta of={Stories} />
+
+# ITDrawer
+
+A sliding panel that emerges from the left or right edge with a backdrop overlay. Includes an optional title bar with close button and a scrollable body. Ideal for side panels, navigation menus, filters, and detail views.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `isOpen` | `boolean` | — | Controls drawer visibility. |
+| `onClose` | `() => void` | — | Called on overlay click or close button press. |
+| `position` | `"left" \| "right"` | `"right"` | Screen edge the drawer attaches to. |
+| `size` | `string` | `"w-80"` | Tailwind width class (e.g., `"w-72"`, `"w-96"`). |
+| `title` | `ReactNode` | — | Optional heading in the drawer header. |
+| `children` | `ReactNode` | — | Content displayed in the drawer body. |
+| `className` | `string` | — | Additional CSS classes for the drawer panel. |
+| `style` | `CSSProperties` | — | Inline styles for the drawer panel. |
+
+## Usage
+
+```tsx
+import { ITDrawer } from '@axzydev/axzy_ui_system';
+
+<ITDrawer
+  isOpen={menuOpen}
+  onClose={() => setMenuOpen(false)}
+  title="Navigation"
+  position="left"
+  size="w-72"
+>
+  <NavMenu />
+</ITDrawer>
+
+<ITDrawer
+  isOpen={filterOpen}
+  onClose={() => setFilterOpen(false)}
+  title="Filters"
+>
+  <FilterPanel />
+</ITDrawer>
+```
+
+## Notes
+
+- The overlay uses `bg-black/40 backdrop-blur-sm` for a blurred background effect.
+- Overlay click outside the panel dismisses the drawer via `useClickOutside`.
+- The body area scrolls independently (`overflow-y-auto`), keeping the header fixed.
+- Default size `w-80` (320px); adjust with any Tailwind width class like `w-96` (384px) or `w-[400px]`.
+- No built-in footer slot — add buttons or actions directly in the children content.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

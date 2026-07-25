@@ -4,8 +4,17 @@ import { ITSlideToggleProps } from "./slide.props";
 import { theme } from "@/theme/theme";
 
 /**
- * Slide toggle switch component.
+ * iOS-style toggle switch with theme color support.
  * Supports fully controlled (`isOn`) or uncontrolled (`initialState`) modes.
+ *
+ * @example
+ * ```tsx
+ * // Controlled
+ * <ITSlideToggle isOn={enabled} onToggle={setEnabled} activeColor="primary" />
+ *
+ * // Uncontrolled with initial state
+ * <ITSlideToggle initialState onToggle={(v) => console.log(v)} />
+ * ```
  */
 export default function ITSlideToggle({
   onToggle,

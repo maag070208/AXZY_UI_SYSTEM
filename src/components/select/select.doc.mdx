@@ -1,0 +1,75 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './select.stories';
+
+<Meta of={Stories} />
+
+# ITSelect
+
+Native-like dropdown select with validation error display, label support, and read-only mode. Styled consistently with ITInput for seamless form integration.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `name` | `string` | — | Name attribute for the underlying `<select>` element. |
+| `options` | `OptionType[]` | — | Array of option objects with value/label key-value pairs. `{ [key: string]: string }`. |
+| `valueField` | `string` | `"value"` | Key in each option object used as the option value. |
+| `labelField` | `string` | `"label"` | Key in each option object used as the display label. |
+| `label` | `string` | — | Label text rendered above the select. |
+| `placeholder` | `string` | — | Placeholder text for the default empty option. |
+| `value` | `string` | — | Currently selected value (controlled). |
+| `onChange` | `(event: ChangeEvent<HTMLSelectElement>) => void` | — | Callback fired on selection change. |
+| `onBlur` | `(event: FocusEvent<HTMLSelectElement>) => void` | — | Callback fired on blur. |
+| `variant` | `ColorsTypes` | — | Theme color variant for the select border and focus ring. |
+| `size` | `SizesTypes` | — | Control size: `"sm"`, `"md"`, or `"lg"`. |
+| `disabled` | `boolean` | `false` | Whether the select is disabled. |
+| `className` | `string` | — | Additional CSS classes on the `<select>` element. |
+| `touched` | `boolean` | — | Marks the field as touched (for validation error display). |
+| `error` | `string \| boolean` | — | Error message string, or `true` for a default required error message. |
+| `required` | `boolean` | `false` | Whether the field is required. Shows a red asterisk on the label. |
+| `autoFocus` | `boolean` | `false` | Autofocus the select on mount. |
+| `readOnly` | `boolean` | `false` | Read-only mode: shows the current value as a single disabled option. |
+
+## Usage
+
+```tsx
+import { ITSelect } from '@axzydev/axzy_ui_system';
+
+<ITSelect
+  name="country"
+  label="Country"
+  placeholder="Select a country"
+  options={[
+    { value: "mx", label: "Mexico" },
+    { value: "us", label: "United States" },
+  ]}
+  value={selected}
+  onChange={(e) => setSelected(e.target.value)}
+/>
+
+<ITSelect
+  name="status"
+  label="Status"
+  options={statusOptions}
+  value={status}
+  onChange={(e) => setStatus(e.target.value)}
+  required
+  error={touched && !status ? "This field is required" : undefined}
+/>
+```
+
+## Notes
+
+- Custom `valueField` and `labelField` support option objects with arbitrary key names.
+- Error state: provides a red border and inline error message when `touched` is true and `error` is set.
+- `required` adds a red asterisk on the label and shows a default required error if no custom error is given.
+- `readOnly` renders the selected value as a single non-interactive option.
+- Arrow-down icon rendered via `FaAngleDown` from react-icons.
+- Styles inherited from the theme's `input` configuration for visual consistency with ITInput.
+- The `variant` prop maps to theme color tokens for border and focus ring colors.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

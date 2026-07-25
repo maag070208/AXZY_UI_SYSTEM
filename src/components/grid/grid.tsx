@@ -18,6 +18,25 @@ function gridColsClass(cols: number) {
   return `grid-cols-${clamped}`;
 }
 
+/**
+ * Responsive 12-column CSS grid layout system.
+ * Renders as a grid container when `container` is true, as a column-spanning
+ * item when `item` is true. Supports breakpoint-aware column spans and
+ * configurable spacing between items.
+ *
+ * @example
+ * <ITGrid container columns={12} spacing={4}>
+ *   <ITGrid item xs={12} md={6}>Sidebar</ITGrid>
+ *   <ITGrid item xs={12} md={6}>Content</ITGrid>
+ * </ITGrid>
+ *
+ * @example
+ * <ITGrid container columns={3} spacing={2} as="section">
+ *   <ITGrid item>Card 1</ITGrid>
+ *   <ITGrid item>Card 2</ITGrid>
+ *   <ITGrid item>Card 3</ITGrid>
+ * </ITGrid>
+ */
 export default function ITGrid({
   children,
   container,

@@ -6,8 +6,33 @@ import { theme } from "@/theme/theme";
 import ITText from "@/components/text/text";
 
 /**
- * ITSearchSelect - Un componente de selección con buscador integrado.
- * Soporta filtrado local y búsqueda remota via API.
+ * Searchable dropdown select with local client-side filtering and server-side search via API.
+ *
+ * @example
+ * ```tsx
+ * // Static options (Mode 1)
+ * <ITSearchSelect
+ *   label="Country"
+ *   placeholder="Select a country"
+ *   options={[
+ *     { value: 'us', label: 'United States' },
+ *     { value: 'mx', label: 'Mexico' },
+ *   ]}
+ *   value={selectedCountry}
+ *   onChange={(value) => setSelectedCountry(value)}
+ * />
+ *
+ * // API search (Mode 2)
+ * <ITSearchSelect
+ *   label="User"
+ *   placeholder="Search users..."
+ *   onSearch={(query) => searchUsers(query)}
+ *   options={apiResults}
+ *   isLoading={isSearching}
+ *   value={selectedUser}
+ *   onChange={(value) => setSelectedUser(value)}
+ * />
+ * ```
  */
 export default function ITSearchSelect({
   name,

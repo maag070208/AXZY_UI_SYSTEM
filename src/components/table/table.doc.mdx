@@ -1,0 +1,58 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './table.stories';
+
+<Meta of={Stories} />
+
+# ITTable
+
+Basic data table with column definitions, sorting, and configurable visual variants.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `columns` | `{ key: string; label: string; render?: (value, row) => ReactNode; sortable?: boolean; width?: string }[]` | — | Column definitions |
+| `data` | `Record<string, any>[]` | — | Row data array |
+| `variant` | `'default' \| 'striped' \| 'bordered'` | `'default'` | Visual style variant |
+| `sortKey` | `string` | — | Current sort column key |
+| `sortDirection` | `'asc' \| 'desc'` | — | Current sort direction |
+| `onSort` | `(key: string, direction: 'asc' \| 'desc') => void` | — | Sort handler |
+| `onRowClick` | `(row: Record<string, any>) => void` | — | Row click handler |
+| `loading` | `boolean` | `false` | Show loading state |
+| `emptyMessage` | `string` | `'No data'` | Empty state message |
+
+## Usage
+
+```tsx
+import { ITTable } from '@axzydev/axzy_ui_system';
+
+const columns = [
+  { key: 'name', label: 'Name', sortable: true },
+  { key: 'role', label: 'Role' },
+  { key: 'status', label: 'Status', render: (v) => <ITBadge>{v}</ITBadge> },
+];
+const data = [
+  { name: 'Alice', role: 'Admin', status: 'Active' },
+  { name: 'Bob', role: 'Editor', status: 'Inactive' },
+];
+
+<ITTable columns={columns} data={data} />
+<ITTable columns={columns} data={data} variant="striped" sortKey="name" sortDirection="asc" />
+<ITTable columns={columns} data={data} variant="bordered" onRowClick={(row) => console.log(row)} />
+<ITTable columns={columns} data={[]} emptyMessage="No records found" />
+<ITTable columns={columns} data={data} loading />
+```
+
+## Notes
+
+- `columns[].render` provides custom cell rendering via render function
+- `columns[].sortable` enables column header sort toggles
+- Sorting controlled via `sortKey`, `sortDirection`, and `onSort`
+- `onRowClick` fires with the row data on click
+- Three visual variants: default (no borders), striped (alternating rows), bordered (full grid)
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

@@ -1,0 +1,126 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './stack.stories';
+
+<Meta of={Stories} />
+
+# ITStack
+
+ITStack is a simplified flexbox layout primitive for consistent spacing and alignment. It controls direction, gap, cross-axis alignment, main-axis justification, and flex wrapping in a single component, with optional dividers between children.
+
+ITStack powers most internal layouts across the AXZY UI System — from button toolbars and form rows to card lists and centered hero sections.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | — | Stack children elements. |
+| `direction` | `"column" \| "row" \| "row-reverse" \| "column-reverse"` | `"column"` | Flex direction. |
+| `spacing` | `number` (0–12) | `0` | Gap between children in `0.25rem` units. `spacing={4}` = `1rem` gap. |
+| `alignItems` | `"start" \| "end" \| "center" \| "stretch" \| "baseline"` | — | Cross-axis alignment: vertical in row, horizontal in column. |
+| `justifyContent` | `"start" \| "end" \| "center" \| "between" \| "around" \| "evenly"` | — | Main-axis distribution of children. |
+| `flexWrap` | `"nowrap" \| "wrap" \| "wrap-reverse"` | — | Whether children wrap to the next line. |
+| `divider` | `ReactNode` | — | Optional element rendered between each pair of children via `cloneElement`. |
+| `className` | `string` | — | Additional CSS classes on the container. |
+| `style` | `CSSProperties` | — | Inline styles on the container. |
+| `as` | `ElementType` | `"div"` | HTML element to render as — `"section"`, `"nav"`, `"ul"`, `"form"`, etc. |
+
+## Usage
+
+```tsx
+import { ITStack } from '@axzydev/axzy_ui_system';
+
+// ── Vertical (default) ──
+<ITStack spacing={4}>
+  <h2>Section Title</h2>
+  <p>Section content goes here.</p>
+</ITStack>
+
+// ── Horizontal toolbar ──
+<ITStack direction="row" spacing={2} alignItems="center" justifyContent="between">
+  <ITButton>Cancel</ITButton>
+  <ITButton color="primary">Save</ITButton>
+</ITStack>
+
+// ── Form row with wrap ──
+<ITStack direction="row" spacing={3} flexWrap="wrap">
+  <ITInput name="first" label="First Name" />
+  <ITInput name="last" label="Last Name" />
+  <ITInput name="email" label="Email" />
+</ITStack>
+
+// ── Card list with dividers ──
+<ITStack spacing={0} divider={<hr />}>
+  <div>Item 1</div>
+  <div>Item 2</div>
+  <div>Item 3</div>
+</ITStack>
+
+// ── Tag cloud ──
+<ITStack direction="row" spacing={1} flexWrap="wrap">
+  {tags.map((t) => <ITBadget key={t} label={t} />)}
+</ITStack>
+
+// ── Centered hero ──
+<ITStack spacing={4} alignItems="center" justifyContent="center" className="h-64">
+  <h1>Hero Title</h1>
+  <p>Subtitle text</p>
+  <ITButton label="CTA" />
+</ITStack>
+
+// ── Semantic list (as="ul") ──
+<ITStack as="ul" spacing={2}>
+  <li>First item</li>
+  <li>Second item</li>
+</ITStack>
+```
+
+## Variants & Patterns
+
+### Direction
+- **column** — default; stacks children vertically.
+- **row** — stacks children horizontally (toolbars, button groups).
+- **row-reverse** / **column-reverse** — reverse the visual order.
+
+### Spacing
+- Measured in 0.25rem units (Tailwind spacing scale).
+- `spacing={0}` = no gap (compact).
+- `spacing={4}` = 1rem (comfortable).
+- `spacing={8}` = 2rem (breathing room).
+
+### Justify Content (main axis)
+- **start** — children packed at the start.
+- **center** — children centered.
+- **end** — children packed at the end.
+- **between** — first/last at edges, others spaced evenly.
+- **around** — equal space around each child.
+- **evenly** — equal space between all items and edges.
+
+### Align Items (cross axis)
+- **start** — align to the start of the cross axis.
+- **center** — center on the cross axis.
+- **end** — align to the end.
+- **stretch** — stretch to fill (default CSS flex behavior).
+- **baseline** — align text baselines.
+
+### Wrap
+- **nowrap** — default; overflow if needed.
+- **wrap** — children wrap to the next line when out of space (great for tags, chips).
+- **wrap-reverse** — wrap in reverse order.
+
+### Divider
+- Takes a single React element, cloned between each pair of children.
+- Common dividers: `<hr />`, `<div className="h-px bg-slate-200" />`, vertical bars for row direction.
+
+## Notes
+
+- ITStack is **always** `display: flex` — use `direction` to switch between vertical/horizontal.
+- For complex multi-axis layouts (direction + wrap + alignment simultaneously), prefer **ITFlex**.
+- For CSS Grid layouts (columns), use **ITGrid**.
+- Spacing is applied via the CSS `gap` property, cleanly separating layout from children.
+- Set `as="ul"` and wrap children in `<li>` for semantic list rendering.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import clsx from "clsx";
 import { FieldConfigV2 } from "@/types/field.types";
 import { useITFormBuilderContext } from "./formBuilder.context";
@@ -6,9 +6,30 @@ import ITInput from "../input/input";
 import ITSelect from "../select/select";
 import ITDatePicker from "../date-picker/datePicker";
 import ITTimePicker from "../time-picker/timePicker";
+import ITSearchSelect from "../search-select/search-select";
 import { useFieldRules } from "./useFormBuilder";
 import { getColSpanClass, getGridColsClass } from "@/utils/styles";
 import ITText from "@/components/text/text";
+import { FaSpinner } from "react-icons/fa";
+
+function useAsyncOptions(options: FieldConfigV2["options"], depends: any[]) {
+  const [resolved, setResolved] = useState<{ value: string; label: string }[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (typeof options === "function") {
+      setLoading(true);
+      options().then((result) => {
+        setResolved(result.map(o => ({ value: String(o.value), label: o.label })));
+        setLoading(false);
+      });
+    } else if (Array.isArray(options)) {
+      setResolved(options.map(o => ({ value: String(o.value), label: o.label })));
+    }
+  }, depends);
+
+  return { options: resolved, loading };
+}
 
 
 
@@ -65,6 +86,8 @@ const ITFieldRenderer = ({
     rightIcon,
   } = activeConfig;
 
+  const { options: resolvedOptions, loading: optionsLoading } = useAsyncOptions(options, [options, dependentValues]);
+
   const handleChangeWrapper = useCallback(
     async (val: any) => {
       const finalValue = val?.target ? val.target.value : val;
@@ -107,9 +130,36 @@ const ITFieldRenderer = ({
         );
 
       case "select":
+        if (optionsLoading) {
+          return (
+            <div className="flex items-center gap-2 py-3">
+              <FaSpinner className="animate-spin text-primary-500" />
+              <ITText as="span" className="text-sm text-slate-500">Cargando opciones...</ITText>
+            </div>
+          );
+        }
+        if (typeof options === "function") {
+          return (
+            <ITSearchSelect
+              options={resolvedOptions}
+              name={name}
+              disabled={isDisabled as boolean}
+              label={label || ""}
+              placeholder={placeholder}
+              value={value !== undefined ? value : activeConfig.defaultValue || ""}
+              valueField={valueField || "value"}
+              labelField={labelField || "label"}
+              onChange={(val: any) => handleChangeWrapper(val)}
+              onBlur={context.handleBlur}
+              touched={touched}
+              error={error}
+              required={isRequired as boolean}
+            />
+          );
+        }
         return (
           <ITSelect
-            options={(Array.isArray(options) ? options : []) as any}
+            options={resolvedOptions}
             name={name}
             disabled={isDisabled as boolean}
             label={label || ""}

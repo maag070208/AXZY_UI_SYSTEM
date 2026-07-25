@@ -1,0 +1,47 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './tooltip.stories';
+
+<Meta of={Stories} />
+
+# ITTooltip
+
+Hover and focus tooltip that wraps a trigger element and displays contextual information in a small popup. Supports four placement positions with a triangular arrow pointing toward the trigger, configurable show delay, and customizable max-width.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `content` | `ReactNode` | — | The tooltip content to display on hover/focus. Accepts text or any ReactNode. |
+| `children` | `ReactNode` | — | The trigger element that reveals the tooltip on interaction. |
+| `position` | `"top" \| "bottom" \| "left" \| "right"` | `"top"` | Placement relative to children. |
+| `delay` | `number` | `200` | Delay in milliseconds before the tooltip becomes visible. |
+| `className` | `string` | — | Additional CSS classes applied to the wrapper element. |
+
+## Usage
+
+```tsx
+import { ITTooltip } from '@axzydev/axzy_ui_system';
+
+<ITTooltip content="Click to save" position="bottom">
+  <button>Save</button>
+</ITTooltip>
+
+<ITTooltip content={<span>Delete this item?</span>} position="top" delay={500}>
+  <IconButton icon={TrashIcon} />
+</ITTooltip>
+```
+
+## Notes
+
+- The tooltip appears after a **delay** (default 200ms) once the mouse enters the trigger, and disappears immediately on mouse leave.
+- **position** controls both the popup placement and the arrow direction: `top` (tooltip above, arrow pointing down), `bottom` (below, arrow up), `left` (to the left, arrow right), `right` (to the right, arrow left).
+- An optional triangular **arrow** is always rendered, styled with CSS borders pointing toward the trigger.
+- Tooltip body uses dark slate (`slate-800`) background with white text and rounded corners.
+- The wrapper is `inline-flex` by default, so it only takes as much width as the trigger — add `className` to constrain max-width on the tooltip content.
+- Supports keyboard focus: the tooltip also appears when the trigger element receives focus.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

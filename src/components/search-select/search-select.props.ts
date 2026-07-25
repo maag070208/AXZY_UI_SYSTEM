@@ -1,46 +1,51 @@
 import { FocusEvent } from "react";
 
+/** Represents an option in the search-select dropdown. */
 export interface ITSearchSelectOption {
+  /** Display label for the option. */
   label: string;
+  /** Value associated with the option. */
   value: string | number;
+  /** Additional custom fields can be attached. */
   [key: string]: any;
 }
 
+/** Props for the ITSearchSelect component. */
 export interface ITSearchSelectProps {
-  /** Nombre del campo para integraciones con formularios */
+  /** Name attribute for form integrations. */
   name?: string;
-  /** Etiqueta que se muestra arriba del select */
+  /** Label displayed above the select input. */
   label?: string;
-  /** Texto que se muestra cuando no hay nada seleccionado */
+  /** Placeholder text shown when no value is selected. */
   placeholder?: string;
-  /** Valor seleccionado */
+  /** Currently selected value. */
   value?: string | number;
-  /** Arreglo de opciones (Modo 1: Lista estática) */
+  /** Array of options for static mode (Mode 1: local client-side filtering). */
   options?: ITSearchSelectOption[];
-  /** Campo que se usará como valor (por defecto "value") */
+  /** Field used as the option value. Default: "value". */
   valueField?: string;
-  /** Campo que se usará como etiqueta (por defecto "label") */
+  /** Field used as the option display label. Default: "label". */
   labelField?: string;
-  /** Callback cuando cambia el valor */
+  /** Callback fired when the selected value changes. Receives the value and the full option object. */
   onChange?: (value: string | number, option?: ITSearchSelectOption) => void;
-  /** Callback cuando pierde el foco */
+  /** Callback fired when the input loses focus. */
   onBlur?: (e: FocusEvent<any>) => void;
-  /** Indica si el componente está deshabilitado */
+  /** Whether the component is disabled. */
   disabled?: boolean;
-  /** Clase CSS adicional para el contenedor */
+  /** Additional CSS classes for the container. */
   className?: string;
-  /** Indica si el campo ha sido tocado (para validaciones) */
+  /** Whether the field has been touched (for form validation). */
   touched?: boolean;
-  /** Indica si el campo es requerido */
+  /** Whether the field is required. Shows a red asterisk on the label. */
   required?: boolean;
-  /** Mensaje de error */
+  /** Error message or boolean indicating an error state. */
   error?: string | boolean;
-  /** Indica si el campo es de solo lectura */
+  /** Whether the field is read-only. */
   readOnly?: boolean;
-  /** Callback para búsqueda en servidor (Modo 2: Conexión con API) */
+  /** Callback for server-side search (Mode 2: API connection). Receives the search query string. */
   onSearch?: (query: string) => void;
-  /** Indica si se está cargando información desde la API */
+  /** Whether options are being loaded from an external API. */
   isLoading?: boolean;
-  /** Mensaje cuando no hay resultados */
+  /** Message displayed when no results are found. Default: "No se encontraron resultados". */
   noResultsMessage?: string;
 }

@@ -20,6 +20,15 @@ const sizeMap = {
   lg: "h-3",
 };
 
+/**
+ * Progress bar indicator with support for determinate and indeterminate variants, themed colors, and multiple sizes.
+ *
+ * @example
+ * ```tsx
+ * <ITProgress value={75} max={100} color="success" size="lg" />
+ * <ITProgress variant="indeterminate" color="primary" />
+ * ```
+ */
 export default function ITProgress({
   value = 0,
   max = 100,

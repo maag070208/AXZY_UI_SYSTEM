@@ -1,0 +1,52 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './tabs.stories';
+
+<Meta of={Stories} />
+
+# ITTabs
+
+Tab navigation component with multiple visual variants, orientation options, and color themes.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `tabs` | `{ label: string; icon?: ReactNode; disabled?: boolean }[]` | — | Tab definitions |
+| `activeTab` | `number` | `0` | Zero-indexed active tab |
+| `onChange` | `(index: number) => void` | — | Tab change handler |
+| `variant` | `'default' \| 'pills' \| 'underline' \| 'enclosed'` | `'default'` | Visual style variant |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Tab layout orientation |
+| `fullWidth` | `boolean` | `false` | Stretch tabs to fill container |
+| `color` | `'primary' \| 'secondary' \| 'success' \| 'warning' \| 'danger' \| 'info' \| 'neutral'` | `'primary'` | Color theme |
+
+## Usage
+
+```tsx
+import { ITTabs } from '@axzydev/axzy_ui_system';
+
+const tabs = [
+  { label: 'General' },
+  { label: 'Security', icon: <LockIcon /> },
+  { label: 'Billing', disabled: true },
+];
+
+<ITTabs tabs={tabs} activeTab={0} onChange={(i) => console.log(i)} />
+<ITTabs tabs={tabs} variant="pills" fullWidth />
+<ITTabs tabs={tabs} variant="underline" orientation="vertical" color="success" />
+<ITTabs tabs={tabs} variant="enclosed" />
+```
+
+## Notes
+
+- Four visual variants: default, pills, underline, enclosed
+- Horizontal or vertical tab layout
+- `fullWidth` makes tabs span the full container width
+- Icons rendered alongside tab labels via the `icon` prop
+- Individual tabs can be disabled
+- Seven color themes available
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

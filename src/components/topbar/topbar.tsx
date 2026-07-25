@@ -4,6 +4,44 @@ import { useRef, useState } from "react";
 import { ITTopBarProps } from "./topbar.props";
 import ITText from "@/components/text/text";
 
+/**
+ * ITTopBar — sticky top navigation bar with logo, nav items, and user avatar dropdown.
+ *
+ * Renders a horizontal header bar that includes an optional logo and brand text,
+ * desktop navigation links, a mobile hamburger toggle, and a user-menu dropdown
+ * with avatar, name, email, and action items. Destructive actions (labels containing
+ * "salir", "cerrar", or "logout") are automatically highlighted in red.
+ *
+ * @example
+ * // Basic topbar with user menu
+ * <ITTopBar
+ *   logo={<LogoIcon />}
+ *   logoText="Dashboard"
+ *   userMenu={{
+ *     userName: "Jane Doe",
+ *     userEmail: "jane@example.com",
+ *     userImage: "https://i.pravatar.cc/48",
+ *     menuItems: [
+ *       { label: "Settings", onClick: () => {} },
+ *       { label: "Logout", onClick: () => {} },
+ *     ],
+ *   }}
+ * />
+ *
+ * @example
+ * // Topbar with navigation items and mobile toggle
+ * <ITTopBar
+ *   logo={<BrandLogo />}
+ *   logoText="Admin"
+ *   navItems={[
+ *     { id: "home", label: "Home", action: () => {} },
+ *     { id: "reports", label: "Reports", action: () => {} },
+ *   ]}
+ *   onNavItemClick={(id) => navigate(id)}
+ *   showMobileMenuButton
+ *   onToggleMobileMenu={() => setSidebarOpen((v) => !v)}
+ * />
+ */
 export default function ITTopBar({
   logo,
   logoText,

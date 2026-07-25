@@ -37,6 +37,21 @@ const wrapMap: Record<FlexWrap, string> = {
   "wrap-reverse": "flex-wrap-reverse",
 };
 
+/**
+ * A complete flexbox container with all alignment and spacing options.
+ *
+ * @example
+ * <ITFlex direction="row" justify="between" align="center" gap={4}>
+ *   <div>Left</div>
+ *   <div>Right</div>
+ * </ITFlex>
+ *
+ * @example
+ * <ITFlex direction="column" gap={2} as="section">
+ *   <header>Title</header>
+ *   <main>Content</main>
+ * </ITFlex>
+ */
 export default function ITFlex({
   children,
   direction = "row",

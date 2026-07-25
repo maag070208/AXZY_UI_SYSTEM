@@ -1,0 +1,59 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './flex.stories';
+
+<Meta of={Stories} />
+
+# ITFlex
+
+A complete flexbox layout container exposing the full CSS Flexbox API through React props. Supports direction, wrap, alignment, justification, gap, grow, shrink, basis, and custom element rendering.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | — | Child elements inside the flex container. |
+| `direction` | `"row" \| "column" \| "row-reverse" \| "column-reverse"` | — | Main axis direction. |
+| `align` | `"start" \| "end" \| "center" \| "stretch" \| "baseline"` | — | Cross-axis alignment. |
+| `justify` | `"start" \| "end" \| "center" \| "between" \| "around" \| "evenly"` | — | Main-axis justification. |
+| `wrap` | `"nowrap" \| "wrap" \| "wrap-reverse"` | — | Wrapping behavior. |
+| `gap` | `number` | — | Gap between children in units of `0.25rem`. |
+| `grow` | `boolean \| number` | — | Flex grow factor. `true` = 1, `false` = 0, or pass a number. |
+| `shrink` | `boolean \| number` | — | Flex shrink factor. Works like `grow`. |
+| `basis` | `string \| number` | — | Flex basis value. Numbers multiplied by `0.25rem`; strings used as-is. |
+| `className` | `string` | — | Additional CSS classes. |
+| `style` | `CSSProperties` | — | Inline styles. |
+| `as` | `ElementType` | `"div"` | Custom HTML element type to render. |
+| `onClick` | `(e: React.MouseEvent) => void` | — | Click handler. |
+
+## Usage
+
+```tsx
+import { ITFlex } from '@axzydev/axzy_ui_system';
+
+<ITFlex direction="row" gap={3} justify="between" align="center">
+  <div>Left</div>
+  <div>Center</div>
+  <div>Right</div>
+</ITFlex>
+
+<ITFlex direction="column" gap={2} className="h-60">
+  <ITFlex grow className="bg-primary-100 rounded-lg p-4">
+    <span>Grow (flex: 1)</span>
+  </ITFlex>
+  <div className="w-full">Fixed height</div>
+</ITFlex>
+```
+
+## Notes
+
+- `gap` accepts an integer where `1` = `0.25rem` (4px), `4` = `1rem` (16px), etc., matching Tailwind's spacing scale.
+- The `as` prop allows rendering as a `<section>`, `<nav>`, `<form>`, or any other semantic HTML element.
+- `grow` and `shrink` accept `boolean` for quick on/off or `number` for precise flex factor control.
+- Combine `basis`, `grow`, and `shrink` for complete flex item control on the container itself.
+- All flex props are optional — the component renders as a standard `div` when no layout props are set.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

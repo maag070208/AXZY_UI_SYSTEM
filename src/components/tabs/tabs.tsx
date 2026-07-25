@@ -3,6 +3,20 @@ import { ITTabsProps } from './tabs.props';
 import { clsx } from 'clsx';
 import ITText from "@/components/text/text";
 
+/**
+ * Tabbed navigation component with "line" and "pill" visual variants.
+ * Manages its own active state internally via a defaultActiveId.
+ *
+ * @example
+ * <ITTabs
+ *   items={[
+ *     { id: "tab1", label: "General", content: <GeneralPanel /> },
+ *     { id: "tab2", label: "Settings", content: <SettingsPanel />, disabled: true },
+ *   ]}
+ *   defaultActiveId="tab1"
+ *   onChange={(id) => console.log("Active tab:", id)}
+ * />
+ */
 const ITTabs: React.FC<ITTabsProps> = ({
   items,
   defaultActiveId,

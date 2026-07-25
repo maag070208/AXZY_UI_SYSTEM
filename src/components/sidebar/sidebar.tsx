@@ -3,6 +3,28 @@ import { FaChevronDown } from "react-icons/fa";
 import { ITNavigationItem, ITSidebarProps } from "./sidebar.props";
 import ITText from "@/components/text/text";
 
+/**
+ * Vertical navigation sidebar with submenu expand/collapse, hover tooltips in collapsed mode,
+ * and glassmorphism styling.
+ *
+ * @example
+ * ```tsx
+ * <ITSidebar
+ *   navigationItems={[
+ *     { id: "dashboard", label: "Dashboard", icon: <FaHome />, isActive: true },
+ *     {
+ *       id: "settings", label: "Settings", icon: <FaCog />,
+ *       subitems: [
+ *         { id: "profile", label: "Profile", action: () => navigate("/profile") },
+ *         { id: "billing", label: "Billing", isActive: true },
+ *       ],
+ *     },
+ *   ]}
+ *   isCollapsed={collapsed}
+ *   onToggleCollapse={() => setCollapsed(!collapsed)}
+ * />
+ * ```
+ */
 export default function ITSidebar({
   navigationItems = [],
   isCollapsed = false,

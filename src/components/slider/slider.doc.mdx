@@ -1,0 +1,49 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './slider.stories';
+
+<Meta of={Stories} />
+
+# ITSlider
+
+Range slider with configurable min, max, and step values. Displays the current value.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number` | — | Current slider value |
+| `defaultValue` | `number` | — | Default uncontrolled value |
+| `min` | `number` | `0` | Minimum value |
+| `max` | `number` | `100` | Maximum value |
+| `step` | `number` | `1` | Step increment |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Slider orientation |
+| `showValue` | `boolean` | `true` | Show current value label |
+| `ticks` | `boolean` | `false` | Show tick marks |
+| `tickLabels` | `string[]` | — | Custom labels for tick marks |
+| `color` | `string` | `'primary'` | Semantic color theme |
+| `disabled` | `boolean` | `false` | Disables the slider |
+
+## Usage
+
+```tsx
+import { ITSlider } from '@axzydev/axzy_ui_system';
+
+<ITSlider />
+<ITSlider min={0} max={100} step={10} defaultValue={50} />
+<ITSlider orientation="vertical" showValue ticks color="success" />
+<ITSlider tickLabels={['Low', 'Mid', 'High']} step={50} max={100} />
+```
+
+## Notes
+
+- Current value displayed by default; set `showValue={false}` to hide
+- `ticks` renders tick marks at each step interval
+- `tickLabels` provides custom string labels for tick positions
+- Orientation supports horizontal and vertical layouts
+- All semantic color themes supported
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

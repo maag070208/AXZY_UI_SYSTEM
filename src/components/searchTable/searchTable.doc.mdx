@@ -1,0 +1,79 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './searchTable.stories';
+
+<Meta of={Stories} />
+
+# ITSearchTable
+
+Server-side data table with global search across all fields, column-level filtering, sortable columns, inline row editing, and integrated pagination. Supports six column types and optional Yup validation schema.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `columns` | `SearchColumn<T>[]` | — | Column definitions with key, label, type, filter, sortable, editable, and custom render options. |
+| `data` | `T[]` | — | Array of row data objects (server-side paginated). |
+| `title` | `string` | — | Title displayed in the table header bar. |
+| `searchInputPlaceholder` | `string` | — | Placeholder text for the global search input. |
+| `variant` | `"default" \| "striped" \| "bordered"` | — | Table visual variant. |
+| `size` | `"sm" \| "md" \| "lg"` | — | Table row size. |
+| `containerClassName` | `string` | — | Additional CSS class for the outer container wrapper. |
+| `className` | `string` | — | Additional CSS class applied to the `<table>` element. |
+| `itemsPerPageOptions` | `number[]` | — | Available page-size options for the pagination dropdown. |
+| `defaultItemsPerPage` | `number` | — | Initial/default number of rows per page. |
+| `validationSchema` | `yup.ObjectSchema` | — | Yup validation schema for inline row editing. |
+| `pageIndex` | `number` | — | Current page index (0-based, server-side). |
+| `totalCount` | `number` | — | Total number of rows across all pages. |
+| `totalPages` | `number` | — | Total number of available pages. |
+| `hasPreviousPage` | `boolean` | — | Whether there is a previous page available. |
+| `hasNextPage` | `boolean` | — | Whether there is a next page available. |
+| `onPageChange` | `(page: number) => void` | — | Callback when the user navigates to a different page. |
+| `onItemsPerPageChange` | `(itemsPerPage: number) => void` | — | Callback when the user changes the page size. |
+| `onSortChange` | `(sortConfig: { key: string, direction: "asc" \| "desc" }) => void` | — | Callback when a column header sort is triggered. |
+| `onFilterChange` | `(filters: Record<string, string \| boolean \| number>) => void` | — | Callback when global search or column filter changes. |
+
+## Usage
+
+```tsx
+import { ITSearchTable } from '@axzydev/axzy_ui_system';
+import type { SearchColumn } from '@axzydev/axzy_ui_system';
+
+const columns: SearchColumn<MyRow>[] = [
+  { key: 'id', label: 'ID', type: 'number', sortable: true },
+  { key: 'name', label: 'Name', type: 'string', sortable: true, filter: true, editable: true },
+  { key: 'email', label: 'Email', type: 'string', sortable: true },
+  { key: 'status', label: 'Status', type: 'catalog', filter: 'catalog', sortable: true },
+];
+
+<ITSearchTable
+  columns={columns}
+  data={rows}
+  title="Users"
+  searchInputPlaceholder="Search users..."
+  pageIndex={0}
+  totalCount={100}
+  totalPages={10}
+  hasPreviousPage={false}
+  hasNextPage={true}
+  onPageChange={handlePageChange}
+  onSortChange={handleSort}
+  onFilterChange={handleFilter}
+/>
+```
+
+## Notes
+
+- **Column types**: `string`, `number`, `boolean`, `date`, `actions`, and `catalog` provide specialized filtering and rendering.
+- **Global search**: built-in search input filters across all filterable columns via `onFilterChange`.
+- **Column filtering**: `filter: true` enables text filtering; `filter: 'catalog'` renders a dropdown with `catalogOptions`.
+- **Sorting**: `sortable: true` on a column triggers `onSortChange` with `{ key, direction }`.
+- **Inline editing**: `editable: true` with `inputType` enables cell-level editing with optional `validation` and Yup `validationSchema` support.
+- **Pagination**: fully server-driven via `pageIndex`, `totalPages`, `hasPreviousPage`, `hasNextPage`, and callbacks.
+- **Rendering**: `currencyMX` formats numbers as MXN; `render` provides a custom cell render function; `actions` renders custom action buttons with edit helpers.
+- Variants `striped` and `bordered` provide alternative visual styles.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

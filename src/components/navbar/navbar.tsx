@@ -5,6 +5,33 @@ import { ITNavbarProps, ITNavigationItem } from "./navbar.props";
 import ITText from "@/components/text/text";
 import { theme } from "@/theme/theme";
 
+/**
+ * Full sidebar navigation shell with collapsible submenus, user menu dropdown, and themed styling.
+ *
+ * @example
+ * ```tsx
+ * <ITNavbar
+ *   logo={<LogoIcon />}
+ *   logoText="My App"
+ *   navigationItems={[
+ *     { id: 'home', label: 'Home', icon: <FaHome />, isActive: true },
+ *     {
+ *       id: 'settings',
+ *       label: 'Settings',
+ *       icon: <FaCog />,
+ *       subitems: [{ id: 'profile', label: 'Profile', action: () => {} }],
+ *     },
+ *   ]}
+ *   userMenu={{
+ *     userName: 'John Doe',
+ *     userEmail: 'john@example.com',
+ *     menuItems: [{ label: 'Logout', onClick: () => {} }],
+ *   }}
+ * >
+ *   <ITPage title="Dashboard">...</ITPage>
+ * </ITNavbar>
+ * ```
+ */
 export default function ITNavbar({
   logo,
   logoText,

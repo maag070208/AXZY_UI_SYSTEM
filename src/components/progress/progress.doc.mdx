@@ -1,0 +1,48 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './progress.stories';
+
+<Meta of={Stories} />
+
+# ITProgress
+
+Progress indicator with determinate and indeterminate variants. Supports multiple semantic colors and three sizes for indicating completion or loading states.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number` | `0` | Current progress value. |
+| `max` | `number` | `100` | Maximum progress value. |
+| `variant` | `"determinate" \| "indeterminate"` | `"determinate"` | Progress variant. `"determinate"` shows a fixed-width fill, `"indeterminate"` shows an animated pulsing bar. |
+| `color` | `"primary" \| "secondary" \| "success" \| "danger" \| "warning" \| "info" \| "purple" \| "error" \| "gray"` | `"primary"` | Semantic color for the progress fill. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Height and visual scale of the progress bar. |
+| `className` | `string` | — | Additional CSS classes for the container. |
+| `style` | `CSSProperties` | — | Inline styles applied to the container. |
+
+## Usage
+
+```tsx
+import { ITProgress } from '@axzydev/axzy_ui_system';
+
+<ITProgress value={70} />
+
+<ITProgress value={45} color="success" size="lg" />
+
+<ITProgress variant="indeterminate" />
+
+<ITProgress value={90} color="danger" size="sm" />
+```
+
+## Notes
+
+- `determinate` mode shows a solid fill proportional to `value / max`.
+- `indeterminate` mode renders a continuous animated bar for loading states where progress is unknown.
+- All nine semantic colors are available for the fill.
+- Sizes `sm`, `md`, and `lg` control bar height and overall scale.
+- Use `style` for custom width or container-level overrides.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

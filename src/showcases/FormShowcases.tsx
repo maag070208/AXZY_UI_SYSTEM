@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { FaSync, FaSave, FaTrash, FaEdit } from "react-icons/fa";
+import { FaSync, FaSave, FaTrash, FaEdit, FaCode } from "react-icons/fa";
 import {
   ITButton,
   ITInput,
@@ -13,7 +13,36 @@ import {
   ITFormBuilder,
   UploadStatus
 } from "../index";
-import { ShowcaseLayout } from "./ShowcaseLayout";
+import { ShowcaseLayout, CodeViewer } from "./ShowcaseLayout";
+import ITFlex from "../components/flex/flex";
+
+const CodeExampleBlock = ({ title, desc, code, children }: { title: string; desc: string; code: string; children: React.ReactNode }) => {
+  const [showCode, setShowCode] = useState(false);
+  return (
+    <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+      <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+        <ITFlex justify="between" align="center">
+          <div>
+            <h3 className="text-sm font-bold text-slate-800 dark:text-white">{title}</h3>
+            <p className="text-xs text-slate-500 mt-1">{desc}</p>
+          </div>
+          <ITButton variant="outlined" color="gray" size="small" onClick={() => setShowCode(!showCode)}>
+            <ITFlex align="center" gap={1}>
+              <FaCode size={9} />
+              {showCode ? "Ocultar código" : "Ver código"}
+            </ITFlex>
+          </ITButton>
+        </ITFlex>
+      </div>
+      <div className="p-6">{children}</div>
+      {showCode && (
+        <div className="px-6 pb-6 border-t border-slate-200 dark:border-slate-700 pt-4">
+          <CodeViewer code={code} compact />
+        </div>
+      )}
+    </div>
+  );
+};
 
 // 1. ITButton Showcase
 export const ButtonShowcase = () => {
@@ -1099,6 +1128,7 @@ export const FormBuilderShowcase = () => {
     country: "MX",
     accept: false
   });
+  const [submitted, setSubmitted] = useState<any>(null);
 
   const handleChange = (e: any) => {
     const { name, value, type, checked } = e.target;
@@ -1109,51 +1139,391 @@ export const FormBuilderShowcase = () => {
   };
 
   const config: any = [
-    { name: "name", label: "Nombre Completo", type: "text", required: true },
-    { name: "email", label: "Correo de Contacto", type: "email", required: true },
+    { name: "name", label: "Nombre Completo", type: "text", required: true, column: 6 },
+    { name: "email", label: "Correo de Contacto", type: "email", required: true, column: 6 },
     {
       name: "country",
       label: "País Operación",
       type: "select",
+      column: 6,
       options: [
         { label: "México", value: "MX" },
         { label: "Chile", value: "CL" },
         { label: "Perú", value: "PE" }
       ]
     },
-    { name: "accept", label: "Acepto términos y condiciones", type: "checkbox" }
+    { name: "accept", label: "Acepto términos y condiciones", type: "checkbox", column: 12 }
   ];
 
   const code = `<ITFormBuilder\n  config={[\n    { name: 'name', label: 'Nombre', type: 'text', required: true },\n    { name: 'email', label: 'Email', type: 'email' },\n    ...\n  ]}\n  values={formValues}\n  handleChange={handleFormChange}\n/>`;
 
   return (
-    <ShowcaseLayout
-      title="ITFormBuilder"
-      description="Generador dinámico de formularios basado en un esquema estructurado JSON."
-      code={code}
-      demo={
-        <div className="w-full max-w-md bg-white dark:bg-slate-900 p-6 rounded-2xl border shadow-sm space-y-6">
-          <ITFormBuilder
-            config={config}
-            values={values}
-            handleChange={handleChange}
-            handleBlur={() => { }}
-            touched={{}}
-            errors={{}}
-          />
-          <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-            <h5 className="text-xs font-bold uppercase text-slate-400 mb-2">Valores del Formulario (JSON):</h5>
-            <pre className="p-3 bg-slate-950 text-emerald-400 text-xs rounded-lg overflow-x-auto font-mono">
-              {JSON.stringify(values, null, 2)}
-            </pre>
+    <div className="space-y-8">
+      <ShowcaseLayout
+        title="ITFormBuilder"
+        description="Generador dinámico de formularios basado en un esquema estructurado JSON."
+        code={code}
+        demo={
+          <div className="w-full max-w-md space-y-6">
+            <form
+              onSubmit={(e) => { e.preventDefault(); setSubmitted(values); }}
+              className="bg-white dark:bg-slate-900 p-6 rounded-2xl border shadow-sm space-y-4"
+            >
+              <ITFormBuilder
+                config={config}
+                values={values}
+                handleChange={handleChange}
+                handleBlur={() => {}}
+                touched={{}}
+                errors={{}}
+                setFieldValue={(field, val) => { setValues(prev => ({ ...prev, [field]: val })); return Promise.resolve(); }}
+              />
+              <div className="pt-4 flex justify-end gap-3">
+                <ITButton variant="outlined" color="gray" size="small" onClick={() => { setValues({ name: "", email: "", country: "MX", accept: false }); setSubmitted(null); }}>
+                  Limpiar
+                </ITButton>
+                <ITButton variant="filled" color="primary" size="small" type="submit">
+                  Enviar
+                </ITButton>
+              </div>
+            </form>
+            {submitted && (
+              <div className="p-4 bg-slate-950 text-emerald-400 text-xs rounded-xl border border-slate-800 font-mono">
+                <p className="font-bold text-emerald-300 mb-2">✓ Payload Enviado:</p>
+                <pre>{JSON.stringify(submitted, null, 2)}</pre>
+              </div>
+            )}
           </div>
+        }
+        controls={
+          <div className="p-2 bg-slate-50 dark:bg-slate-900 rounded-lg text-xs">
+            <p className="text-slate-500">El formulario se genera dinámicamente inyectando un array de campos configurados.</p>
+          </div>
+        }
+      />
+
+      <CodeExampleBlock
+        title="Formulario llenado desde API"
+        desc="Carga datos asíncronamente al montar el formulario"
+        code={`const FormFillFromApi = () => {
+  const [loading, setLoading] = useState(true);
+  const [values, setValues] = useState({ name: "", email: "", role: "" });
+
+  useEffect(() => {
+    setTimeout(() => {
+      // Simula fetch de API
+      setValues({ name: "Juan Pérez", email: "juan@ejemplo.com", role: "admin" });
+      setLoading(false);
+    }, 1500);
+  }, []);
+
+  if (loading) return <Spinner />;
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <ITFormBuilder
+        config={[
+          { name: "name", label: "Nombre", type: "text", required: true, column: 6 },
+          { name: "email", label: "Correo", type: "email", required: true, column: 6 },
+          { name: "role", label: "Rol", type: "select", column: 12,
+            options: [
+              { label: "Admin", value: "admin" },
+              { label: "Editor", value: "editor" },
+              { label: "Usuario", value: "user" }
+            ]
+          }
+        ]}
+        values={values}
+        handleChange={...}
+        setFieldValue={...}
+      />
+    </form>
+  );
+};`}
+      >
+        <FormFillFromApi />
+      </CodeExampleBlock>
+
+      <CodeExampleBlock
+        title="Select conectado a API con Cascade"
+        desc="Select asíncrono que al seleccionar actualiza otro campo"
+        code={`const config = [
+  {
+    name: "country", label: "País", type: "select",
+    options: [
+      { label: "México", value: "MX" },
+      { label: "España", value: "ES" },
+      { label: "Colombia", value: "CO" }
+    ],
+    onChangeAction: (val, { setFieldValue }) => {
+      setFieldValue("city", ""); // limpia ciudad al cambiar país
+    }
+  },
+  {
+    name: "city", label: "Ciudad", type: "select",
+    options: async () => {
+      const cities = {
+        MX: [
+          { value: "CDMX", label: "Ciudad de México" },
+          { value: "GDL", label: "Guadalajara" },
+          { value: "MTY", label: "Monterrey" }
+        ],
+        ES: [
+          { value: "MAD", label: "Madrid" },
+          { value: "BCN", label: "Barcelona" },
+          { value: "SEV", label: "Sevilla" }
+        ],
+        CO: [
+          { value: "BOG", label: "Bogotá" },
+          { value: "MED", label: "Medellín" },
+          { value: "CAL", label: "Cali" }
+        ]
+      };
+      await new Promise(r => setTimeout(r, 800));
+      return cities[country] || [];
+    }
+  }
+];`}
+      >
+        <CascadingSelectsExample />
+      </CodeExampleBlock>
+
+      <CodeExampleBlock
+        title="Conversor de Moneda"
+        desc="Select de divisa que actualiza precios en MXN y USD"
+        code={`const CurrencyConverterExample = () => {
+  const [values, setValues] = useState({ currency: "MXN", amount: 1000 });
+  const TC = 20.50;
+
+  const config = [
+    {
+      name: "currency", label: "Moneda", type: "select", column: 6,
+      options: [
+        { label: "MXN - Peso Mexicano", value: "MXN" },
+        { label: "USD - Dólar Americano", value: "USD" }
+      ]
+    },
+    {
+      name: "amount", label: "Cantidad", type: "number", column: 6,
+      currencyFormat: true
+    }
+  ];
+
+  const converted = values.currency === "MXN"
+    ? { mxn: values.amount, usd: values.amount / TC }
+    : { mxn: values.amount * TC, usd: values.amount };
+
+  return (
+    <>
+      <ITFormBuilder config={config} values={values} setFieldValue={...} />
+      <div className="grid grid-cols-2 gap-4">
+        <div>MXN: {converted.mxn}</div>
+        <div>USD: {converted.usd}</div>
+      </div>
+    </>
+  );
+};`}
+      >
+        <CurrencyConverterExample />
+      </CodeExampleBlock>
+    </div>
+  );
+};
+
+// ── Fill from API example ──
+const FormFillFromApi = () => {
+  const [loading, setLoading] = useState(true);
+  const [values, setValues] = useState({ name: "", email: "", role: "" });
+  const [submitted, setSubmitted] = useState<any>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setValues({ name: "Juan Pérez", email: "juan@ejemplo.com", role: "admin" });
+      setLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setValues(prev => ({ ...prev, [name]: value }));
+  };
+
+  const config: any = [
+    { name: "name", label: "Nombre", type: "text", required: true, column: 6 },
+    { name: "email", label: "Correo", type: "email", required: true, column: 6 },
+    {
+      name: "role", label: "Rol", type: "select", column: 12,
+      options: [
+        { label: "Admin", value: "admin" },
+        { label: "Editor", value: "editor" },
+        { label: "Usuario", value: "user" }
+      ]
+    }
+  ];
+
+  if (loading) {
+    return (
+      <div className="flex items-center gap-3 py-8 justify-center">
+        <FaSync className="animate-spin text-primary-500" />
+        <span className="text-sm text-slate-500">Cargando datos del usuario...</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full max-w-md space-y-4">
+      <form onSubmit={(e) => { e.preventDefault(); setSubmitted(values); }} className="space-y-4">
+        <ITFormBuilder
+          config={config}
+          values={values}
+          handleChange={handleChange}
+          handleBlur={() => {}}
+          touched={{}}
+          errors={{}}
+          setFieldValue={(field, val) => { setValues(prev => ({ ...prev, [field]: val })); return Promise.resolve(); }}
+        />
+        <div className="flex justify-end">
+          <ITButton variant="filled" color="primary" size="small" type="submit">Guardar Cambios</ITButton>
         </div>
-      }
-      controls={
-        <div className="p-2 bg-slate-50 dark:bg-slate-900 rounded-lg text-xs">
-          <p className="text-slate-500">El formulario se genera dinámicamente inyectando un array de campos configurados.</p>
+      </form>
+      {submitted && (
+        <div className="p-3 bg-slate-950 text-emerald-400 text-xs rounded-lg font-mono border border-slate-800">
+          <p className="font-bold mb-1">✓ Editado:</p>
+          <pre>{JSON.stringify(submitted, null, 2)}</pre>
         </div>
+      )}
+    </div>
+  );
+};
+
+// ── Cascading Selects Example ──
+const CascadingSelectsExample = () => {
+  const [values, setValues] = useState({ country: "", city: "" });
+  const [submitted, setSubmitted] = useState<any>(null);
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setValues(prev => ({ ...prev, [name]: value }));
+  };
+
+  const config: any = [
+    {
+      name: "country", label: "País", type: "select", required: true, column: 6,
+      options: [
+        { label: "México", value: "MX" },
+        { label: "España", value: "ES" },
+        { label: "Colombia", value: "CO" }
+      ],
+      onChangeAction: (val: any, { setFieldValue }: any) => {
+        setFieldValue("city", "");
       }
-    />
+    },
+    {
+      name: "city", label: "Ciudad", type: "select", required: true, column: 6,
+      options: async () => {
+        const cities: Record<string, { value: string; label: string }[]> = {
+          MX: [
+            { value: "CDMX", label: "Ciudad de México" },
+            { value: "GDL", label: "Guadalajara" },
+            { value: "MTY", label: "Monterrey" }
+          ],
+          ES: [
+            { value: "MAD", label: "Madrid" },
+            { value: "BCN", label: "Barcelona" },
+            { value: "SEV", label: "Sevilla" }
+          ],
+          CO: [
+            { value: "BOG", label: "Bogotá" },
+            { value: "MED", label: "Medellín" },
+            { value: "CAL", label: "Cali" }
+          ]
+        };
+        await new Promise(r => setTimeout(r, 800));
+        return cities[values.country] || [];
+      }
+    }
+  ];
+
+  return (
+    <div className="w-full max-w-md space-y-4">
+      <form onSubmit={(e) => { e.preventDefault(); setSubmitted(values); }} className="space-y-4">
+        <ITFormBuilder
+          config={config}
+          values={values}
+          handleChange={handleChange}
+          handleBlur={() => {}}
+          touched={{}}
+          errors={{}}
+          setFieldValue={(field, val) => { setValues(prev => ({ ...prev, [field]: val })); return Promise.resolve(); }}
+        />
+        <div className="flex justify-end">
+          <ITButton variant="filled" color="primary" size="small" type="submit">Enviar</ITButton>
+        </div>
+      </form>
+      {submitted && (
+        <div className="p-3 bg-slate-950 text-emerald-400 text-xs rounded-lg font-mono border border-slate-800">
+          <p className="font-bold mb-1">✓ Datos:</p>
+          <pre>{JSON.stringify(submitted, null, 2)}</pre>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ── Currency Converter Example ──
+const CurrencyConverterExample = () => {
+  const [values, setValues] = useState({ currency: "MXN", amount: 1000 });
+  const TC = 20.50;
+
+  const config: any = [
+    {
+      name: "currency", label: "Moneda", type: "select", required: true, column: 6,
+      options: [
+        { label: "MXN - Peso Mexicano", value: "MXN" },
+        { label: "USD - Dólar Americano", value: "USD" }
+      ]
+    },
+    {
+      name: "amount", label: "Cantidad", type: "number", required: true, column: 6,
+      currencyFormat: true
+    }
+  ];
+
+  const converted = values.currency === "MXN"
+    ? { mxn: values.amount, usd: values.amount / TC }
+    : { mxn: values.amount * TC, usd: values.amount };
+
+  return (
+    <div className="w-full max-w-md space-y-4">
+      <ITFormBuilder
+        config={config}
+        values={values}
+        handleChange={() => {}}
+        handleBlur={() => {}}
+        touched={{}}
+        errors={{}}
+        setFieldValue={(field, val) => { setValues(prev => ({ ...prev, [field]: val })); return Promise.resolve(); }}
+      />
+      <div className="grid grid-cols-2 gap-4 pt-2">
+        <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">MXN</p>
+          <p className="text-xl font-bold text-emerald-900 dark:text-emerald-200 font-mono">
+            {converted.mxn.toLocaleString("es-MX", { style: "currency", currency: "MXN" })}
+          </p>
+        </div>
+        <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">USD</p>
+          <p className="text-xl font-bold text-blue-900 dark:text-blue-200 font-mono">
+            {converted.usd.toLocaleString("en-US", { style: "currency", currency: "USD" })}
+          </p>
+        </div>
+      </div>
+      {values.amount > 0 && (
+        <p className="text-[11px] text-slate-400 text-center">
+          TC: 1 USD = {TC.toFixed(2)} MXN
+        </p>
+      )}
+    </div>
   );
 };

@@ -1,0 +1,69 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './topbar.stories';
+
+<Meta of={Stories} />
+
+# ITTopBar
+
+Sticky top navigation bar with glassmorphism effect, logo, breadcrumb-style nav items, and a floating user avatar dropdown. Themed via CSS variables. Designed as a full-width header for dashboards and admin panels.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `logo` | `ReactNode` | — | Optional logo element (e.g. an `<img>` or SVG component). |
+| `logoText` | `string` | — | Text displayed next to the logo as the brand/title. |
+| `userMenu` | `object` | — | User dropdown configuration with name, email, avatar, and menu items. |
+| `userMenu.userName` | `string` | — | Display name shown in the trigger button and dropdown header. |
+| `userMenu.userEmail` | `string` | — | User email shown in the trigger button and dropdown header. |
+| `userMenu.userImage` | `string` | — | Optional avatar image URL. Falls back to a user-circle icon when omitted. |
+| `userMenu.menuItems` | `{ label: string; onClick: () => void }[]` | — | Array of dropdown menu actions. Items containing "salir", "cerrar", or "logout" are styled as destructive. |
+| `navItems` | `ITTopBarNavItem[]` | — | Desktop navigation items rendered beside the logo. Each has `id`, `label`, `icon`, and `action`. |
+| `onNavItemClick` | `(id: string) => void` | — | Callback fired when a navigation item is clicked. Receives the item's `id`. |
+| `showMobileMenuButton` | `boolean` | `false` | Whether to show the mobile hamburger menu toggle button. |
+| `onToggleMobileMenu` | `() => void` | — | Callback fired when the mobile menu toggle button is clicked. |
+
+## Usage
+
+```tsx
+import { ITTopBar } from '@axzydev/axzy_ui_system';
+import { FaChartBar, FaUserCog } from 'react-icons/fa';
+
+<ITTopBar
+  logoText="AXZY SYSTEM"
+  showMobileMenuButton
+  userMenu={{
+    userName: 'Alejandro G.',
+    userEmail: 'alejandro@axzy.io',
+    userImage: 'https://i.pravatar.cc/48',
+    menuItems: [
+      { label: 'Mi Perfil', onClick: () => {} },
+      { label: 'Configuración', onClick: () => {} },
+      { label: 'Cerrar Sesión', onClick: () => {} },
+    ],
+  }}
+  navItems={[
+    { id: '1', label: 'Monitor', icon: <FaChartBar />, action: () => {} },
+    { id: '2', label: 'Admin', icon: <FaUserCog />, action: () => {} },
+  ]}
+  onNavItemClick={(id) => console.log('Nav:', id)}
+  onToggleMobileMenu={() => setSidebarOpen(v => !v)}
+/>
+```
+
+## Notes
+
+- The bar uses a **glassmorphism** backdrop blur effect (`backdrop-blur-xl`), giving it a translucent appearance over scrolling content.
+- Navigation items support **icons** and highlight the active item with the primary color and an underline indicator.
+- The **user menu** dropdown opens on avatar click and closes on outside click (via `useClickOutside` hook).
+- Menu items containing "salir", "cerrar", or "logout" (case-insensitive) are automatically styled red as destructive actions.
+- When `userImage` is omitted, a `FaUserCircle` fallback icon is displayed.
+- **showMobileMenuButton** renders a hamburger icon (`<FaBars />`) for toggling a sidebar — the actual sidebar is managed externally via `onToggleMobileMenu`.
+- All color tokens are sourced from CSS custom properties set by `ITThemeProvider`.
+- The bar is `sticky` by default and sits at `top: 0` with a high z-index.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

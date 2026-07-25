@@ -32,6 +32,27 @@ const wrapMap: Record<StackWrap, string> = {
   "wrap-reverse": "flex-wrap-reverse",
 };
 
+/**
+ * Simplified flex stack with consistent spacing (gap) for arranging children in a row or column.
+ * Supports an optional divider element between children.
+ *
+ * @example
+ * ```tsx
+ * <ITStack direction="row" spacing={4} alignItems="center">
+ *   <ITButton>Cancel</ITButton>
+ *   <ITButton variant="primary">Save</ITButton>
+ * </ITStack>
+ * ```
+ *
+ * @example
+ * ```tsx
+ * <ITStack direction="column" spacing={2} divider={<hr />}>
+ *   <p>Item 1</p>
+ *   <p>Item 2</p>
+ *   <p>Item 3</p>
+ * </ITStack>
+ * ```
+ */
 export default function ITStack({
   children,
   direction = "column",

@@ -2,7 +2,7 @@ import { useTableState } from "@/hooks/useTableState";
 import { sizeStyles, variantStyles } from "@/types/table.types";
 import clsx from "clsx";
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { FaCheck, FaSpinner, FaTimes } from "react-icons/fa";
+import { FaCheck, FaSpinner, FaTimes, FaTable, FaThLarge } from "react-icons/fa";
 import { MdOutlineSwapVert } from "react-icons/md";
 import ITInput from "../input/input";
 import ITPagination from "../pagination/pagination";
@@ -18,6 +18,27 @@ const getNestedValue = (obj: unknown, path: string) => {
 
 const EMPTY_OBJECT = {};
 
+/**
+ * Async server-side data table with sorting, filtering, and pagination.
+ *
+ * Fetches data via the `fetchData` callback whenever pagination, sorting, or
+ * filters change. Supports column-level text/catalog/boolean filters, sortable
+ * columns, and a loading overlay. Built on-top of internal table hooks for
+ * automatic state coordination.
+ *
+ * @example
+ * ```tsx
+ * <ITDataTable
+ *   columns={[
+ *     { key: "name", label: "Name", sortable: true, filter: true },
+ *     { key: "status", label: "Status", type: "boolean", filter: true },
+ *   ]}
+ *   fetchData={async (params) => api.fetchItems(params)}
+ *   title="Users"
+ *   variant="bordered"
+ * />
+ * ```
+ */
 export default function ITDataTable<T extends Record<string, unknown>>({
   columns,
   fetchData,
@@ -33,7 +54,12 @@ export default function ITDataTable<T extends Record<string, unknown>>({
   itemsPerPageOptions = [5, 10, 20],
   defaultItemsPerPage = 10,
   title,
+  renderCard,
+  defaultView,
+  showVerticalBorder = true,
+  verticalBorderClassname,
 }: ITDataTableProps<T>) {
+  const [viewMode, setViewMode] = useState<"table" | "cards">(defaultView || "table");
   const [data, setData] = useState<T[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const [isLoading, setIsLoading] = useState(fetchOnMount);
@@ -194,17 +220,75 @@ export default function ITDataTable<T extends Record<string, unknown>>({
     }
   };
 
+  const renderDefaultCard = (row: T) => {
+    const dataCols = columns.filter((c) => c.type !== "actions");
+    const actionCol = columns.find((c) => c.type === "actions");
+    return (
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-3 space-y-2 shadow-sm">
+        {dataCols.map((col) => (
+          <div key={col.key} className="flex items-center justify-between gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 whitespace-nowrap flex-shrink-0 min-w-[70px]">
+              {col.label}
+            </span>
+            <span className="text-sm font-medium text-slate-800 dark:text-white text-right truncate">
+              {renderCellContent(col, row) as React.ReactNode}
+            </span>
+          </div>
+        ))}
+        {actionCol?.actions && (
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+            {actionCol.actions(row)}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const segCtrlClass = (mode: "table" | "cards") =>
+    `flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+      viewMode === mode
+        ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
+        : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+    }`;
+
   return (
     <div className={clsx("space-y-4 w-full relative", containerClassName)}>
       <div className="rounded-xl shadow-sm overflow-hidden" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
         {title && (
-          <div className="px-6 py-5 border-b border-secondary-100 flex justify-between items-center" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
+          <div className="px-6 py-5 flex items-center justify-between" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
             <ITText as="h2" className="text-xl font-bold text-secondary-900 leading-tight">{title}</ITText>
-            {isLoading && (
-              <div className="text-secondary-400">
-                {loadingIndicator || <FaSpinner className="animate-spin text-primary-500 text-xl" />}
+            <div className="flex items-center gap-3">
+              {isLoading && (
+                <div className="text-secondary-400">
+                  {loadingIndicator || <FaSpinner className="animate-spin text-primary-500 text-xl" />}
+                </div>
+              )}
+              <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-700/50">
+                <button onClick={() => setViewMode("table")} className={segCtrlClass("table")}>
+                  <FaTable size={11} />
+                  Table
+                </button>
+                <button onClick={() => setViewMode("cards")} className={segCtrlClass("cards")}>
+                  <FaThLarge size={11} />
+                  Cards
+                </button>
               </div>
-            )}
+            </div>
+          </div>
+        )}
+
+        {!title && (
+          <div className="flex justify-end px-4 pt-3">
+            <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-700/50">
+              <button onClick={() => setViewMode("table")} className={segCtrlClass("table")}>
+                <FaTable size={11} />
+                Table
+              </button>
+              <button onClick={() => setViewMode("cards")} className={segCtrlClass("cards")}>
+                <FaThLarge size={11} />
+                Cards
+              </button>
+            </div>
           </div>
         )}
 
@@ -222,81 +306,102 @@ export default function ITDataTable<T extends Record<string, unknown>>({
             </div>
           )}
 
-          <table
-            className={clsx(
-              "min-w-max w-full text-sm text-left text-secondary-600 transition-opacity duration-300",
-              isLoading ? "opacity-50" : "opacity-100",
-              variantStyles[variant],
-              sizeStyles[size],
-              className
-            )}
-          >
-            <thead>
-              <tr className="bg-white border-b border-secondary-200 text-xs uppercase tracking-wider font-semibold text-secondary-500">
-                {columns.map((col) => (
-                  <th key={col.key} scope="col" className={clsx("px-4 py-4 align-top", col.className)}>
-                    <div className="flex flex-col gap-3 min-w-[150px]">
-                      <div className="flex items-center justify-between gap-2">
-                        <ITText as="span" className="text-secondary-700 font-bold">{col.label}</ITText>
-                        {col.sortable && col.type !== "actions" && (
-                          <button
-                            onClick={() => handleSort(col.key)}
-                            disabled={isLoading}
-                            className={`p-1 rounded-md transition-colors ${
-                              sortConfig?.key === col.key
-                                ? "bg-secondary-200 text-secondary-900"
-                                : "hover:bg-secondary-200 text-secondary-400 hover:text-secondary-700"
-                            } disabled:opacity-50`}
-                            title={`Ordenar por ${col.label}`}
-                          >
-                            <MdOutlineSwapVert className="w-4 h-4" aria-hidden="true" />
-                          </button>
-                        )}
-                      </div>
-
-                      <div className="w-full">{col.filter ? renderFilterInput(col) : null}</div>
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-secondary-100">
+          {viewMode === "cards" ? (
+            <div className="p-4 space-y-3 max-h-[400px] overflow-y-auto">
               {data.length > 0 ? (
-                data.map((row, rowIndex) => (
-                  <tr key={rowIndex} className="hover:bg-secondary-50/50 transition-colors duration-150 group">
-                    {columns.map((col) => (
-                      <td key={`${rowIndex}-${col.key}`} className={clsx("px-4 py-3 align-middle", col.className)}>
-                        {col.type === "actions" ? (
-                          <div className="flex items-center justify-center gap-2">
-                            {renderCellContent(col, row) as React.ReactNode}
-                          </div>
-                        ) : (
-                          <div className="text-secondary-700 font-medium">
-                            {renderCellContent(col, row) as React.ReactNode}
-                          </div>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
+                data.map((row, i) => (
+                  <div key={i}>
+                    {renderCard ? renderCard(row) : renderDefaultCard(row)}
+                  </div>
                 ))
               ) : (
-                <tr>
-                  <td colSpan={columns.length} className="px-6 py-20 text-center">
-                    {!isLoading && (
-                      <div className="flex flex-col items-center justify-center text-secondary-400">
-                        <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
-                        <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
-                      </div>
-                    )}
-                  </td>
-                </tr>
+                !isLoading && (
+                  <div className="flex flex-col items-center justify-center py-12 text-secondary-400">
+                    <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
+                    <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
+                  </div>
+                )
               )}
-            </tbody>
-          </table>
+            </div>
+          ) : (
+            <table
+              className={clsx(
+                "min-w-max w-full text-sm text-left text-secondary-600 transition-opacity duration-300",
+                showVerticalBorder && "[&_th]:border-r [&_th:last-child]:border-r-0 [&_td]:border-r [&_td:last-child]:border-r-0",
+                showVerticalBorder && (verticalBorderClassname || "[&_th]:border-slate-100 dark:[&_th]:border-slate-700/30 [&_td]:border-slate-100 dark:[&_td]:border-slate-700/30"),
+                isLoading ? "opacity-50" : "opacity-100",
+                variantStyles[variant],
+                sizeStyles[size],
+                className
+              )}
+            >
+              <thead>
+                <tr className="bg-secondary-50 text-xs uppercase tracking-wider font-semibold text-slate-700 dark:text-slate-200">
+                  {columns.map((col) => (
+                    <th key={col.key} scope="col" className={clsx("px-4 py-4 align-top", col.className)}>
+                      <div className="flex flex-col gap-3 min-w-[150px]">
+                        <div className="flex items-center justify-between gap-2">
+                           <ITText as="span" className="text-slate-900 dark:text-white font-bold">{col.label}</ITText>
+                          {col.sortable && col.type !== "actions" && (
+                            <button
+                              onClick={() => handleSort(col.key)}
+                              disabled={isLoading}
+                              className={`p-1 rounded-md transition-colors ${
+                                sortConfig?.key === col.key
+                                  ? "bg-secondary-200 text-secondary-900"
+                                  : "hover:bg-secondary-200 text-secondary-400 hover:text-secondary-700"
+                              } disabled:opacity-50`}
+                              title={`Ordenar por ${col.label}`}
+                            >
+                              <MdOutlineSwapVert className="w-4 h-4" aria-hidden="true" />
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="w-full">{col.filter ? renderFilterInput(col) : null}</div>
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-700/30">
+                {data.length > 0 ? (
+                  data.map((row, rowIndex) => (
+                    <tr key={rowIndex} className={clsx("hover:bg-secondary-50/50 transition-colors duration-150 group", variant === "striped" && "odd:bg-secondary-50/40 dark:odd:bg-slate-800/20")}>
+                      {columns.map((col) => (
+                        <td key={`${rowIndex}-${col.key}`} className={clsx("px-4 py-3 align-middle", col.className)}>
+                          {col.type === "actions" ? (
+                            <div className="flex items-center justify-center gap-2">
+                              {renderCellContent(col, row) as React.ReactNode}
+                            </div>
+                          ) : (
+                            <div className="text-secondary-700 font-medium">
+                              {renderCellContent(col, row) as React.ReactNode}
+                            </div>
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={columns.length} className="px-6 py-12 text-center">
+                      {!isLoading && (
+                        <div className="flex flex-col items-center justify-center text-secondary-400">
+                          <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
+                          <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
 
-      <div className="rounded-b-xl border-t border-secondary-200 px-6 py-4" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
+      <div className="rounded-b-xl px-6 py-4" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
         <ITPagination
           currentPage={currentPage}
           totalPages={computedTotalPages}

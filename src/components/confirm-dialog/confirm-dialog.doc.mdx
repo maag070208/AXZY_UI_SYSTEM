@@ -1,0 +1,60 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './confirm-dialog.stories';
+
+<Meta of={Stories} />
+
+# ITConfirmDialog
+
+Confirmation modal dialog for destructive or critical actions. Renders a centered overlay with a warning icon, title, message body, and confirm/cancel buttons. Supports loading state and configurable button colors.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `isOpen` | `boolean` | — | Controls whether the confirmation dialog is visible. |
+| `onClose` | `() => void` | — | Callback fired when the user cancels or closes the dialog (overlay click or cancel button). |
+| `onConfirm` | `() => void` | — | Callback fired when the user confirms the action. |
+| `title` | `string` | `"Confirmar acción"` | Heading text displayed at the top of the dialog. |
+| `message` | `ReactNode` | `"¿Estás seguro de que deseas continuar?"` | Body content — accepts plain strings or React nodes. |
+| `confirmLabel` | `string` | `"Confirmar"` | Label for the confirm button. |
+| `cancelLabel` | `string` | `"Cancelar"` | Label for the cancel button. |
+| `variant` | `ColorsTypes` | `"primary"` | Color variant applied to the confirm button. Accepts `primary`, `danger`, `warning`, `info`, etc. |
+| `loading` | `boolean` | `false` | Disables all buttons and signals a loading state. |
+
+## Usage
+
+```tsx
+import { ITConfirmDialog } from '@axzydev/axzy_ui_system';
+import { useState } from 'react';
+
+const [open, setOpen] = useState(false);
+
+<ITButton label="Eliminar" color="danger" onClick={() => setOpen(true)} />
+
+<ITConfirmDialog
+  isOpen={open}
+  onClose={() => setOpen(false)}
+  onConfirm={() => { handleDelete(); setOpen(false); }}
+  title="Eliminar usuario"
+  message="Esta acción no se puede deshacer. ¿Deseas eliminar este usuario?"
+  confirmLabel="Eliminar"
+  variant="danger"
+  loading={isDeleting}
+/>
+```
+
+## Notes
+
+- The dialog renders `null` when `isOpen` is `false`, so it does not remain in the DOM.
+- A semi-transparent **backdrop** (`bg-black/40 backdrop-blur-sm`) covers the screen; clicking it triggers `onClose`.
+- The dialog card has rounded corners (`rounded-2xl`), a light border, and a subtle shadow.
+- A warning icon (`FaExclamationTriangle` in amber) is always displayed alongside the title and message.
+- **variant** controls the confirm button color via the `color` prop on `ITButton`; the cancel button always uses the `outlined` variant.
+- **loading** disables both buttons to prevent double-submission during async operations.
+- By default, spans and text use dark mode–aware colors (`dark:text-white`, `dark:text-slate-400`).
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

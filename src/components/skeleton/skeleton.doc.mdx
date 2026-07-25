@@ -1,0 +1,43 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './skeleton.stories';
+
+<Meta of={Stories} />
+
+# ITSkeleton
+
+Content placeholder loaders used during data loading to indicate upcoming content.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'text' \| 'circular' \| 'rectangular' \| 'rounded'` | `'text'` | Shape of the skeleton placeholder |
+| `animation` | `'pulse' \| 'wave' \| 'none'` | `'pulse'` | Animation style |
+| `width` | `number \| string` | — | Width of the skeleton |
+| `height` | `number \| string` | — | Height of the skeleton |
+| `count` | `number` | `1` | Number of skeleton items to render |
+
+## Usage
+
+```tsx
+import { ITSkeleton } from '@axzydev/axzy_ui_system';
+
+<ITSkeleton />
+<ITSkeleton variant="circular" width={40} height={40} />
+<ITSkeleton variant="rectangular" width="100%" height={200} animation="wave" />
+<ITSkeleton variant="text" count={3} />
+```
+
+## Notes
+
+- Use during data loading to reduce perceived wait time
+- `count` prop repeats the skeleton for placeholder lists or paragraphs
+- `rectangular` variant suits image or card placeholders
+- `circular` variant suits avatar or icon placeholders
+- Set `animation="none"` for static placeholders
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

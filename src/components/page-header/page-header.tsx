@@ -3,6 +3,21 @@ import { ITPageHeaderProps } from "./page-header.props";
 import ITBreadcrumbs from "../breadcrumbs/breadcrumbs";
 import ITText from "@/components/text/text";
 
+/**
+ * Page title bar with breadcrumbs, description, back button, and action buttons.
+ *
+ * @example
+ * ```tsx
+ * <ITPageHeader
+ *   title="Users"
+ *   description="Manage all system users"
+ *   breadcrumbs={[{ label: 'Admin', href: '/admin' }, { label: 'Users' }]}
+ *   backAction={() => history.back()}
+ *   actions={<ITButton label="Add User" />}
+ *   icon={<FaUsers />}
+ * />
+ * ```
+ */
 export default function ITPageHeader({
   title,
   description,

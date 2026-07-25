@@ -1,0 +1,46 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './badget.stories';
+
+<Meta of={Stories} />
+
+# ITBadget
+
+Small status tags and labels for highlighting metadata, categories, or states. Offers filled and outlined visual variants across all semantic color themes. Accepts either a simple label string or custom React children for complex content.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | — | Text label displayed inside the badge. Overridden if `children` is provided. |
+| `children` | `ReactNode` | — | Custom content rendered inside the badge. Takes precedence over `label`. |
+| `color` | `ColorsTypes` | `"primary"` | Color theme key (`"primary"`, `"secondary"`, `"success"`, `"danger"`, `"warning"`, `"purple"`, `"info"`). |
+| `size` | `SizesTypes` | `"medium"` | Badge size (`"small"`, `"medium"`, `"large"`). |
+| `variant` | `"filled" \| "outlined"` | `"filled"` | Visual style — solid background or transparent with colored border. |
+| `className` | `string` | — | Additional CSS class names for the badge element. |
+
+## Usage
+
+```tsx
+import { ITBadget } from '@axzydev/axzy_ui_system';
+
+<ITBadget label="Active" color="success" variant="filled" />
+
+<ITBadget color="danger" variant="outlined" size="small">
+  <span className="flex items-center gap-1">3 new</span>
+</ITBadget>
+```
+
+## Variants / Notes
+
+- **filled** — Solid background with contrasting text (default for most theme colors).
+- **outlined** — Transparent background with a colored border and darker text.
+- Colors include `primary`, `secondary`, `success`, `danger`, `warning`, `purple`, and `info`.
+- Border radius defaults to fully rounded (`borderRadius: 9999px`), giving a pill shape.
+- Styles are fully theme-driven via the centralized theme configuration.
+- Custom children override the `label` prop entirely.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

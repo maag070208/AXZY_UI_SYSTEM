@@ -1,0 +1,59 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './dropfile.stories';
+
+<Meta of={Stories} />
+
+# ITDropfile
+
+A drag-and-drop file upload zone with preview support for images. Tracks upload lifecycle with status enumeration and provides confirm/cancel actions. Configurable accepted file types limit which formats are allowed.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `onFileSelect` | `(file: File \| null) => void` | — | Called when a file is selected or cleared. |
+| `onCancel` | `() => void` | — | Called when the user cancels the current selection. |
+| `onSubmit` | `(file: File) => void` | — | Called when the user confirms and submits the file. |
+| `acceptedFileTypes` | `FileTypeEnum[]` | — | List of accepted MIME types (PDF, XLS, CSV, PNG, JPG, etc.). |
+| `contentClassName` | `string` | — | CSS classes for the preview/content area. |
+| `containerClassName` | `string` | — | CSS classes for the outermost container. |
+| `showStatusBadge` | `boolean` | — | Whether to show the status badge (pending/uploading/uploaded/error). |
+| `uploadStatus` | `UploadStatus` | — | Externally controlled upload status. |
+| `onStatusChange` | `(status: UploadStatus) => void` | — | Callback when upload status changes. |
+| `initialPreviewUrl` | `string \| null` | — | Initial preview URL shown before any file is selected (e.g., editing an existing entry). |
+
+### Enums
+
+| Enum | Values |
+|------|--------|
+| `UploadStatus` | `PENDING` (`"pendiente"`), `UPLOADING` (`"subiendo"`), `UPLOADED` (`"subido"`), `ERROR` (`"error"`) |
+| `FileTypeEnum` | `PDF`, `XLS`, `XLSX`, `CSV`, `PNG`, `JPG`, `JPEG` |
+
+## Usage
+
+```tsx
+import { ITDropfile, UploadStatus, FileTypeEnum } from '@axzydev/axzy_ui_system';
+
+<ITDropfile
+  onFileSelect={(file) => setSelectedFile(file)}
+  onSubmit={(file) => uploadFile(file)}
+  onCancel={() => clearFile()}
+  acceptedFileTypes={[FileTypeEnum.PNG, FileTypeEnum.JPG, FileTypeEnum.PDF]}
+  uploadStatus={UploadStatus.PENDING}
+  showStatusBadge
+/>
+```
+
+## Notes
+
+- Displays image preview for image file types; shows a file icon for non-image types.
+- The `uploadStatus` and `showStatusBadge` props enable external lifecycle control and visual feedback.
+- `initialPreviewUrl` is useful for edit forms where an existing file is already associated.
+- Only one file at a time is supported — selecting a new file replaces the current one.
+- The confirm/cancel flow gives users a chance to review their selection before submission.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

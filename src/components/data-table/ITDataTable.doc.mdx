@@ -1,0 +1,59 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as Stories from './ITDataTable.stories';
+
+<Meta of={Stories} />
+
+# ITDataTable
+
+Advanced server-side data table with automatic pagination, column sorting, and filtering. Communicates via a `fetchData` callback that receives page, limit, filters, and sort parameters, and returns paginated data with a total count. Built on top of the internal table hooks for cohesive state management.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `columns` | `Column<T>[]` | — | Column definitions with key, label, type, sortable, filter, render, and width. |
+| `fetchData` | `(params: ITDataTableFetchParams) => Promise<ITDataTableResponse<T>>` | — | Async callback triggered on pagination, filter, or sort change. Must return `{ data, total }`. |
+| `debounceMs` | `number` | `500` | Delay in ms before firing fetch after filter state changes. |
+| `externalFilters` | `Record<string, string \| number \| boolean \| Date>` | `{}` | Filters managed outside the table (e.g., date pickers) merged with internal column filters. |
+| `loadingIndicator` | `ReactNode` | `<FaSpinner />` | Custom element shown while loading. |
+| `fetchOnMount` | `boolean` | `true` | Whether to fetch data on initial mount. |
+| `reloadTrigger` | `number \| string \| boolean` | — | Changing this value forces a re-fetch. Use after mutations. |
+| `containerClassName` | `string` | — | CSS classes for the outer wrapper. |
+| `className` | `string` | — | CSS classes applied to the `<table>` element. |
+| `variant` | `"default" \| "striped" \| "bordered" \| "minimal"` | `"default"` | Visual style variant. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Row density preset. |
+| `itemsPerPageOptions` | `number[]` | `[5, 10, 20]` | Selectable page-size options. |
+| `defaultItemsPerPage` | `number` | `10` | Initial rows per page. |
+| `title` | `string \| ReactNode` | — | Heading displayed above the table. |
+
+## Usage
+
+```tsx
+import { ITDataTable } from '@axzydev/axzy_ui_system';
+
+<ITDataTable
+  title="Users"
+  columns={[
+    { key: 'id', label: 'ID', type: 'number', sortable: true },
+    { key: 'name', label: 'Name', type: 'string', sortable: true, filter: true },
+    { key: 'role', label: 'Role', type: 'string', filter: 'catalog', catalogOptions: { data: roles } },
+    { key: 'active', label: 'Status', type: 'boolean', filter: true, sortable: true },
+  ]}
+  fetchData={async (params) => api.fetchItems(params)}
+  variant="bordered"
+/>
+```
+
+## Notes
+
+- Column filters support `"catalog"` (dropdown), `true` (text input), and `boolean` (tri-state toggle).
+- The `externalFilters` prop allows integrating external filter controls like date pickers without building filter UI into the table itself.
+- Debounce prevents excessive API calls while the user types in filter inputs.
+- A loading skeleton overlay covers the table body while fetching, keeping the header visible.
+- Empty state is shown automatically when no results match the current filters.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

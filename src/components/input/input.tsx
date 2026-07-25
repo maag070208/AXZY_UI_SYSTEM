@@ -6,6 +6,35 @@ import { theme } from "@/theme/theme";
 import { disabledOverlay, iconAbsoluteLeft, iconAbsoluteRight, inputError, inputLabel } from "@/utils/styles";
 import ITText from "@/components/text/text";
 
+/**
+ * Text input component with label, validation error display, icon slots,
+ * and helper text. Supports text, password, email, number (with currency
+ * and thousand formatting), checkbox, radio, and textarea types.
+ *
+ * @example
+ * <ITInput
+ *   name="email"
+ *   label="Email Address"
+ *   type="email"
+ *   placeholder="you@example.com"
+ *   value={email}
+ *   onChange={handleChange}
+ *   error={errors.email}
+ *   required
+ * />
+ *
+ * @example
+ * <ITInput
+ *   name="amount"
+ *   label="Amount"
+ *   type="number"
+ *   currencyFormat
+ *   iconLeft={<FaDollarSign />}
+ *   value={amount}
+ *   onChange={handleChange}
+ *   maxLength={10}
+ * />
+ */
 export default function ITInput({
   name,
   type = "text",

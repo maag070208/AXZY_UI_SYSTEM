@@ -7,6 +7,21 @@ const sizeMap = {
   md: { button: "px-3 py-2 text-xs", container: "p-1" },
 };
 
+/**
+ * iOS-style segmented toggle for switching between mutually exclusive options.
+ *
+ * @example
+ * ```tsx
+ * <ITSegmentedControl
+ *   options={[
+ *     { value: "day", label: "Day" },
+ *     { value: "week", label: "Week", icon: <FaCalendar /> },
+ *   ]}
+ *   value={view}
+ *   onChange={setView}
+ * />
+ * ```
+ */
 export default function ITSegmentedControl({
   options,
   value,

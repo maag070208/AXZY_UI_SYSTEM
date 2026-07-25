@@ -31,13 +31,30 @@ export interface Column<T = any> {
 }
 
 export interface ITTableProps<T> {
+  /** Column definitions: key, label, type, sortable behavior, filters, and custom rendering. */
   columns: Column<T>[];
+  /** Additional CSS classes for the outermost container. */
   containerClassName?: string;
+  /** The data array to render in the table body. */
   data: T[];
+  /** Visual variant: "default", "striped", "bordered", "borderless". */
   variant?: TableVariants;
+  /** Additional CSS classes for the root table wrapper. */
   className?: string;
+  /** Row size preset: "sm" | "md" | "lg". */
   size?: TableSize;
+  /** Available options for the per-page selector (e.g. [5, 10, 20]). */
   itemsPerPageOptions?: Array<number>;
+  /** Default number of rows shown per page. */
   defaultItemsPerPage?: number;
+  /** Optional title rendered above the table in the header section. */
   title?: string;
+  /** Custom card renderer for mobile/tablet responsive view. Receives the row data. */
+  renderCard?: (row: T) => React.ReactNode;
+  /** Initial view mode. Defaults to "table". */
+  defaultView?: "table" | "cards";
+  /** Whether to show vertical borders between columns. Defaults to true. */
+  showVerticalBorder?: boolean;
+  /** Custom class for vertical borders (overrides the default subtle gray). */
+  verticalBorderClassname?: string;
 }
