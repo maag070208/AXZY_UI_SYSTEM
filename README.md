@@ -1,29 +1,28 @@
 # AXZY UI System
 
-A modern, enterprise-ready React component library powered by **Tailwind CSS v4**. Built specifically for high-density data applications, hospital management software, and complex dashboards.
+Librería de componentes React enterprise-ready con **Tailwind CSS v4**. Diseñada para aplicaciones de datos densos, dashboards y sistemas de gestión.
 
 ---
 
-## Quick Start
+## Instalación en un proyecto nuevo
 
-### 1. Crear un proyecto nuevo con Vite + React + TypeScript
+### 1. Crear proyecto Vite + React + TypeScript
 
 ```bash
 npm create vite@latest mi-app -- --template react-ts
 cd mi-app
-npm install
 ```
 
-### 2. Instalar Tailwind CSS v4 y AXZY UI System
+### 2. Instalar dependencias
 
 ```bash
 npm install @axzydev/axzy_ui_system
-npm install -D tailwindcss @tailwindcss/vite
+npm install -D tailwindcss @tailwindcss/vite @vitejs/plugin-react-swc
 ```
 
-### 3. Configurar Vite
+### 3. Configurar Vite con Tailwind v4
 
-Edita `vite.config.ts`:
+`vite.config.ts`:
 
 ```ts
 import { defineConfig } from "vite"
@@ -35,61 +34,51 @@ export default defineConfig({
 })
 ```
 
-### 4. Agregar directivas de Tailwind
+### 4. Importar Tailwind CSS
 
-En `src/index.css`:
+`src/index.css`:
 
 ```css
 @import "tailwindcss";
 ```
 
-### 5. Envolver la app con ITThemeProvider
+### 5. Importar el CSS de la librería
+
+`src/main.tsx`:
 
 ```tsx
-// src/main.tsx
+import "@axzydev/axzy_ui_system/dist/index.css"
+```
+
+### 6. Envolver con ITThemeProvider
+
+`src/main.tsx`:
+
+```tsx
 import React from "react"
 import ReactDOM from "react-dom/client"
 import { ITThemeProvider } from "@axzydev/axzy_ui_system"
 import App from "./App"
 import "./index.css"
 
-const myTheme = {
-  colors: {
-    primary: {
-      50: "#fef2f2",
-      100: "#fee2e2",
-      200: "#fecaca",
-      300: "#fca5a5",
-      400: "#f87171",
-      500: "#ef4444",
-      600: "#dc2626",
-      700: "#b91c1c",
-      800: "#991b1b",
-      900: "#7f1d1d",
-      950: "#450a0a",
-    },
-  },
-}
-
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ITThemeProvider theme={myTheme}>
+    <ITThemeProvider>
       <App />
     </ITThemeProvider>
   </React.StrictMode>
 )
 ```
 
-### 6. ¡Usar componentes!
+### 6. Usar componentes
 
 ```tsx
-// src/App.tsx
 import { ITButton } from "@axzydev/axzy_ui_system"
 
 export default function App() {
   return (
     <div className="p-8">
-      <ITButton variant="primary">Hola Mundo</ITButton>
+      <ITButton>Hola Mundo</ITButton>
     </div>
   )
 }
@@ -97,37 +86,99 @@ export default function App() {
 
 ---
 
+## Desarrollo local (contribuir)
+
+### 1. Clonar e instalar
+
+```bash
+git clone https://github.com/axzydev/axzy_ui_system.git
+cd axzy_ui_system
+pnpm install
+```
+
+### 2. Iniciar servidor de desarrollo (sandbox interactivo)
+
+```bash
+pnpm dev
+```
+
+Abre `http://localhost:5173` para ver el Interactive Sandbox con todos los componentes.
+
+### 3. Storybook (documentación visual)
+
+```bash
+pnpm storybook
+```
+
+### 4. Build de producción
+
+```bash
+pnpm build        # TypeScript + Vite
+pnpm bundle       # tsup + CSS
+```
+
+---
+
+## Scripts
+
+| Comando | Descripción |
+|---------|-------------|
+| `pnpm dev` | Sandbox interactivo (Vite) |
+| `pnpm build` | TypeScript + Vite build |
+| `pnpm build:app` | Build de la app sandbox |
+| `pnpm bundle` | Bundle del paquete (tsup + CSS) |
+| `pnpm watch` | Watch mode para desarrollo del paquete |
+| `pnpm storybook` | Storybook local |
+| `pnpm build-storybook` | Build estático de Storybook |
+| `pnpm lint` | ESLint |
+| `pnpm preview` | Preview del build |
+
+---
+
 ## Theming
 
-El `ITThemeProvider` permite sobrescribir toda la paleta de colores en tiempo de ejecución sin recompilar.
+Personaliza la paleta de colores en runtime sin recompilar:
 
 ```tsx
 const myTheme = {
   colors: {
-    primary: { 50: "..." , 500: "#ef4444", ... },
-    secondary: { 50: "...", 500: "#3b82f6", ... },
-    success: { 50: "...", 500: "#22c55e", ... },
-    danger: { 50: "...", 500: "#ef4444", ... },
-    warning: { 50: "...", 500: "#f59e0b", ... },
-    purple: { 50: "...", 500: "#a855f7", ... },
-    info: { 50: "...", 500: "#06b6d4", ... },
+    primary: { 50: "#fef2f2", 500: "#ef4444", 900: "#7f1d1d" },
+    success: { 50: "#f0fdf4", 500: "#22c55e" },
+    // solo necesitas los colores que quieras sobreescribir
   },
 }
-```
 
-Solo debes proveer los colores que quieras cambiar — el resto usa los valores por defecto.
+<ITThemeProvider theme={myTheme}>
+  <App />
+</ITThemeProvider>
+```
 
 ---
 
-## Scripts del proyecto
+## Componentes disponibles
 
-| Comando | Descripción |
-|---------|-------------|
-| `npm run dev` | Inicia servidor de desarrollo |
-| `npm run build` | Compila para producción |
-| `npm run preview` | Previsualiza el build |
-| `npm run storybook` | Storybook para desarrollo |
-| `npm run lint` | Ejecuta ESLint |
+- **ITButton** – Botón con variants (filled, outlined, raised, rounded, text, link, icon-only)
+- **ITInput** – Input con soporte para texto, password, número, textarea, iconos
+- **ITSelect** – Dropdown nativo estilizado
+- **ITSearchSelect** – Select con búsqueda y opciones async
+- **ITDatePicker** / **ITTimePicker** – Selectores de fecha y hora
+- **ITCalendar** – Calendario con eventos y modos month/week/day
+- **ITSlideToggle** – Switch toggle
+- **ITDropfile** – Área de arrastrar y soltar archivos
+- **ITFormBuilder** – Generador dinámico de formularios desde JSON
+- **ITTable** / **ITDataTable** – Tablas con filtros, ordenamiento y paginación
+- **ITCard** / **ITStatCard** – Tarjetas de contenido y métricas
+- **ITLayout** / **ITNavbar** – Sistema de layout con sidebar colapsable
+- **ITFlex** / **ITStack** / **ITGrid** – Layout helpers
+- **ITText** – Tipografía con variants
+- **ITAvatar** – Avatares con iniciales
+- **ITBadget** – Badges de estado
+- **ITDivider** – Divisores
+- **ITProgress** – Barras de progreso
+- **ITPagination** – Paginación
+- **ITPageHeader** – Encabezados de página
+- **ITPage** – Página completa con layout
+- **ITThemeProvider** – Proveedor de tema
 
 ---
 
@@ -136,3 +187,4 @@ Solo debes proveer los colores que quieras cambiar — el resto usa los valores 
 - React 18+
 - Tailwind CSS 4.x + `@tailwindcss/vite`
 - Node.js 18+
+- pnpm (para desarrollo local)

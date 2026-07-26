@@ -13,6 +13,7 @@ import "./index.css";
 
 // Import Showcases
 import { HomeShowcase } from "./showcases/HomeShowcase";
+import { GettingStartedShowcase } from "./showcases/GettingStartedShowcase";
 import {
   CardShowcase,
   LayoutShowcase,
@@ -88,6 +89,10 @@ function App() {
       id: "general",
       label: "General",
       icon: <FaHome />,
+      subitems: [
+        { id: "home", label: "Home" },
+        { id: "getting-started", label: "Getting Started" },
+      ],
     },
     {
       id: "struc",
@@ -231,6 +236,8 @@ function App() {
     switch (activeComponentId) {
       case "home":
         return <HomeShowcase />;
+      case "getting-started":
+        return <GettingStartedShowcase />;
       // Structure
       case "layout":
         return <LayoutShowcase />;
