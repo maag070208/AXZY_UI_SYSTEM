@@ -14,6 +14,17 @@ const DEFAULT_COLOR = "bg-primary-600";
 const DEFAULT_BG = "var(--color-primary-600)";
 const DEFAULT_SHADOW = "0 4px 14px 0 rgba(37, 99, 235, 0.35)";
 
+// Un valor tipo "#8b5cf6", "rgb(...)", "hsl(...)" o "var(--...)" se aplica
+// como color inline; cualquier otra cosa se trata como clase de Tailwind
+// (comportamiento previo, sin romper a quien ya pasa "bg-purple-600" etc.).
+// Motivo: esta librería se consume vía un CSS estático pre-compilado
+// (ver scripts/build-css.mjs) que solo contiene las clases usadas en el
+// código FUENTE de la librería. Si una app consumidora pasa un color de
+// Tailwind que la librería nunca usa en ningún otro lado, esa clase no
+// existe en el CSS entregado y el avatar se renderiza sin color visible.
+// Un valor de color inline no tiene ese problema: siempre se aplica.
+const isRawColorValue = (value: string) => /^#|^rgb|^hsl|^var\(/i.test(value.trim());
+
 /**
  * Circular avatar component with image, initials fallback, and optional badge overlay.
  *
@@ -22,6 +33,11 @@ const DEFAULT_SHADOW = "0 4px 14px 0 rgba(37, 99, 235, 0.35)";
  *
  * @example
  * <ITAvatar initials="JD" size="md" color="bg-purple-600" />
+ *
+ * @example
+ * // Recomendado cuando el color se calcula en tiempo de ejecución (p.ej. un
+ * // hash por usuario/etiqueta): pasa un valor de color real, no una clase.
+ * <ITAvatar initials="JD" size="md" color="#8b5cf6" />
  */
 export default function ITAvatar({
   src,
@@ -34,17 +50,24 @@ export default function ITAvatar({
   onClick,
 }: ITAvatarProps) {
   const { container, text } = sizeMap[size];
-  const useInlineStyle = !color || color === DEFAULT_COLOR;
+  const useDefaultStyle = !color || color === DEFAULT_COLOR;
+  const useRawColorStyle = !useDefaultStyle && isRawColorValue(color);
 
   return (
     <div
       className={clsx(
         "relative inline-flex items-center justify-center rounded-full flex-shrink-0 overflow-hidden text-white font-bold tracking-wide",
         container,
-        !useInlineStyle && color,
+        !useDefaultStyle && !useRawColorStyle && color,
         className,
       )}
-      style={useInlineStyle ? { backgroundColor: DEFAULT_BG, boxShadow: DEFAULT_SHADOW } : undefined}
+      style={
+        useDefaultStyle
+          ? { backgroundColor: DEFAULT_BG, boxShadow: DEFAULT_SHADOW }
+          : useRawColorStyle
+          ? { backgroundColor: color }
+          : undefined
+      }
       onClick={onClick}
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}

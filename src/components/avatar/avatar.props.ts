@@ -11,7 +11,18 @@ export interface ITAvatarProps {
   initials?: string;
   /** Avatar dimensions. Valid values: `"xs"`, `"sm"`, `"md"`, `"lg"`, `"xl"`. @default "md" */
   size?: AvatarSize;
-  /** Background color class for the initials fallback. @default "bg-primary-600" */
+  /**
+   * Color de fondo para el fallback de iniciales. Acepta un valor de color
+   * real (`"#8b5cf6"`, `"rgb(...)"`, `"hsl(...)"`, `"var(--...)"`) — se
+   * aplica como `style` inline y SIEMPRE se renderiza — o una clase de
+   * Tailwind (`"bg-purple-600"`) por compatibilidad con código existente.
+   * Una clase de Tailwind solo se ve si esa clase exacta ya existe en el
+   * CSS compilado que consume la app (esta librería se distribuye con un
+   * CSS estático pre-compilado, ver scripts/build-css.mjs), así que para
+   * cualquier color calculado en tiempo de ejecución (p.ej. un hash por
+   * usuario) se recomienda pasar el valor de color directamente.
+   * @default "bg-primary-600"
+   */
   color?: string;
   /** Additional CSS class names for the avatar container. */
   className?: string;

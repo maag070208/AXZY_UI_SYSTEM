@@ -44,3 +44,22 @@ export const Sizes: Story = {
     </div>
   ),
 };
+
+export const WithRawColor: Story = {
+  name: "Con color calculado en runtime",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Cuando el color se calcula dinámicamente (por ejemplo, un hash por usuario o etiqueta), pasa un valor de color real en vez de una clase de Tailwind. Una clase de Tailwind arbitraria solo se ve si ya existe en el CSS pre-compilado de esta librería; un color inline siempre se aplica.",
+      },
+    },
+  },
+  render: () => (
+    <div className="flex items-center gap-4">
+      {["#3b82f6", "#a855f7", "#059669", "#f59e0b", "#ec4899"].map((hex) => (
+        <ITAvatar key={hex} initials="JD" size="md" color={hex} />
+      ))}
+    </div>
+  ),
+};
