@@ -148,7 +148,7 @@ export default function ITSearchSelect({
   const getInputStyle = () => {
     const style: React.CSSProperties = {
       backgroundColor: inputTheme.backgroundColor || "#ffffff",
-      borderColor: inputTheme.borderColor || "#e2e8f0",
+      borderColor: inputTheme.borderColor || "var(--color-secondary-300)",
       borderRadius: inputTheme.borderRadius || "0.5rem",
       padding: inputTheme.padding || "0.5rem 0.75rem",
       fontSize: inputTheme.fontSize || "0.875rem",
@@ -160,8 +160,8 @@ export default function ITSearchSelect({
     };
 
     if (disabled) {
-      style.backgroundColor = inputTheme.disabled?.backgroundColor || "#f1f5f9";
-      style.borderColor = inputTheme.disabled?.borderColor || "#e2e8f0";
+      style.backgroundColor = inputTheme.disabled?.backgroundColor || "var(--color-secondary-100)";
+      style.borderColor = inputTheme.disabled?.borderColor || "var(--color-secondary-200)";
       style.opacity = 0.7;
       style.cursor = "not-allowed";
     }
@@ -217,7 +217,7 @@ export default function ITSearchSelect({
 
         {/* Dropdown Panel */}
         {isOpen && (
-          <div className="absolute z-50 w-full mt-1 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200 origin-top">
+          <div className="absolute z-[70] w-full mt-1 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200 origin-top">
             <div className="max-h-60 overflow-y-auto">
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => (

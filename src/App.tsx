@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   FaCreditCard,
-FaHome,
+  FaHome,
   FaKeyboard,
   FaRegBell,
-  FaSearch,
   FaSlidersH,
   FaTable,
 } from "react-icons/fa";
@@ -61,36 +60,35 @@ import {
   ThemeProviderShowcase,
 } from "./showcases/FeedbackShowcases";
 
+type ViewMode = "home" | "ui-system";
+
 function App() {
-  const [activeComponentId, setActiveComponentId] = useState(
-    () => window.location.hash.replace("#", "") || "home"
-  );
-  const [searchTerm, setSearchTerm] = useState("");
-  const [subitemConnector, setSubitemConnector] = useState<
+  const [view, setView] = useState<ViewMode>(() => {
+    const hash = window.location.hash.replace("#", "");
+    return hash.startsWith("ui-system") ? "ui-system" : "home";
+  });
+  const [showroomActive, setShowroomActive] = useState("getting-started");
+  const [searchTerm] = useState("");
+  const [subitemConnector] = useState<
     "dot" | "|" | "none"
   >("dot");
 
   useEffect(() => {
     const onHashChange = () => {
-      const id = window.location.hash.replace("#", "") || "home";
-      setActiveComponentId(id);
+      const hash = window.location.hash.replace("#", "");
+      setView(hash.startsWith("ui-system") ? "ui-system" : "home");
     };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
-  useEffect(() => {
-    window.location.hash = activeComponentId;
-  }, [activeComponentId]);
-
-  // Group definitions for the sidebar
+  // Group definitions for the sidebar (UI System showroom)
   const categories = [
     {
       id: "general",
       label: "General",
       icon: <FaHome />,
       subitems: [
-        { id: "home", label: "Home" },
         { id: "getting-started", label: "Getting Started" },
       ],
     },
@@ -174,8 +172,8 @@ function App() {
           if (matches) {
             return {
               ...cat,
-              isActive: activeComponentId === cat.id,
-              action: () => setActiveComponentId(cat.id),
+              isActive: showroomActive === cat.id,
+              action: () => setShowroomActive(cat.id),
             };
           }
           return null;
@@ -190,8 +188,8 @@ function App() {
         const mappedSubitems = matchingSubitems.map((sub) => ({
           id: sub.id,
           label: sub.label,
-          isActive: activeComponentId === sub.id,
-          action: () => setActiveComponentId(sub.id),
+          isActive: showroomActive === sub.id,
+          action: () => setShowroomActive(sub.id),
         }));
 
         const isAnySubitemActive = mappedSubitems.some((sub) => sub.isActive);
@@ -207,7 +205,7 @@ function App() {
         if (cat.subitems) return cat.subitems.length > 0;
         return true;
       });
-  }, [searchTerm, activeComponentId]);
+  }, [searchTerm, showroomActive]);
 
   const sidebarProps = {
     navigationItems: filteredNavigationItems,
@@ -215,27 +213,24 @@ function App() {
   };
 
   const topBarProps = {
-    logoText: "AXZY Showroom",
+    logoText: "AXZY UI System",
     userMenu: {
       userName: "Alex Dev",
       userEmail: "alex@axzy.dev",
       menuItems: [
         {
-          label: "Resetear Demo",
+          label: "Ir al Portafolio",
           onClick: () => {
-            setActiveComponentId("home");
-            setSearchTerm("");
+            window.location.hash = "home";
           },
         },
       ],
     },
   };
 
-  // Render correct component based on active navigation
+  // Render correct component based on active showroom navigation
   const renderShowcase = () => {
-    switch (activeComponentId) {
-      case "home":
-        return <HomeShowcase />;
+    switch (showroomActive) {
       case "getting-started":
         return <GettingStartedShowcase />;
       // Structure
@@ -308,17 +303,25 @@ function App() {
       case "themeprovider":
         return <ThemeProviderShowcase />;
       default:
-        return <HomeShowcase />;
+        return <GettingStartedShowcase />;
     }
   };
 
   return (
-    <ITThemeProvider showFab={true}>
-      <ITLayout sidebar={sidebarProps} topBar={topBarProps}>
-        <div className="max-w-7xl mx-auto">
-          {renderShowcase()}
+    <ITThemeProvider showFab={false}>
+      {view === "home" ? (
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-10 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
+            <HomeShowcase />
+          </div>
         </div>
-      </ITLayout>
+      ) : (
+        <ITLayout sidebar={sidebarProps} topBar={topBarProps}>
+          <div className="max-w-7xl mx-auto">
+            {renderShowcase()}
+          </div>
+        </ITLayout>
+      )}
     </ITThemeProvider>
   );
 }

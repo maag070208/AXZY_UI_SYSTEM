@@ -1,18 +1,28 @@
 import { ReactNode } from "react";
 import { Column } from "../table/table.props";
 
+/** Parameters passed to `fetchData` every time pagination, filters, or sorting change. */
 export interface ITDataTableFetchParams {
+  /** 1-indexed current page number. */
   page: number;
+  /** Number of rows requested per page. */
   limit: number;
+  /** Active per-column filter values (from `Column.filter`), keyed by column `key`. */
   filters: Record<string, string | number | boolean | Date>;
+  /** Active sort, present only when the user has clicked a sortable column header. */
   sort?: {
+    /** Column `key` currently sorted by. */
     key: string;
+    /** Sort direction. */
     direction: "asc" | "desc";
   };
 }
 
+/** Expected shape of the Promise returned by `fetchData`. */
 export interface ITDataTableResponse<T> {
+  /** Rows for the requested page. */
   data: T[];
+  /** Total row count across all pages (used to compute the paginator's total pages). */
   total: number;
 }
 

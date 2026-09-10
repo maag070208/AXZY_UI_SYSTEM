@@ -126,7 +126,7 @@ export default function ITSidebar({
       style={{
         zIndex: 50,
         backgroundColor: "var(--sidebar-bg, rgba(255, 255, 255, 0.90))",
-        borderRight: "1px solid var(--sidebar-border, #e2e8f0)",
+        borderRight: "1px solid var(--sidebar-border, var(--color-secondary-200))",
         WebkitBackdropFilter: 'blur(12px)',
         backdropFilter: 'blur(12px)',
       }}
@@ -143,12 +143,12 @@ export default function ITSidebar({
                   ${isSidebarCollapsed ? "justify-center p-2.5 mb-2" : "justify-between px-3.5 py-3 mb-1"}
                 `}
                 style={{
-                  backgroundColor: item.isActive ? "var(--sidebar-active-bg, #f8fafc)" : 'transparent',
+                  backgroundColor: item.isActive ? "var(--sidebar-active-bg, var(--color-secondary-50))" : 'transparent',
                   boxShadow: item.isActive ? '0 1px 2px 0 rgba(0, 0, 0, 0.05)' : 'none',
-                  border: item.isActive ? "1px solid var(--sidebar-border, #e2e8f0)" : '1px solid transparent'
+                  border: item.isActive ? "1px solid var(--sidebar-border, var(--color-secondary-200))" : '1px solid transparent'
                 }}
                 onMouseEnter={(e) => {
-                  if (!item.isActive) e.currentTarget.style.backgroundColor = "var(--sidebar-hover-bg, #f1f5f9)";
+                  if (!item.isActive) e.currentTarget.style.backgroundColor = "var(--sidebar-hover-bg, var(--color-secondary-100))";
                 }}
                 onMouseLeave={(e) => {
                   if (!item.isActive) e.currentTarget.style.backgroundColor = 'transparent';
@@ -193,7 +193,7 @@ export default function ITSidebar({
 
                 {!isSidebarCollapsed && item.subitems && item.subitems.length > 0 && (
                   <div className={`flex-shrink-0 transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${expandedItems.has(item.id) ? "rotate-180" : ""}`}
-                    style={{ color: item.isActive ? "var(--sidebar-active-color, #0f172a)" : "var(--sidebar-icon-color, #64748b)", opacity: 0.7 }}>
+                    style={{ color: item.isActive ? "var(--sidebar-active-color, var(--color-secondary-900))" : "var(--sidebar-icon-color, var(--color-secondary-500))", opacity: 0.7 }}>
                     <FaChevronDown className="w-3 h-3" />
                   </div>
                 )}
@@ -220,15 +220,15 @@ export default function ITSidebar({
               {/* Glassmorphism Collapsed Tooltip / Submenu */}
               {isSidebarCollapsed && (
                 <div
-                  className="absolute left-full top-0 ml-4 rounded-2xl opacity-0 invisible group-hover/navitem:opacity-100 group-hover/navitem:visible transition-all duration-300 pointer-events-none z-50 min-w-[220px] overflow-hidden -translate-x-2 group-hover/navitem:translate-x-0 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)]"
+                  className="absolute left-full top-0 ml-4 rounded-2xl opacity-0 invisible group-hover/navitem:opacity-100 group-hover/navitem:visible transition-all duration-300 pointer-events-none z-[70] min-w-[220px] overflow-hidden -translate-x-2 group-hover/navitem:translate-x-0 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)]"
                   style={{
                     backgroundColor: "var(--sidebar-bg, #ffffff)",
-                    border: "1px solid var(--sidebar-border, #e2e8f0)",
+                    border: "1px solid var(--sidebar-border, var(--color-secondary-200))",
                     WebkitBackdropFilter: 'blur(16px)',
                     backdropFilter: 'blur(16px)',
                   }}
                 >
-                  <div className="px-5 py-4 flex items-center gap-3 font-semibold border-b" style={{ borderColor: "var(--sidebar-border, #e2e8f0)", color: "var(--sidebar-active-color, #0f172a)" }}>
+                  <div className="px-5 py-4 flex items-center gap-3 font-semibold border-b" style={{ borderColor: "var(--sidebar-border, var(--color-secondary-200))", color: "var(--sidebar-active-color, var(--color-secondary-900))" }}>
                     {item.icon && <span style={{ color: "var(--sidebar-active-icon, #10b981)" }} className="text-xl drop-shadow-sm">{item.icon}</span>}
                     <ITText as="span" className="tracking-wide text-[15px]">{item.label}</ITText>
                   </div>
@@ -249,8 +249,8 @@ export default function ITSidebar({
                               }}
                             />
                           )}
-                          <span className={`w-1.5 h-1.5 rounded-full transition-all ${subitem.isActive ? "scale-125" : ""}`} style={{ backgroundColor: subitem.isActive ? "var(--sidebar-active-icon, #10b981)" : "var(--sidebar-icon-color, #94a3b8)" }} />
-                          <ITText as="span" style={{ color: subitem.isActive ? "var(--sidebar-active-color, #0f172a)" : "var(--sidebar-label-color, #475569)", fontWeight: subitem.isActive ? 600 : 500 }}>{subitem.label}</ITText>
+                          <span className={`w-1.5 h-1.5 rounded-full transition-all ${subitem.isActive ? "scale-125" : ""}`} style={{ backgroundColor: subitem.isActive ? "var(--sidebar-active-icon, #10b981)" : "var(--sidebar-icon-color, var(--color-secondary-400))" }} />
+                          <ITText as="span" style={{ color: subitem.isActive ? "var(--sidebar-active-color, var(--color-secondary-900))" : "var(--sidebar-label-color, var(--color-secondary-600))", fontWeight: subitem.isActive ? 600 : 500 }}>{subitem.label}</ITText>
                         </div>
                       ))}
                     </div>
@@ -267,7 +267,7 @@ export default function ITSidebar({
                     className="ml-5 flex flex-col gap-0.5 py-1"
                     style={{
                       borderLeft: subitemConnector === '|'
-                        ? "1px solid var(--sidebar-border, #e2e8f0)"
+                        ? "1px solid var(--sidebar-border, var(--color-secondary-200))"
                         : 'none'
                     }}
                   >
@@ -280,8 +280,8 @@ export default function ITSidebar({
                           }}
                           className={`flex items-center gap-2.5 w-full text-left px-3 py-2 rounded-xl transition-all duration-300`}
                           style={{
-                            color: subitem.isActive ? "var(--sidebar-active-color, #0f172a)" : "var(--sidebar-label-color, #475569)",
-                            backgroundColor: subitem.isActive ? "var(--sidebar-active-bg, #f8fafc)" : 'transparent',
+                            color: subitem.isActive ? "var(--sidebar-active-color, var(--color-secondary-900))" : "var(--sidebar-label-color, var(--color-secondary-600))",
+                            backgroundColor: subitem.isActive ? "var(--sidebar-active-bg, var(--color-secondary-50))" : 'transparent',
                             fontSize: '0.85rem',
                             fontWeight: subitem.isActive ? 600 : 500,
                             letterSpacing: '0.01em',
@@ -289,7 +289,7 @@ export default function ITSidebar({
                           }}
                           onMouseEnter={(e) => {
                             if (!subitem.isActive) {
-                              e.currentTarget.style.backgroundColor = "var(--sidebar-hover-bg, #f1f5f9)";
+                              e.currentTarget.style.backgroundColor = "var(--sidebar-hover-bg, var(--color-secondary-100))";
                               e.currentTarget.style.transform = 'translateX(3px)';
                             }
                           }}
@@ -315,7 +315,7 @@ export default function ITSidebar({
                               style={{
                                 backgroundColor: subitem.isActive
                                   ? "var(--sidebar-active-icon, #10b981)"
-                                  : "var(--sidebar-icon-color, #94a3b8)"
+                                  : "var(--sidebar-icon-color, var(--color-secondary-400))"
                               }}
                             />
                           )}

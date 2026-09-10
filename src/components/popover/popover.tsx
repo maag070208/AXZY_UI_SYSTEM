@@ -47,7 +47,7 @@ export default function ITPopover({
         {trigger}
       </div>
       {open && (
-        <div className={clsx("absolute z-[200]", positionClasses[position])}>
+        <div className={clsx("absolute z-[70]", positionClasses[position])}>
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 p-3 min-w-[160px]">
             {children}
           </div>

@@ -1,0 +1,547 @@
+{
+  "ITAlert": {
+    "prefix": "italert",
+    "description": "AXZY UI: Alert banner",
+    "body": [
+      "<ITAlert variant=\"${1|info,success,warning,error|}\" title=\"${2:Title}\">",
+      "  ${3:Message}",
+      "</ITAlert>",
+      "$0"
+    ]
+  },
+  "ITAvatar": {
+    "prefix": "itavatar",
+    "description": "AXZY UI: Avatar",
+    "body": [
+      "<ITAvatar initials=\"${1:AB}\" size=\"${2|small,medium,large|}\" />",
+      "$0"
+    ]
+  },
+  "ITBadget": {
+    "prefix": "itbadget",
+    "description": "AXZY UI: Badge",
+    "body": [
+      "<ITBadget label=\"${1:Label}\" color=\"${2|primary,secondary,success,danger,warning,info,purple|}\" variant=\"${3|filled,outlined|}\" />",
+      "$0"
+    ]
+  },
+  "ITBreadcrumbs": {
+    "prefix": "itbreadcrumbs",
+    "description": "AXZY UI: Breadcrumbs",
+    "body": [
+      "<ITBreadcrumbs",
+      "  items={[",
+      "    { label: \"${1:Home}\", href: \"${2:/}\" },",
+      "    { label: \"${3:Current}\" },",
+      "  ]}",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITButton": {
+    "prefix": "itbutton",
+    "description": "AXZY UI: Button",
+    "body": [
+      "<ITButton",
+      "  variant=\"${1|filled,outlined,raised,rounded,text,raised-text,icon-only,link|}\"",
+      "  color=\"${2|primary,secondary,success,danger,warning,info,purple|}\"",
+      "  size=\"${3|small,medium,large|}\"",
+      "  onClick={${4:handleClick}}",
+      ">",
+      "  ${5:Label}",
+      "</ITButton>",
+      "$0"
+    ]
+  },
+  "ITCalendar": {
+    "prefix": "itcalendar",
+    "description": "AXZY UI: Calendar",
+    "body": [
+      "<ITCalendar",
+      "  mode=\"${1|month,week,day|}\"",
+      "  events={${2:events}}",
+      "  onEventClick={(event) => {$3}}",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITCard": {
+    "prefix": "itcard",
+    "description": "AXZY UI: Card",
+    "body": [
+      "<ITCard title=\"${1:Title}\">",
+      "  ${2:Content}",
+      "</ITCard>",
+      "$0"
+    ]
+  },
+  "ITCheckbox": {
+    "prefix": "itcheckbox",
+    "description": "AXZY UI: Checkbox",
+    "body": [
+      "<ITCheckbox",
+      "  checked={${1:checked}}",
+      "  onChange={(checked) => {$2}}",
+      "  label=\"${3:Label}\"",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITConfirmDialog": {
+    "prefix": "itconfirmdialog",
+    "description": "AXZY UI: Confirm dialog",
+    "body": [
+      "<ITConfirmDialog",
+      "  isOpen={${1:isOpen}}",
+      "  onClose={${2:handleClose}}",
+      "  onConfirm={${3:handleConfirm}}",
+      "  title=\"${4:Are you sure?}\"",
+      "  message=\"${5:This action cannot be undone.}\"",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITDataTable": {
+    "prefix": "itdatatable",
+    "description": "AXZY UI: Server-side data table",
+    "body": [
+      "<ITDataTable",
+      "  title=\"${1:Title}\"",
+      "  columns={[",
+      "    { key: \"${2:field}\", label: \"${3:Label}\", type: \"string\", sortable: true, filter: true },",
+      "  ]}",
+      "  fetchData={async ({ page, limit, filters, sort }) => {",
+      "    ${4:const response = await api.fetchItems({ page, limit, filters, sort });}",
+      "    return { data: ${5:response.data}, total: ${6:response.total} };",
+      "  }}",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITDatePicker": {
+    "prefix": "itdatepicker",
+    "description": "AXZY UI: Date picker",
+    "body": [
+      "<ITDatePicker",
+      "  name=\"${1:date}\"",
+      "  label=\"${2:Date}\"",
+      "  value={${3:value}}",
+      "  onChange={(e) => {$4}}",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITDialog": {
+    "prefix": "itdialog",
+    "description": "AXZY UI: Dialog / modal",
+    "body": [
+      "<ITDialog isOpen={${1:isOpen}} onClose={${2:handleClose}}>",
+      "  ${3:Content}",
+      "</ITDialog>",
+      "$0"
+    ]
+  },
+  "ITDivider": {
+    "prefix": "itdivider",
+    "description": "AXZY UI: Divider",
+    "body": [
+      "<ITDivider orientation=\"${1|horizontal,vertical|}\" />",
+      "$0"
+    ]
+  },
+  "ITDrawer": {
+    "prefix": "itdrawer",
+    "description": "AXZY UI: Slide-in drawer",
+    "body": [
+      "<ITDrawer isOpen={${1:isOpen}} onClose={${2:handleClose}} position=\"${3|left,right|}\">",
+      "  ${4:Content}",
+      "</ITDrawer>",
+      "$0"
+    ]
+  },
+  "ITDropfile": {
+    "prefix": "itdropfile",
+    "description": "AXZY UI: File drop/upload area",
+    "body": [
+      "<ITDropfile onFileSelect={(file) => {$1}} />",
+      "$0"
+    ]
+  },
+  "ITEmptyState": {
+    "prefix": "itemptystate",
+    "description": "AXZY UI: Empty state placeholder",
+    "body": [
+      "<ITEmptyState title=\"${1:No results found}\" description=\"${2:Try adjusting your filters.}\" />",
+      "$0"
+    ]
+  },
+  "ITFlex": {
+    "prefix": "itflex",
+    "description": "AXZY UI: Flex layout",
+    "body": [
+      "<ITFlex direction=\"${1|row,column|}\" align=\"${2|start,center,end,stretch|}\" justify=\"${3|start,center,end,between,around|}\" gap={${4:4}}>",
+      "  $5",
+      "</ITFlex>",
+      "$0"
+    ]
+  },
+  "ITFormBuilder": {
+    "prefix": "itformbuilder",
+    "description": "AXZY UI: Dynamic form builder (Formik-driven)",
+    "body": [
+      "<ITFormBuilder",
+      "  config={[",
+      "    { name: \"${1:field}\", label: \"${2:Label}\", type: \"text\" },",
+      "  ]}",
+      "  values={${3:values}}",
+      "  handleChange={${4:handleChange}}",
+      "  handleBlur={${5:handleBlur}}",
+      "  touched={${6:touched}}",
+      "  errors={${7:errors}}",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITFormHeader": {
+    "prefix": "itformheader",
+    "description": "AXZY UI: Form/modal header",
+    "body": [
+      "<ITFormHeader title=\"${1:Title}\" />",
+      "$0"
+    ]
+  },
+  "ITGrid": {
+    "prefix": "itgrid",
+    "description": "AXZY UI: CSS grid layout",
+    "body": [
+      "<ITGrid columns={${1:12}} spacing={${2:4}}>",
+      "  $3",
+      "</ITGrid>",
+      "$0"
+    ]
+  },
+  "ITImage": {
+    "prefix": "itimage",
+    "description": "AXZY UI: Image with fallback",
+    "body": [
+      "<ITImage src=\"${1:/path/to/image.png}\" alt=\"${2:Description}\" />",
+      "$0"
+    ]
+  },
+  "ITInput": {
+    "prefix": "itinput",
+    "description": "AXZY UI: Text input",
+    "body": [
+      "<ITInput",
+      "  name=\"${1:field}\"",
+      "  label=\"${2:Label}\"",
+      "  type=\"${3|text,password,email,number,textarea|}\"",
+      "  value={${4:value}}",
+      "  onChange={${5:handleChange}}",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITLayout": {
+    "prefix": "itlayout",
+    "description": "AXZY UI: App shell (sidebar + topbar)",
+    "body": [
+      "<ITLayout",
+      "  topBar={{ userName: \"${1:User}\", menuItems: [] }}",
+      "  sidebar={{ navigationItems: ${2:navigationItems} }}",
+      ">",
+      "  $3",
+      "</ITLayout>",
+      "$0"
+    ]
+  },
+  "ITLoader": {
+    "prefix": "itloader",
+    "description": "AXZY UI: Loading spinner",
+    "body": [
+      "<ITLoader size=\"${1|small,medium,large|}\" />",
+      "$0"
+    ]
+  },
+  "ITNavbar": {
+    "prefix": "itnavbar",
+    "description": "AXZY UI: All-in-one nav layout",
+    "body": [
+      "<ITNavbar navigationItems={${1:navigationItems}} userName=\"${2:User}\">",
+      "  $3",
+      "</ITNavbar>",
+      "$0"
+    ]
+  },
+  "ITPage": {
+    "prefix": "itpage",
+    "description": "AXZY UI: Full page template",
+    "body": [
+      "<ITPage title=\"${1:Title}\" description=\"${2:Description}\">",
+      "  $3",
+      "</ITPage>",
+      "$0"
+    ]
+  },
+  "ITPageHeader": {
+    "prefix": "itpageheader",
+    "description": "AXZY UI: Page header",
+    "body": [
+      "<ITPageHeader title=\"${1:Title}\" />",
+      "$0"
+    ]
+  },
+  "ITPagination": {
+    "prefix": "itpagination",
+    "description": "AXZY UI: Pagination",
+    "body": [
+      "<ITPagination",
+      "  currentPage={${1:currentPage}}",
+      "  totalPages={${2:totalPages}}",
+      "  onPageChange={${3:setCurrentPage}}",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITPopover": {
+    "prefix": "itpopover",
+    "description": "AXZY UI: Popover",
+    "body": [
+      "<ITPopover trigger={${1:<ITButton>Open</ITButton>}}>",
+      "  ${2:Popover content}",
+      "</ITPopover>",
+      "$0"
+    ]
+  },
+  "ITProgress": {
+    "prefix": "itprogress",
+    "description": "AXZY UI: Progress bar",
+    "body": [
+      "<ITProgress value={${1:50}} color=\"${2|primary,secondary,success,danger,warning,info,purple|}\" />",
+      "$0"
+    ]
+  },
+  "ITRadioGroup": {
+    "prefix": "itradio",
+    "description": "AXZY UI: Radio group",
+    "body": [
+      "<ITRadioGroup",
+      "  name=\"${1:field}\"",
+      "  value={${2:value}}",
+      "  onChange={(value) => {$3}}",
+      "  options={[",
+      "    { value: \"${4:a}\", label: \"${5:Option A}\" },",
+      "    { value: \"${6:b}\", label: \"${7:Option B}\" },",
+      "  ]}",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITSearchSelect": {
+    "prefix": "itsearchselect",
+    "description": "AXZY UI: Searchable select",
+    "body": [
+      "<ITSearchSelect",
+      "  name=\"${1:field}\"",
+      "  label=\"${2:Label}\"",
+      "  options={${3:options}}",
+      "  value={${4:value}}",
+      "  onChange={${5:handleChange}}",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITSearchTable": {
+    "prefix": "itsearchtable",
+    "description": "AXZY UI: Search + sort + inline-edit table",
+    "body": [
+      "<ITSearchTable",
+      "  columns={[",
+      "    { key: \"${1:field}\", label: \"${2:Label}\", type: \"string\", sortable: true },",
+      "  ]}",
+      "  data={${3:data}}",
+      "  pageIndex={${4:pageIndex}}",
+      "  totalCount={${5:totalCount}}",
+      "  totalPages={${6:totalPages}}",
+      "  hasPreviousPage={${7:hasPreviousPage}}",
+      "  hasNextPage={${8:hasNextPage}}",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITSegmentedControl": {
+    "prefix": "itsegmented",
+    "description": "AXZY UI: Segmented control",
+    "body": [
+      "<ITSegmentedControl",
+      "  value={${1:value}}",
+      "  onChange={(value) => {$2}}",
+      "  options={[",
+      "    { value: \"${3:a}\", label: \"${4:Option A}\" },",
+      "    { value: \"${5:b}\", label: \"${6:Option B}\" },",
+      "  ]}",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITSidebar": {
+    "prefix": "itsidebar",
+    "description": "AXZY UI: Sidebar navigation",
+    "body": [
+      "<ITSidebar navigationItems={${1:navigationItems}} />",
+      "$0"
+    ]
+  },
+  "ITSkeleton": {
+    "prefix": "itskeleton",
+    "description": "AXZY UI: Loading skeleton placeholder",
+    "body": [
+      "<ITSkeleton variant=\"${1|text,circular,rectangular|}\" width=\"${2:100%}\" height=\"${3:1rem}\" />",
+      "$0"
+    ]
+  },
+  "ITSlideToggle": {
+    "prefix": "itslidetoggle",
+    "description": "AXZY UI: Switch toggle",
+    "body": [
+      "<ITSlideToggle isOn={${1:isOn}} onToggle={(isOn) => {$2}} />",
+      "$0"
+    ]
+  },
+  "ITSlider": {
+    "prefix": "itslider",
+    "description": "AXZY UI: Range slider",
+    "body": [
+      "<ITSlider value={${1:value}} onChange={(value) => {$2}} min={${3:0}} max={${4:100}} />",
+      "$0"
+    ]
+  },
+  "ITStack": {
+    "prefix": "itstack",
+    "description": "AXZY UI: Vertical/horizontal stack",
+    "body": [
+      "<ITStack direction=\"${1|row,column|}\" spacing={${2:4}}>",
+      "  $3",
+      "</ITStack>",
+      "$0"
+    ]
+  },
+  "ITStatCard": {
+    "prefix": "itstatcard",
+    "description": "AXZY UI: Metric/stat card",
+    "body": [
+      "<ITStatCard label=\"${1:Label}\" value={${2:0}} />",
+      "$0"
+    ]
+  },
+  "ITStepper": {
+    "prefix": "itstepper",
+    "description": "AXZY UI: Step wizard",
+    "body": [
+      "<ITStepper",
+      "  currentStep={${1:currentStep}}",
+      "  onStepChange={${2:setCurrentStep}}",
+      "  steps={[",
+      "    { label: \"${3:Step 1}\", content: $4 },",
+      "    { label: \"${5:Step 2}\", content: $6 },",
+      "  ]}",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITTable": {
+    "prefix": "ittable",
+    "description": "AXZY UI: Client-side table",
+    "body": [
+      "<ITTable",
+      "  title=\"${1:Title}\"",
+      "  columns={[",
+      "    { key: \"${2:field}\", label: \"${3:Label}\", type: \"string\", sortable: true, filter: true },",
+      "  ]}",
+      "  data={${4:data}}",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITTabs": {
+    "prefix": "ittabs",
+    "description": "AXZY UI: Tabs",
+    "body": [
+      "<ITTabs",
+      "  items={[",
+      "    { id: \"${1:tab1}\", label: \"${2:Tab 1}\", content: $3 },",
+      "    { id: \"${4:tab2}\", label: \"${5:Tab 2}\", content: $6 },",
+      "  ]}",
+      "/>",
+      "$0"
+    ]
+  },
+  "ITText": {
+    "prefix": "ittext",
+    "description": "AXZY UI: Typography",
+    "body": [
+      "<ITText as=\"${1|p,span,h1,h2,h3,h4,label|}\">${2:Text}</ITText>",
+      "$0"
+    ]
+  },
+  "ITTextarea": {
+    "prefix": "ittextarea",
+    "description": "AXZY UI: Textarea",
+    "body": [
+      "<ITTextarea name=\"${1:field}\" label=\"${2:Label}\" value={${3:value}} onChange={${4:handleChange}} rows={${5:4}} />",
+      "$0"
+    ]
+  },
+  "ITThemeProvider": {
+    "prefix": "itthemeprovider",
+    "description": "AXZY UI: Theme provider (wrap app root)",
+    "body": [
+      "<ITThemeProvider showFab={${1|true,false|}}>",
+      "  $2",
+      "</ITThemeProvider>",
+      "$0"
+    ]
+  },
+  "ITTimePicker": {
+    "prefix": "ittimepicker",
+    "description": "AXZY UI: Time picker",
+    "body": [
+      "<ITTimePicker name=\"${1:time}\" label=\"${2:Time}\" value={${3:value}} onChange={${4:handleChange}} />",
+      "$0"
+    ]
+  },
+  "ITToast": {
+    "prefix": "ittoast",
+    "description": "AXZY UI: Toast notification",
+    "body": [
+      "<ITToast message=\"${1:Saved successfully}\" variant=\"${2|success,error,warning,info|}\" />",
+      "$0"
+    ]
+  },
+  "ITTooltip": {
+    "prefix": "ittooltip",
+    "description": "AXZY UI: Tooltip",
+    "body": [
+      "<ITTooltip content=\"${1:Tooltip text}\">",
+      "  ${2:<span>Hover me</span>}",
+      "</ITTooltip>",
+      "$0"
+    ]
+  },
+  "ITTripleFilter": {
+    "prefix": "ittriplefilter",
+    "description": "AXZY UI: 3-state filter",
+    "body": [
+      "<ITTripleFilter",
+      "  value={${1:value}}",
+      "  onChange={(value) => {$2}}",
+      "  options={[",
+      "    { label: \"${3:All}\", value: ${4:undefined} },",
+      "    { label: \"${5:Active}\", value: ${6:true} },",
+      "    { label: \"${7:Inactive}\", value: ${8:false} },",
+      "  ]}",
+      "/>",
+      "$0"
+    ]
+  }
+}

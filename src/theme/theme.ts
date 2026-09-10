@@ -453,11 +453,32 @@ export const typography = {
 };
 
 /**
+ * 4.5. Escala de Z-Index (capas de UI global)
+ * Fuente de verdad documentada para las clases z-[N] usadas en overlays fixed/absolute.
+ * Tailwind JIT requiere clases estáticas en el JSX, así que los componentes aplican
+ * el valor literal correspondiente, pero SIEMPRE debe coincidir con esta escala.
+ * Orden ascendente = se pinta más arriba.
+ */
+export const zIndex = {
+  /** Barras sticky (ITTopbar) y overlays de navegación (sidebar/aside móvil). */
+  navOverlay: 40,
+  /** Paneles deslizantes (ITDrawer). */
+  drawer: 50,
+  /** Diálogos modales (ITDialog, ITConfirmDialog). */
+  modal: 60,
+  /** UI flotante contextual: dropdowns, ITPopover, ITTooltip, ITDatePicker/ITTimePicker. */
+  floating: 70,
+  /** Notificaciones globales (ITToast) — siempre por encima de todo lo demás. */
+  toast: 80,
+} as const;
+
+/**
  * 5. Theme final exportado
  */
 export const theme = {
   palette, 
   colors: semanticColors,
   typography,
+  zIndex,
   ...components,
 };

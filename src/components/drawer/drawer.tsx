@@ -41,7 +41,7 @@ export default function ITDrawer({
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex">
+        <div className="fixed inset-0 z-[50] flex">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" />
           <div
             ref={panelRef}

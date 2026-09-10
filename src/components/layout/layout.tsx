@@ -73,7 +73,7 @@ export default function ITLayout({
         {/* MOBILE SIDEBAR PANE */}
         {mobileSidebarOpen && (
           <div
-            className="lg:hidden fixed inset-0 z-50 transition-opacity duration-300 backdrop-blur-sm bg-black/40"
+            className="lg:hidden fixed inset-0 z-[40] transition-opacity duration-300 backdrop-blur-sm bg-black/40"
             onClick={() => setMobileSidebarOpen(false)}
           >
             <div

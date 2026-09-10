@@ -28,5 +28,6 @@
     "strict": false,
     "noImplicitAny": false
   },
-  "include": ["src", "./src/index.ts", "src/global.d.ts"]
+  "include": ["src", "./src/index.ts", "src/global.d.ts"],
+  "exclude": ["**/*.stories.*"]
 }

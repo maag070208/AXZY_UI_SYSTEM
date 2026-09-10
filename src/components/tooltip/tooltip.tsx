@@ -62,7 +62,7 @@ export default function ITTooltip({
     >
       {children}
       {visible && (
-        <div className={clsx("absolute z-[200] pointer-events-none", positionClasses[position])}>
+        <div className={clsx("absolute z-[70] pointer-events-none", positionClasses[position])}>
           <div className="bg-slate-800 dark:bg-slate-700 text-white text-xs rounded-lg px-2.5 py-1.5 whitespace-nowrap shadow-lg">
             <ITText as="span">{content}</ITText>
           </div>

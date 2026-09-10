@@ -1,31 +1,49 @@
 import { TableSize, TableVariants } from "@/types/table.types";
 
+/** Data type of a table column, controls default rendering, filter UI, and sort comparison. */
 export type ColumnType = "string" | "date" | "number" | "boolean" | "actions" | "catalog";
 
+/** A single selectable entry for a `"catalog"`-type column's filter/value lookup. */
 export interface CatalogOption {
+  /** Unique identifier matched against the row's field value. */
   id: string | number;
+  /** Human-readable label shown in the filter dropdown and resolved cell display. */
   name: string;
 }
 
+/** Definition of a single column for ITTable. */
 export interface Column<T = any> {
+  /** Field key on the row object this column reads from (supports dot-notation for nested values, e.g. `"address.city"`). */
   key: string;
+  /** Column header text. */
   label: string;
+  /** Additional CSS classes applied to both the header (`<th>`) and body (`<td>`) cells of this column. */
   className?: string;
-  currencyMX?: boolean; 
+  /** Formats numeric values as Mexican pesos (MXN) via `Intl`-based currency formatting. Only applies when `type` is `"number"`. @default false */
+  currencyMX?: boolean;
+  /** Custom action buttons/content rendered for a `"actions"`-type column. Receives the full row object. */
   actions?: (row: T) => React.ReactNode;
+  /** Enables per-column filtering. Pass `true` for a text/number/boolean filter matching `type`, or `"catalog"` to filter against `catalogOptions`. @default false */
   filter?: boolean | "catalog";
+  /** Column data type. Drives default cell rendering, filter UI, and sort comparison. */
   type: ColumnType;
+  /** Whether clicking the header sorts by this column. Ignored for `type: "actions"`. @default false */
   sortable?: boolean;
+  /** Custom cell renderer, takes precedence over the default type-based rendering. Receives the full row object. */
   render?: (row: T) => React.ReactNode;
+  /** Custom inline-edit input renderer (used by table variants that support inline editing). */
   editComponent?: (props: {
     value: any;
     onChange: (value: any) => void;
     rowData: T;
   }) => React.ReactNode;
-  // Nuevas propiedades para catálogo
+  /** Configuration for `type: "catalog"` columns: the lookup options plus loading/error state for async catalogs. */
   catalogOptions?: {
+    /** Available catalog entries used to resolve/filter the raw id stored on the row. */
     data: CatalogOption[];
+    /** Shows a loading spinner in the filter UI while the catalog is being fetched. @default false */
     loading?: boolean;
+    /** Shows an error state in the filter UI when the catalog failed to load. @default false */
     error?: boolean;
   };
 }

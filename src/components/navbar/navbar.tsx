@@ -116,7 +116,7 @@ export default function ITNavbar({
                     {isUserMenuOpen && (
                       <div
                         ref={userMenuRef}
-                        className="z-50 absolute right-0 mt-2 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm"
+                        className="z-[70] absolute right-0 mt-2 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm"
                       >
                         <div className="px-4 py-3">
                           <ITText as="span" className="block text-sm text-gray-900">
@@ -152,7 +152,7 @@ export default function ITNavbar({
 
         <div className="flex-1 flex overflow-hidden relative">
           {(showSidebar || showSidebarOnMobile) && (
-            <aside className="fixed inset-y-0 left-0 w-64 bg-gray-50 transform transition-transform duration-300 ease-in-out z-50 shadow-lg md:static md:transform-none md:shadow-none md:border-r md:border-gray-200">
+            <aside className="fixed inset-y-0 left-0 w-64 bg-gray-50 transform transition-transform duration-300 ease-in-out z-[40] shadow-lg md:static md:transform-none md:shadow-none md:border-r md:border-gray-200">
               <div className="h-full overflow-y-auto py-4 px-3">
                 <ul className="space-y-2 font-medium">{sidebarItems}</ul>
               </div>

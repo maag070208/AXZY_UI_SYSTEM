@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { FaCloud, FaCode, FaDatabase, FaDownload, FaGithub, FaLayerGroup, FaLinkedin, FaMapMarkerAlt, FaMobileAlt, FaSearch, FaServer, FaMedium } from "react-icons/fa";
+import { FaArrowRight, FaCheck, FaCloud, FaCode, FaDatabase, FaDownload, FaExternalLinkAlt, FaGithub, FaLayerGroup, FaLinkedin, FaMapMarkerAlt, FaMobileAlt, FaSearch, FaServer, FaMedium } from "react-icons/fa";
+import { SiReact, SiNodedotjs } from "react-icons/si";
 import ITBadget from "../components/badget/badget";
 import ITButton from "../components/button/button";
 import ITCard from "../components/card/card";
@@ -94,7 +95,7 @@ export const HomeShowcase = () => {
                   <div className="w-56 h-56 md:w-64 md:h-64 rounded-full shadow-xl overflow-hidden ring-2 ring-slate-200 dark:ring-slate-700">
                     <img
                       src="/personalFoto.jpg"
-                      alt="Asael Amaroaqui"
+                      alt="Asael Amaro"
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -109,7 +110,7 @@ export const HomeShowcase = () => {
                 <ITStack spacing={2}>
                   <ITBadget label="Portafolio Personal" color="primary" variant="outlined" className="w-fit" />
                   <ITText as="h1" className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
-                    Hola, soy <span className="text-primary-600 dark:text-primary-400">Asael Amaroaqui</span>
+                    Hola, soy <span className="text-primary-600 dark:text-primary-400">Asael Amaro</span>
                   </ITText>
                   <ITText as="p" muted className="text-base leading-relaxed max-w-xl">
                     Fullstack Developer con 4+ años de experiencia creando aplicaciones web modernas. 
@@ -298,6 +299,97 @@ export const HomeShowcase = () => {
             {filteredTech.length} de {TECH_STACK.length} tecnologías
           </ITText>
         </ITStack>
+      </ITCard>
+
+      {/* ─── MIS PRODUCTOS ─── */}
+      <ITCard
+        title="Mis Productos"
+        className="border-slate-200/60 dark:border-slate-800/60 shadow-sm"
+      >
+        <ITText as="p" muted className="!text-sm !mb-4">
+          Productos destacados que he construido.
+        </ITText>
+        <ITGrid container spacing={5}>
+          {/* AXZY UI System */}
+          <ITGrid item xs={12} md={6}>
+            <a
+              href="#ui-system"
+              className="group block h-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-6 hover:border-primary-400/40 hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+            >
+              <ITStack spacing={4} className="h-full" justifyContent="between">
+                <ITStack spacing={3}>
+                  <ITFlex align="center" justify="between">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-purple-500 text-white flex items-center justify-center shadow-md">
+                      <FaLayerGroup size={20} />
+                    </div>
+                    <ITBadget label="Propio" color="primary" variant="filled" />
+                  </ITFlex>
+                  <div>
+                    <ITText as="h3" className="!text-lg !font-bold flex items-center gap-2">
+                      AXZY UI System
+                      <FaArrowRight size={14} className="text-primary-500 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
+                    </ITText>
+                    <ITText as="p" muted className="!text-sm !leading-relaxed mt-1.5">
+                      Librería de componentes React con Tailwind CSS v4. Más de 50
+                      componentes enterprise con theming en runtime, TypeScript nativo y
+                      accesibilidad.
+                    </ITText>
+                  </div>
+                  <ITFlex gap={2} wrap="wrap">
+                    <ITBadget label="React" color="gray" variant="outlined" />
+                    <ITBadget label="TypeScript" color="gray" variant="outlined" />
+                    <ITBadget label="Tailwind" color="gray" variant="outlined" />
+                    <ITBadget label="npm" color="gray" variant="outlined" />
+                  </ITFlex>
+                </ITStack>
+                <ITText as="span" className="!text-xs !font-semibold !text-primary-600 dark:!text-primary-400 inline-flex items-center gap-1.5">
+                  <SiReact size={12} />
+                  Ver proyecto
+                </ITText>
+              </ITStack>
+            </a>
+          </ITGrid>
+
+          {/* CheckApp */}
+          <ITGrid item xs={12} md={6}>
+            <a
+              href="https://checkapp.axzy.dev/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group block h-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-6 hover:border-emerald-400/40 hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+            >
+              <ITStack spacing={4} className="h-full" justifyContent="between">
+                <ITStack spacing={3}>
+                  <ITFlex align="center" justify="between">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 text-white flex items-center justify-center shadow-md">
+                      <FaCheck size={20} />
+                    </div>
+                    <ITBadget label="En vivo" color="gray" variant="outlined" />
+                  </ITFlex>
+                  <div>
+                    <ITText as="h3" className="!text-lg !font-bold flex items-center gap-2">
+                      CheckApp
+                      <FaExternalLinkAlt size={12} className="text-slate-400 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
+                    </ITText>
+                    <ITText as="p" muted className="!text-sm !leading-relaxed mt-1.5">
+                      Aplicación web para consultar información de manera rápida y
+                      sencilla. Desplegada y disponible en línea.
+                    </ITText>
+                  </div>
+                  <ITFlex gap={2} wrap="wrap">
+                    <ITBadget label="Node.js" color="gray" variant="outlined" />
+                    <ITBadget label="React" color="gray" variant="outlined" />
+                    <ITBadget label="Deploy" color="gray" variant="outlined" />
+                  </ITFlex>
+                </ITStack>
+                <ITText as="span" className="!text-xs !font-semibold !text-emerald-600 dark:!text-emerald-400 inline-flex items-center gap-1.5">
+                  <SiNodedotjs size={12} />
+                  Abrir CheckApp
+                </ITText>
+              </ITStack>
+            </a>
+          </ITGrid>
+        </ITGrid>
       </ITCard>
     </ITStack>
   );

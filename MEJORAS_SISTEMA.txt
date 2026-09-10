@@ -1,37 +1,158 @@
 # PUNTOS DE MEJORA - AXZY UI SYSTEM
 
-Análisis técnico de arquitectura y componentes.
+Análisis técnico de arquitectura y componentes. Última revisión: 2026-09-10 (auditoría + fixes de alto impacto vía Claude).
+
+================================================================================
+RESUMEN DE ESTA REVISIÓN (2026-09-10)
+================================================================================
+
+Se auditaron los 52 componentes buscando (a) mejoras generales y (b) inconsistencias
+en el uso del propio UI system (theme.ts, utils/styles.ts, ITThemeProvider). Se
+aplicaron los fixes de mayor impacto/menor riesgo; los de mayor alcance (extracción
+completa de ITTable/ITDataTable, alineación total de sidebar.tsx al theme, etc.)
+quedan documentados abajo como roadmap para una siguiente pasada dedicada.
+
+No se pudo ejecutar `pnpm build` / `pnpm dev` / `pnpm storybook` en el entorno de
+este agente (usa un sandbox Linux que no tiene los binarios nativos de Rollup/
+esbuild/Tailwind-oxide compilados para esa plataforma — el proyecto los tiene
+instalados para macOS arm64). Todo se verificó con `npx tsc --noEmit` (pasa limpio)
+y `npx eslint` (mismos warnings/errores pre-existentes, ninguno introducido).
+**Antes de publicar una nueva versión, correr `pnpm build` localmente** para
+regenerar `dist/` (dist/index.d.ts necesita el rebuild para reflejar todo el JSDoc
+nuevo, y dist/index.css necesita el rebuild para reflejar el fix de @theme).
+
+--------------------------------------------------------------------------------
+🔴 BUG CRÍTICO ENCONTRADO Y CORREGIDO: falta `@theme` en src/index.css
+--------------------------------------------------------------------------------
+Las variables `--color-primary-50..950` (y secondary/success/danger/warning/
+purple/info) y `--animate-fadeIn` estaban declaradas en un bloque `:root, :host {}`
+plano en vez de `@theme { }`. Tailwind v4 SOLO genera utilidades (`bg-primary-100`,
+`text-danger-800`, `animate-fadeIn`, etc.) a partir de tokens declarados dentro de
+`@theme` — un `:root` plano nunca produce esas clases, aunque la variable CSS sí
+exista y se pueda usar con `var(--color-primary-500)`.
+
+Resultado: **18 de ~55 componentes** (alert, avatar, calendar, checkbox, dropfile,
+data-table, table, fieldRenderer, form-header, progress, radio, search-select,
+slider, stat-card, tabs, textarea, theme-provider, triple-filter) usaban clases
+`bg-primary-*`, `text-danger-*`, `border-warning-*`, etc. que **nunca se aplicaban
+visualmente** (verificado: `dist/index.css` no contenía ninguna regla `.bg-primary-*`
+ni `.animate-fadeIn` antes del fix). `animate-fadeIn` tampoco funcionaba en
+tabs.tsx, themeProvider.tsx y dropfile.tsx.
+
+Fix aplicado: `src/index.css` línea 8, `:root, :host {` → `@theme {`. Es un cambio
+de una línea, sin efectos secundarios (Tailwind sigue emitiendo las mismas
+variables en `:root, :host` automáticamente, además de las utilidades). **Requiere
+`pnpm build:css` / `pnpm build` para que `dist/index.css` incluya las clases
+nuevas** — no se pudo regenerar en este entorno.
+
+--------------------------------------------------------------------------------
+✅ Fixes aplicados en esta revisión
+--------------------------------------------------------------------------------
+1. **@theme fix** (arriba) — src/index.css
+2. **Escala de Z-Index centralizada** — nuevo `export const zIndex` documentado en
+   theme.ts (navOverlay:40, drawer:50, modal:60, floating:70, toast:80). Aplicado en
+   navbar, layout, drawer, dialog, confirm-dialog, date-picker, time-picker,
+   popover, tooltip, search-select, sidebar, topbar, toast. Antes, ITToast (z-50)
+   podía quedar detrás de ITDialog/ITDatePicker/ITTimePicker (z-[9999]) o de
+   ITConfirmDialog (z-[300]) — con la escala nueva, Toast siempre gana.
+3. **ITTable / ITDataTable** ahora usan los helpers ya existentes en
+   `utils/styles.ts` (tableContainer, tableHeaderRow, tableHeaderCell, tableBody,
+   tableRow, tableCell, tableActionsCell, tableCellText, tableEmptyContent) en vez
+   de repetir las mismas clases Tailwind crudas en cada archivo. También se cambió
+   `text-red-500`/`text-green-500` (colores Tailwind genéricos) por
+   `text-danger-500`/`text-success-500` (la paleta semántica real de la librería,
+   ahora funcional gracias al fix de @theme) en el ícono booleano y el mensaje de
+   error de catálogo.
+4. **select.tsx** ahora usa `inputLabel()` / `inputError` de `utils/styles.ts`,
+   igual que input.tsx y textarea.tsx (antes duplicaba sus propias clases).
+5. **sidebar.tsx**: 6 valores hex hardcodeados que coincidían exactamente con
+   tokens de `theme.ts` (`--color-secondary-50/100/200/400/500/600/900`, 16
+   ocurrencias) ahora referencian el token en vez de repetir el literal — mismo
+   resultado visual, pero ya no puede quedar desincronizado si cambia la paleta.
+6. **search-select.tsx**: 3 fallbacks hex corregidos para coincidir con los
+   valores reales de `theme.ts` → `theme.input` (uno de ellos estaba mal — usaba
+   `secondary-200` donde `theme.ts` define `secondary-300` para el borde normal).
+7. **dropfile.tsx**: se revirtió el badge de estado (Pendiente/Subiendo/Subido/
+   Error), que en un cambio sin commitear había pasado de clases con tema
+   (`bg-warning-100 text-warning-800 border-warning-200`) a colores hex fijos
+   (`#fffbeb`, `#92400e`...). Con el fix de @theme, las clases con tema ya
+   funcionan correctamente, así que se restauraron (se mantuvo el resto del
+   cambio en curso: migración de `<button>` nativo a `<ITButton>`).
+8. **JSDoc completado** para autocomplete/IntelliSense en los interfaces que
+   estaban incompletos: `ITThemePalette` (era 3/21 props documentadas → 21/21),
+   `Column<T>` / `CatalogOption` (tablas), `FieldConfigV2` / `FieldConfig` /
+   `FieldContextV2` (form builder — antes sin ningún JSDoc), `ITDataTableFetchParams`
+   / `ITDataTableResponse`, `Step` (stepper).
+9. Snippets de VS Code (`snippets/axzy-ui-system.code-snippets`, agregado a
+   `files` en package.json) + guía `AUTOCOMPLETE_SETUP.md`.
+
+--------------------------------------------------------------------------------
+🟡 Inconsistencias encontradas y NO corregidas (requieren una decisión de diseño)
+--------------------------------------------------------------------------------
+- **sidebar.tsx usa verde (#10b981) para el ícono/badge "activo"** en 11 lugares,
+  pero `theme.ts` (`components.sidebar.active.iconColor` /
+  `components.sidebar.badge.backgroundColor`) documenta que debería ser
+  `primary-500` (azul por defecto). No se tocó porque cambiar el color por
+  defecto del sidebar es una decisión visual, no un fix mecánico — hay que
+  decidir cuál de los dos es el diseño "correcto" y alinear el otro.
+- sidebar.tsx también mezcla grises de otras paletas ajenas al sistema
+  (`#d1d5db` = gray-300 de Tailwind, `#71717a` = zinc-500, `#111827` = gray-900)
+  que no coinciden con ningún token de `theme.ts` (que usa la escala "secondary"
+  / slate). 3 ocurrencias, bajo impacto visual pero vale la pena unificar.
+
+================================================================================
+ROADMAP — pendiente para una próxima pasada más profunda
+================================================================================
 
 ## 1. Arquitectura de Tipos (Consistencia)
-- **Problema**: `ITButton` usa `color`, `ITBadget` usa `variant` y `color` indistintamente para el tema.
-- **Mejora**: Estandarizar a `variant` para estilo (filled, outline) y `color` para semántica (primary, success).
-- **Acción**: Refactorizar interfaces en `.props.ts` para seguir un patrón único en toda la librería.
+- **Estado**: Revisado — `ITButton`/`ITBadget` ya usan `variant` (estilo) +
+  `color` (semántica) de forma consistente entre sí. No se encontraron
+  componentes que mezclen ambos conceptos bajo un solo prop.
 
 ## 2. Documentación JSDoc
-- **Problema**: Muchos componentes tienen props sin descripción interna.
-- **Mejora**: Implementar JSDoc en todas las interfaces de props.
-- **Beneficio**: Mejor soporte de IntelliSense para el desarrollador final.
+- **Estado**: ✅ Hecho en esta revisión (ver arriba). Cobertura verificada
+  componente por componente — quedan solo props triviales sin documentar
+  (menos de 5 en total librería).
 
 ## 3. Manejo de Layout y Z-Index
-- **Problema**: El Sidebar móvil compite con el `ITDialog` y `ITToast`.
-- **Mejora**: Definir escala de Z-Index en `theme.ts` (ej: sidebar: 40, modal: 50, toast: 60).
-- **Acción**: Usar variables CSS para Z-Index en lugar de clases arbitrarias.
+- **Estado**: ✅ Hecho en esta revisión (ver arriba).
 
 ## 4. Componentes Atómicos (Tailwind Bloat)
-- **Problema**: Componentes como `ITInput` y `ITSelect` repiten mucha lógica de clases Tailwind.
-- **Mejora**: Extraer utilidades de estilos base a `src/utils/styles.ts` o usar un factory de estilos.
-- **Beneficio**: Menor peso del bundle y mantenimiento centralizado.
+- **Estado**: Parcial. ITTable/ITDataTable/ITSelect ya usan `utils/styles.ts`.
+  **Pendiente**: ITTable e ITDataTable siguen siendo ~85% código duplicado
+  (helpers de renderizado de celda, tarjeta móvil, botones de vista tabla/tarjeta
+  son casi idénticos). Recomendación: extraer un hook/archivo compartido
+  (`src/components/table/shared/`) con `renderCellContent`, `renderDefaultCard`,
+  `renderFilterInput` parametrizados, e importarlo desde ambos componentes. Es
+  una refactorización más grande (requiere pruebas visuales en Storybook/sandbox
+  antes de mergear) — no se hizo en esta pasada para evitar romper algo sin poder
+  verificarlo visualmente en este entorno.
 
 ## 5. Storybook y Testing
-- **Problema**: Existen archivos `.stories.tsx` vacíos o con solo el caso "Default".
-- **Mejora**: Documentar estados: `Loading`, `Disabled`, `Error`, `EmptyState`.
-- **Acción**: Implementar tests de accesibilidad (A11y) automáticos en Storybook.
+- **Estado**: Sin cambios. Sigue pendiente documentar estados Loading/Disabled/
+  Error/EmptyState en `.stories.tsx` y configurar tests de accesibilidad (a11y)
+  automáticos (el addon `@storybook/addon-a11y` ya está instalado).
 
 ## 6. Lógica de Negocio en UI
-- **Problema**: `ITDataTable` y `ITSearchTable` tienen lógica de filtrado muy acoplada.
-- **Mejora**: Separar la lógica de filtrado a un custom hook `useTableLogic`.
-- **Beneficio**: Reutilización de lógica en tablas personalizadas.
+- **Estado**: Sin cambios. `ITDataTable`/`ITSearchTable` siguen con lógica de
+  filtrado acoplada al componente. Ligado al punto 4 — al extraer el código
+  compartido, es buen momento para mover la lógica de filtrado a
+  `useTableLogic`.
 
 ## 7. Performance (Renderizado)
-- **Problema**: `ITFormBuilder` re-renderiza todo el formulario por cada pulsación de tecla.
-- **Mejora**: Implementar `React.memo` en campos individuales y optimizar el manejo de estado.
+- **Estado**: Sin cambios. `ITFormBuilder` sigue re-renderizando el formulario
+  completo en cada tecla — falta `React.memo` en campos individuales.
+
+## 8. (Nuevo) Consolidar el sistema de theming
+- Actualmente conviven dos mecanismos de color independientes: la paleta
+  semántica estática de `theme.ts`/`index.css` (`primary-50..950`, azul por
+  defecto) y la paleta dinámica de `ITThemeProvider` (`palette.primary`, cyan
+  por defecto, inyectada como `--color-primary` sin escala numerada + overrides
+  `!important` sobre clases Tailwind fijas como `.bg-cyan-400`). No se cruzan en
+  ningún punto — cambiar el color desde el FAB del ITThemeProvider no afecta a
+  ningún componente que use `bg-primary-500`. Vale la pena decidir si deben
+  fusionarse (ideal a mediano plazo) o documentarse explícitamente como dos
+  capas separadas para que el equipo sepa cuál usar en cada caso.
+
+## 9. (Nuevo) Resolver discrepancia de color "activo" en sidebar
+- Ver sección de inconsistencias arriba.

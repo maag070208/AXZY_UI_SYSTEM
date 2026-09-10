@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FaAngleDown } from "react-icons/fa";
 import { ITSelectProps } from "./select.props";
 import ITText from "@/components/text/text";
+import { inputError, inputLabel } from "@/utils/styles";
 
 export default function ITSelect({
   name,
@@ -80,10 +81,7 @@ export default function ITSelect({
           <ITText
             as="label"
             htmlFor={name}
-            className={clsx(
-              "text-sm font-medium text-gray-700 dark:text-slate-300 pt-0",
-              { "text-red-500": hasError }
-            )}
+            className={inputLabel(hasError)}
           >
             <ITText as="span">{label}</ITText>
             {required && <ITText as="span" className="text-red-500 ml-1">*</ITText>}
@@ -110,11 +108,11 @@ export default function ITSelect({
               )}
               style={getStyle()}
             >
-              <option value=""><ITText as="span">{placeholder || "Selecciona una opción"}</ITText></option>
+              <option value="">{placeholder || "Selecciona una opción"}</option>
               {
                 readOnly ? (
                   <option value={value} disabled>
-                    <ITText as="span">{options.find((option) => option[valueField] === value)?.[labelField]}</ITText>
+                    {options.find((option) => option[valueField] === value)?.[labelField]}
                   </option>
                 ) : (
                   options.map((option) => (
@@ -123,7 +121,7 @@ export default function ITSelect({
                       value={option[valueField]}
                       title={option[labelField]}
                     >
-                      <ITText as="span">{option[labelField]}</ITText>
+                      {option[labelField]}
                     </option>
                   ))
                 )
@@ -136,7 +134,7 @@ export default function ITSelect({
           {/* Validation message aligned with select */}
           {hasError && (
             <div className="flex-shrink-0 min-w-[140px] flex items-center pt-3">
-              <ITText as="p" className="text-red-500 text-xs">{errorMessage}</ITText>
+              <ITText as="p" className={inputError}>{errorMessage}</ITText>
             </div>
           )}
         </div>

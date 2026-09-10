@@ -80,7 +80,7 @@ export default function ITToast({
   return (
     <div
       className={clsx(
-        "fixed z-50 p-4 rounded-xl shadow-xl flex items-center justify-between gap-4 transition-all duration-300 text-white min-w-[300px]",
+        "fixed z-[80] p-4 rounded-xl shadow-xl flex items-center justify-between gap-4 transition-all duration-300 text-white min-w-[300px]",
         positionStyles[position],
         {
           "opacity-100 translate-y-0 scale-100": isVisible,

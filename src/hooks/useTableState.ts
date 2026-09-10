@@ -42,11 +42,14 @@ export function useTableState({
 
   const goToPage = useCallback(
     (page: number) => {
-      if (page >= 1 && page <= totalPages) {
+      // No limitar contra `totalPages`: ese estado vive en useTableState y
+      // nunca se sincroniza con el total real (ITDataTable calcula el suyo).
+      // ITPagination ya deshabilita la navegación más allá de la última página.
+      if (page >= 1) {
         setCurrentPage(page);
       }
     },
-    [totalPages]
+    []
   );
 
   const handleItemsPerPageChange = useCallback((value: number) => {

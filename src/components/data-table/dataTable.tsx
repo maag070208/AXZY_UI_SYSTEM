@@ -11,6 +11,17 @@ import { Column } from "../table/table.props";
 import { formatCurrencyMX } from "../table/table";
 import { ITDataTableProps } from "./dataTable.props";
 import ITText from "@/components/text/text";
+import {
+  tableActionsCell,
+  tableBody,
+  tableCell,
+  tableCellText,
+  tableContainer,
+  tableEmptyContent,
+  tableHeaderCell,
+  tableHeaderRow,
+  tableRow,
+} from "@/utils/styles";
 
 const getNestedValue = (obj: unknown, path: string) => {
   return path.split(".").reduce((acc, part) => acc && acc[part], obj);
@@ -157,7 +168,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
         return <FaSpinner className="animate-spin" aria-label="Cargando opciones" title="Cargando opciones" />;
       }
       if (col.catalogOptions.error) {
-        return <ITText as="span" className="text-red-500 text-xs">Error cargando</ITText>;
+        return <ITText as="span" className="text-danger-500 text-xs">Error cargando</ITText>;
       }
       return (
         <ITSelect
@@ -203,9 +214,9 @@ export default function ITDataTable<T extends Record<string, unknown>>({
         return typeof value === "number" && col.currencyMX ? formatCurrencyMX(value) : value;
       case "boolean":
         return value ? (
-          <FaCheck className="text-green-500" aria-label="Verdadero" title="Verdadero" />
+          <FaCheck className="text-success-500" aria-label="Verdadero" title="Verdadero" />
         ) : (
-          <FaTimes className="text-red-500" aria-label="Falso" title="Falso" />
+          <FaTimes className="text-danger-500" aria-label="Falso" title="Falso" />
         );
       case "actions":
         return col.actions ? col.actions(row) : null;
@@ -253,7 +264,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
 
   return (
     <div className={clsx("space-y-4 w-full relative", containerClassName)}>
-      <div className="rounded-xl shadow-sm overflow-hidden" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
+      <div className={tableContainer} style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
         {title && (
           <div className="px-6 py-5 flex items-center justify-between" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
             <ITText as="h2" className="text-xl font-bold text-secondary-900 leading-tight">{title}</ITText>
@@ -316,7 +327,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                 ))
               ) : (
                 !isLoading && (
-                  <div className="flex flex-col items-center justify-center py-12 text-secondary-400">
+                  <div className={clsx(tableEmptyContent, "py-12")}>
                     <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
                     <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
                   </div>
@@ -336,9 +347,9 @@ export default function ITDataTable<T extends Record<string, unknown>>({
               )}
             >
               <thead>
-                <tr className="bg-secondary-50 text-xs uppercase tracking-wider font-semibold text-slate-700 dark:text-slate-200">
+                <tr className={clsx(tableHeaderRow, "dark:text-slate-200")}>
                   {columns.map((col) => (
-                    <th key={col.key} scope="col" className={clsx("px-4 py-4 align-top", col.className)}>
+                    <th key={col.key} scope="col" className={tableHeaderCell(col.className)}>
                       <div className="flex flex-col gap-3 min-w-[150px]">
                         <div className="flex items-center justify-between gap-2">
                            <ITText as="span" className="text-slate-900 dark:text-white font-bold">{col.label}</ITText>
@@ -364,18 +375,18 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-700/30">
+              <tbody className={clsx(tableBody, "dark:divide-slate-700/30")}>
                 {data.length > 0 ? (
                   data.map((row, rowIndex) => (
-                    <tr key={rowIndex} className={clsx("hover:bg-secondary-50/50 transition-colors duration-150 group", variant === "striped" && "odd:bg-secondary-50/40 dark:odd:bg-slate-800/20")}>
+                    <tr key={rowIndex} className={clsx(tableRow, variant === "striped" && "odd:bg-secondary-50/40 dark:odd:bg-slate-800/20")}>
                       {columns.map((col) => (
-                        <td key={`${rowIndex}-${col.key}`} className={clsx("px-4 py-3 align-middle", col.className)}>
+                        <td key={`${rowIndex}-${col.key}`} className={tableCell(col.className)}>
                           {col.type === "actions" ? (
-                            <div className="flex items-center justify-center gap-2">
+                            <div className={tableActionsCell}>
                               {renderCellContent(col, row) as React.ReactNode}
                             </div>
                           ) : (
-                            <div className="text-secondary-700 font-medium">
+                            <div className={tableCellText}>
                               {renderCellContent(col, row) as React.ReactNode}
                             </div>
                           )}
@@ -387,7 +398,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                   <tr>
                     <td colSpan={columns.length} className="px-6 py-12 text-center">
                       {!isLoading && (
-                        <div className="flex flex-col items-center justify-center text-secondary-400">
+                        <div className={tableEmptyContent}>
                           <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
                           <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
                         </div>

@@ -2,9 +2,13 @@ import React from "react";
 
 export type IconType = React.ReactNode;
 
+/** A single step in an `ITStepper` flow. */
 export interface Step {
+  /** Label shown next to the step indicator. */
   label: string;
+  /** Content rendered in the panel while this step is active. */
   content: React.ReactNode;
+  /** Custom icon shown in the step indicator when the stepper's `useIcons` is true. */
   icon?: IconType;
 }
 

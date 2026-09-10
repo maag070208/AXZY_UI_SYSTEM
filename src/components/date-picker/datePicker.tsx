@@ -303,7 +303,7 @@ export default function ITDatePicker({
       {isOpen && (
         <div
           className={clsx(
-            "fixed z-[9999]",
+            "fixed z-[70]",
             calendarClassName,
             range ? "w-[320px]" : "w-[280px]"
           )}

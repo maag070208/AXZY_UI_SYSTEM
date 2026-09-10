@@ -227,7 +227,7 @@ export default function ITTimePicker({
       {isOpen && !disabled && (
         <div 
           ref={dropdownRef}
-          className="fixed z-[9999] bg-white border border-gray-100 shadow-xl rounded-xl w-64 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 origin-top it-timepicker-dropdown"
+          className="fixed z-[70] bg-white border border-gray-100 shadow-xl rounded-xl w-64 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 origin-top it-timepicker-dropdown"
           style={{
             top: `${dropdownPosition.top}px`,
             left: `${dropdownPosition.left}px`,

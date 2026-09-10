@@ -23,11 +23,12 @@
   },
   "files": [
     "dist",
-    "src"
+    "src",
+    "snippets"
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "pnpm bundle",
     "build:app": "tsc -b && vite build -c vite.app.config.ts",
     "build:css": "node scripts/build-css.mjs",
     "lint": "eslint .",

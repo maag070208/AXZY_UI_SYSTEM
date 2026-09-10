@@ -182,6 +182,12 @@ const myTheme = {
 
 ---
 
+## Autocomplete / IntelliSense
+
+Al instalar el paquete obtienes autocomplete de props en JSX automáticamente (TypeScript + JSDoc). También incluye snippets de VS Code para insertar cada componente con un par de teclas. Ver [`AUTOCOMPLETE_SETUP.md`](./AUTOCOMPLETE_SETUP.md) para el setup completo (snippets, Tailwind IntelliSense).
+
+---
+
 ## Requisitos
 
 - React 18+

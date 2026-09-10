@@ -3,6 +3,7 @@ import { useDropzone } from "react-dropzone";
 // import pdfjsLib from "@/hooks/pdf"; // Disabled as hook is missing
 import clsx from "clsx";
 import ITText from "@/components/text/text";
+import ITButton from "@/components/button/button";
 import { ITDropfileProps, FileTypeEnum, UploadStatus } from "./dropfile.props";
 export { FileTypeEnum, UploadStatus } from "./dropfile.props";
 
@@ -94,6 +95,24 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
         case FileTypeEnum.JPEG:
           accept[FileTypeEnum.JPEG] = [".jpeg", ".jpg"];
           break;
+        case FileTypeEnum.MP4:
+          accept[FileTypeEnum.MP4] = [".mp4"];
+          break;
+        case FileTypeEnum.MOV:
+          accept[FileTypeEnum.MOV] = [".mov"];
+          break;
+        case FileTypeEnum.AVI:
+          accept[FileTypeEnum.AVI] = [".avi"];
+          break;
+        case FileTypeEnum.MKV:
+          accept[FileTypeEnum.MKV] = [".mkv"];
+          break;
+        case FileTypeEnum.VIDEO_3GPP:
+          accept[FileTypeEnum.VIDEO_3GPP] = [".3gp"];
+          break;
+        case FileTypeEnum.WEBM:
+          accept[FileTypeEnum.WEBM] = [".webm"];
+          break;
       }
     });
     
@@ -120,6 +139,14 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
         case FileTypeEnum.JPG:
         case FileTypeEnum.JPEG:
            if (!extensions.includes("IMAGEN")) extensions.push("IMAGEN");
+          break;
+        case FileTypeEnum.MP4:
+        case FileTypeEnum.MOV:
+        case FileTypeEnum.AVI:
+        case FileTypeEnum.MKV:
+        case FileTypeEnum.VIDEO_3GPP:
+        case FileTypeEnum.WEBM:
+          if (!extensions.includes("VIDEO")) extensions.push("VIDEO");
           break;
       }
     });
@@ -341,35 +368,43 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
           <div className="px-3 py-2 bg-white border-t border-gray-100 flex justify-end gap-2">
             {!isConfirmed ? (
               <>
-                <button
+                <ITButton
                   type="button"
+                  variant="outlined"
+                  color="secondary"
+                  size="small"
                   onClick={handleCancel}
-                  className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  <ITText as="span">Cancelar</ITText>
-                </button>
-                <button
+                  <ITText>Cancelar</ITText>
+                </ITButton>
+                <ITButton
                   type="button"
+                  variant="filled"
+                  color="primary"
+                  size="small"
                   onClick={handleConfirm}
-                  className="px-3 py-1.5 text-xs font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 shadow-sm transition-colors flex items-center gap-1"
                 >
-                  <ITText as="span">Confirmar</ITText>
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </button>
+                  <div className="flex items-center gap-2">
+                    <ITText>Confirmar</ITText>
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                </ITButton>
               </>
             ) : (
-              <button
+              <ITButton
                 type="button"
+                variant="outlined"
+                color="danger"
+                size="small"
                 onClick={handleDelete}
-                className="px-3 py-1.5 text-xs font-medium text-danger-600 bg-danger-50 border border-danger-100 rounded-lg hover:bg-danger-100 transition-colors flex items-center gap-1"
               >
                 <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
-                <ITText as="span">Eliminar</ITText>
-              </button>
+                <ITText>Eliminar</ITText>
+              </ITButton>
             )}
           </div>
 

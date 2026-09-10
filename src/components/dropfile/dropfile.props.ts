@@ -7,6 +7,12 @@ export enum FileTypeEnum {
   PNG = "image/png",
   JPG = "image/jpg",
   JPEG = "image/jpeg",
+  MP4 = "video/mp4",
+  MOV = "video/quicktime",
+  AVI = "video/x-msvideo",
+  MKV = "video/x-matroska",
+  VIDEO_3GPP = "video/3gpp",
+  WEBM = "video/webm",
 }
 
 /** Upload lifecycle status */
