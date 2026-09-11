@@ -121,7 +121,7 @@ export default function ITSidebar({
         ${sidebarWidth}
         ${className}
         ${!visibleOnMobile ? "hidden lg:flex" : "flex"}
-        shadow-[4px_0_24px_rgba(0,0,0,0.02)]
+        shadow-[4px_0_32px_rgba(15,23,42,0.04)]
       `}
       style={{
         zIndex: 50,
@@ -144,7 +144,7 @@ export default function ITSidebar({
                 `}
                 style={{
                   backgroundColor: item.isActive ? "var(--sidebar-active-bg, var(--color-secondary-50))" : 'transparent',
-                  boxShadow: item.isActive ? '0 1px 2px 0 rgba(0, 0, 0, 0.05)' : 'none',
+                  boxShadow: item.isActive ? 'var(--shadow-xs)' : 'none',
                   border: item.isActive ? "1px solid var(--sidebar-border, var(--color-secondary-200))" : '1px solid transparent'
                 }}
                 onMouseEnter={(e) => {
@@ -158,7 +158,7 @@ export default function ITSidebar({
                 {item.isActive && !isSidebarCollapsed && (
                   <div
                     className="absolute left-0 top-1/4 bottom-1/4 w-[3px] rounded-r-full transition-all"
-                    style={{ backgroundColor: "var(--sidebar-active-icon, #10b981)", boxShadow: "0 0 10px var(--sidebar-active-icon, #10b981)" }}
+                    style={{ backgroundColor: "var(--sidebar-active-icon, var(--color-primary-500))", boxShadow: "0 0 10px var(--sidebar-active-icon, var(--color-primary-500))" }}
                   />
                 )}
 
@@ -167,7 +167,7 @@ export default function ITSidebar({
                     <div
                       className={`transition-all duration-300 flex-shrink-0 flex items-center justify-center`}
                       style={{
-                        color: item.isActive ? "var(--sidebar-active-icon, #10b981)" : "var(--sidebar-icon-color, #9ca3af)",
+                        color: item.isActive ? "var(--sidebar-active-icon, var(--color-primary-500))" : "var(--sidebar-icon-color, #9ca3af)",
                         opacity: item.isActive ? 1 : 0.8,
                         fontSize: item.isActive ? '1.35rem' : '1.25rem',
                         filter: item.isActive ? 'drop-shadow(0 0 8px rgba(255,255,255,0.2))' : 'none'
@@ -181,7 +181,7 @@ export default function ITSidebar({
                     <ITText as="span"
                       className={`transition-all duration-300 truncate tracking-wide`}
                       style={{
-                        color: item.isActive ? "var(--sidebar-active-color, #ffffff)" : "var(--sidebar-label-color, #d1d5db)",
+                        color: item.isActive ? "var(--sidebar-active-color, #ffffff)" : "var(--sidebar-label-color, var(--color-secondary-300))",
                         fontSize: '0.9rem',
                         fontWeight: item.isActive ? '600' : '500'
                       }}
@@ -207,9 +207,9 @@ export default function ITSidebar({
                         : "right-3 top-1/2 transform -translate-y-1/2 px-2 py-0.5 text-[10px] rounded-full backdrop-blur-sm"}
                     `}
                     style={{
-                      backgroundColor: "var(--sidebar-badge-bg, #10b981)",
+                      backgroundColor: "var(--sidebar-badge-bg, var(--color-primary-500))",
                       color: "var(--sidebar-badge-color, #ffffff)",
-                      boxShadow: isSidebarCollapsed ? "0 0 0 2px var(--sidebar-bg, #111827)" : 'none'
+                      boxShadow: isSidebarCollapsed ? "0 0 0 2px var(--sidebar-bg, var(--color-secondary-900))" : 'none'
                     }}
                   >
                     {isSidebarCollapsed ? "" : item.badge}
@@ -229,7 +229,7 @@ export default function ITSidebar({
                   }}
                 >
                   <div className="px-5 py-4 flex items-center gap-3 font-semibold border-b" style={{ borderColor: "var(--sidebar-border, var(--color-secondary-200))", color: "var(--sidebar-active-color, var(--color-secondary-900))" }}>
-                    {item.icon && <span style={{ color: "var(--sidebar-active-icon, #10b981)" }} className="text-xl drop-shadow-sm">{item.icon}</span>}
+                    {item.icon && <span style={{ color: "var(--sidebar-active-icon, var(--color-primary-500))" }} className="text-xl drop-shadow-sm">{item.icon}</span>}
                     <ITText as="span" className="tracking-wide text-[15px]">{item.label}</ITText>
                   </div>
 
@@ -244,18 +244,18 @@ export default function ITSidebar({
                             <div
                               className="absolute left-0 top-1/3 bottom-1/3 w-[2.5px] rounded-r-full"
                               style={{
-                                backgroundColor: "var(--sidebar-active-icon, #10b981)",
-                                boxShadow: "0 0 6px color-mix(in srgb, var(--sidebar-active-icon, #10b981) 25%, transparent)",
+                                backgroundColor: "var(--sidebar-active-icon, var(--color-primary-500))",
+                                boxShadow: "0 0 6px color-mix(in srgb, var(--sidebar-active-icon, var(--color-primary-500)) 25%, transparent)",
                               }}
                             />
                           )}
-                          <span className={`w-1.5 h-1.5 rounded-full transition-all ${subitem.isActive ? "scale-125" : ""}`} style={{ backgroundColor: subitem.isActive ? "var(--sidebar-active-icon, #10b981)" : "var(--sidebar-icon-color, var(--color-secondary-400))" }} />
+                          <span className={`w-1.5 h-1.5 rounded-full transition-all ${subitem.isActive ? "scale-125" : ""}`} style={{ backgroundColor: subitem.isActive ? "var(--sidebar-active-icon, var(--color-primary-500))" : "var(--sidebar-icon-color, var(--color-secondary-400))" }} />
                           <ITText as="span" style={{ color: subitem.isActive ? "var(--sidebar-active-color, var(--color-secondary-900))" : "var(--sidebar-label-color, var(--color-secondary-600))", fontWeight: subitem.isActive ? 600 : 500 }}>{subitem.label}</ITText>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <ITText as="div" className="px-5 py-3 text-sm italic" style={{ color: "var(--sidebar-label-color, #71717a)" }}>No hay submenú</ITText>
+                    <ITText as="div" className="px-5 py-3 text-sm italic" style={{ color: "var(--sidebar-label-color, var(--color-secondary-400))" }}>No hay submenú</ITText>
                   )}
                 </div>
               )}
@@ -304,8 +304,8 @@ export default function ITSidebar({
                             <div
                               className="absolute left-0 top-1/3 bottom-1/3 w-[2.5px] rounded-r-full transition-all"
                               style={{
-                                backgroundColor: "var(--sidebar-active-icon, #10b981)",
-                                boxShadow: "0 0 6px color-mix(in srgb, var(--sidebar-active-icon, #10b981) 25%, transparent)",
+                                backgroundColor: "var(--sidebar-active-icon, var(--color-primary-500))",
+                                boxShadow: "0 0 6px color-mix(in srgb, var(--sidebar-active-icon, var(--color-primary-500)) 25%, transparent)",
                               }}
                             />
                           )}
@@ -314,7 +314,7 @@ export default function ITSidebar({
                               className={`w-1.5 h-1.5 rounded-full flex-shrink-0 transition-all duration-300 ${subitem.isActive ? 'scale-125' : ''}`}
                               style={{
                                 backgroundColor: subitem.isActive
-                                  ? "var(--sidebar-active-icon, #10b981)"
+                                  ? "var(--sidebar-active-icon, var(--color-primary-500))"
                                   : "var(--sidebar-icon-color, var(--color-secondary-400))"
                               }}
                             />

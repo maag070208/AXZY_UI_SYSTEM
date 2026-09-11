@@ -472,12 +472,12 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                    type === "checkbox" && "form-checkbox rounded",
                    className,
                    { [disabledOverlay]: disabled },
-                   { "border-red-500": hasError }
+                   { "border-danger-500": hasError }
                 )}
               />
               {label && (
-                <label htmlFor={name} className="text-sm text-gray-700 dark:text-slate-300 select-none">
-                  {label} {required && <ITText as="span" className="text-red-500">*</ITText>}
+                <label htmlFor={name} className="text-sm text-secondary-700 dark:text-slate-300 select-none">
+                  {label} {required && <ITText as="span" className="text-danger-500">*</ITText>}
                 </label>
               )}
            </div>
@@ -493,7 +493,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                   )}
                 >
                   {label}
-                  {required && <ITText as="span" className="text-red-500 ml-1">*</ITText>}
+                  {required && <ITText as="span" className="text-danger-500 ml-1">*</ITText>}
                 </label>
              )}
              
@@ -594,7 +594,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                     {type === "password" && (
                       <button
                         type="button"
-                        className="absolute inset-y-0 right-0 flex items-center pr-3 z-10 text-gray-400 hover:text-gray-600 focus:outline-none"
+                        className="absolute inset-y-0 right-0 flex items-center pr-3 z-10 text-secondary-400 hover:text-secondary-600 focus:outline-none"
                         onClick={() => setShowPassword(!showPassword)}
                         tabIndex={-1} // Don't allow tabbing into the eye icon
                       >
@@ -627,7 +627,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
        {/* Length hint below if needed */}
        {showHintLength && (minLength || maxLength) && !isCheckboxOrRadio && (
          <div className="mt-1 text-xs">
-<ITText as="p" className="text-gray-500">
+<ITText as="p" className="text-secondary-500">
               {currentLength}{maxLength && `/${maxLength}`}
             </ITText>
          </div>
@@ -636,7 +636,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
        {/* Validation for checkbox/radio - keep below */}
        {isCheckboxOrRadio && hasError && (
          <div className="mt-1 text-xs">
-           <ITText as="p" className="text-red-500">{errorMessage}</ITText>
+           <ITText as="p" className="text-danger-500">{errorMessage}</ITText>
          </div>
        )}
     </div>

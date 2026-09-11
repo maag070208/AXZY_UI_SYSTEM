@@ -89,16 +89,12 @@ nuevas** — no se pudo regenerar en este entorno.
 --------------------------------------------------------------------------------
 🟡 Inconsistencias encontradas y NO corregidas (requieren una decisión de diseño)
 --------------------------------------------------------------------------------
-- **sidebar.tsx usa verde (#10b981) para el ícono/badge "activo"** en 11 lugares,
-  pero `theme.ts` (`components.sidebar.active.iconColor` /
-  `components.sidebar.badge.backgroundColor`) documenta que debería ser
-  `primary-500` (azul por defecto). No se tocó porque cambiar el color por
-  defecto del sidebar es una decisión visual, no un fix mecánico — hay que
-  decidir cuál de los dos es el diseño "correcto" y alinear el otro.
-- sidebar.tsx también mezcla grises de otras paletas ajenas al sistema
-  (`#d1d5db` = gray-300 de Tailwind, `#71717a` = zinc-500, `#111827` = gray-900)
-  que no coinciden con ningún token de `theme.ts` (que usa la escala "secondary"
-  / slate). 3 ocurrencias, bajo impacto visual pero vale la pena unificar.
+- ~~sidebar.tsx usa verde (#10b981) para el ícono/badge "activo" en 11
+  lugares, pero theme.ts documenta que debería ser primary-500~~ — **RESUELTO**
+  en el rediseño "Profundidad suave" (ver más abajo): se alineó sidebar.tsx a
+  lo que theme.ts ya especificaba.
+- ~~sidebar.tsx también mezcla grises de otras paletas ajenas al sistema~~ —
+  **RESUELTO** en el mismo rediseño.
 
 ================================================================================
 ROADMAP — pendiente para una próxima pasada más profunda
@@ -155,4 +151,55 @@ ROADMAP — pendiente para una próxima pasada más profunda
   capas separadas para que el equipo sepa cuál usar en cada caso.
 
 ## 9. (Nuevo) Resolver discrepancia de color "activo" en sidebar
-- Ver sección de inconsistencias arriba.
+- **RESUELTO** — ver sección "REDISEÑO VISUAL" al final de este archivo.
+
+================================================================================
+REDISEÑO VISUAL "PROFUNDIDAD SUAVE" — 2026-09-11
+================================================================================
+Pasada completa sobre los ~52 componentes: sombras flotantes con tinte frío,
+radios más grandes y consistentes, y limpieza de tokens de color. Verificado
+con `tsc -b` (0 errores), `eslint .` (425 problemas preexistentes, 0 nuevos —
+comparado con `git stash` antes/después) y `pnpm run build` (dist/index.css
+compila con los nuevos valores). Preview visual (antes/después + galería de
+componentes reales) publicado como artifact — link en la conversación con
+Claude que hizo el cambio.
+
+- `src/index.css`: escala `--shadow-xs/sm/md/lg/xl/2xl` y `--radius-xs..3xl`
+  reescritas dentro de `@theme`. Cascada automática a los ~76 usos de
+  `shadow-*` y todos los `rounded-*` existentes, sin tocar componentes uno por
+  uno.
+- `src/theme/theme.ts`: botón/input a `--radius-md` (antes `0.375rem`/
+  `0.5rem` fijos); card y modal unificados en `--radius-2xl` (antes `1rem`
+  card vs `0.75rem` que usaba `card.tsx` — mismatch resuelto). Los fallback de
+  `shadow` de card/modal ahora referencian `var(--shadow-md)`/`var(--shadow-
+  lg)`/`var(--shadow-xl)` en vez de repetir la fórmula vieja de Tailwind.
+- `src/components/card/card.tsx`: el bug central — una card sin `onClick`
+  caía en `boxShadow: "none"` (por eso se veían planas en el screenshot que
+  disparó este pedido). Ahora toda card tiene `shadow-sm` de reposo; las
+  interactivas suben a `shadow-lg` + `translateY(-2px)` en hover.
+- `src/components/sidebar/sidebar.tsx`: resuelto el punto 9 de este mismo
+  archivo — 11 fallbacks de `#10b981` (verde) → `var(--color-primary-500)`
+  para el acento "activo". `theme.ts` ya documentaba que debía ser
+  `primary-500`; el componente simplemente no lo seguía. También resueltos
+  los 3 grises ajenos al sistema (`#d1d5db`, `#71717a`, `#111827` → tokens
+  `secondary-300/400/900`).
+- `src/utils/styles.ts`: `inputContainer`/`inputLabel`/`inputError` pasaron de
+  `gray-300`/`red-500`/`red-100` genéricos de Tailwind a los tokens propios
+  `secondary`/`danger`.
+- 27 archivos más (barrido con regex sobre `border|text|bg|ring|...-{gray,
+  red}-NNN` → `-{secondary,danger}-NNN`, solo en componentes reales, no en
+  `.stories.tsx`): incluye `avatar.tsx` (glow del avatar suavizado de 0.35 a
+  0.25 de opacidad), `topbar.tsx` (de `boxShadow:none` a `shadow-xs`, borde
+  aclarado a `rgba(15,23,42,0.06)`, colores de acción destructiva alineados a
+  `danger`), `dialog.tsx` (overlay de `bg-black/50` a `bg-slate-900/50`), y
+  los selectores CSS-in-JS de `theme-provider/themeProvider.tsx` (se
+  actualizaron en el mismo barrido para no perder la correspondencia con las
+  clases que ahora emiten los componentes).
+
+Fuera de alcance a propósito: el punto 8 de este archivo (paleta estática de
+theme.ts vs. paleta dinámica de ITThemeProvider) sigue sin resolver — es una
+decisión de arquitectura, no un ajuste visual.
+
+Nota aparte, no relacionada con este rediseño: `pnpm run storybook` falla al
+arrancar — ~30 archivos `*.doc.mdx` que Storybook 10.4.3 no puede parsear
+("Could not parse import/exports with acorn"). Preexistente, no tocado.

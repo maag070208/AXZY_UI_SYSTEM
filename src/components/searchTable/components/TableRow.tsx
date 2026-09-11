@@ -66,7 +66,7 @@ export default function TableRow<T>({
             title="Verdadero"
           />
         ) : (
-          <FaTimes className="text-red-500" aria-label="Falso" title="Falso" />
+          <FaTimes className="text-danger-500" aria-label="Falso" title="Falso" />
         );
 
       case "actions":
@@ -99,13 +99,13 @@ export default function TableRow<T>({
     <tr
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`border-b border-gray-200 transition-colors duration-150 ${
+      className={`border-b border-secondary-200 transition-colors duration-150 ${
         isEditing
           ? "bg-slate-50"
           : rowIndex % 2 === 0
           ? "bg-white"
-          : "bg-gray-50"
-      } ${isHovered && !isEditing ? "bg-gray-100" : ""}`}
+          : "bg-secondary-50"
+      } ${isHovered && !isEditing ? "bg-secondary-100" : ""}`}
     >
       {columns.map((col) => (
         <td

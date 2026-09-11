@@ -184,12 +184,12 @@ export default function ITSearchSelect({
       {label && (
         <ITText
           as="label"
-          className={clsx("text-sm font-medium text-gray-700 dark:text-slate-300", {
-            "text-red-500": hasError,
+          className={clsx("text-sm font-medium text-secondary-700 dark:text-slate-300", {
+            "text-danger-500": hasError,
           })}
         >
           <ITText as="span">{label}</ITText>
-          {required && <ITText as="span" className="text-red-500 ml-1">*</ITText>}
+          {required && <ITText as="span" className="text-danger-500 ml-1">*</ITText>}
         </ITText>
       )}
 
@@ -209,7 +209,7 @@ export default function ITSearchSelect({
             style={getInputStyle()}
             autoComplete="off"
           />
-          <div className="absolute right-3 flex items-center gap-2 text-gray-400 pointer-events-none">
+          <div className="absolute right-3 flex items-center gap-2 text-secondary-400 pointer-events-none">
              {isLoading && <div className="animate-spin h-4 w-4 border-2 border-primary-500 border-t-transparent rounded-full" />}
              {!isLoading && <FaSearch size={14} className={clsx({ "text-primary-500": isFocused })} />}
           </div>
@@ -217,7 +217,7 @@ export default function ITSearchSelect({
 
         {/* Dropdown Panel */}
         {isOpen && (
-          <div className="absolute z-[70] w-full mt-1 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200 origin-top">
+          <div className="absolute z-[70] w-full mt-1 bg-white dark:bg-slate-900 border border-secondary-200 dark:border-slate-800 rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200 origin-top">
             <div className="max-h-60 overflow-y-auto">
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => (
@@ -229,14 +229,14 @@ export default function ITSearchSelect({
                       "px-4 py-2 text-sm cursor-pointer transition-colors",
                       value === option[valueField]
                         ? "bg-primary-50 dark:bg-primary-950/40 text-primary-700 dark:text-primary-300 font-medium"
-                        : "hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300"
+                        : "hover:bg-secondary-50 dark:hover:bg-slate-800 text-secondary-700 dark:text-slate-300"
                     )}
                   >
                     <ITText as="span">{option[labelField]}</ITText>
                   </ITText>
                 ))
               ) : (
-                <ITText as="div" className="px-4 py-6 text-sm text-center text-gray-500 italic">
+                <ITText as="div" className="px-4 py-6 text-sm text-center text-secondary-500 italic">
                   {isLoading ? "Cargando..." : noResultsMessage}
                 </ITText>
               )}
@@ -247,7 +247,7 @@ export default function ITSearchSelect({
 
       {/* Error Message */}
       {hasError && (
-        <ITText as="p" className="text-red-500 text-xs mt-1">{errorMessage}</ITText>
+        <ITText as="p" className="text-danger-500 text-xs mt-1">{errorMessage}</ITText>
       )}
     </div>
   );

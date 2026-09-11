@@ -36,7 +36,7 @@ export default function PaginationControls({
         <PaginationInfo currentCount={currentCount} totalCount={totalCount} />
 
         <div className="flex items-center space-x-2">
-          <ITText as="span" className="text-sm text-gray-700">Mostrar:</ITText>
+          <ITText as="span" className="text-sm text-secondary-700">Mostrar:</ITText>
           <ITSelect
             name="itemsPerPage"
             options={itemsPerPageOptions.map((option) => ({
@@ -65,7 +65,7 @@ export default function PaginationControls({
           <FaArrowLeft aria-hidden="true" />
         </ITButton>
 
-        <ITText as="span" className="px-4 py-2 text-sm text-gray-700" aria-live="polite">
+        <ITText as="span" className="px-4 py-2 text-sm text-secondary-700" aria-live="polite">
           Página {pageIndex} de {totalPages}
         </ITText>
 

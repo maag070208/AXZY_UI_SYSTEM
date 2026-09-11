@@ -18,7 +18,7 @@ export default function SearchInput({
   return (
     <div className={`relative flex-1 ${className}`}>
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-        <FaSearch className="h-5 w-5 text-gray-400" />
+        <FaSearch className="h-5 w-5 text-secondary-400" />
       </div>
       <ITInput
         name="global-search"

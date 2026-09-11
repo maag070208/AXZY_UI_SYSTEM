@@ -94,6 +94,29 @@
   --color-info-800: #075985;
   --color-info-900: #0c4a6e;
   --color-info-950: #082f49;
+
+  /* Soft-depth radius scale: larger, more consistent rounding across the system */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.125rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+
+  /* Soft-depth shadow scale: cool slate-tinted, low-opacity, multi-layer.
+     Overrides Tailwind's default shadow-* tokens system-wide so every
+     existing shadow-* usage picks up the new "floating" look with no
+     per-component changes. */
+  --shadow-2xs: 0 1px 2px 0 rgb(15 23 42 / 0.04);
+  --shadow-xs: 0 1px 3px 0 rgb(15 23 42 / 0.05), 0 1px 2px -1px rgb(15 23 42 / 0.04);
+  --shadow-sm: 0 2px 6px -1px rgb(15 23 42 / 0.06), 0 1px 3px -1px rgb(15 23 42 / 0.05);
+  --shadow-md: 0 6px 16px -4px rgb(15 23 42 / 0.08), 0 3px 6px -3px rgb(15 23 42 / 0.05);
+  --shadow-lg: 0 12px 28px -6px rgb(15 23 42 / 0.1), 0 6px 12px -6px rgb(15 23 42 / 0.06);
+  --shadow-xl: 0 20px 40px -8px rgb(15 23 42 / 0.12), 0 10px 20px -8px rgb(15 23 42 / 0.06);
+  --shadow-2xl: 0 32px 64px -16px rgb(15 23 42 / 0.18);
+  --shadow: 0 2px 6px -1px rgb(15 23 42 / 0.06), 0 1px 3px -1px rgb(15 23 42 / 0.05);
+  --shadow-inner: inset 0 2px 4px 0 rgb(15 23 42 / 0.04);
 }
 
 @keyframes fadeIn {

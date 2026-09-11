@@ -13,7 +13,7 @@ export default function PaginationInfo({
   className = "",
 }: PaginationInfoProps) {
   return (
-    <ITText as="span" className={`text-sm text-gray-700 ${className}`}>
+    <ITText as="span" className={`text-sm text-secondary-700 ${className}`}>
       Mostrando {currentCount} de {totalCount} resultados
     </ITText>
   );

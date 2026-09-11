@@ -39,8 +39,8 @@ const ITTabs: React.FC<ITTabsProps> = ({
     <div className={clsx("w-full", containerClassName)}>
       {/* HEADER */}
       <div className={clsx(
-        "flex border-gray-200 mb-4",
-        variant === 'line' ? "border-b" : "gap-2 p-1 bg-gray-100 rounded-lg w-fit",
+        "flex border-secondary-200 mb-4",
+        variant === 'line' ? "border-b" : "gap-2 p-1 bg-secondary-100 rounded-lg w-fit",
         className
       )}>
         {items.map((item) => {
@@ -58,14 +58,14 @@ const ITTabs: React.FC<ITTabsProps> = ({
                   "border-b-2 -mb-[2px]",
                   isActive 
                     ? "border-primary-500 text-primary-600" 
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300",
+                    : "border-transparent text-secondary-500 hover:text-secondary-700 hover:border-secondary-300",
                 ],
                 // PILL VARIANT
                 variant === 'pill' && [
                   "rounded-md",
                   isActive 
                     ? "bg-white text-primary-600 shadow-sm" 
-                    : "text-gray-500 hover:text-gray-700",
+                    : "text-secondary-500 hover:text-secondary-700",
                 ],
                 item.disabled && "opacity-50 cursor-not-allowed"
               )}

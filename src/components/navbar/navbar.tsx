@@ -80,12 +80,12 @@ export default function ITNavbar({
     // Legacy behavior - original navbar implementation
     return (
       <div className="flex flex-col h-screen">
-        <nav className="bg-white border-b border-gray-200">
+        <nav className="bg-white border-b border-secondary-200">
           <div className="flex items-center justify-between mx-auto p-4">
             <div className="flex items-center space-x-3 rtl:space-x-reverse">
               {logo && <div className="h-8">{logo}</div>}
               {logoText && (
-                <ITText as="span" className="self-center text-2xl font-semibold whitespace-nowrap text-gray-900">
+                <ITText as="span" className="self-center text-2xl font-semibold whitespace-nowrap text-secondary-900">
                   {logoText}
                 </ITText>
               )}
@@ -99,7 +99,7 @@ export default function ITNavbar({
                   <div className="relative">
                     <button
                       type="button"
-                      className="flex text-sm bg-gray-200 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300"
+                      className="flex text-sm bg-secondary-200 rounded-full md:me-0 focus:ring-4 focus:ring-secondary-300"
                       onClick={toggleUserMenu}
                     >
                       {userMenu.userImage ? (
@@ -109,20 +109,20 @@ export default function ITNavbar({
                           alt="user photo"
                         />
                       ) : (
-                        <FaUserCircle className="w-8 h-8 text-gray-500" />
+                        <FaUserCircle className="w-8 h-8 text-secondary-500" />
                       )}
                     </button>
 
                     {isUserMenuOpen && (
                       <div
                         ref={userMenuRef}
-                        className="z-[70] absolute right-0 mt-2 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm"
+                        className="z-[70] absolute right-0 mt-2 text-base list-none bg-white divide-y divide-secondary-100 rounded-lg shadow-sm"
                       >
                         <div className="px-4 py-3">
-                          <ITText as="span" className="block text-sm text-gray-900">
+                          <ITText as="span" className="block text-sm text-secondary-900">
                             {userMenu.userName}
                           </ITText>
-                          <ITText as="span" className="block text-sm text-gray-500 truncate">
+                          <ITText as="span" className="block text-sm text-secondary-500 truncate">
                             {userMenu.userEmail}
                           </ITText>
                         </div>
@@ -134,7 +134,7 @@ export default function ITNavbar({
                                   item.onClick();
                                   setIsUserMenuOpen(false);
                                 }}
-                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                className="block px-4 py-2 text-sm text-secondary-700 hover:bg-secondary-100 w-full text-left"
                               >
                                  <ITText as="span">{item.label}</ITText>
                                 </button>
@@ -152,13 +152,13 @@ export default function ITNavbar({
 
         <div className="flex-1 flex overflow-hidden relative">
           {(showSidebar || showSidebarOnMobile) && (
-            <aside className="fixed inset-y-0 left-0 w-64 bg-gray-50 transform transition-transform duration-300 ease-in-out z-[40] shadow-lg md:static md:transform-none md:shadow-none md:border-r md:border-gray-200">
+            <aside className="fixed inset-y-0 left-0 w-64 bg-secondary-50 transform transition-transform duration-300 ease-in-out z-[40] shadow-lg md:static md:transform-none md:shadow-none md:border-r md:border-secondary-200">
               <div className="h-full overflow-y-auto py-4 px-3">
                 <ul className="space-y-2 font-medium">{sidebarItems}</ul>
               </div>
             </aside>
           )}
-          <main className="flex-1 bg-gray-100 overflow-y-auto">
+          <main className="flex-1 bg-secondary-100 overflow-y-auto">
             {children}
           </main>
         </div>

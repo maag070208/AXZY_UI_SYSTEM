@@ -70,7 +70,7 @@ export default function ITDialog({
       data-it-dialog="true"
       className={`fixed inset-0 flex ${
         fullScreen ? "items-stretch" : "items-center justify-center"
-      } bg-black/50 z-[60]`}
+      } bg-slate-900/50 z-[60]`}
     >
       <div
         ref={modalRef}
@@ -98,7 +98,7 @@ export default function ITDialog({
         ) : (
           <>
             <button
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+              className="absolute top-2 right-2 text-secondary-600 hover:text-secondary-900"
               onClick={onClose}
             >
               <FaRegTimesCircle />

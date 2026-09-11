@@ -146,8 +146,8 @@ export default function ITPagination({
         className={clsx(
           baseItemClass,
           currentPage === 1
-            ? "text-gray-300 cursor-not-allowed"
-            : "text-gray-500 hover:bg-gray-100"
+            ? "text-secondary-300 cursor-not-allowed"
+            : "text-secondary-500 hover:bg-secondary-100"
         )}
         onClick={handlePrevious}
         aria-disabled={currentPage === 1}
@@ -162,7 +162,7 @@ export default function ITPagination({
             <ITText
               as="div"
               key={`dots-${idx}`}
-              className="flex items-center justify-center w-8 h-8 select-none text-gray-400"
+              className="flex items-center justify-center w-8 h-8 select-none text-secondary-400"
             >
               &#8230;
             </ITText>
@@ -177,7 +177,7 @@ export default function ITPagination({
             key={pageNumber}
             className={clsx(
               baseItemClass,
-              isActive ? "text-white" : "text-gray-600 hover:bg-gray-100"
+              isActive ? "text-white" : "text-secondary-600 hover:bg-secondary-100"
             )}
             style={{
               backgroundColor: isActive ? resolvedBgColor : undefined,
@@ -196,8 +196,8 @@ export default function ITPagination({
         className={clsx(
           baseItemClass,
           currentPage === totalPages
-            ? "text-gray-300 cursor-not-allowed"
-            : "text-gray-500 hover:bg-gray-100"
+            ? "text-secondary-300 cursor-not-allowed"
+            : "text-secondary-500 hover:bg-secondary-100"
         )}
         onClick={handleNext}
         aria-disabled={currentPage === totalPages}
@@ -214,8 +214,8 @@ export default function ITPagination({
 
     return (
       <div className={clsx("flex flex-col sm:flex-row justify-between items-center gap-4 w-full", className)}>
-        <div className="flex items-center gap-4 text-sm text-gray-500">
-          <div className="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded-lg border border-gray-200">
+        <div className="flex items-center gap-4 text-sm text-secondary-500">
+          <div className="flex items-center gap-2 bg-secondary-50 px-3 py-1 rounded-lg border border-secondary-200">
             <ITText as="span" className="text-xs font-medium">Mostrar</ITText>
             <ITSelect
               name="itemsPerPage"
@@ -227,16 +227,16 @@ export default function ITPagination({
               onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
               onBlur={() => {}}
               size="small"
-              className="!w-14 !h-6 !text-xs !py-0 !px-1! !border-none !bg-transparent !ring-0 focus:!ring-0 cursor-pointer font-bold text-gray-700"
+              className="!w-14 !h-6 !text-xs !py-0 !px-1! !border-none !bg-transparent !ring-0 focus:!ring-0 cursor-pointer font-bold text-secondary-700"
               placeholder=""
             />
           </div>
           
           {totalItems !== undefined && (
             <>
-              <ITText as="span" className="text-gray-300">|</ITText>
+              <ITText as="span" className="text-secondary-300">|</ITText>
               <ITText as="span" className="text-xs">
-                <ITText as="span" className="font-semibold text-gray-700">{startItem}</ITText><ITText as="span"> - </ITText><ITText as="span" className="font-semibold text-gray-700">{endItem}</ITText><ITText as="span"> de </ITText><ITText as="span" className="font-semibold text-gray-900">{totalItems}</ITText>
+                <ITText as="span" className="font-semibold text-secondary-700">{startItem}</ITText><ITText as="span"> - </ITText><ITText as="span" className="font-semibold text-secondary-700">{endItem}</ITText><ITText as="span"> de </ITText><ITText as="span" className="font-semibold text-secondary-900">{totalItems}</ITText>
               </ITText>
             </>
           )}

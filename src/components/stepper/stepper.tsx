@@ -128,7 +128,7 @@ export default function ITStepper({
     <div className={clsx("w-full max-w-5xl mx-auto px-4", containerClassName)}>
       <div className="relative mb-8">
         <div
-          className="absolute left-6 right-6 top-5 h-1 bg-gray-200 rounded-full z-0"
+          className="absolute left-6 right-6 top-5 h-1 bg-secondary-200 rounded-full z-0"
           aria-hidden
         />
         <div
@@ -161,7 +161,7 @@ export default function ITStepper({
                       hasIcon && "p-2",
                       isCompleted && "bg-slate-400 border-slate-400 text-white scale-100 shadow",
                       isActive && "text-white scale-110 shadow-lg",
-                      !isActive && !isCompleted && "bg-white border-gray-300 text-gray-400"
+                      !isActive && !isCompleted && "bg-white border-secondary-300 text-secondary-400"
                     )}
                     style={isActive ? { backgroundColor: resolvedColor, borderColor: resolvedColor } : undefined}
                   >
@@ -172,7 +172,7 @@ export default function ITStepper({
                     as="span"
                     className={clsx(
                       "mt-2 text-xs sm:text-sm font-medium transition-colors text-center",
-                      isCompleted ? "text-slate-400" : !isActive && "text-gray-400"
+                      isCompleted ? "text-slate-400" : !isActive && "text-secondary-400"
                     )}
                     style={isActive ? { color: resolvedColor } : undefined}
                   >
@@ -193,7 +193,7 @@ export default function ITStepper({
         aria-labelledby={`step-${currentStep}`}
         className={clsx(
           stepClassName,
-          "bg-white border border-gray-100 rounded-2xl shadow-lg min-h-[280px] transition-transform duration-400 no-scrollbar p-6",
+          "bg-white border border-secondary-100 rounded-2xl shadow-lg min-h-[280px] transition-transform duration-400 no-scrollbar p-6",
           scrollableContent && "overflow-y-auto hide-scrollbar"
         )}
         style={
@@ -220,7 +220,7 @@ export default function ITStepper({
         </ITButton>
 
         <div className="flex items-center gap-3">
-          <ITText as="div" className="text-sm text-gray-500 mr-2 hidden sm:block">
+          <ITText as="div" className="text-sm text-secondary-500 mr-2 hidden sm:block">
             Paso {currentStep + 1} de {steps.length}
           </ITText>
           

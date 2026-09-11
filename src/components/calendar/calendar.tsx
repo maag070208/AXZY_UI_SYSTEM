@@ -371,7 +371,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
              {/* Weekday Headers */}
              <div className="grid grid-cols-7 mb-2">
                 {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map(day => (
-                  <ITText key={day} as="div" className="text-center text-xs font-semibold text-gray-400 uppercase py-1">
+                  <ITText key={day} as="div" className="text-center text-xs font-semibold text-secondary-400 uppercase py-1">
                     {day}
                   </ITText>
                 ))}

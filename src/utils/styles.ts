@@ -9,20 +9,20 @@ export function inputContainer(hasError?: boolean, disabled?: boolean) {
     "w-full border border-solid transition-all duration-200 rounded-lg px-3 py-2 text-sm",
     "focus:outline-none focus:ring-2",
     hasError
-      ? "border-red-500 ring-red-100"
-      : "border-gray-300 focus:border-primary-500 focus:ring-primary-100",
-    disabled && "opacity-50 cursor-not-allowed bg-gray-100"
+      ? "border-danger-500 ring-danger-100"
+      : "border-secondary-300 focus:border-primary-500 focus:ring-primary-100",
+    disabled && "opacity-50 cursor-not-allowed bg-secondary-100"
   );
 }
 
 export function inputLabel(error?: boolean) {
   return clsx(
     "text-sm font-medium",
-    error ? "text-red-500" : "text-gray-700 dark:text-slate-300"
+    error ? "text-danger-500" : "text-secondary-700 dark:text-secondary-300"
   );
 }
 
-export const inputError = "text-red-500 text-xs mt-1";
+export const inputError = "text-danger-500 text-xs mt-1";
 
 export function inputWrapper(className?: string) {
   return clsx("flex flex-col gap-1.5", className);

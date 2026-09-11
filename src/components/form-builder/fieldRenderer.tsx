@@ -228,7 +228,7 @@ const ITFieldRenderer = ({
         return (
           <div className={clsx("w-full col-span-full", activeConfig.className)}>
             {label && (
-              <ITText as="h4" className="text-lg font-semibold text-gray-800 mb-4">
+              <ITText as="h4" className="text-lg font-semibold text-secondary-800 mb-4">
                 {label}
               </ITText>
             )}
@@ -246,8 +246,8 @@ const ITFieldRenderer = ({
 
       case "array":
         return (
-          <div className="p-4 border-2 border-dashed border-gray-200 rounded-xl">
-            <ITText as="p" className="text-sm text-gray-500 text-center">
+          <div className="p-4 border-2 border-dashed border-secondary-200 rounded-xl">
+            <ITText as="p" className="text-sm text-secondary-500 text-center">
               Array Field: {label}
             </ITText>
           </div>

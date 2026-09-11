@@ -33,15 +33,18 @@ export default function ITCard({
 
   const containerStyle: React.CSSProperties = {
     backgroundColor: "var(--card-bg, #ffffff)",
-    borderColor: "var(--card-border, #e2e8f0)",
+    borderColor: "var(--card-border, rgba(15, 23, 42, 0.06))",
     borderWidth: "1px",
-    borderRadius: "var(--card-radius, 0.75rem)",
+    borderRadius: "var(--card-radius, var(--radius-2xl))",
+    // Soft depth: every card floats a little at rest; interactive cards
+    // gain visual weight on hover instead of appearing flat until clicked.
     boxShadow: onClick
       ? isHovered
-        ? "0 8px 25px -5px rgba(0, 0, 0, 0.1)"
-        : "0 1px 3px 0 rgba(0, 0, 0, 0.05)"
-      : "none",
-    transition: onClick ? "all 0.2s ease-in-out" : "none",
+        ? "var(--shadow-lg)"
+        : "var(--shadow-sm)"
+      : "var(--shadow-sm)",
+    transition: onClick ? "box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out" : "none",
+    transform: onClick && isHovered ? "translateY(-2px)" : "translateY(0)",
     cursor: onClick ? "pointer" : "default",
   };
 
@@ -74,12 +77,12 @@ export default function ITCard({
             {title}
           </ITText>
         )}
-        <ITText as="div" className="text-gray-600">{children}</ITText>
+        <ITText as="div" className="text-secondary-600">{children}</ITText>
       </div>
       {actions && (
         <div
           className={clsx(
-            "p-4 border-t border-gray-100 mt-auto",
+            "p-4 border-t border-secondary-100 mt-auto",
             actionClassName,
           )}
         >

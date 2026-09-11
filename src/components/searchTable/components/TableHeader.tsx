@@ -18,7 +18,7 @@ export default function TableHeader<T>({
 }: TableHeaderProps<T>) {
   return (
     <thead>
-      <tr className="bg-white border-b border-gray-200">
+      <tr className="bg-white border-b border-secondary-200">
         {columns.map((col) => (
           <TableHeaderCell
             key={col.key}

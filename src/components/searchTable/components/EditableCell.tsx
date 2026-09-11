@@ -143,7 +143,7 @@ export default function EditableCell<T>({
   return (
     <div className="w-full">
       {renderInput()}
-      {error && <div className="text-red-500 text-xs mt-1"><ITText as="span">{error}</ITText></div>}
+      {error && <div className="text-danger-500 text-xs mt-1"><ITText as="span">{error}</ITText></div>}
     </div>
   );
 }

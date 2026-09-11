@@ -283,8 +283,8 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
   return (
     <div className={clsx("w-full transition-all duration-300", containerClassName)}>
       <div className="flex items-center justify-between mb-2">
-        <label className="block text-sm font-semibold text-gray-700">
-          <ITText as="span">Subir archivo </ITText><ITText as="span" className="text-gray-400 font-normal text-xs">({getFileExtensions()})</ITText>
+        <label className="block text-sm font-semibold text-secondary-700">
+          <ITText as="span">Subir archivo </ITText><ITText as="span" className="text-secondary-400 font-normal text-xs">({getFileExtensions()})</ITText>
         </label>
         
         {showStatusBadge && selectedFile && (
@@ -301,15 +301,15 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
             ${
               isDragActive
                 ? "border-primary-500 bg-primary-50 scale-[1.01]"
-                : "border-gray-300 bg-white hover:border-primary-400 hover:bg-gray-50"
+                : "border-secondary-300 bg-white hover:border-primary-400 hover:bg-secondary-50"
             }
           `}
         >
           <input {...getInputProps()} />
           
-          <div className={`mb-3 p-3 rounded-full transition-colors duration-300 ${isDragActive ? 'bg-primary-100' : 'bg-gray-100 group-hover:bg-primary-50'}`}>
+          <div className={`mb-3 p-3 rounded-full transition-colors duration-300 ${isDragActive ? 'bg-primary-100' : 'bg-secondary-100 group-hover:bg-primary-50'}`}>
             <svg 
-              className={`w-6 h-6 transition-colors duration-300 ${isDragActive ? 'text-primary-600' : 'text-gray-400 group-hover:text-primary-500'}`} 
+              className={`w-6 h-6 transition-colors duration-300 ${isDragActive ? 'text-primary-600' : 'text-secondary-400 group-hover:text-primary-500'}`} 
               fill="none" viewBox="0 0 24 24" stroke="currentColor"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -317,14 +317,14 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
           </div>
 
           <div className="text-center space-y-1">
-            <ITText as="p" className={`text-sm font-medium transition-colors duration-300 ${isDragActive ? 'text-primary-700' : 'text-gray-700'}`}>
+            <ITText as="p" className={`text-sm font-medium transition-colors duration-300 ${isDragActive ? 'text-primary-700' : 'text-secondary-700'}`}>
               {isDragActive ? "¡Suelta aquí!" : "Haz clic o arrastra"}
             </ITText>
           </div>
         </div>
       ) : (
-        <div className="w-full bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden animate-fade-in">
-          <div className="flex items-center justify-between p-3 bg-gray-50 border-b border-gray-100">
+        <div className="w-full bg-white border border-secondary-200 rounded-xl shadow-sm overflow-hidden animate-fade-in">
+          <div className="flex items-center justify-between p-3 bg-secondary-50 border-b border-secondary-100">
              <div className="flex items-center gap-3 overflow-hidden">
                 <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center text-primary-600">
                   {(selectedFile && fileType?.startsWith('image/')) || (!selectedFile && imagePreview) ? (
@@ -338,17 +338,17 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
                   )}
                 </div>
                 <div className="min-w-0">
-                  <ITText as="p" className="text-xs font-medium text-gray-900 truncate" title={selectedFile?.name || "Imagen cargada"}>
+                  <ITText as="p" className="text-xs font-medium text-secondary-900 truncate" title={selectedFile?.name || "Imagen cargada"}>
                     {selectedFile?.name || "Imagen cargada"}
                   </ITText>
-                  <ITText as="p" className="text-[10px] text-gray-500">
+                  <ITText as="p" className="text-[10px] text-secondary-500">
                     {selectedFile ? (selectedFile.size / 1024 / 1024).toFixed(2) + " MB" : ""}
                   </ITText>
                 </div>
              </div>
           </div>
 
-          <div className={clsx("relative bg-gray-100 flex items-center justify-center", !contentClassName ? "max-h-[200px] min-h-[100px] overflow-auto" : contentClassName)}>
+          <div className={clsx("relative bg-secondary-100 flex items-center justify-center", !contentClassName ? "max-h-[200px] min-h-[100px] overflow-auto" : contentClassName)}>
             {((selectedFile && fileType?.startsWith('image/')) || (!selectedFile && imagePreview)) ? (
               <img 
                 src={imagePreview} 
@@ -356,7 +356,7 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
                 className="w-full h-full object-contain max-h-[200px]"
               />
             ) : (
-              <div className="py-8 flex flex-col items-center text-gray-400">
+              <div className="py-8 flex flex-col items-center text-secondary-400">
                 <svg className="w-10 h-10 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
@@ -365,7 +365,7 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
             )}
           </div>
 
-          <div className="px-3 py-2 bg-white border-t border-gray-100 flex justify-end gap-2">
+          <div className="px-3 py-2 bg-white border-t border-secondary-100 flex justify-end gap-2">
             {!isConfirmed ? (
               <>
                 <ITButton
@@ -410,7 +410,7 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
 
           {uploadStatus === UploadStatus.UPLOADING && (
             <div className="px-4 pb-2">
-              <div className="w-full bg-gray-200 rounded-full h-1.5">
+              <div className="w-full bg-secondary-200 rounded-full h-1.5">
                 <div 
                   className="bg-primary-600 h-1.5 rounded-full transition-all duration-1000 ease-out"
                   style={{ 

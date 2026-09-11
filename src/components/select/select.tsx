@@ -84,7 +84,7 @@ export default function ITSelect({
             className={inputLabel(hasError)}
           >
             <ITText as="span">{label}</ITText>
-            {required && <ITText as="span" className="text-red-500 ml-1">*</ITText>}
+            {required && <ITText as="span" className="text-danger-500 ml-1">*</ITText>}
           </ITText>
         )}
         <div className="flex flex-col w-full">
@@ -127,7 +127,7 @@ export default function ITSelect({
                 )
               }
             </select>
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-secondary-500">
               <FaAngleDown />
             </div>
           </div>

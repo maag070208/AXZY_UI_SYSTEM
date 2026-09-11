@@ -139,7 +139,7 @@ return (
       {/* Contenido con scroll */}
       <div className="bg-white">
         {/* Barra de búsqueda y ordenamiento */}
-        <div className="p-4 border-b border-gray-200">
+        <div className="p-4 border-b border-secondary-200">
           <SearchAndSortBar
             searchTerm={searchTerm}
             onSearchChange={handleSearchChange}
@@ -154,7 +154,7 @@ return (
         <div className="overflow-x-auto">
           <table
             className={clsx(
-              "min-w-full text-sm text-left bg-white text-gray-900 table-auto",
+              "min-w-full text-sm text-left bg-white text-secondary-900 table-auto",
               variantStyles[variant],
               sizeStyles[size]
             )}

@@ -160,7 +160,7 @@ export const components = {
       hover: semanticColors.primary[600],
       active: semanticColors.primary[700],
       focus: `0 0 0 2px ${semanticColors.primary[200]}`,
-      borderRadius: '0.375rem', 
+      borderRadius: 'var(--radius-md)', 
       padding: '0.5rem 1rem',
       fontSize: '0.875rem',
       fontWeight: '600',
@@ -172,7 +172,7 @@ export const components = {
       color: '#ffffff',
       hover: semanticColors.secondary[600],
       focus: `0 0 0 2px ${semanticColors.secondary[200]}`,
-      borderRadius: '0.375rem',
+      borderRadius: 'var(--radius-md)',
       padding: '0.5rem 1rem',
       fontSize: '0.875rem',
       fontWeight: '600',
@@ -183,7 +183,7 @@ export const components = {
       color: '#ffffff',
       hover: semanticColors.success[600],
       focus: `0 0 0 2px ${semanticColors.success[200]}`,
-      borderRadius: '0.375rem',
+      borderRadius: 'var(--radius-md)',
     },
 
     danger: {
@@ -191,14 +191,14 @@ export const components = {
       color: '#ffffff',
       hover: semanticColors.danger[600],
       focus: `0 0 0 2px ${semanticColors.danger[200]}`,
-      borderRadius: '0.375rem',
+      borderRadius: 'var(--radius-md)',
     },
 
     error: {
       backgroundColor: semanticColors.danger[500],
       color: '#ffffff',
       hover: semanticColors.danger[600],
-      borderRadius: '0.375rem',
+      borderRadius: 'var(--radius-md)',
     },
 
     warning: {
@@ -206,7 +206,7 @@ export const components = {
       color: '#ffffff',
       hover: semanticColors.warning[600],
       focus: `0 0 0 2px ${semanticColors.warning[200]}`,
-      borderRadius: '0.375rem',
+      borderRadius: 'var(--radius-md)',
     },
 
     info: {
@@ -214,7 +214,7 @@ export const components = {
       color: '#ffffff',
       hover: semanticColors.info[600],
       focus: `0 0 0 2px ${semanticColors.info[200]}`,
-      borderRadius: '0.375rem',
+      borderRadius: 'var(--radius-md)',
     },
 
     purple: {
@@ -222,7 +222,7 @@ export const components = {
       color: '#ffffff',
       hover: semanticColors.purple[600],
       focus: `0 0 0 2px ${semanticColors.purple[200]}`,
-      borderRadius: '0.375rem',
+      borderRadius: 'var(--radius-md)',
     },
     
     outline: {
@@ -231,7 +231,7 @@ export const components = {
       borderColor: semanticColors.primary[600],
       borderWidth: '2px', 
       hover: semanticColors.primary[50],
-      borderRadius: '0.375rem',
+      borderRadius: 'var(--radius-md)',
     },
   },
   
@@ -291,19 +291,19 @@ export const components = {
 
   card: {
     backgroundColor: 'var(--card-bg, #ffffff)',
-    borderRadius: '1rem',
+    borderRadius: 'var(--radius-2xl)',
     borderColor: `var(--card-border, ${semanticColors.gray[200]})`,
     borderWidth: '1px',
-    shadow: 'var(--card-shadow, 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1))',
+    shadow: 'var(--card-shadow, var(--shadow-md))',
     hover: {
-      shadow: 'var(--card-shadow-hover, 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1))',
+      shadow: 'var(--card-shadow-hover, var(--shadow-lg))',
     },
     header: {
       backgroundColor: `var(--card-header-bg, ${semanticColors.gray[50]})`,
       borderBottom: `1px solid var(--card-header-border, var(--color-secondary-200))`,
       padding: '1rem 1.5rem',
-      borderTopLeftRadius: '1rem',
-      borderTopRightRadius: '1rem',
+      borderTopLeftRadius: 'var(--radius-2xl)',
+      borderTopRightRadius: 'var(--radius-2xl)',
     },
     body: {
       padding: '1.5rem',
@@ -313,7 +313,7 @@ export const components = {
   input: {
     backgroundColor: 'var(--input-bg, #ffffff)',
     borderColor: `var(--input-border, ${semanticColors.gray[300]})`,
-    borderRadius: '0.5rem',
+    borderRadius: 'var(--radius-md)',
     padding: '0.5rem 0.75rem',
     fontSize: '0.875rem',
     focus: {
@@ -382,8 +382,8 @@ export const components = {
     },
     content: {
       backgroundColor: 'var(--modal-bg, #ffffff)',
-      borderRadius: '1rem',
-      shadow: 'var(--modal-shadow, 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1))',
+      borderRadius: 'var(--radius-2xl)',
+      shadow: 'var(--modal-shadow, var(--shadow-xl))',
     },
     header: {
       padding: '1.5rem 1.5rem 0.5rem 1.5rem',

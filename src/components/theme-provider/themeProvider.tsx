@@ -799,23 +799,23 @@ export default function ITThemeProvider({
         color: #cbd5e1;
       }
       .dark .text-slate-800, [data-theme="dark"] .text-slate-800,
-      .dark .text-gray-800, [data-theme="dark"] .text-gray-800 {
+      .dark .text-secondary-800, [data-theme="dark"] .text-secondary-800 {
         color: #f8fafc !important;
       }
       .dark .text-slate-700, [data-theme="dark"] .text-slate-700,
-      .dark .text-gray-700, [data-theme="dark"] .text-gray-700 {
+      .dark .text-secondary-700, [data-theme="dark"] .text-secondary-700 {
         color: #cbd5e1 !important;
       }
       .dark .text-slate-600, [data-theme="dark"] .text-slate-600,
-      .dark .text-gray-600, [data-theme="dark"] .text-gray-600 {
+      .dark .text-secondary-600, [data-theme="dark"] .text-secondary-600 {
         color: #cbd5e1 !important;
       }
       .dark .text-slate-500, [data-theme="dark"] .text-slate-500,
-      .dark .text-gray-500, [data-theme="dark"] .text-gray-500 {
+      .dark .text-secondary-500, [data-theme="dark"] .text-secondary-500 {
         color: #94a3b8 !important;
       }
       .dark .text-slate-400, [data-theme="dark"] .text-slate-400,
-      .dark .text-gray-400, [data-theme="dark"] .text-gray-400 {
+      .dark .text-secondary-400, [data-theme="dark"] .text-secondary-400 {
         color: #64748b !important;
       }
 
@@ -823,25 +823,25 @@ export default function ITThemeProvider({
         background-color: var(--card-bg, #111827) !important;
       }
       .dark .bg-slate-50, [data-theme="dark"] .bg-slate-50,
-      .dark .bg-gray-50, [data-theme="dark"] .bg-gray-50 {
+      .dark .bg-secondary-50, [data-theme="dark"] .bg-secondary-50 {
         background-color: #1f2937 !important;
       }
       .dark .border-slate-100, [data-theme="dark"] .border-slate-100,
-      .dark .border-gray-100, [data-theme="dark"] .border-gray-100,
+      .dark .border-secondary-100, [data-theme="dark"] .border-secondary-100,
       .dark .border-slate-200, [data-theme="dark"] .border-slate-200,
-      .dark .border-gray-200, [data-theme="dark"] .border-gray-200 {
+      .dark .border-secondary-200, [data-theme="dark"] .border-secondary-200 {
         border-color: #374151 !important;
       }
 
-      .dark .bg-gray-100, [data-theme="dark"] .bg-gray-100,
+      .dark .bg-secondary-100, [data-theme="dark"] .bg-secondary-100,
       .dark .bg-slate-100, [data-theme="dark"] .bg-slate-100 {
         background-color: #1f2937 !important;
       }
-      .dark .border-gray-300, [data-theme="dark"] .border-gray-300,
+      .dark .border-secondary-300, [data-theme="dark"] .border-secondary-300,
       .dark .border-slate-300, [data-theme="dark"] .border-slate-300 {
         border-color: #4b5563 !important;
       }
-      .dark .bg-gray-200, [data-theme="dark"] .bg-gray-200,
+      .dark .bg-secondary-200, [data-theme="dark"] .bg-secondary-200,
       .dark .bg-slate-200, [data-theme="dark"] .bg-slate-200 {
         background-color: #374151 !important;
       }
@@ -909,23 +909,23 @@ export default function ITThemeProvider({
       }
 
       [data-theme="light"] .text-slate-800,
-      [data-theme="light"] .text-gray-800 {
+      [data-theme="light"] .text-secondary-800 {
         color: #1e293b !important;
       }
       [data-theme="light"] .text-slate-700,
-      [data-theme="light"] .text-gray-700 {
+      [data-theme="light"] .text-secondary-700 {
         color: #334155 !important;
       }
       [data-theme="light"] .text-slate-600,
-      [data-theme="light"] .text-gray-600 {
+      [data-theme="light"] .text-secondary-600 {
         color: #475569 !important;
       }
       [data-theme="light"] .text-slate-500,
-      [data-theme="light"] .text-gray-500 {
+      [data-theme="light"] .text-secondary-500 {
         color: #64748b !important;
       }
       [data-theme="light"] .text-slate-400,
-      [data-theme="light"] .text-gray-400 {
+      [data-theme="light"] .text-secondary-400 {
         color: #94a3b8 !important;
       }
 
@@ -933,24 +933,24 @@ export default function ITThemeProvider({
         background-color: #ffffff !important;
       }
       [data-theme="light"] .bg-slate-50,
-      [data-theme="light"] .bg-gray-50 {
+      [data-theme="light"] .bg-secondary-50 {
         background-color: #f8fafc !important;
       }
       [data-theme="light"] .border-slate-100,
-      [data-theme="light"] .border-gray-100,
+      [data-theme="light"] .border-secondary-100,
       [data-theme="light"] .border-slate-200,
-      [data-theme="light"] .border-gray-200 {
+      [data-theme="light"] .border-secondary-200 {
         border-color: #e2e8f0 !important;
       }
-      [data-theme="light"] .bg-gray-100,
+      [data-theme="light"] .bg-secondary-100,
       [data-theme="light"] .bg-slate-100 {
         background-color: #f1f5f9 !important;
       }
-      [data-theme="light"] .border-gray-300,
+      [data-theme="light"] .border-secondary-300,
       [data-theme="light"] .border-slate-300 {
         border-color: #cbd5e1 !important;
       }
-      [data-theme="light"] .bg-gray-200,
+      [data-theme="light"] .bg-secondary-200,
       [data-theme="light"] .bg-slate-200 {
         background-color: #e2e8f0 !important;
       }
@@ -978,13 +978,13 @@ export default function ITThemeProvider({
       .hover\\:bg-green-600:hover { background-color: var(--color-success-hover) !important; }
 
       /* Danger overrides (red mappings in UI library) */
-      .bg-red-700 { background-color: var(--color-danger) !important; }
-      .hover\\:bg-red-800:hover { background-color: var(--color-danger-hover) !important; }
-      .focus\\:ring-red-300:focus { --tw-ring-color: var(--color-danger-ring) !important; }
-      .text-red-700 { color: var(--color-danger) !important; }
-      .border-red-700 { border-color: var(--color-danger) !important; }
-      .bg-red-500 { background-color: var(--color-danger) !important; }
-      .hover\\:bg-red-600:hover { background-color: var(--color-danger-hover) !important; }
+      .bg-danger-700 { background-color: var(--color-danger) !important; }
+      .hover\\:bg-danger-800:hover { background-color: var(--color-danger-hover) !important; }
+      .focus\\:ring-danger-300:focus { --tw-ring-color: var(--color-danger-ring) !important; }
+      .text-danger-700 { color: var(--color-danger) !important; }
+      .border-danger-700 { border-color: var(--color-danger) !important; }
+      .bg-danger-500 { background-color: var(--color-danger) !important; }
+      .hover\\:bg-danger-600:hover { background-color: var(--color-danger-hover) !important; }
 
       /* Warning overrides (yellow mappings in UI library) */
       .bg-yellow-400 { background-color: var(--color-warning) !important; }
@@ -1014,12 +1014,12 @@ export default function ITThemeProvider({
       .border-blue-500 { border-color: var(--color-info) !important; }
 
       /* Secondary elements overrides */
-      button[class*="bg-white"][class*="hover:bg-gray-100"] {
+      button[class*="bg-white"][class*="hover:bg-secondary-100"] {
         background-color: var(--color-secondary) !important;
         border-color: var(--color-secondary-soft-border) !important;
         color: #111827 !important;
       }
-      button[class*="bg-white"][class*="hover:bg-gray-100"]:hover {
+      button[class*="bg-white"][class*="hover:bg-secondary-100"]:hover {
         background-color: var(--color-secondary-hover) !important;
       }
 
@@ -1625,7 +1625,7 @@ export default function ITThemeProvider({
               e.stopPropagation();
               handleDeletePreset(preset.name, e);
             }}
-            className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 p-0.5 rounded-md hover:bg-red-500/10 hover:text-red-500 text-slate-400 dark:text-slate-500 cursor-pointer transition-all z-10"
+            className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 p-0.5 rounded-md hover:bg-danger-500/10 hover:text-danger-500 text-slate-400 dark:text-slate-500 cursor-pointer transition-all z-10"
             title="Eliminar"
           >
             <MdClose size={12} />

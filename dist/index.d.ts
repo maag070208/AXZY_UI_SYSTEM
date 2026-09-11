@@ -969,7 +969,7 @@ interface ITDividerProps {
  *
  * @example
  * ```tsx
- * <ITDivider orientation="vertical" color="bg-red-500" thickness="w-1" />
+ * <ITDivider orientation="vertical" color="bg-danger-500" thickness="w-1" />
  * ```
  */
 declare function ITDivider({ orientation, className, color, thickness, }: ITDividerProps): react_jsx_runtime.JSX.Element;

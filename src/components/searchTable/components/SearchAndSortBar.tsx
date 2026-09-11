@@ -25,7 +25,7 @@ export default function SearchAndSortBar({
   searchInputPlaceholder = "Buscar en todos los campos...",
 }: SearchAndSortBarProps) {
   return (
-    <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+    <div className="bg-secondary-50 px-6 py-4 border-b border-secondary-200">
       <div className="flex items-center gap-4">
         <SearchInput
           placeholder={searchInputPlaceholder}

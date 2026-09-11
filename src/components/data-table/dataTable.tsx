@@ -147,14 +147,14 @@ export default function ITDataTable<T extends Record<string, unknown>>({
           title={`${getToggleLabel()} para ${col.label}`}
           disabled={isLoading}
         >
-          <div className="relative w-10 h-5 bg-gray-300 rounded-full">
+          <div className="relative w-10 h-5 bg-secondary-300 rounded-full">
             <div
               className={clsx(
                 "absolute top-0.5 w-4 h-4 rounded-full transition-all duration-300 shadow-sm",
                 {
-                  "left-0.5 bg-gray-400": currentValue === undefined,
+                  "left-0.5 bg-secondary-400": currentValue === undefined,
                   "left-5 bg-slate-500": currentValue === true,
-                  "left-0.5 bg-gray-500": currentValue === false,
+                  "left-0.5 bg-secondary-500": currentValue === false,
                 }
               )}
             />

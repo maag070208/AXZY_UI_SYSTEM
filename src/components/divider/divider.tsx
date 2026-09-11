@@ -14,7 +14,7 @@ import { ITDividerProps } from "./divider.props";
  *
  * @example
  * ```tsx
- * <ITDivider orientation="vertical" color="bg-red-500" thickness="w-1" />
+ * <ITDivider orientation="vertical" color="bg-danger-500" thickness="w-1" />
  * ```
  */
 export default function ITDivider({

@@ -227,14 +227,14 @@ export default function ITTimePicker({
       {isOpen && !disabled && (
         <div 
           ref={dropdownRef}
-          className="fixed z-[70] bg-white border border-gray-100 shadow-xl rounded-xl w-64 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 origin-top it-timepicker-dropdown"
+          className="fixed z-[70] bg-white border border-secondary-100 shadow-xl rounded-xl w-64 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 origin-top it-timepicker-dropdown"
           style={{
             top: `${dropdownPosition.top}px`,
             left: `${dropdownPosition.left}px`,
           }}
         >
-          <div className="flex bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            <ITText as="div" className="flex-1 text-center py-2 border-r border-gray-100">
+          <div className="flex bg-secondary-50 border-b border-secondary-100 text-xs font-semibold text-secondary-500 uppercase tracking-wider">
+            <ITText as="div" className="flex-1 text-center py-2 border-r border-secondary-100">
               Horas
             </ITText>
             <ITText as="div" className="flex-1 text-center py-2">Minutos</ITText>
@@ -244,7 +244,7 @@ export default function ITTimePicker({
             {/* Hours Column */}
             <div
               ref={hoursRef}
-              className="flex-1 overflow-y-auto no-scrollbar border-r border-gray-50 scroll-smooth relative"
+              className="flex-1 overflow-y-auto no-scrollbar border-r border-secondary-50 scroll-smooth relative"
             >
               <div className="py-2">
                 {hoursList.map((h) => {
@@ -321,7 +321,7 @@ export default function ITTimePicker({
             <div className="absolute top-1/2 left-0 right-0 h-10 -mt-5 bg-black/5 pointer-events-none border-y border-black/10 z-10" />
           </div>
 
-          <div className="p-3 bg-gray-50 border-t border-gray-100 flex justify-end">
+          <div className="p-3 bg-secondary-50 border-t border-secondary-100 flex justify-end">
             <ITButton
               variant="solid"
               color={color as any}

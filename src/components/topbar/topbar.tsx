@@ -61,8 +61,8 @@ export default function ITTopBar({
       className="sticky top-0 z-40 backdrop-blur-md transition-all duration-300"
       style={{
         backgroundColor: "var(--topbar-bg, rgba(255, 255, 255, 0.9))",
-        borderBottom: "1px solid var(--topbar-border, #e2e8f0)",
-        boxShadow: "none",
+        borderBottom: "1px solid var(--topbar-border, rgba(15, 23, 42, 0.06))",
+        boxShadow: "var(--shadow-xs)",
       }}
     >
       <div className="flex items-center justify-between h-[72px] px-6 lg:px-8">
@@ -105,7 +105,7 @@ export default function ITTopBar({
 
           {/* Top Navigation Items (Desktop) */}
           {navItems && navItems.length > 0 && (
-            <nav className="hidden md:flex ml-8 space-x-1 border-l pl-8" style={{ borderColor: "var(--topbar-border, #e2e8f0)" }}>
+            <nav className="hidden md:flex ml-8 space-x-1 border-l pl-8" style={{ borderColor: "var(--topbar-border, rgba(15, 23, 42, 0.06))" }}>
               {navItems.map((item) => (
                 <button
                   key={item.id}
@@ -136,7 +136,7 @@ export default function ITTopBar({
           <div className="relative">
             <button
               type="button"
-              className="flex items-center gap-3 rounded-full pl-2 pr-4 py-1.5 transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] border border-transparent hover:border-gray-200"
+              className="flex items-center gap-3 rounded-full pl-2 pr-4 py-1.5 transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] border border-transparent hover:border-secondary-200"
               style={{
                 backgroundColor: isUserMenuOpen ? "var(--topbar-user-hover, #f1f5f9)" : "transparent",
               }}
@@ -220,9 +220,9 @@ export default function ITTopBar({
                            setIsUserMenuOpen(false);
                         }}
                         className="block w-full text-left px-3 py-2.5 rounded-xl text-[0.875rem] font-medium transition-colors duration-150"
-                        style={{ color: isDestructive ? '#ef4444' : "var(--topbar-user-text, #334155)" }}
+                        style={{ color: isDestructive ? 'var(--color-danger-500)' : "var(--topbar-user-text, #334155)" }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = isDestructive ? '#fef2f2' : "var(--topbar-user-item-hover, #f8fafc)";
+                          e.currentTarget.style.backgroundColor = isDestructive ? 'var(--color-danger-50)' : "var(--topbar-user-item-hover, #f8fafc)";
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.backgroundColor = "transparent";

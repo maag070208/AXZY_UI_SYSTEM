@@ -60,9 +60,9 @@ export default function ITTextarea({
           "focus:ring-2",
           resizeMap[resize],
           error
-            ? "border-red-500 ring-red-100 focus:border-red-500 focus:ring-red-100"
-            : "border-gray-300 focus:border-primary-500 focus:ring-primary-100",
-          disabled && "opacity-50 cursor-not-allowed bg-gray-100 dark:bg-slate-800"
+            ? "border-danger-500 ring-danger-100 focus:border-danger-500 focus:ring-danger-100"
+            : "border-secondary-300 focus:border-primary-500 focus:ring-primary-100",
+          disabled && "opacity-50 cursor-not-allowed bg-secondary-100 dark:bg-slate-800"
         )}
       />
       {error && <ITText as="span" className={inputError}>{error}</ITText>}

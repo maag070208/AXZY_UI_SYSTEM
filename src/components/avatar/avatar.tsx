@@ -12,7 +12,7 @@ const sizeMap: Record<AvatarSize, { container: string; text: string }> = {
 
 const DEFAULT_COLOR = "bg-primary-600";
 const DEFAULT_BG = "var(--color-primary-600)";
-const DEFAULT_SHADOW = "0 4px 14px 0 rgba(37, 99, 235, 0.35)";
+const DEFAULT_SHADOW = "0 6px 16px -2px rgba(37, 99, 235, 0.25)";
 
 // Un valor tipo "#8b5cf6", "rgb(...)", "hsl(...)" o "var(--...)" se aplica
 // como color inline; cualquier otra cosa se trata como clase de Tailwind
