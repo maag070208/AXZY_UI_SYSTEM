@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 // import pdfjsLib from "@/hooks/pdf"; // Disabled as hook is missing
 import clsx from "clsx";
 import ITText from "@/components/text/text";
 import ITButton from "@/components/button/button";
+import ITDialog from "@/components/dialog/dialog";
 import { ITDropfileProps, FileTypeEnum, UploadStatus } from "./dropfile.props";
 export { FileTypeEnum, UploadStatus } from "./dropfile.props";
 
@@ -25,6 +26,17 @@ export { FileTypeEnum, UploadStatus } from "./dropfile.props";
  *   showStatusBadge
  * />
  * ```
+ *
+ * @example
+ * Compact trigger button that opens the dropzone in a modal — no need to
+ * build your own "open a modal" button around `ITDropfile`:
+ * ```tsx
+ * <ITDropfile
+ *   view="button"
+ *   buttonLabel="Subir archivos"
+ *   onFileSelect={(file) => setSelectedFile(file)}
+ * />
+ * ```
  */
 const ITDropfile: React.FC<ITDropfileProps> = ({
   onFileSelect,
@@ -37,7 +49,11 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
   uploadStatus: externalStatus,
   onStatusChange,
   initialPreviewUrl,
+  view = "drop",
+  buttonLabel = "Subir archivo",
+  modalTitle,
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileType, setFileType] = useState<string | null>(null);
   // Initialize preview with prop if available
@@ -47,8 +63,6 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
   const [internalUploadStatus, setInternalUploadStatus] = useState<UploadStatus>(
     initialPreviewUrl ? UploadStatus.UPLOADED : UploadStatus.PENDING
   );
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
   // Sync initialPreviewUrl if it changes
   useEffect(() => {
     if (initialPreviewUrl && !selectedFile) {
@@ -278,20 +292,30 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
     handleCancel();
   };
 
-  const isImage = fileType && fileType.startsWith('image/');
+  // In "button" view, close the modal a moment after a successful upload so
+  // the trigger collapses back to its compact state instead of leaving the
+  // modal open on a finished confirmation.
+  useEffect(() => {
+    if (view === "button" && isConfirmed && uploadStatus === UploadStatus.UPLOADED) {
+      const timeout = setTimeout(() => setIsModalOpen(false), 900);
+      return () => clearTimeout(timeout);
+    }
+  }, [view, isConfirmed, uploadStatus]);
 
-  return (
-    <div className={clsx("w-full transition-all duration-300", containerClassName)}>
-      <div className="flex items-center justify-between mb-2">
-        <label className="block text-sm font-semibold text-secondary-700">
-          <ITText as="span">Subir archivo </ITText><ITText as="span" className="text-secondary-400 font-normal text-xs">({getFileExtensions()})</ITText>
-        </label>
-        
-        {showStatusBadge && selectedFile && (
-          <StatusBadge status={uploadStatus} />
-        )}
-      </div>
+  const headerRow = (
+    <div className="flex items-center justify-between mb-2">
+      <label className="block text-sm font-semibold text-secondary-700">
+        <ITText as="span">Subir archivo </ITText><ITText as="span" className="text-secondary-400 font-normal text-xs">({getFileExtensions()})</ITText>
+      </label>
 
+      {showStatusBadge && selectedFile && (
+        <StatusBadge status={uploadStatus} />
+      )}
+    </div>
+  );
+
+  const dropZoneOrPreview = (
+    <>
       {!selectedFile && !imagePreview ? (
         <div
           {...getRootProps()}
@@ -423,6 +447,45 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
           )}
         </div>
       )}
+    </>
+  );
+
+  if (view === "button") {
+    const hasFile = Boolean(selectedFile || imagePreview);
+    return (
+      <div className={clsx("inline-block", containerClassName)}>
+        <ITButton
+          type="button"
+          variant="outlined"
+          color={hasFile ? "primary" : "secondary"}
+          size="small"
+          onClick={() => setIsModalOpen(true)}
+        >
+          <div className="flex items-center gap-2 max-w-[220px]">
+            <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            <ITText className="truncate">
+              {selectedFile?.name || (hasFile ? "Archivo cargado" : buttonLabel)}
+            </ITText>
+            {showStatusBadge && hasFile && <StatusBadge status={uploadStatus} />}
+          </div>
+        </ITButton>
+
+        <ITDialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={modalTitle ?? buttonLabel}>
+          <div className="w-full transition-all duration-300">
+            {headerRow}
+            {dropZoneOrPreview}
+          </div>
+        </ITDialog>
+      </div>
+    );
+  }
+
+  return (
+    <div className={clsx("w-full transition-all duration-300", containerClassName)}>
+      {headerRow}
+      {dropZoneOrPreview}
     </div>
   );
 };

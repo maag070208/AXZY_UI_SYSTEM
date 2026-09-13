@@ -34,23 +34,35 @@ export default defineConfig({
 })
 ```
 
-### 4. Importar Tailwind CSS
+### 4. Importar Tailwind + el CSS de la librería (en el orden de capas correcto)
+
+`dist/index.css` es un build de Tailwind **independiente y ya compilado** (tiene sus propias
+capas `@layer theme, base, components, utilities`). Si tu app también hace
+`@import "tailwindcss";` por su cuenta, el navegador acaba con **dos** juegos de esas mismas
+capas compartiendo nombre, y gana la que se registró en último lugar en el documento — normalmente
+el Preflight/reset de tu propia app, que no conoce los tokens de AXZY. Eso es lo que rompe cosas
+como el Sidebar: se ve bien solo mientras tu app no tiene su propio Tailwind corriendo.
+
+La forma correcta es importar el CSS de la librería con un **layer propio** y fijar el orden de
+capas explícitamente, para que el reset/tema de AXZY nunca dependa del orden de imports:
 
 `src/index.css`:
 
 ```css
+/* El orden aquí es el que manda, independientemente de en qué orden se
+   importen los archivos: axzy-ui-system se ejecuta después del `base` de
+   Tailwind (así su reset nunca lo pisa) pero antes de `utilities` (así tus
+   clases de Tailwind siguen pudiendo sobrescribir estilos de AXZY cuando
+   haga falta). */
+@layer theme, base, axzy-ui-system, components, utilities;
+
 @import "tailwindcss";
+@import "@axzydev/axzy_ui_system/dist/index.css" layer(axzy-ui-system);
 ```
 
-### 5. Importar el CSS de la librería
+Con esto **ya no** se importa `dist/index.css` desde `main.tsx` — todo entra por `index.css`.
 
-`src/main.tsx`:
-
-```tsx
-import "@axzydev/axzy_ui_system/dist/index.css"
-```
-
-### 6. Envolver con ITThemeProvider
+### 5. Envolver con ITThemeProvider
 
 `src/main.tsx`:
 

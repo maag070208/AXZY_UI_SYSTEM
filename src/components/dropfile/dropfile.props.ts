@@ -44,4 +44,17 @@ export interface ITDropfileProps {
   onStatusChange?: (status: UploadStatus) => void;
   /** An initial preview URL to display before any file is selected. */
   initialPreviewUrl?: string | null;
+  /**
+   * Presentation mode. `"drop"` renders the dropzone/preview inline (default,
+   * current behavior). `"button"` renders a compact trigger button instead —
+   * clicking it opens the same dropzone/preview UI inside an `ITDialog`, so
+   * callers don't need to build their own "open a modal" button around
+   * `ITDropfile`.
+   * @default "drop"
+   */
+  view?: "drop" | "button";
+  /** Label for the trigger button when `view="button"` and no file is selected yet. @default "Subir archivo" */
+  buttonLabel?: string;
+  /** Title of the modal opened when `view="button"`. Defaults to `buttonLabel`. */
+  modalTitle?: string;
 }

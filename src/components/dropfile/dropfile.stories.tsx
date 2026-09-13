@@ -18,6 +18,10 @@ const meta = {
       control: 'select',
       options: Object.values(UploadStatus),
     },
+    view: {
+      control: 'radio',
+      options: ['drop', 'button'],
+    },
   },
 } satisfies Meta<typeof ITDropfile>;
 
@@ -61,6 +65,23 @@ export const Uploading: any = {
     initialPreviewUrl: 'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
     uploadStatus: UploadStatus.UPLOADING,
     containerClassName: 'w-[400px]',
+  },
+};
+
+export const ButtonView: any = {
+  render: (args) => <DropfileWrapper {...args} />,
+  args: {
+    view: 'button',
+    buttonLabel: 'Subir archivos',
+    showStatusBadge: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Compact trigger button that opens the dropzone/preview inside a modal (`ITDialog`) — use this instead of wrapping `ITDropfile` in your own "open a modal" button.',
+      },
+    },
   },
 };
 
