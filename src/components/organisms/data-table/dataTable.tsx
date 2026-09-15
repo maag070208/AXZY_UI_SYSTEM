@@ -88,16 +88,24 @@ export default function ITDataTable<T extends Record<string, unknown>>({
 
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasFetchedRef = useRef(false);
+  const fetchDataRef = useRef(fetchData);
+  fetchDataRef.current = fetchData;
+  const externalFiltersRef = useRef(externalFilters);
+  externalFiltersRef.current = externalFilters;
+
+  // Snapshot JSON para re-fetch solo cuando los valores cambian (no por nueva
+  // identidad del objeto que el padre pase en cada render).
+  const externalKey = JSON.stringify(externalFilters);
 
   const computedTotalPages = Math.ceil(totalItems / itemsPerPage) || 1;
 
   const performFetch = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await fetchData({
+      const response = await fetchDataRef.current({
         page: currentPage,
         limit: itemsPerPage,
-        filters: { ...filters, ...externalFilters },
+        filters: { ...filters, ...externalFiltersRef.current },
         sort: sortConfig || undefined,
       });
       setData(response.data || []);
@@ -111,7 +119,10 @@ export default function ITDataTable<T extends Record<string, unknown>>({
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, itemsPerPage, filters, sortConfig, fetchData, externalFilters]);
+  }, [currentPage, itemsPerPage, filters, sortConfig]);
+
+  const performFetchRef = useRef(performFetch);
+  performFetchRef.current = performFetch;
 
   useEffect(() => {
     if (!fetchOnMount && !hasFetchedRef.current) return;
@@ -119,13 +130,13 @@ export default function ITDataTable<T extends Record<string, unknown>>({
     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
 
     debounceTimerRef.current = setTimeout(() => {
-      performFetch();
+      performFetchRef.current();
     }, debounceMs);
 
     return () => {
       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     };
-  }, [currentPage, itemsPerPage, sortConfig, filters, externalFilters, reloadTrigger, fetchOnMount, performFetch, debounceMs]);
+  }, [currentPage, itemsPerPage, sortConfig, filters, externalKey, reloadTrigger, fetchOnMount, debounceMs]);
 
   const renderFilterInput = (col: Column<T>) => {
     if (!col.filter) return null;
