@@ -9,7 +9,7 @@ export interface ITBadgetProps {
   children?: React.ReactNode;
   /** Color theme key. Values come from the semantic color palette (e.g. `"primary"`, `"secondary"`, `"success"`, `"danger"`, `"warning"`, `"info"`, `"purple"`, `"error"`, `"gray"`). @default "primary" */
   color?: ColorsTypes;
-  /** Badge size. Valid values: `"small"`, `"medium"`, `"large"`. @default "medium" */
+  /** Badge size. Valid values: `"sm"`, `"md"`, `"lg"`. @default "md" */
   size?: SizesTypes;
   /** Badge visual style. Valid values: `"filled"`, `"outlined"`. @default "filled" */
   variant?: keyof typeof badgeVariants;

@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { ITCardProps } from "./card.props";
 import { useState } from "react";
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 /**
  * Versatile card container with optional image, title, body content, and action footer. Supports interactive hover states.
@@ -32,10 +32,10 @@ export default function ITCard({
   const [isHovered, setIsHovered] = useState(false);
 
   const containerStyle: React.CSSProperties = {
-    backgroundColor: "var(--card-bg, #ffffff)",
-    borderColor: "var(--card-border, rgba(15, 23, 42, 0.06))",
+    backgroundColor: "var(--it-card-bg, #ffffff)",
+    borderColor: "var(--it-card-border, rgba(15, 23, 42, 0.06))",
     borderWidth: "1px",
-    borderRadius: "var(--card-radius, var(--radius-2xl))",
+    borderRadius: "var(--it-card-radius, var(--radius-2xl))",
     // Soft depth: every card floats a little at rest; interactive cards
     // gain visual weight on hover instead of appearing flat until clicked.
     boxShadow: onClick

@@ -1,3 +1,12 @@
+import type { SizesTypes } from "@/types/sizes.types";
+
+/** Escala única de medidas del sistema. `theme.input` usa `md` como default. */
+export const inputSizeTokens: Record<SizesTypes, { padding: string; fontSize: string }> = {
+  sm: { padding: "0.25rem 0.625rem", fontSize: "0.75rem" },
+  md: { padding: "0.375rem 0.75rem", fontSize: "0.8125rem" },
+  lg: { padding: "0.5rem 0.8125rem", fontSize: "0.875rem" },
+};
+
 /**
  * 1. Paleta base (Raw HEX values - Default Theme Fallback)
  */
@@ -104,52 +113,52 @@ export const semanticColors = {
  */
 export const components = {
   layout: {
-    backgroundColor: `var(--layout-bg, ${semanticColors.gray[50]})`,
-    contentPadding: 'var(--layout-padding, 1.5rem)',
+    backgroundColor: `var(--it-layout-bg, ${semanticColors.gray[50]})`,
+    contentPadding: 'var(--it-layout-padding, 1.5rem)',
   },
   topbar: {
-    backgroundColor: 'var(--topbar-bg, rgba(255, 255, 255, 0.90))', 
-    borderColor: `var(--topbar-border, ${semanticColors.gray[200]})`,
-    iconColor: `var(--topbar-icon, ${semanticColors.gray[500]})`,
-    iconHoverColor: `var(--topbar-icon-hover, ${semanticColors.gray[700]})`,
-    shadow: 'var(--topbar-shadow, 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.025))',
-    textColor: `var(--topbar-text, ${semanticColors.gray[700]})`,
-    textHoverColor: `var(--topbar-text-hover, ${semanticColors.gray[900]})`,
+    backgroundColor: 'var(--it-topbar-bg, rgba(255, 255, 255, 0.90))', 
+    borderColor: `var(--it-topbar-border, ${semanticColors.gray[200]})`,
+    iconColor: `var(--it-topbar-icon, ${semanticColors.gray[500]})`,
+    iconHoverColor: `var(--it-topbar-icon-hover, ${semanticColors.gray[700]})`,
+    shadow: 'var(--it-topbar-shadow, 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.025))',
+    textColor: `var(--it-topbar-text, ${semanticColors.gray[700]})`,
+    textHoverColor: `var(--it-topbar-text-hover, ${semanticColors.gray[900]})`,
     userMenu: {
-      backgroundColor: `var(--topbar-user-bg, ${semanticColors.gray[50]})`,
-      hoverBackground: `var(--topbar-user-hover, ${semanticColors.gray[100]})`,
-      textColor: `var(--topbar-user-text, ${semanticColors.gray[900]})`,
-      subtitleColor: `var(--topbar-user-subtitle, ${semanticColors.gray[500]})`,
+      backgroundColor: `var(--it-topbar-user-bg, ${semanticColors.gray[50]})`,
+      hoverBackground: `var(--it-topbar-user-hover, ${semanticColors.gray[100]})`,
+      textColor: `var(--it-topbar-user-text, ${semanticColors.gray[900]})`,
+      subtitleColor: `var(--it-topbar-user-subtitle, ${semanticColors.gray[500]})`,
       dropdown: {
-        backgroundColor: 'var(--topbar-user-dropdown-bg, #ffffff)',
-        borderColor: `var(--topbar-user-dropdown-border, ${semanticColors.gray[200]})`,
-        itemHoverBackground: `var(--topbar-user-item-hover, ${semanticColors.gray[50]})`,
+        backgroundColor: 'var(--it-topbar-user-dropdown-bg, #ffffff)',
+        borderColor: `var(--it-topbar-user-dropdown-border, ${semanticColors.gray[200]})`,
+        itemHoverBackground: `var(--it-topbar-user-item-hover, ${semanticColors.gray[50]})`,
       }
     }
   },
   sidebar: {
-    backgroundColor: 'var(--sidebar-bg, rgba(255, 255, 255, 0.90))',
-    borderColor: `var(--sidebar-border, ${semanticColors.gray[200]})`,
+    backgroundColor: 'var(--it-sidebar-bg, rgba(255, 255, 255, 0.90))',
+    borderColor: `var(--it-sidebar-border, ${semanticColors.gray[200]})`,
     label: {
-      color: `var(--sidebar-label-color, ${semanticColors.gray[700]})`,
-      size: 'var(--sidebar-label-size, 0.9rem)',
-      weight: 'var(--sidebar-label-weight, 500)',
+      color: `var(--it-sidebar-label-color, ${semanticColors.gray[700]})`,
+      size: 'var(--it-sidebar-label-size, 0.9rem)',
+      weight: 'var(--it-sidebar-label-weight, 500)',
     },
     icon: {
-      color: `var(--sidebar-icon-color, ${semanticColors.gray[500]})`,
-      size: 'var(--sidebar-icon-size, 1.25rem)',
+      color: `var(--it-sidebar-icon-color, ${semanticColors.gray[500]})`,
+      size: 'var(--it-sidebar-icon-size, 1.25rem)',
     },
     hover: {
-      backgroundColor: `var(--sidebar-hover-bg, ${semanticColors.gray[100]})`,
+      backgroundColor: `var(--it-sidebar-hover-bg, ${semanticColors.gray[100]})`,
     },
     active: {
-      backgroundColor: `var(--sidebar-active-bg, ${semanticColors.gray[50]})`,
-      color: `var(--sidebar-active-color, ${semanticColors.gray[900]})`,
-      iconColor: `var(--sidebar-active-icon, ${semanticColors.primary[500]})`, 
+      backgroundColor: `var(--it-sidebar-active-bg, ${semanticColors.gray[50]})`,
+      color: `var(--it-sidebar-active-color, ${semanticColors.gray[900]})`,
+      iconColor: `var(--it-sidebar-active-icon, ${semanticColors.primary[500]})`, 
     },
     badge: {
-      backgroundColor: `var(--sidebar-badge-bg, ${semanticColors.primary[500]})`, 
-      color: 'var(--sidebar-badge-color, #ffffff)',
+      backgroundColor: `var(--it-sidebar-badge-bg, ${semanticColors.primary[500]})`, 
+      color: 'var(--it-sidebar-badge-color, #ffffff)',
     },
   },
 
@@ -290,17 +299,17 @@ export const components = {
   },
 
   card: {
-    backgroundColor: 'var(--card-bg, #ffffff)',
+    backgroundColor: 'var(--it-card-bg, #ffffff)',
     borderRadius: 'var(--radius-2xl)',
-    borderColor: `var(--card-border, ${semanticColors.gray[200]})`,
+    borderColor: `var(--it-card-border, ${semanticColors.gray[200]})`,
     borderWidth: '1px',
-    shadow: 'var(--card-shadow, var(--shadow-md))',
+    shadow: 'var(--it-card-shadow, var(--shadow-md))',
     hover: {
-      shadow: 'var(--card-shadow-hover, var(--shadow-lg))',
+      shadow: 'var(--it-card-shadow-hover, var(--shadow-lg))',
     },
     header: {
-      backgroundColor: `var(--card-header-bg, ${semanticColors.gray[50]})`,
-      borderBottom: `1px solid var(--card-header-border, var(--color-secondary-200))`,
+      backgroundColor: `var(--it-card-header-bg, ${semanticColors.gray[50]})`,
+      borderBottom: `1px solid var(--it-card-header-border, var(--color-secondary-200))`,
       padding: '1rem 1.5rem',
       borderTopLeftRadius: 'var(--radius-2xl)',
       borderTopRightRadius: 'var(--radius-2xl)',
@@ -311,23 +320,21 @@ export const components = {
   },
 
   input: {
-    backgroundColor: 'var(--input-bg, #ffffff)',
-    borderColor: `var(--input-border, ${semanticColors.gray[300]})`,
+    backgroundColor: 'var(--it-input-bg, #ffffff)',
+    borderColor: `var(--it-input-border, ${semanticColors.gray[300]})`,
     borderRadius: 'var(--radius-md)',
-    padding: '0.5rem 0.75rem',
-    fontSize: '0.875rem',
     focus: {
-      borderColor: `var(--input-focus-border, ${semanticColors.primary[500]})`,
-      ring: `var(--input-focus-ring, 0 0 0 3px ${semanticColors.primary[100]})`,
+      borderColor: `var(--it-input-focus-border, ${semanticColors.primary[500]})`,
+      ring: `var(--it-input-focus-ring, 0 0 0 3px ${semanticColors.primary[100]})`,
     },
-    placeholder: `var(--input-placeholder, ${semanticColors.gray[400]})`,
+    placeholder: `var(--it-input-placeholder, ${semanticColors.gray[400]})`,
     disabled: {
-      backgroundColor: `var(--input-disabled-bg, ${semanticColors.gray[100]})`,
-      borderColor: `var(--input-disabled-border, ${semanticColors.gray[200]})`,
+      backgroundColor: `var(--it-input-disabled-bg, ${semanticColors.gray[100]})`,
+      borderColor: `var(--it-input-disabled-border, ${semanticColors.gray[200]})`,
     },
     error: {
-      borderColor: `var(--input-error-border, ${semanticColors.danger[500]})`,
-      ring: `var(--input-error-ring, 0 0 0 3px ${semanticColors.danger[100]})`,
+      borderColor: `var(--it-input-error-border, ${semanticColors.danger[500]})`,
+      ring: `var(--it-input-error-ring, 0 0 0 3px ${semanticColors.danger[100]})`,
     },
   },
 
@@ -378,45 +385,45 @@ export const components = {
 
   modal: {
     overlay: {
-      backgroundColor: 'var(--modal-overlay, rgba(15, 23, 42, 0.75))',
+      backgroundColor: 'var(--it-modal-overlay, rgba(15, 23, 42, 0.75))',
     },
     content: {
-      backgroundColor: 'var(--modal-bg, #ffffff)',
+      backgroundColor: 'var(--it-modal-bg, #ffffff)',
       borderRadius: 'var(--radius-2xl)',
-      shadow: 'var(--modal-shadow, var(--shadow-xl))',
+      shadow: 'var(--it-modal-shadow, var(--shadow-xl))',
     },
     header: {
       padding: '1.5rem 1.5rem 0.5rem 1.5rem',
-      borderBottom: `1px solid var(--modal-header-border, var(--color-secondary-200))`,
+      borderBottom: `1px solid var(--it-modal-header-border, var(--color-secondary-200))`,
     },
     body: {
       padding: '1.5rem',
     },
     footer: {
       padding: '1rem 1.5rem',
-      borderTop: `1px solid var(--modal-footer-border, var(--color-secondary-200))`,
-      backgroundColor: `var(--modal-footer-bg, ${semanticColors.gray[50]})`,
+      borderTop: `1px solid var(--it-modal-footer-border, var(--color-secondary-200))`,
+      backgroundColor: `var(--it-modal-footer-bg, ${semanticColors.gray[50]})`,
     },
   },
 
   calendar: {
-    backgroundColor: 'var(--calendar-bg, #ffffff)',
-    borderColor: `var(--calendar-border, ${semanticColors.gray[200]})`,
+    backgroundColor: 'var(--it-calendar-bg, #ffffff)',
+    borderColor: `var(--it-calendar-border, ${semanticColors.gray[200]})`,
     header: {
-      textColor: `var(--calendar-header-text, ${semanticColors.gray[800]})`,
-      hoverBackground: `var(--calendar-header-hover, ${semanticColors.gray[100]})`,
+      textColor: `var(--it-calendar-header-text, ${semanticColors.gray[800]})`,
+      hoverBackground: `var(--it-calendar-header-hover, ${semanticColors.gray[100]})`,
     },
     days: {
-      textColor: `var(--calendar-days-text, ${semanticColors.gray[700]})`,
-      weekendColor: `var(--calendar-days-weekend, ${semanticColors.gray[500]})`,
-      outsideMonthColor: `var(--calendar-days-outside, ${semanticColors.gray[300]})`,
+      textColor: `var(--it-calendar-days-text, ${semanticColors.gray[700]})`,
+      weekendColor: `var(--it-calendar-days-weekend, ${semanticColors.gray[500]})`,
+      outsideMonthColor: `var(--it-calendar-days-outside, ${semanticColors.gray[300]})`,
     },
     selection: {
-      selectedColor: 'var(--calendar-selected-text, #ffffff)',
-      selectedBackground: `var(--calendar-selected-bg, ${semanticColors.primary[600]})`,
-      rangeBackground: `var(--calendar-range-bg, ${semanticColors.primary[50]})`,
-      todayBackground: `var(--calendar-today-bg, ${semanticColors.primary[50]})`,
-      todayColor: `var(--calendar-today-text, ${semanticColors.primary[600]})`,
+      selectedColor: 'var(--it-calendar-selected-text, #ffffff)',
+      selectedBackground: `var(--it-calendar-selected-bg, ${semanticColors.primary[600]})`,
+      rangeBackground: `var(--it-calendar-range-bg, ${semanticColors.primary[50]})`,
+      todayBackground: `var(--it-calendar-today-bg, ${semanticColors.primary[50]})`,
+      todayColor: `var(--it-calendar-today-text, ${semanticColors.primary[600]})`,
     },
   },
 };

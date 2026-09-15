@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import ITText from './text';
+import ITText from '@/components/atoms/text/text';
 
 const meta = {
   title: 'Components/Layout & Navigation/ITText',
   component: ITText,
   parameters: { layout: 'centered' },
-  tags: ['autodocs'],
   argTypes: {
     as: {
       control: 'select',

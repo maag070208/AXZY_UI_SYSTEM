@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { ITTextareaProps } from "./textarea.props";
 import { inputLabel, inputError } from "@/utils/styles";
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 const resizeMap = {
   none: "resize-none",

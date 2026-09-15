@@ -1,13 +1,14 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { MdPalette, MdClose, MdRefresh } from "react-icons/md";
+import { ITThemeContext } from "@/theme/theme-context";
 import { ITThemeProviderProps, ITThemePalette } from "./themeProvider.props";
-import ITDialog from "../dialog/dialog";
-import ITTabs from "../tabs/tabs";
-import ITButton from "../button/button";
-import ITInput from "../input/input";
-import ITSegmentedControl from "../segmented-control/segmented-control";
-import ITDivider from "../divider/divider";
-import ITText from "@/components/text/text";
+import ITDialog from "@/components/organisms/dialog/dialog";
+import ITTabs from "@/components/molecules/tabs/tabs";
+import ITButton from "@/components/atoms/button/button";
+import ITInput from "@/components/atoms/input/input";
+import ITSegmentedControl from "@/components/atoms/segmented-control/segmented-control";
+import ITDivider from "@/components/atoms/divider/divider";
+import ITText from "@/components/atoms/text/text";
 
 // ============================================================================
 // DEFAULT PALETTE & PRESETS CONFIG
@@ -15,189 +16,64 @@ import ITText from "@/components/text/text";
 
 const STORAGE_KEY = "it-theme-palette";
 
-export const DEFAULT_PALETTE: ITThemePalette = {
-  primary: "#06b6d4", // Cyan
-  secondary: "#6b7280", // Gray
-  ternary: "#8b5cf6", // Purple/Violet
-  danger: "#ef4444", // Red
-  success: "#22c55e", // Green
-  info: "#3b82f6", // Blue
-  alert: "#f97316", // Orange
-  warning: "#eab308", // Yellow
-  layout: {
-    sidebarBg: "#ffffff", // White (light mode default)
-    sidebarText: "#334155", // Slate-700 (dark text for light sidebar)
-    navbarBg: "#ffffff", // White
-    navbarText: "#1e293b", // Slate-800
+/** Valores por defecto de la escala de sombras (espejo de `@theme` en index.css). Nivel 2 = look actual. */
+const SHADOW_LEVELS: Record<number, Record<string, string>> = {
+  0: {
+    "2xs": "none",
+    xs: "none",
+    sm: "none",
+    md: "none",
+    lg: "none",
+    xl: "none",
+    "2xl": "none",
   },
-  table: {
-    headerBg: "#f8fafc", // Slate-50
-    headerText: "#334155", // Slate-700
-    rowBg: "#ffffff", // White
-    rowText: "#1e293b", // Slate-800
+  1: {
+    "2xs": "0 1px 1px 0 rgb(15 23 42 / 0.02)",
+    xs: "0 1px 2px 0 rgb(15 23 42 / 0.03), 0 1px 1px -1px rgb(15 23 42 / 0.02)",
+    sm: "0 1px 3px -1px rgb(15 23 42 / 0.03), 0 1px 2px -1px rgb(15 23 42 / 0.02)",
+    md: "0 3px 8px -4px rgb(15 23 42 / 0.05), 0 2px 4px -3px rgb(15 23 42 / 0.03)",
+    lg: "0 6px 14px -6px rgb(15 23 42 / 0.06), 0 3px 6px -6px rgb(15 23 42 / 0.03)",
+    xl: "0 10px 20px -8px rgb(15 23 42 / 0.07), 0 5px 10px -8px rgb(15 23 42 / 0.03)",
+    "2xl": "0 16px 32px -16px rgb(15 23 42 / 0.1)",
+  },
+  2: {
+    "2xs": "0 1px 2px 0 rgb(15 23 42 / 0.04)",
+    xs: "0 1px 3px 0 rgb(15 23 42 / 0.05), 0 1px 2px -1px rgb(15 23 42 / 0.04)",
+    sm: "0 2px 6px -1px rgb(15 23 42 / 0.06), 0 1px 3px -1px rgb(15 23 42 / 0.05)",
+    md: "0 6px 16px -4px rgb(15 23 42 / 0.08), 0 3px 6px -3px rgb(15 23 42 / 0.05)",
+    lg: "0 12px 28px -6px rgb(15 23 42 / 0.1), 0 6px 12px -6px rgb(15 23 42 / 0.06)",
+    xl: "0 20px 40px -8px rgb(15 23 42 / 0.12), 0 10px 20px -8px rgb(15 23 42 / 0.06)",
+    "2xl": "0 32px 64px -16px rgb(15 23 42 / 0.18)",
+  },
+  3: {
+    "2xs": "0 2px 3px 0 rgb(15 23 42 / 0.06)",
+    xs: "0 2px 5px 0 rgb(15 23 42 / 0.07), 0 1px 3px -1px rgb(15 23 42 / 0.06)",
+    sm: "0 4px 10px -2px rgb(15 23 42 / 0.09), 0 2px 5px -2px rgb(15 23 42 / 0.07)",
+    md: "0 10px 24px -6px rgb(15 23 42 / 0.12), 0 5px 10px -5px rgb(15 23 42 / 0.08)",
+    lg: "0 18px 40px -8px rgb(15 23 42 / 0.15), 0 8px 16px -8px rgb(15 23 42 / 0.09)",
+    xl: "0 28px 56px -10px rgb(15 23 42 / 0.18), 0 12px 24px -10px rgb(15 23 42 / 0.09)",
+    "2xl": "0 40px 80px -20px rgb(15 23 42 / 0.24)",
   },
 };
 
-export const PRESETS: { name: string; colors: ITThemePalette }[] = [
-  {
-    name: "Midnight Indigo 🌌",
-    colors: {
-      primary: "#6366f1",
-      secondary: "#475569",
-      ternary: "#f472b6",
-      danger: "#ef4444",
-      success: "#34d399",
-      info: "#06b6d4",
-      alert: "#fb923c",
-      warning: "#fbbf24",
-      layout: {
-        sidebarBg: "#0b1120",
-        sidebarText: "#94a3b8",
-        navbarBg: "#0f172a",
-        navbarText: "#f1f5f9",
-      },
-      table: {
-        headerBg: "#f1f5f9",
-        headerText: "#334155",
-        rowBg: "#ffffff",
-        rowText: "#0f172a",
-      },
-    },
-  },
-  {
-    name: "Coral Reef 🪸",
-    colors: {
-      primary: "#f43f5e",
-      secondary: "#57534e",
-      ternary: "#f97316",
-      danger: "#b91c1c",
-      success: "#14b8a6",
-      info: "#6366f1",
-      alert: "#eab308",
-      warning: "#fde047",
-      layout: {
-        sidebarBg: "#0c0808",
-        sidebarText: "#fda4af",
-        navbarBg: "#1c1212",
-        navbarText: "#fff1f2",
-      },
-      table: {
-        headerBg: "#fff1f2",
-        headerText: "#881337",
-        rowBg: "#ffffff",
-        rowText: "#1c1212",
-      },
-    },
-  },
-  {
-    name: "Oceanic Teal 🌊",
-    colors: {
-      primary: "#0d9488",
-      secondary: "#64748b",
-      ternary: "#a78bfa",
-      danger: "#e11d48",
-      success: "#22c55e",
-      info: "#0284c7",
-      alert: "#ea580c",
-      warning: "#ca8a04",
-      layout: {
-        sidebarBg: "#042f2e",
-        sidebarText: "#5eead4",
-        navbarBg: "#062b2a",
-        navbarText: "#ccfbf1",
-      },
-      table: {
-        headerBg: "#f0fdfa",
-        headerText: "#115e59",
-        rowBg: "#ffffff",
-        rowText: "#042f2e",
-      },
-    },
-  },
-  {
-    name: "Golden Hour ☀️",
-    colors: {
-      primary: "#d97706",
-      secondary: "#78716c",
-      ternary: "#db2777",
-      danger: "#dc2626",
-      success: "#65a30d",
-      info: "#2563eb",
-      alert: "#f97316",
-      warning: "#facc15",
-      layout: {
-        sidebarBg: "#fefce8",
-        sidebarText: "#713f12",
-        navbarBg: "#fffbeb",
-        navbarText: "#451a03",
-      },
-      table: {
-        headerBg: "#fefce8",
-        headerText: "#713f12",
-        rowBg: "#ffffff",
-        rowText: "#292524",
-      },
-    },
-  },
-  {
-    name: "Deep Forest 🌲",
-    colors: {
-      primary: "#16a34a",
-      secondary: "#57534e",
-      ternary: "#d946ef",
-      danger: "#dc2626",
-      success: "#14b8a6",
-      info: "#0ea5e9",
-      alert: "#f97316",
-      warning: "#eab308",
-      layout: {
-        sidebarBg: "#052e16",
-        sidebarText: "#86efac",
-        navbarBg: "#0b3b1c",
-        navbarText: "#dcfce7",
-      },
-      table: {
-        headerBg: "#f0fdf4",
-        headerText: "#166534",
-        rowBg: "#ffffff",
-        rowText: "#052e16",
-      },
-    },
-  },
-];
+const shadowLevel = (level: number | undefined): Record<string, string> | null => {
+  if (typeof level !== "number" || !isFinite(level)) return null;
+  if (level <= 0) return SHADOW_LEVELS[0];
+  if (level >= 3) return SHADOW_LEVELS[3];
+  const floor = Math.floor(level);
+  return SHADOW_LEVELS[floor] ?? null;
+};
+
+import { DEFAULT_PALETTE, PRESETS } from "./themePresets";
+
 // ============================================================================
 // CONTEXT & PROVIDER
 // ============================================================================
 
-interface ITThemeContextType {
-  palette: ITThemePalette;
-  colors: ITThemePalette;
-  setPalette: (newPalette: ITThemePalette) => void;
-  updateColor: (key: string, value: string) => void;
-  resetTheme: () => void;
-  applyPreset: (colors: ITThemePalette) => void;
-  resolvedTheme: "light" | "dark";
-  darkModeMode: "light" | "dark" | "system";
-  setDarkModeMode: (mode: "light" | "dark" | "system") => void;
-}
-
-const ITThemeContext = createContext<ITThemeContextType | undefined>(undefined);
-
-export const useITTheme = () => {
-  const context = useContext(ITThemeContext);
-  if (!context) {
-    throw new Error("useITTheme must be used within an ITThemeProvider");
-  }
-  return context;
-};
-
-/**
- * Versión segura de useITTheme que retorna undefined
- * si se usa fuera de ITThemeProvider (no lanza error).
- */
-export const useITThemeSafe = (): ITThemeContextType | undefined => {
-  return useContext(ITThemeContext);
-};
+// Contexto y hooks (useITTheme / useITThemeSafe) viven en @/theme/theme-context.
+// Re-exportados desde aquí para mantener compatibilidad de la API pública.
+// eslint-disable-next-line react-refresh/only-export-components
+export { useITTheme, useITThemeSafe } from "@/theme/theme-context";
 
 const getNestedValue = (obj: any, path: string) => {
   return path.split(".").reduce((acc, part) => acc && acc[part], obj);
@@ -264,6 +140,9 @@ export default function ITThemeProvider({
   children,
   theme,
   showFab = true,
+  density = 1,
+  radius,
+  shadow,
 }: ITThemeProviderProps) {
   const [palette, setPaletteState] = useState<ITThemePalette>(() => {
     const basePalette = {
@@ -380,6 +259,69 @@ export default function ITThemeProvider({
       });
     }
   }, [theme, showFab]);
+
+  // Compactación global: density escala el font-size raíz para que rem
+  // (paddings, gaps, tipografía de Tailwind) reduzca tamaños reales de la UI.
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    const scale =
+      typeof density === "number" && isFinite(density)
+        ? Math.min(Math.max(density, 0.5), 1.5)
+        : 1;
+    root.style.setProperty("--it-density", String(scale));
+    root.style.fontSize = `${scale * 100}%`;
+    return () => {
+      root.style.setProperty("--it-density", "1");
+      root.style.fontSize = "";
+    };
+  }, [density]);
+
+  // Overrides globales de radius y sombras.
+  // Radius: en Tailwind v4 cada `rounded-*` resuelve a var(--radius-*), así que
+  // setear los vars en :root (en px) cuadra/redondea todo el sistema sin tocar
+  // componentes. Shadow: las utilities hornean el valor en el build, por eso se
+  // inyectan reglas `.shadow-*` que delegan en vars `--it-shadow-*`.
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    const radiusTokens = ["xs", "sm", "md", "lg", "xl", "2xl", "3xl"];
+
+    if (typeof radius === "number" && isFinite(radius)) {
+      const px = Math.max(0, radius);
+      radiusTokens.forEach((k) =>
+        root.style.setProperty(`--radius-${k}`, `${px}px`),
+      );
+    }
+
+    let surfaceStyle = document.getElementById(
+      "it-theme-surface-overrides",
+    ) as HTMLStyleElement | null;
+    const resolved = shadowLevel(shadow);
+    if (resolved) {
+      if (!surfaceStyle) {
+        surfaceStyle = document.createElement("style");
+        surfaceStyle.id = "it-theme-surface-overrides";
+        document.head.appendChild(surfaceStyle);
+      }
+      const vars = Object.entries(resolved)
+        .map(([k, v]) => `--it-shadow-${k}:${v}`)
+        .join(";");
+      const levels = Object.keys(resolved)
+        .map((k) => `.shadow-${k}{box-shadow:var(--it-shadow-${k})}`)
+        .join("");
+      const hovers =
+        ":where(.hover\\:shadow-sm:hover){box-shadow:var(--it-shadow-sm)}" +
+        ":where(.hover\\:shadow-md:hover){box-shadow:var(--it-shadow-md)}";
+      surfaceStyle.textContent = `:root{${vars}}${levels}${hovers}`;
+    } else if (surfaceStyle) {
+      surfaceStyle.remove();
+      surfaceStyle = null;
+    }
+
+    return () => {
+      radiusTokens.forEach((k) => root.style.setProperty(`--radius-${k}`, ""));
+      surfaceStyle?.remove();
+    };
+  }, [radius, shadow]);
 
   // Inyectar variables CSS en el :root al cambiar la paleta o tema resuelto
   useEffect(() => {
@@ -697,38 +639,38 @@ export default function ITThemeProvider({
         --color-table-rowText: ${tableRowText} !important;
 
         /* Native library variables integration */
-        --sidebar-bg: var(--color-sidebarBg);
-        --sidebar-border: color-mix(in srgb, var(--color-sidebarBg) 85%, #000000);
-        --sidebar-label-color: var(--color-sidebarText);
-        --sidebar-icon-color: color-mix(in srgb, var(--color-sidebarText) 80%, transparent);
-        --sidebar-hover-bg: color-mix(in srgb, var(--color-sidebarText) 10%, transparent);
-        --sidebar-active-bg: color-mix(in srgb, var(--color-primary) 12%, transparent);
-        --sidebar-active-color: var(--color-primary);
-        --sidebar-active-icon: var(--color-primary);
-        --sidebar-badge-bg: var(--color-primary);
-        --sidebar-badge-color: #ffffff;
+        --it-sidebar-bg: var(--color-sidebarBg);
+        --it-sidebar-border: color-mix(in srgb, var(--color-sidebarBg) 85%, #000000);
+        --it-sidebar-label-color: var(--color-sidebarText);
+        --it-sidebar-icon-color: color-mix(in srgb, var(--color-sidebarText) 80%, transparent);
+        --it-sidebar-hover-bg: color-mix(in srgb, var(--color-sidebarText) 10%, transparent);
+        --it-sidebar-active-bg: color-mix(in srgb, var(--color-primary) 12%, transparent);
+        --it-sidebar-active-color: var(--color-primary);
+        --it-sidebar-active-icon: var(--color-primary);
+        --it-sidebar-badge-bg: var(--color-primary);
+        --it-sidebar-badge-color: #ffffff;
 
-        --topbar-bg: var(--color-navbarBg);
-        --topbar-text: var(--color-navbarText);
-        --topbar-border: color-mix(in srgb, var(--color-navbarBg) 85%, #000000);
-        --topbar-icon: color-mix(in srgb, var(--color-navbarText) 80%, transparent);
-        --topbar-icon-hover: var(--color-navbarText);
-        --topbar-user-bg: var(--topbar-bg);
-        --topbar-user-hover: color-mix(in srgb, var(--color-navbarText) 10%, transparent);
-        --topbar-user-text: var(--color-navbarText);
-        --topbar-user-subtitle: color-mix(in srgb, var(--color-navbarText) 65%, transparent);
-        --topbar-user-dropdown-bg: color-mix(in srgb, var(--color-navbarBg) 100%, #ffffff);
-        --topbar-user-dropdown-border: color-mix(in srgb, var(--color-navbarBg) 92%, #000000);
-        --topbar-user-item-hover: color-mix(in srgb, var(--color-navbarText) 6%, transparent);
+        --it-topbar-bg: var(--color-navbarBg);
+        --it-topbar-text: var(--color-navbarText);
+        --it-topbar-border: color-mix(in srgb, var(--color-navbarBg) 85%, #000000);
+        --it-topbar-icon: color-mix(in srgb, var(--color-navbarText) 80%, transparent);
+        --it-topbar-icon-hover: var(--color-navbarText);
+        --it-topbar-user-bg: var(--it-topbar-bg);
+        --it-topbar-user-hover: color-mix(in srgb, var(--color-navbarText) 10%, transparent);
+        --it-topbar-user-text: var(--color-navbarText);
+        --it-topbar-user-subtitle: color-mix(in srgb, var(--color-navbarText) 65%, transparent);
+        --it-topbar-user-dropdown-bg: color-mix(in srgb, var(--color-navbarBg) 100%, #ffffff);
+        --it-topbar-user-dropdown-border: color-mix(in srgb, var(--color-navbarBg) 92%, #000000);
+        --it-topbar-user-item-hover: color-mix(in srgb, var(--color-navbarText) 6%, transparent);
 
-        --layout-bg: var(--color-secondary-50);
-        --input-text-color: var(--color-secondary-900);
+        --it-layout-bg: var(--color-secondary-50);
+        --it-input-text-color: var(--color-secondary-900);
 
-        --calendar-selected-bg: var(--color-primary);
-        --calendar-selected-text: #ffffff;
-        --calendar-range-bg: var(--color-primary-50);
-        --calendar-today-bg: var(--color-primary-100);
-        --calendar-today-text: var(--color-primary);
+        --it-calendar-selected-bg: var(--color-primary);
+        --it-calendar-selected-text: #ffffff;
+        --it-calendar-range-bg: var(--color-primary-50);
+        --it-calendar-today-bg: var(--color-primary-100);
+        --it-calendar-today-text: var(--color-primary);
       }
 
       /* Dark mode overrides */
@@ -736,29 +678,29 @@ export default function ITThemeProvider({
         --color-heading-default: #f8fafc;
         --color-text-default: #cbd5e1;
         --color-text-muted: #64748b;
-        --layout-bg: #090f1d;
-        --card-bg: #111827;
-        --card-border: #1f2937;
-        --card-header-bg: #1f2937;
-        --card-header-border: #374151;
-        --input-bg: #1f2937;
-        --input-border: #374151;
-        --input-placeholder: #6b7280;
-        --input-text-color: #cbd5e1;
-        --modal-bg: #111827;
-        --modal-footer-bg: #1f2937;
-        --modal-header-border: #374151;
-        --modal-footer-border: #374151;
-        --calendar-bg: #111827;
-        --calendar-border: #1f2937;
-        --calendar-header-text: #f3f4f6;
-        --calendar-header-hover: #1f2937;
-        --calendar-days-text: #e5e7eb;
-        --calendar-selected-bg: var(--color-primary);
-        --calendar-selected-text: #ffffff;
-        --calendar-range-bg: var(--color-primary-50);
-        --calendar-today-bg: var(--color-primary-100);
-        --calendar-today-text: var(--color-primary);
+        --it-layout-bg: #090f1d;
+        --it-card-bg: #111827;
+        --it-card-border: #1f2937;
+        --it-card-header-bg: #1f2937;
+        --it-card-header-border: #374151;
+        --it-input-bg: #1f2937;
+        --it-input-border: #374151;
+        --it-input-placeholder: #6b7280;
+        --it-input-text-color: #cbd5e1;
+        --it-modal-bg: #111827;
+        --it-modal-footer-bg: #1f2937;
+        --it-modal-header-border: #374151;
+        --it-modal-footer-border: #374151;
+        --it-calendar-bg: #111827;
+        --it-calendar-border: #1f2937;
+        --it-calendar-header-text: #f3f4f6;
+        --it-calendar-header-hover: #1f2937;
+        --it-calendar-days-text: #e5e7eb;
+        --it-calendar-selected-bg: var(--color-primary);
+        --it-calendar-selected-text: #ffffff;
+        --it-calendar-range-bg: var(--color-primary-50);
+        --it-calendar-today-bg: var(--color-primary-100);
+        --it-calendar-today-text: var(--color-primary);
 
         /* Override dynamic color-mix scales to blend with dark instead of white */
         --color-primary-50: color-mix(in srgb, var(--color-primary) 10%, #0b1329);
@@ -820,7 +762,7 @@ export default function ITThemeProvider({
       }
 
       .dark .bg-white, [data-theme="dark"] .bg-white {
-        background-color: var(--card-bg, #111827) !important;
+        background-color: var(--it-card-bg, #111827) !important;
       }
       .dark .bg-slate-50, [data-theme="dark"] .bg-slate-50,
       .dark .bg-secondary-50, [data-theme="dark"] .bg-secondary-50 {
@@ -851,29 +793,29 @@ export default function ITThemeProvider({
         color: #334155;
         --color-text-default: #1e293b;
         --color-text-muted: #475569;
-        --layout-bg: var(--color-secondary-50);
-        --card-bg: #ffffff;
-        --card-border: #f1f5f9;
-        --card-header-bg: #f8fafc;
-        --card-header-border: #e2e8f0;
-        --input-bg: #ffffff;
-        --input-border: #cbd5e1;
-        --input-placeholder: #94a3b8;
-        --input-text-color: #1e293b;
-        --modal-bg: #ffffff;
-        --modal-footer-bg: #f8fafc;
-        --modal-header-border: #e2e8f0;
-        --modal-footer-border: #e2e8f0;
-        --calendar-bg: #ffffff;
-        --calendar-border: #e2e8f0;
-        --calendar-header-text: #1e293b;
-        --calendar-header-hover: #f1f5f9;
-        --calendar-days-text: #334155;
-        --calendar-selected-bg: var(--color-primary);
-        --calendar-selected-text: #ffffff;
-        --calendar-range-bg: var(--color-primary-50);
-        --calendar-today-bg: var(--color-primary-100);
-        --calendar-today-text: var(--color-primary);
+        --it-layout-bg: var(--color-secondary-50);
+        --it-card-bg: #ffffff;
+        --it-card-border: #f1f5f9;
+        --it-card-header-bg: #f8fafc;
+        --it-card-header-border: #e2e8f0;
+        --it-input-bg: #ffffff;
+        --it-input-border: #cbd5e1;
+        --it-input-placeholder: #94a3b8;
+        --it-input-text-color: #1e293b;
+        --it-modal-bg: #ffffff;
+        --it-modal-footer-bg: #f8fafc;
+        --it-modal-header-border: #e2e8f0;
+        --it-modal-footer-border: #e2e8f0;
+        --it-calendar-bg: #ffffff;
+        --it-calendar-border: #e2e8f0;
+        --it-calendar-header-text: #1e293b;
+        --it-calendar-header-hover: #f1f5f9;
+        --it-calendar-days-text: #334155;
+        --it-calendar-selected-bg: var(--color-primary);
+        --it-calendar-selected-text: #ffffff;
+        --it-calendar-range-bg: var(--color-primary-50);
+        --it-calendar-today-bg: var(--color-primary-100);
+        --it-calendar-today-text: var(--color-primary);
 
         --color-primary-50: color-mix(in srgb, var(--color-primary) 5%, #ffffff);
         --color-primary-100: color-mix(in srgb, var(--color-primary) 10%, #ffffff);
@@ -1519,7 +1461,7 @@ export default function ITThemeProvider({
       }
     `;
 
-  }, [palette, resolvedTheme]);
+  }, [palette, resolvedTheme, showFab]);
 
   const updateColor = (key: string, value: string) => {
     setPaletteState((prev) => {
@@ -1750,7 +1692,7 @@ export default function ITThemeProvider({
                       color="primary"
                       onClick={handleSavePreset}
                       disabled={!newPresetName.trim()}
-                      size="small"
+                      size="sm"
                       className="flex-1"
                     />
                     <ITButton
@@ -1760,7 +1702,7 @@ export default function ITThemeProvider({
                         setIsSavingPreset(false);
                         setNewPresetName("");
                       }}
-                      size="small"
+                      size="sm"
                     />
                   </div>
                 </div>
@@ -1772,7 +1714,7 @@ export default function ITThemeProvider({
                   icon={<MdPalette size={14} />}
                   label="Guardar actual"
                   onClick={() => setIsSavingPreset(true)}
-                  size="small"
+                  size="sm"
                 />
               )}
 
@@ -1782,7 +1724,7 @@ export default function ITThemeProvider({
                 icon={<MdRefresh size={14} />}
                 label="Restaurar default"
                 onClick={resetTheme}
-                size="small"
+                size="sm"
               />
             </div>
 
@@ -1856,7 +1798,7 @@ export default function ITThemeProvider({
                   label="Cerrar"
                   color="primary"
                   onClick={() => setIsOpen(false)}
-                  size="small"
+                  size="sm"
                 />
               </div>
             </div>

@@ -4,10 +4,6 @@ import {
   ITDataTable,
   ITBadget,
   ITAvatar,
-  ITButton,
-  ITFlex,
-  ITStack,
-  ITText,
   ITImage,
   ITInput,
   ITSelect,
@@ -147,7 +143,7 @@ export const TableShowcase = () => {
       key: "actions",
       label: "",
       type: "actions",
-      actions: (row: any) => (
+      actions: () => (
         <div className="flex gap-1">
           <button className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-primary-600 transition-colors" title="View">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -697,9 +693,9 @@ export const BadgetShowcase = () => {
           <ITBadget label="Warning" color="warning" />
           <ITBadget label="Info" color="info" />
           <span className="mx-4 text-slate-300">|</span>
-          <ITBadget label="Small" color="primary" size="small" />
-          <ITBadget label="Medium" color="primary" size="medium" />
-          <ITBadget label="Large" color="primary" size="large" />
+          <ITBadget label="Small" color="primary" size="sm" />
+          <ITBadget label="Medium" color="primary" size="md" />
+          <ITBadget label="Large" color="primary" size="lg" />
         </div>
       }
     />

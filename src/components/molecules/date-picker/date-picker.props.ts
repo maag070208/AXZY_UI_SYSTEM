@@ -22,7 +22,7 @@ export interface ITDatePickerProps {
   range?: boolean;
   /** Color variant matching the design system (ColorsTypes). @default "primary" */
   variant?: ColorsTypes;
-  /** Size variant matching the design system (SizesTypes). @default "medium" */
+  /** Size preset: "sm" | "md" | "lg". @default "md" */
   size?: SizesTypes;
   /** Additional CSS classes for the wrapper element. */
   className?: string;

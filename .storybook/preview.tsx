@@ -17,7 +17,7 @@ const preview: Preview = {
   },
   decorators: [
     (Story) => (
-      <ITThemeProvider>
+      <ITThemeProvider radius={2} shadow={2}>
         <Story />
       </ITThemeProvider>
     ),

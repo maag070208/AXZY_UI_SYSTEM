@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import ITProgress from "./progress";
-import ITButton from "../button/button";
+import ITProgress from "@/components/atoms/progress/progress";
+import ITButton from "@/components/atoms/button/button";
 
 const meta: Meta<typeof ITProgress> = {
   title: "Components/Feedback/ITProgress",
   component: ITProgress,
-  tags: ["autodocs"],
 };
 
 export default meta;

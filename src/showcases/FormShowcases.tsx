@@ -14,7 +14,7 @@ import {
   UploadStatus
 } from "../index";
 import { ShowcaseLayout, CodeViewer } from "./ShowcaseLayout";
-import ITFlex from "../components/flex/flex";
+import ITFlex from "../components/atoms/flex/flex";
 
 const CodeExampleBlock = ({ title, desc, code, children }: { title: string; desc: string; code: string; children: React.ReactNode }) => {
   const [showCode, setShowCode] = useState(false);
@@ -26,7 +26,7 @@ const CodeExampleBlock = ({ title, desc, code, children }: { title: string; desc
             <h3 className="text-sm font-bold text-slate-800 dark:text-white">{title}</h3>
             <p className="text-xs text-slate-500 mt-1">{desc}</p>
           </div>
-          <ITButton variant="outlined" color="gray" size="small" onClick={() => setShowCode(!showCode)}>
+          <ITButton variant="outlined" color="gray" size="sm" onClick={() => setShowCode(!showCode)}>
             <ITFlex align="center" gap={1}>
               <FaCode size={9} />
               {showCode ? "Ocultar código" : "Ver código"}
@@ -268,7 +268,7 @@ export const InputShowcase = () => {
       return `<ITDropfile\n  onFileSelect={(file) => setFile(file)}\n  uploadStatus={${fileVal ? "UploadStatus.UPLOADED" : "UploadStatus.PENDING"}}\n/>`;
     }
     return `// Formulario Completo AXZY con todos los tipos de Input:\n<form onSubmit={handleSubmit} className="space-y-4">\n  <ITInput label="Nombre Completo" name="name" value={name} onChange={...} />\n  <ITInput label="Correo" name="email" value={email} onChange={...} />\n  <ITInput label="Contraseña" type="password" name="password" value={password} onChange={...} />\n  \n  <ITSelect label="Rol de Usuario" value={role} options={roles} onChange={...} />\n  <ITSearchSelect label="País" value={country} options={countries} onChange={...} />\n  \n  <ITDatePicker label="Nacimiento" value={birthday} onChange={...} />\n  <ITTimePicker label="Hora de Entrada" value={time} onChange={...} />\n  \n  <ITSlideToggle label="Boletín" isOn={newsletter} onToggle={...} />\n  <ITDropfile label="Documento" onFileSelect={...} />\n  \n  <ITButton type="submit" label="Enviar Formulario" />\n</form>`;
-  }, [selectedInput, label, placeholder, variant, disabled, required, errorInput, textVal, passVal, selectVal, searchSelectVal, dateVal, timeVal, toggleVal, fileVal]);
+  }, [selectedInput, label, placeholder, variant, disabled, required, errorInput, textVal, passVal, selectVal, searchSelectVal, timeVal, toggleVal, fileVal]);
 
   const tabs = [
     { id: "text", label: "Texto" },
@@ -1179,10 +1179,10 @@ export const FormBuilderShowcase = () => {
                 setFieldValue={(field, val) => { setValues(prev => ({ ...prev, [field]: val })); return Promise.resolve(); }}
               />
               <div className="pt-4 flex justify-end gap-3">
-                <ITButton variant="outlined" color="gray" size="small" onClick={() => { setValues({ name: "", email: "", country: "MX", accept: false }); setSubmitted(null); }}>
+                <ITButton variant="outlined" color="gray" size="sm" onClick={() => { setValues({ name: "", email: "", country: "MX", accept: false }); setSubmitted(null); }}>
                   Limpiar
                 </ITButton>
-                <ITButton variant="filled" color="primary" size="small" type="submit">
+                <ITButton variant="filled" color="primary" size="sm" type="submit">
                   Enviar
                 </ITButton>
               </div>
@@ -1384,7 +1384,7 @@ const FormFillFromApi = () => {
           setFieldValue={(field, val) => { setValues(prev => ({ ...prev, [field]: val })); return Promise.resolve(); }}
         />
         <div className="flex justify-end">
-          <ITButton variant="filled" color="primary" size="small" type="submit">Guardar Cambios</ITButton>
+          <ITButton variant="filled" color="primary" size="sm" type="submit">Guardar Cambios</ITButton>
         </div>
       </form>
       {submitted && (
@@ -1458,7 +1458,7 @@ const CascadingSelectsExample = () => {
           setFieldValue={(field, val) => { setValues(prev => ({ ...prev, [field]: val })); return Promise.resolve(); }}
         />
         <div className="flex justify-end">
-          <ITButton variant="filled" color="primary" size="small" type="submit">Enviar</ITButton>
+          <ITButton variant="filled" color="primary" size="sm" type="submit">Enviar</ITButton>
         </div>
       </form>
       {submitted && (

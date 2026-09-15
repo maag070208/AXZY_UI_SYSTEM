@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import ITCalendar from './calendar';
+import ITCalendar from '@/components/molecules/calendar/calendar';
 import { addHours, format, startOfDay, addDays } from 'date-fns';
 
 const meta = {
@@ -8,7 +8,6 @@ const meta = {
   parameters: {
     layout: 'padded',
   },
-  tags: ['autodocs'],
   argTypes: {
     mode: {
         control: 'select',

@@ -143,7 +143,42 @@ pnpm bundle       # tsup + CSS
 | `pnpm storybook` | Storybook local |
 | `pnpm build-storybook` | Build estático de Storybook |
 | `pnpm lint` | ESLint |
+| `pnpm check:atomic` | Valida dependencias atómicas (sin imports hacia capas superiores) |
+| `pnpm check:css` | Valida aislamiento CSS (selectores `it-*`, tokens `--it-*`, sin duplicados) |
 | `pnpm preview` | Preview del build |
+
+---
+
+## Arquitectura atómica y aislamiento CSS
+
+Los componentes se organizan en **capas atómicas** con dependencias unidireccionales
+(una capa solo importa de capas iguales o inferiores):
+
+| Capa | Regla | Ejemplos |
+|------|-------|----------|
+| `atoms/` | Primitivos, sin dependencias de componentes | `ITButton`, `ITInput`, `ITText`, `ITGrid`, `ITFlex`, `ITStack` |
+| `molecules/` | Combinan átomos y moléculas | `ITCard`, `ITDatePicker`, `ITSelect`, `ITTable`, `ITStepper` |
+| `organisms/` | Composiciones complejas | `ITDataTable`, `ITFormBuilder`, `ITDialog`, `ITSidebar`, `ITTopbar` |
+| `templates/` | Páginas/estructuras completas | `ITLayout`, `ITPage` |
+| `theme-provider/` | Provider (no capa visual) | `ITThemeProvider` |
+
+### Garantía de aislamiento
+
+Anidar componentes (p.ej. **`ITDatePicker` dentro de `ITCard`**) **no** produce
+interferencia de estilos. Esto se garantiza por convención y se valida en CI:
+
+1. **Clases propias siempre con prefijo `it-`** (BEM: `.it-card`, `.it-date-picker__popover`).
+   Nunca clases genéricas (`.card`, `.toast-enter`, `.animate-*`).
+2. **Selectores con `:where(.it-*)`** → especificidad 0, para que las utilities de
+   Tailwind del consumidor sigan overrideando sin conflicto.
+3. **CSS plano en `@layer components`** → las utilities (layer `utilities`) ganan siempre.
+4. **Tokens públicos con namespace `--it-*`** (`--it-card-bg`, `--it-input-border`, ...).
+   El resto de tokens `--color-*`/`--radius-*` son internos de Tailwind.
+5. **Checks automáticos**: `pnpm check:css` (selectores/tokens genéricos) y
+   `pnpm check:atomic` (grafo de dependencias) fallan si se viola la convención.
+
+Story de validación visual: `src/components/isolation/isolation.stories.tsx`
+(`Components/Isolation/CSS Encapsulation`).
 
 ---
 
@@ -164,6 +199,14 @@ const myTheme = {
   <App />
 </ITThemeProvider>
 ```
+
+Override fino por CSS: los tokens de componente usan el namespace **`--it-*`**
+(`--it-card-bg`, `--it-topbar-bg`, `--it-calendar-selected-bg`, ...). Sobrescribir
+estas variables en cualquier contenedor estila solo ese subárbol.
+
+> **Breaking (v1.3)**: los tokens se renombraron de `--card-*`, `--input-*`,
+> `--topbar-*`, `--sidebar-*`, `--modal-*`, `--calendar-*`, `--layout-*` a `--it-*`
+> para evitar colisiones con CSS de la app consumidora.
 
 ---
 

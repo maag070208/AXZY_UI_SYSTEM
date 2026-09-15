@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { ITCheckboxProps } from "./checkbox.props";
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 /**
  * Checkbox component with label, indeterminate state, and disabled support. Uses a visually hidden native input for accessibility.

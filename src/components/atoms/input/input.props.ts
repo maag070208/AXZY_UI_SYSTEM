@@ -1,5 +1,5 @@
-import { ColorsTypes } from "@app/types/colors.types";
-import { SizesTypes } from "@app/types/sizes.types";
+import { ColorsTypes } from "@/types/colors.types";
+import { SizesTypes } from "@/types/sizes.types";
 import { ReactNode } from "react";
 
 export interface ITInputProps {
@@ -40,7 +40,7 @@ export interface ITInputProps {
   minLength?: number;
   /** Color variant from the theme palette */
   variant?: ColorsTypes;
-  /** Size preset: "xs" | "sm" | "md" | "lg" | "xl" */
+  /** Size preset: "sm" | "md" | "lg". @default "md" */
   size?: SizesTypes;
   /** Disable the input */
   disabled?: boolean;

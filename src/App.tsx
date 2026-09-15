@@ -13,6 +13,7 @@ import "./index.css";
 // Import Showcases
 import { HomeShowcase } from "./showcases/HomeShowcase";
 import { GettingStartedShowcase } from "./showcases/GettingStartedShowcase";
+import { SizesShowcase } from "./showcases/SizesShowcase";
 import {
   CardShowcase,
   LayoutShowcase,
@@ -62,12 +63,93 @@ import {
 
 type ViewMode = "home" | "ui-system";
 
+// Group definitions for the sidebar (UI System showroom). Estático: se define
+// fuera del componente para que su referencia sea estable en los deps del memo.
+const categories = [
+  {
+    id: "general",
+    label: "General",
+    icon: <FaHome />,
+    subitems: [
+      { id: "getting-started", label: "Getting Started" },
+      { id: "sizes", label: "Medidas · sm / md / lg" },
+    ],
+  },
+  {
+    id: "struc",
+    label: "Estructura & Layout",
+    icon: <FaCreditCard />,
+    subitems: [
+      { id: "layout", label: "ITLayout & ITNavbar" },
+      { id: "stack", label: "ITStack" },
+      { id: "flex", label: "ITFlex" },
+      { id: "grid", label: "ITGrid" },
+      { id: "card", label: "ITCard" },
+      { id: "text", label: "ITText" },
+      { id: "pageheader", label: "ITPageHeader" },
+      { id: "page", label: "ITPage" },
+      { id: "screen-dashboard", label: "Dashboard Ejemplo" },
+      { id: "screen-form", label: "Formulario Ejemplo" },
+    ],
+  },
+  {
+    id: "forms",
+    label: "Formularios & Inputs",
+    icon: <FaKeyboard />,
+    subitems: [
+      { id: "button", label: "ITButton" },
+      { id: "input", label: "ITInput" },
+      { id: "select", label: "ITSelect" },
+      { id: "searchselect", label: "ITSearchSelect" },
+      { id: "datepicker", label: "ITDatePicker" },
+      { id: "timepicker", label: "ITTimePicker" },
+      { id: "calendar", label: "ITCalendar" },
+      { id: "slidetoggle", label: "ITSlideToggle" },
+      { id: "dropfile", label: "ITDropfile" },
+      { id: "formbuilder", label: "ITFormBuilder" },
+    ],
+  },
+  {
+    id: "data",
+    label: "Visualización Datos",
+    icon: <FaTable />,
+    subitems: [
+      { id: "table", label: "ITTable" },
+      { id: "datatable", label: "ITDataTable" },
+      { id: "badget", label: "ITBadget" },
+      { id: "image", label: "ITImage" },
+    ],
+  },
+  {
+    id: "nav",
+    label: "Navegación & Control",
+    icon: <FaSlidersH />,
+    subitems: [
+      { id: "tabs", label: "ITTabs" },
+      { id: "stepper", label: "ITStepper" },
+      { id: "pagination", label: "ITPagination" },
+      { id: "triplefilter", label: "ITTripleFilter" },
+    ],
+  },
+  {
+    id: "feed",
+    label: "Feedback & Sistema",
+    icon: <FaRegBell />,
+    subitems: [
+      { id: "dialog", label: "ITDialog" },
+      { id: "toast", label: "ITToast" },
+      { id: "loader", label: "ITLoader" },
+      { id: "themeprovider", label: "ITThemeProvider" },
+    ],
+  },
+];
+
 function App() {
   const [view, setView] = useState<ViewMode>(() => {
     const hash = window.location.hash.replace("#", "");
     return hash.startsWith("ui-system") ? "ui-system" : "home";
   });
-  const [showroomActive, setShowroomActive] = useState("getting-started");
+  const [showroomActive, setShowroomActive] = useState("screen-form");
   const [searchTerm] = useState("");
   const [subitemConnector] = useState<
     "dot" | "|" | "none"
@@ -81,85 +163,6 @@ function App() {
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
-
-  // Group definitions for the sidebar (UI System showroom)
-  const categories = [
-    {
-      id: "general",
-      label: "General",
-      icon: <FaHome />,
-      subitems: [
-        { id: "getting-started", label: "Getting Started" },
-      ],
-    },
-    {
-      id: "struc",
-      label: "Estructura & Layout",
-      icon: <FaCreditCard />,
-      subitems: [
-        { id: "layout", label: "ITLayout & ITNavbar" },
-        { id: "stack", label: "ITStack" },
-        { id: "flex", label: "ITFlex" },
-        { id: "grid", label: "ITGrid" },
-        { id: "card", label: "ITCard" },
-        { id: "text", label: "ITText" },
-        { id: "pageheader", label: "ITPageHeader" },
-        { id: "page", label: "ITPage" },
-        { id: "screen-dashboard", label: "Dashboard Ejemplo" },
-        { id: "screen-form", label: "Formulario Ejemplo" },
-      ],
-    },
-    {
-      id: "forms",
-      label: "Formularios & Inputs",
-      icon: <FaKeyboard />,
-      subitems: [
-        { id: "button", label: "ITButton" },
-        { id: "input", label: "ITInput" },
-        { id: "select", label: "ITSelect" },
-        { id: "searchselect", label: "ITSearchSelect" },
-        { id: "datepicker", label: "ITDatePicker" },
-        { id: "timepicker", label: "ITTimePicker" },
-        { id: "calendar", label: "ITCalendar" },
-        { id: "slidetoggle", label: "ITSlideToggle" },
-        { id: "dropfile", label: "ITDropfile" },
-        { id: "formbuilder", label: "ITFormBuilder" },
-      ],
-    },
-    {
-      id: "data",
-      label: "Visualización Datos",
-      icon: <FaTable />,
-      subitems: [
-        { id: "table", label: "ITTable" },
-        { id: "datatable", label: "ITDataTable" },
-        { id: "badget", label: "ITBadget" },
-        { id: "image", label: "ITImage" },
-      ],
-    },
-    {
-      id: "nav",
-      label: "Navegación & Control",
-      icon: <FaSlidersH />,
-      subitems: [
-        { id: "tabs", label: "ITTabs" },
-        { id: "stepper", label: "ITStepper" },
-        { id: "pagination", label: "ITPagination" },
-        { id: "triplefilter", label: "ITTripleFilter" },
-      ],
-    },
-    {
-      id: "feed",
-      label: "Feedback & Sistema",
-      icon: <FaRegBell />,
-      subitems: [
-        { id: "dialog", label: "ITDialog" },
-        { id: "toast", label: "ITToast" },
-        { id: "loader", label: "ITLoader" },
-        { id: "themeprovider", label: "ITThemeProvider" },
-      ],
-    },
-  ];
 
   // Filter sidebar navigation items based on search term
   const filteredNavigationItems = useMemo(() => {
@@ -254,6 +257,8 @@ function App() {
         return <ScreenDashboardShowcase />;
       case "screen-form":
         return <ScreenFormShowcase />;
+      case "sizes":
+        return <SizesShowcase />;
       // Forms
       case "button":
         return <ButtonShowcase />;
@@ -308,7 +313,7 @@ function App() {
   };
 
   return (
-    <ITThemeProvider showFab={false}>
+    <ITThemeProvider showFab={false} density={0.98} radius={10} shadow={2}>
       {view === "home" ? (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-10 px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">

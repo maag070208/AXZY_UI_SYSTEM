@@ -1,14 +1,13 @@
 import { FaNpm, FaReact, FaCheck } from "react-icons/fa";
 import { SiTailwindcss, SiTypescript, SiVite } from "react-icons/si";
 import { useState } from "react";
-import ITBadget from "../components/badget/badget";
-import ITButton from "../components/button/button";
-import ITCard from "../components/card/card";
-import ITDivider from "../components/divider/divider";
-import ITFlex from "../components/flex/flex";
-import ITGrid from "../components/grid/grid";
-import ITStack from "../components/stack/stack";
-import ITText from "../components/text/text";
+import ITBadget from "../components/atoms/badget/badget";
+import ITButton from "../components/atoms/button/button";
+import ITCard from "../components/molecules/card/card";
+import ITFlex from "../components/atoms/flex/flex";
+import ITGrid from "../components/atoms/grid/grid";
+import ITStack from "../components/atoms/stack/stack";
+import ITText from "../components/atoms/text/text";
 
 const CopyButton = ({ text }: { text: string }) => {
   const [copied, setCopied] = useState(false);
@@ -16,7 +15,7 @@ const CopyButton = ({ text }: { text: string }) => {
     <ITButton
       variant="text"
       color="gray"
-      size="small"
+      size="sm"
       onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
     >
       <ITFlex align="center" gap={1.5}>

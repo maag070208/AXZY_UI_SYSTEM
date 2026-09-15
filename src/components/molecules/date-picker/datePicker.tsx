@@ -2,8 +2,8 @@ import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import { FaCalendarAlt } from "react-icons/fa";
 import { isBefore } from "date-fns";
-import ITCalendar from "../calendar/calendar";
-import ITInput from "../input/input";
+import ITCalendar from "@/components/molecules/calendar/calendar";
+import ITInput from "@/components/atoms/input/input";
 import { ITDatePickerProps } from "./date-picker.props";
 import { theme } from "@/theme/theme";
 
@@ -43,7 +43,7 @@ export default function ITDatePicker({
   onChange,
   onBlur,
   variant = "primary",
-  size = "medium",
+  size = "md",
   className,
   calendarClassName,
   disabled = false,

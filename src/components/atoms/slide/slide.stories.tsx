@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ITSlideToggle from "./slide";
+import ITSlideToggle from "@/components/atoms/slide/slide";
 import { useState } from "react";
 
 const meta: Meta<typeof ITSlideToggle> = {
@@ -8,7 +8,6 @@ const meta: Meta<typeof ITSlideToggle> = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     activeColor: {
       control: "select",

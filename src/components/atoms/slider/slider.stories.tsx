@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ITSlider from "./slider";
+import ITSlider from "@/components/atoms/slider/slider";
 import { useState } from "react";
 
 const meta: Meta<typeof ITSlider> = {
   title: "Components/Inputs/ITSlider",
   component: ITSlider,
-  tags: ["autodocs"],
 };
 
 export default meta;

@@ -1,33 +1,18 @@
-import React, { useState, ReactNode } from "react";
-import { FaCode, FaTimes } from "react-icons/fa";
-import ITStack from "../components/stack/stack";
-import ITFlex from "../components/flex/flex";
-import ITGrid from "../components/grid/grid";
-import ITCard from "../components/card/card";
-import ITButton from "../components/button/button";
-import ITStatCard from "../components/stat-card/stat-card";
-import ITAvatar from "../components/avatar/avatar";
-import ITSlider from "../components/slider/slider";
-import ITSegmentedControl from "../components/segmented-control/segmented-control";
-import ITSlideToggle from "../components/slide/slide";
-import ITSelect from "../components/select/select";
-import ITInput from "../components/input/input";
-import ITText from "../components/text/text";
+import React, { useState } from "react";
+import { FaCode } from "react-icons/fa";
+import ITStack from "../components/atoms/stack/stack";
+import ITFlex from "../components/atoms/flex/flex";
+import ITGrid from "../components/atoms/grid/grid";
+import ITCard from "../components/molecules/card/card";
+import ITButton from "../components/atoms/button/button";
+import ITStatCard from "../components/molecules/stat-card/stat-card";
+import ITAvatar from "../components/atoms/avatar/avatar";
+import ITSlider from "../components/atoms/slider/slider";
+import ITSegmentedControl from "../components/atoms/segmented-control/segmented-control";
+import ITSlideToggle from "../components/atoms/slide/slide";
+import ITSelect from "../components/molecules/select/select";
+import ITInput from "../components/atoms/input/input";
 import { ShowcaseLayout, CodeViewer } from "./ShowcaseLayout";
-
-const DemoBox = ({ children, className = "" }: { children: ReactNode; className?: string }) => (
-  <div className={`bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-lg p-3 text-center text-sm font-medium ${className}`}>
-    {children}
-  </div>
-);
-
-const DemoCard = ({ children, className = "" }: { children: ReactNode; className?: string }) => (
-  <div className={`bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 shadow-sm ${className}`}>
-    <div className="h-8 w-8 rounded-lg bg-primary-100 dark:bg-primary-900/50 mb-3" />
-    <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{children}</p>
-    <p className="text-xs text-slate-400 mt-1">Descripción del item</p>
-  </div>
-);
 
 // ─────────────────────────────────────────
 // 1. ITStack Showcase
@@ -421,10 +406,10 @@ export const StackShowcase = () => {
                       <p className="text-xs text-slate-500 dark:text-slate-400">128 active records</p>
                     </div>
                     <ITStack direction="row" spacing={2}>
-                      <ITButton variant="outlined" color="gray" size="small">
+                      <ITButton variant="outlined" color="gray" size="sm">
                         Export
                       </ITButton>
-                      <ITButton variant="filled" color="primary" size="small">
+                      <ITButton variant="filled" color="primary" size="sm">
                         + New Record
                       </ITButton>
                     </ITStack>
@@ -494,7 +479,7 @@ export const StackShowcase = () => {
                       <p className="text-sm font-semibold text-emerald-900 dark:text-emerald-200">Deployment successful</p>
                       <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-0.5">Your changes are live in production.</p>
                     </div>
-                    <ITButton variant="icon-only" color="gray" size="small">
+                    <ITButton variant="icon-only" color="gray" size="sm">
                       <span className="text-lg leading-none">×</span>
                     </ITButton>
                   </ITStack>
@@ -556,7 +541,7 @@ const PatternCard = ({ title, desc, code, children }: { title: string; desc?: st
           {desc && <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{desc}</p>}
         </div>
         {code && (
-          <ITButton variant="outlined" color="gray" size="small" onClick={() => setShowCode(!showCode)}>
+          <ITButton variant="outlined" color="gray" size="sm" onClick={() => setShowCode(!showCode)}>
             <ITFlex align="center" gap={1}>
               <FaCode size={9} />
               {showCode ? "Hide code" : "Code"}
@@ -590,8 +575,8 @@ const FLEX_PATTERN_CODES = {
     <p>Last edited 2 min ago</p>
   </ITFlex>
   <ITFlex direction="row" gap={2}>
-    <ITButton label="Cancel" variant="outlined" color="gray" size="small" />
-    <ITButton label="Save" variant="filled" color="primary" size="small" />
+    <ITButton label="Cancel" variant="outlined" color="gray" size="sm" />
+    <ITButton label="Save" variant="filled" color="primary" size="sm" />
   </ITFlex>
 </ITFlex>`,
   growItems: `<ITFlex direction="row" gap={3}>
@@ -615,7 +600,7 @@ const FLEX_PATTERN_CODES = {
     <p className="text-lg font-bold ...">All set!</p>
     <p className="text-xs ...">Your workspace is ready to use.</p>
   </div>
-  <ITButton label="Get started" variant="filled" color="primary" size="small" />
+  <ITButton label="Get started" variant="filled" color="primary" size="sm" />
 </ITFlex>`,
   formRowWrap: `<ITFlex
   direction="row"
@@ -784,8 +769,8 @@ export const FlexShowcase = () => {
                       <p className="text-[11px] text-slate-500 dark:text-slate-400">Last edited 2 min ago</p>
                     </ITFlex>
                     <ITFlex direction="row" gap={2}>
-                      <ITButton label="Cancel" variant="outlined" color="gray" size="small" />
-                      <ITButton label="Save" variant="filled" color="primary" size="small" />
+                      <ITButton label="Cancel" variant="outlined" color="gray" size="sm" />
+                      <ITButton label="Save" variant="filled" color="primary" size="sm" />
                     </ITFlex>
                   </ITFlex>
                 </div>
@@ -827,7 +812,7 @@ export const FlexShowcase = () => {
                       <p className="text-lg font-bold text-slate-800 dark:text-slate-100">All set!</p>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Your workspace is ready to use.</p>
                     </div>
-                    <ITButton label="Get started" variant="filled" color="primary" size="small" />
+                    <ITButton label="Get started" variant="filled" color="primary" size="sm" />
                   </ITFlex>
                 </div>
               </PatternCard>
@@ -1038,7 +1023,7 @@ export const GridShowcase = () => {
                             <p className="text-base font-bold text-slate-800 dark:text-slate-100">Overview</p>
                             <p className="text-[11px] text-slate-500 dark:text-slate-400">Last 30 days</p>
                           </div>
-                          <ITButton label="+ New project" variant="filled" color="primary" size="small" />
+                          <ITButton label="+ New project" variant="filled" color="primary" size="sm" />
                         </ITFlex>
                         <ITGrid container spacing={2}>
                           {[
@@ -1084,7 +1069,7 @@ export const GridShowcase = () => {
                           <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-primary-600 text-white">Design</span>
                           <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300">Figma</span>
                         </div>
-                        <ITButton label="Follow" variant="outlined" color="primary" size="small" className="mt-4 w-full" />
+                        <ITButton label="Follow" variant="outlined" color="primary" size="sm" className="mt-4 w-full" />
                       </div>
                     </ITGrid>
                     <ITGrid item xs={12} md={8}>
@@ -1168,8 +1153,8 @@ export const GridShowcase = () => {
                           </ITGrid>
                         </ITGrid>
                         <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                          <ITButton label="Cancel" variant="outlined" color="gray" size="small" />
-                          <ITButton label="Save changes" variant="filled" color="primary" size="small" />
+                          <ITButton label="Cancel" variant="outlined" color="gray" size="sm" />
+                          <ITButton label="Save changes" variant="filled" color="primary" size="sm" />
                         </div>
                       </div>
                     </ITGrid>
@@ -1224,7 +1209,7 @@ export const GridShowcase = () => {
                             ))}
                           </div>
                         </div>
-                        <ITButton label="Share article" variant="outlined" color="primary" size="small" className="w-full" />
+                        <ITButton label="Share article" variant="outlined" color="primary" size="sm" className="w-full" />
                       </div>
                     </ITGrid>
                   </ITGrid>
@@ -1294,7 +1279,7 @@ export const GridShowcase = () => {
                             label={plan.cta}
                             variant={plan.featured ? "filled" : "outlined"}
                             color={plan.featured ? "primary" : "gray"}
-                            size="small"
+                            size="sm"
                             className="w-full mt-4"
                           />
                         </div>
@@ -1313,16 +1298,9 @@ export const GridShowcase = () => {
 
 // ─────────────────────────────────────────
 // 4. Composite Screen Examples
-// ─────────────────────────────────────────
-const SectionTitle = ({ children }: { children: string }) => (
-  <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1">{children}</h3>
-);
+ // ─────────────────────────────────────────
 
-const SectionDesc = ({ children }: { children: string }) => (
-  <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">{children}</p>
-);
-
-export const ScreenDashboardShowcase = () => {
+ export const ScreenDashboardShowcase = () => {
   const code = `// Dashboard completo en 30 líneas
 <ITStack spacing={6}>
   {/* Header row */}
@@ -1377,7 +1355,7 @@ export const ScreenDashboardShowcase = () => {
               <h2 className="text-xl font-bold text-slate-800 dark:text-white">Dashboard</h2>
               <p className="text-xs text-slate-400">Resumen de actividad del sistema</p>
             </div>
-            <ITButton label="Exportar" variant="outlined" size="small" />
+            <ITButton label="Exportar" variant="outlined" size="sm" />
           </ITFlex>
 
           <ITGrid container spacing={3}>
@@ -1486,6 +1464,7 @@ export const ScreenFormShowcase = () => {
               label="Nombre"
               placeholder="Ej: Juan"
               onChange={() => {}}
+              size="sm"
             />
           </ITGrid>
           <ITGrid item xs={12} md={6}>
@@ -1530,8 +1509,8 @@ export const ScreenFormShowcase = () => {
           </ITGrid>
           <ITGrid item xs={12}>
             <ITFlex justify="end" gap={3}>
-              <ITButton label="Cancelar" variant="outlined" size="small" />
-              <ITButton label="Guardar" size="small" />
+              <ITButton label="Cancelar" variant="outlined" size="sm" />
+              <ITButton label="Guardar" size="sm" />
             </ITFlex>
           </ITGrid>
         </ITGrid>

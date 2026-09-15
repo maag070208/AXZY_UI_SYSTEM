@@ -1,4 +1,5 @@
 import { FocusEvent } from "react";
+import { SizesTypes } from "@/types/sizes.types";
 
 /** Represents an option in the search-select dropdown. */
 export interface ITSearchSelectOption {
@@ -42,6 +43,8 @@ export interface ITSearchSelectProps {
   error?: string | boolean;
   /** Whether the field is read-only. */
   readOnly?: boolean;
+  /** Size preset: "sm" | "md" | "lg". @default "md" */
+  size?: SizesTypes;
   /** Callback for server-side search (Mode 2: API connection). Receives the search query string. */
   onSearch?: (query: string) => void;
   /** Whether options are being loaded from an external API. */

@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { ITSliderProps } from "./slider.props";
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 /**
  * Range slider control with min/max/step and optional label displaying the current value.

@@ -11,8 +11,6 @@ import {
   FaCode,
   FaCheck,
   FaPlayCircle,
-  FaPlus,
-  FaSearch,
 } from "react-icons/fa";
 import {
   ITCard,
@@ -45,7 +43,7 @@ const CARD_PATTERN_CODES = {
   image="/courses/typescript.jpg"
   onClick={() => resume(course.id)}
   actions={
-    <ITButton label="Continue lesson 8" variant="filled" color="primary" size="small" />
+    <ITButton label="Continue lesson 8" variant="filled" color="primary" size="sm" />
   }
 >
   <ITFlex align="center" gap={3} className="mb-3">
@@ -53,7 +51,7 @@ const CARD_PATTERN_CODES = {
     <ITDivider orientation="vertical" className="h-3" />
     <ITText muted className="text-xs font-mono">4h 32m</ITText>
     <ITDivider orientation="vertical" className="h-3" />
-    <ITBadget label="★ 4.9" color="warning" size="small" variant="outlined" />
+    <ITBadget label="★ 4.9" color="warning" size="sm" variant="outlined" />
   </ITFlex>
   <ITProgress value={66} color="primary" size="md" />
   <ITFlex justify="between" align="center" className="mt-2">
@@ -65,7 +63,7 @@ const CARD_PATTERN_CODES = {
   <ITBadget
     label="Most popular"
     color="primary"
-    size="small"
+    size="sm"
     className="absolute -top-2 left-4 z-10 shadow-md"
   />
   <ITCard
@@ -73,7 +71,7 @@ const CARD_PATTERN_CODES = {
     className="ring-2 ring-primary-500/30"
     actions={
       <ITButton label="Start 14-day free trial"
-        variant="filled" color="primary" size="medium" className="w-full" />
+        variant="filled" color="primary" size="md" className="w-full" />
     }
   >
     <ITFlex align="baseline" gap={1}>
@@ -95,8 +93,8 @@ const CARD_PATTERN_CODES = {
   activity: `<ITCard
   actions={
     <ITFlex gap={2}>
-      <ITButton label="Reply" variant="text" color="primary" size="small" />
-      <ITButton label="Mute" variant="text" color="gray" size="small" />
+      <ITButton label="Reply" variant="text" color="primary" size="sm" />
+      <ITButton label="Mute" variant="text" color="gray" size="sm" />
     </ITFlex>
   }
 >
@@ -106,7 +104,7 @@ const CARD_PATTERN_CODES = {
       <ITText className="text-sm leading-relaxed">
         <ITText as="span" className="font-semibold">Daniela Klein</ITText>
         {' '}deployed{' '}
-        <ITBadget label="v2.4.1" color="primary" size="small" variant="outlined" />
+        <ITBadget label="v2.4.1" color="primary" size="sm" variant="outlined" />
         {' '}to <ITText as="span" className="font-semibold">production</ITText>.
       </ITText>
       <ITText muted className="text-xs mt-1.5 block">3 minutes ago · api-service</ITText>
@@ -131,8 +129,8 @@ const CARD_PATTERN_CODES = {
   onClick={() => openProfile(user.id)}
   actions={
     <ITFlex gap={2}>
-      <ITButton label="Message" variant="filled" color="primary" size="small" />
-      <ITButton label="View profile" variant="outlined" color="gray" size="small" />
+      <ITButton label="Message" variant="filled" color="primary" size="sm" />
+      <ITButton label="View profile" variant="outlined" color="gray" size="sm" />
     </ITFlex>
   }
 >
@@ -148,7 +146,7 @@ const CARD_PATTERN_CODES = {
   </ITText>
   <ITFlex gap={1} wrap="wrap" className="mt-3">
     {['TypeScript', 'Distributed systems', 'Open source'].map(t => (
-      <ITBadget key={t} label={t} color="primary" size="small" variant="outlined" />
+      <ITBadget key={t} label={t} color="primary" size="sm" variant="outlined" />
     ))}
   </ITFlex>
 </ITCard>`,
@@ -158,7 +156,7 @@ const CARD_PATTERN_CODES = {
   imageClassName="h-40"
   onClick={() => play(album.id)}
   actions={
-    <ITButton label="Play album" variant="filled" color="primary" size="small" />
+    <ITButton label="Play album" variant="filled" color="primary" size="sm" />
   }
 >
   <ITFlex justify="between" gap={3}>
@@ -183,7 +181,7 @@ const CARD_PATTERN_CODES = {
 
 const TEXT_PATTERN_CODES = {
   articleHeader: `<ITFlex align="center" gap={2} className="mb-3">
-  <ITBadget label="ENGINEERING" color="primary" size="small" variant="outlined" />
+  <ITBadget label="ENGINEERING" color="primary" size="sm" variant="outlined" />
   <ITText muted as="span" className="text-[11px] uppercase tracking-wider font-semibold">
     Featured
   </ITText>
@@ -204,7 +202,7 @@ const TEXT_PATTERN_CODES = {
 </ITFlex>`,
   sectionHeading: `<ITFlex justify="between" align="start" gap={4} className="mb-2">
   <ITText as="h2" className="text-xl font-bold">Recent activity</ITText>
-  <ITButton label="View all →" variant="text" color="primary" size="small" />
+  <ITButton label="View all →" variant="text" color="primary" size="sm" />
 </ITFlex>
 <ITText as="p" muted className="text-sm leading-relaxed">
   Latest commits, deployments and reviews from your team this week.
@@ -260,7 +258,7 @@ const PatternCard = ({ title, desc, code, children }: { title: string; desc?: st
           {desc && <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{desc}</p>}
         </div>
         {code && (
-          <ITButton variant="outlined" color="gray" size="small" onClick={() => setShowCode(!showCode)}>
+          <ITButton variant="outlined" color="gray" size="sm" onClick={() => setShowCode(!showCode)}>
             <ITFlex align="center" gap={1}>
               <FaCode size={9} />
               {showCode ? "Hide code" : "Code"}
@@ -289,7 +287,7 @@ export const CardShowcase = () => {
     if (title) lines.push(`  title="${title}"`);
     if (showImage) lines.push(`  image="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=200&fit=crop"`);
     if (clickable) lines.push(`  onClick={() => openDetails()}`);
-    if (showActions) lines.push(`  actions={<ITButton label="View" variant="filled" color="primary" size="small" />}`);
+    if (showActions) lines.push(`  actions={<ITButton label="View" variant="filled" color="primary" size="sm" />}`);
     lines.push(`>`);
     lines.push(`  <p className="text-3xl font-bold">$48,230</p>`);
     lines.push(`  <p className="text-xs text-emerald-600">↑ 12.4% vs last month</p>`);
@@ -309,7 +307,7 @@ export const CardShowcase = () => {
               title={title || undefined}
               image={showImage ? "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=200&fit=crop" : undefined}
               actions={showActions ? (
-                <ITButton label="View details" variant="filled" color="primary" size="small" />
+                <ITButton label="View details" variant="filled" color="primary" size="sm" />
               ) : undefined}
               onClick={clickable ? () => {} : undefined}
               className="max-w-sm mx-auto"
@@ -378,7 +376,7 @@ export const CardShowcase = () => {
                     image="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=200&fit=crop"
                     onClick={() => {}}
                     actions={
-                      <ITButton label="Continue lesson 8" variant="filled" color="primary" size="small" />
+                      <ITButton label="Continue lesson 8" variant="filled" color="primary" size="sm" />
                     }
                   >
                     <ITFlex align="center" gap={3} className="mb-3">
@@ -386,7 +384,7 @@ export const CardShowcase = () => {
                       <ITDivider orientation="vertical" className="h-3" />
                       <ITText muted className="text-xs font-mono">4h 32m</ITText>
                       <ITDivider orientation="vertical" className="h-3" />
-                      <ITBadget label="★ 4.9" color="warning" size="small" variant="outlined" />
+                      <ITBadget label="★ 4.9" color="warning" size="sm" variant="outlined" />
                     </ITFlex>
                     <ITProgress value={66} color="primary" size="md" />
                     <ITFlex justify="between" align="center" className="mt-2">
@@ -411,14 +409,14 @@ export const CardShowcase = () => {
                     <ITBadget
                       label="Most popular"
                       color="primary"
-                      size="small"
+                      size="sm"
                       className="absolute -top-2 left-4 z-10 shadow-md"
                     />
                     <ITCard
                       title="Scale"
                       className="ring-2 ring-primary-500/30"
                       actions={
-                        <ITButton label="Start 14-day free trial" variant="filled" color="primary" size="medium" className="w-full" />
+                        <ITButton label="Start 14-day free trial" variant="filled" color="primary" size="md" className="w-full" />
                       }
                     >
                       <ITFlex align="baseline" gap={1}>
@@ -450,8 +448,8 @@ export const CardShowcase = () => {
                   <ITCard
                     actions={
                       <ITFlex gap={2}>
-                        <ITButton label="Reply" variant="text" color="primary" size="small" />
-                        <ITButton label="Mute" variant="text" color="gray" size="small" />
+                        <ITButton label="Reply" variant="text" color="primary" size="sm" />
+                        <ITButton label="Mute" variant="text" color="gray" size="sm" />
                       </ITFlex>
                     }
                   >
@@ -461,7 +459,7 @@ export const CardShowcase = () => {
                         <ITText className="text-sm leading-relaxed text-slate-700">
                           <ITText as="span" className="font-semibold">Daniela Klein</ITText>
                           {' '}deployed{' '}
-                          <ITBadget label="v2.4.1" color="primary" size="small" variant="outlined" />
+                          <ITBadget label="v2.4.1" color="primary" size="sm" variant="outlined" />
                           {' '}to <ITText as="span" className="font-semibold">production</ITText>.
                         </ITText>
                         <ITText muted className="text-xs mt-1.5 block">3 minutes ago · api-service</ITText>
@@ -496,8 +494,8 @@ export const CardShowcase = () => {
                     onClick={() => {}}
                     actions={
                       <ITFlex gap={2}>
-                        <ITButton label="Message" variant="filled" color="primary" size="small" />
-                        <ITButton label="View profile" variant="outlined" color="gray" size="small" />
+                        <ITButton label="Message" variant="filled" color="primary" size="sm" />
+                        <ITButton label="View profile" variant="outlined" color="gray" size="sm" />
                       </ITFlex>
                     }
                   >
@@ -513,7 +511,7 @@ export const CardShowcase = () => {
                     </ITText>
                     <ITFlex gap={1} wrap="wrap" className="mt-3">
                       {['TypeScript', 'Distributed systems', 'Open source'].map((t) => (
-                        <ITBadget key={t} label={t} color="primary" size="small" variant="outlined" />
+                        <ITBadget key={t} label={t} color="primary" size="sm" variant="outlined" />
                       ))}
                     </ITFlex>
                   </ITCard>
@@ -683,7 +681,7 @@ export const TextShowcase = () => {
             <ITText muted as="span" className="text-[10px]">
               Trunca con "…" al superar (0 = desactivado).
             </ITText>
-            <ITButton variant="text" color="primary" size="small" onClick={() => setMaxLength("0")}>
+            <ITButton variant="text" color="primary" size="sm" onClick={() => setMaxLength("0")}>
               Reset
             </ITButton>
           </ITFlex>
@@ -699,7 +697,7 @@ export const TextShowcase = () => {
             <ITText muted as="span" className="text-[10px]">
               Inserta un &lt;br /&gt; al superar el límite.
             </ITText>
-            <ITButton variant="text" color="primary" size="small" onClick={() => setBreakLength("0")}>
+            <ITButton variant="text" color="primary" size="sm" onClick={() => setBreakLength("0")}>
               Reset
             </ITButton>
           </ITFlex>
@@ -756,7 +754,7 @@ export const TextShowcase = () => {
               >
                 <div className="max-w-md">
                   <ITFlex align="center" gap={2} className="mb-3">
-                    <ITBadget label="ENGINEERING" color="primary" size="small" variant="outlined" />
+                    <ITBadget label="ENGINEERING" color="primary" size="sm" variant="outlined" />
                     <ITText muted as="span" className="text-[11px] uppercase tracking-wider font-semibold">Featured</ITText>
                   </ITFlex>
                   <ITText as="h2" className="text-2xl font-bold text-slate-800 dark:text-slate-100 leading-tight mb-2 block">
@@ -787,7 +785,7 @@ export const TextShowcase = () => {
                     <ITText as="h2" className="text-xl font-bold text-slate-800 dark:text-slate-100">
                       Recent activity
                     </ITText>
-                    <ITButton label="View all →" variant="text" color="primary" size="small" />
+                    <ITButton label="View all →" variant="text" color="primary" size="sm" />
                   </ITFlex>
                   <ITText as="p" muted className="text-sm leading-relaxed">
                     Latest commits, deployments and reviews from your team this week. Updates every 30 seconds.
@@ -846,7 +844,7 @@ export const TextShowcase = () => {
                     <ITDivider orientation="vertical" className="h-3" />
                     <ITText muted as="span" className="text-[11px] font-mono">api-service</ITText>
                     <ITDivider orientation="vertical" className="h-3" />
-                    <ITBadget label="+124 -38" color="success" size="small" variant="outlined" />
+                    <ITBadget label="+124 -38" color="success" size="sm" variant="outlined" />
                   </ITFlex>
                 </div>
               </PatternCard>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ITTabsProps } from './tabs.props';
 import { clsx } from 'clsx';
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 /**
  * Tabbed navigation component with "line" and "pill" visual variants.

@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ITSkeleton from "./skeleton";
-import ITStack from "../stack/stack";
+import ITSkeleton from "@/components/atoms/skeleton/skeleton";
+import ITStack from "@/components/atoms/stack/stack";
 
 const meta: Meta<typeof ITSkeleton> = {
   title: "Components/Feedback/ITSkeleton",
   component: ITSkeleton,
-  tags: ["autodocs"],
 };
 
 export default meta;

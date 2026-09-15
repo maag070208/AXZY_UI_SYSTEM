@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { ITAvatarProps, AvatarSize } from "./avatar.props";
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 const sizeMap: Record<AvatarSize, { container: string; text: string }> = {
   xs: { container: "w-6 h-6", text: "text-[10px]" },

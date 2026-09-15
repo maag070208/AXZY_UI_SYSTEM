@@ -1,12 +1,12 @@
 import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import { FaClock } from "react-icons/fa";
-import ITInput from "../input/input";
-import ITButton from "../button/button";
+import ITInput from "@/components/atoms/input/input";
+import ITButton from "@/components/atoms/button/button";
 import useClickOutside from "@/hooks/useClickOutside";
 import { theme } from "@/theme/theme";
 import { ITTimePickerProps } from "./timePicker.props";
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 /**
  * Time selection input with a dual-column dropdown (hours / minutes).
@@ -41,7 +41,7 @@ export default function ITTimePicker({
   error,
   disabled,
   className,
-  size = "medium",
+  size = "md",
   variant = "primary",
   color = "primary",
 }: ITTimePickerProps) {
@@ -325,7 +325,7 @@ export default function ITTimePicker({
             <ITButton
               variant="solid"
               color={color as any}
-              size="small"
+              size="sm"
               onClick={handleConfirm}
             >
               <ITText as="span">Aceptar</ITText>

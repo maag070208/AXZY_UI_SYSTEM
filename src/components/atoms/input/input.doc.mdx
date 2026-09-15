@@ -1,7 +1,7 @@
 import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
-import * as Stories from './input.stories';
+import * as StoriesData from './input.stories';
 
-<Meta of={Stories} />
+<Meta of={StoriesData} />
 
 # ITInput
 
@@ -23,7 +23,7 @@ A versatile form input component supporting text, password, email, number, texta
 | `touched` | `boolean` | `undefined` | Whether the field has been touched by the user. |
 | `required` | `boolean` | `false` | Mark the field as required (adds asterisk to label). |
 | `disabled` | `boolean` | `false` | Disable the input. |
-| `size` | `SizesTypes` | `'md'` | Size preset: `xs`, `sm`, `md`, `lg`, `xl`. |
+| `size` | `SizesTypes` | `'md'` | Size preset: `"sm"`, `"md"`, `"lg"`. |
 | `variant` | `ColorsTypes` | `undefined` | Color variant from the theme palette. |
 | `iconLeft` | `ReactNode` | `undefined` | Icon element rendered on the left side. |
 | `iconRight` | `ReactNode` | `undefined` | Icon element rendered on the right side. |

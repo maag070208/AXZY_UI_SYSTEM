@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ITAvatar from "./avatar";
+import ITAvatar from "@/components/atoms/avatar/avatar";
 import { FaCircle } from "react-icons/fa";
 
 const meta: Meta<typeof ITAvatar> = {
   title: "Components/Data Display/ITAvatar",
   component: ITAvatar,
-  tags: ["autodocs"],
 };
 
 export default meta;

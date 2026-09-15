@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import clsx from "clsx";
-import { FaAngleDown, FaSearch, FaTimes } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import { ITSearchSelectProps, ITSearchSelectOption } from "./search-select.props";
-import { theme } from "@/theme/theme";
-import ITText from "@/components/text/text";
+import { theme, inputSizeTokens } from "@/theme/theme";
+import ITText from "@/components/atoms/text/text";
 
 /**
  * Searchable dropdown select with local client-side filtering and server-side search via API.
@@ -53,6 +53,7 @@ export default function ITSearchSelect({
   onSearch,
   isLoading = false,
   noResultsMessage = "No se encontraron resultados",
+  size = "md",
 }: ITSearchSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -146,16 +147,17 @@ export default function ITSearchSelect({
   const errorMessage = typeof effectiveError === "string" ? effectiveError : "Este campo es requerido";
   
   const getInputStyle = () => {
+    const sizeConfig = inputSizeTokens[size] ?? inputSizeTokens.md;
     const style: React.CSSProperties = {
       backgroundColor: inputTheme.backgroundColor || "#ffffff",
       borderColor: inputTheme.borderColor || "var(--color-secondary-300)",
       borderRadius: inputTheme.borderRadius || "0.5rem",
-      padding: inputTheme.padding || "0.5rem 0.75rem",
-      fontSize: inputTheme.fontSize || "0.875rem",
+      padding: sizeConfig.padding,
+      fontSize: sizeConfig.fontSize,
       borderWidth: '1px',
       borderStyle: 'solid',
       transition: 'all 0.2s',
-      color: 'var(--input-text-color, var(--color-secondary-900))',
+      color: 'var(--it-input-text-color, var(--color-secondary-900))',
       width: '100%',
     };
 

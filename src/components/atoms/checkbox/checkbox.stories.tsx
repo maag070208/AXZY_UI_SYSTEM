@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import ITCheckbox from "./checkbox";
-import ITStack from "../stack/stack";
+import ITCheckbox from "@/components/atoms/checkbox/checkbox";
+import ITStack from "@/components/atoms/stack/stack";
 
 const meta: Meta<typeof ITCheckbox> = {
   title: "Components/Inputs/ITCheckbox",
   component: ITCheckbox,
-  tags: ["autodocs"],
 };
 
 export default meta;

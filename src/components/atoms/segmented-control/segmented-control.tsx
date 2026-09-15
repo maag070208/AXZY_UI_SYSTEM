@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { ITSegmentedControlProps } from "./segmented-control.props";
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 const sizeMap = {
   sm: { button: "px-2.5 py-1.5 text-[11px]", container: "p-0.5" },

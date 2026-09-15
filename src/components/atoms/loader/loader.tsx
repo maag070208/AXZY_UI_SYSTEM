@@ -1,7 +1,7 @@
 import { theme } from "@/theme/theme";
 import { LoaderSize, sizeClasses } from "@/types/loader.types";
 import { LoaderProps } from "./loader.props";
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 /**
  * Loading indicators with multiple animation types: spinner, dots, pulse,

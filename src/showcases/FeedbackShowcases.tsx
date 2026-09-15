@@ -11,7 +11,7 @@ import {
   ITStack,
   useITTheme
 } from "../index";
-import { PRESETS } from "../components/theme-provider/themeProvider";
+import { PRESETS } from "../components/theme-provider/themePresets";
 import { ShowcaseLayout } from "./ShowcaseLayout";
 
 // 1. ITDialog Showcase
@@ -104,10 +104,10 @@ export const ToastShowcase = () => {
       }
       gallery={
         <div className="flex flex-wrap gap-3">
-          <ITButton label="Toast Exito" color="success" size="small" onClick={() => { setMsg("Operación exitosa!"); setType("success"); setVisible(true); }} />
-          <ITButton label="Toast Error" color="danger" size="small" onClick={() => { setMsg("Ocurrió un fallo de red."); setType("error"); setVisible(true); }} />
-          <ITButton label="Toast Warning" color="warning" size="small" onClick={() => { setMsg("Licencia por expirar."); setType("warning"); setVisible(true); }} />
-          <ITButton label="Toast Info" color="info" size="small" onClick={() => { setMsg("Actualización disponible."); setType("info"); setVisible(true); }} />
+          <ITButton label="Toast Exito" color="success" size="sm" onClick={() => { setMsg("Operación exitosa!"); setType("success"); setVisible(true); }} />
+          <ITButton label="Toast Error" color="danger" size="sm" onClick={() => { setMsg("Ocurrió un fallo de red."); setType("error"); setVisible(true); }} />
+          <ITButton label="Toast Warning" color="warning" size="sm" onClick={() => { setMsg("Licencia por expirar."); setType("warning"); setVisible(true); }} />
+          <ITButton label="Toast Info" color="info" size="sm" onClick={() => { setMsg("Actualización disponible."); setType("info"); setVisible(true); }} />
         </div>
       }
     />
@@ -211,7 +211,7 @@ export const ThemeProviderShowcase = () => {
                   label={mode === "light" ? "☀️ Claro" : mode === "dark" ? "🌙 Oscuro" : "💻 Sistema"}
                   color={darkModeMode === mode ? "primary" : "secondary"}
                   onClick={() => setDarkModeMode(mode)}
-                  size="small"
+                  size="sm"
                 />
               ))}
             </div>

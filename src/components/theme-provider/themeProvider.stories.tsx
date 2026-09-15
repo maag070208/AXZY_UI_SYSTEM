@@ -1,14 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import ITThemeProvider from './themeProvider';
-import ITCard from '../card/card';
-import ITButton from '../button/button';
-import ITText from '../text/text';
+import ITCard from '@/components/molecules/card/card';
+import ITButton from '@/components/atoms/button/button';
+import ITText from '@/components/atoms/text/text';
 
 const meta = {
   title: 'Components/System/ITThemeProvider',
   component: ITThemeProvider,
   parameters: { layout: 'centered' },
-  tags: ['autodocs'],
   argTypes: {
     theme: { control: false, description: 'Custom theme palette to override defaults' },
     children: { control: false, description: 'App content wrapped by the theme context' },

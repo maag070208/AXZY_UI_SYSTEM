@@ -17,16 +17,15 @@
 
 ```
 src/
-├── components/       → 52 componentes (cada uno en su carpeta)
-│   ├── alert/, avatar/, badget/, breadcrumbs/, button/, ...
-│   ├── layout/       → Chasis estructural (ITLayout)
-│   ├── sidebar/      → Sidebar moderno glassmorphism (ITSidebar)
-│   ├── topbar/       → Topbar (ITTopBar)
-│   ├── navbar/       → Layout alternativo all-in-one (ITNavbar)
-│   ├── text/         → ITText (wrapper tipográfico universal)
+├── components/       → 52 componentes organizados por capas atómicas
+│   ├── atoms/        → Primitivos: text/, button/, input/, flex/, grid/, stack/, ...
+│   ├── molecules/    → Compuestos: card/, date-picker/, select/, table/, stepper/, ...
+│   ├── organisms/    → Complejos: data-table/, form-builder/, dialog/, sidebar/, topbar/, ...
+│   ├── templates/    → layout/ (chasis estructural), page/
+│   ├── isolation/    → Stories de validación de aislamiento CSS
 │   └── theme-provider/ → Sistema de theming central (ITThemeProvider)
 ├── showcases/        → Demos para el showroom
-├── theme/            → theme.ts (objeto estático con tokens)
+├── theme/            → theme.ts (tokens) + theme-context.ts (contexto de theming)
 ├── hooks/            → Custom hooks compartidos
 ├── utils/            → color.utils, styles, table.utils
 ├── types/            → Tipos compartidos (button, table, input...)
@@ -34,13 +33,19 @@ src/
 └── App.tsx           → Showroom app
 ```
 
+**Regla atómica**: dependencias unidireccionales (atoms → molecules → organisms → templates).
+Un componente NO importa de una capa superior. Se valida con `pnpm check:atomic`.
+
 ### Convenciones de Componentes
 
 - **Prefijo**: `IT` (Intelligent Theme) → `ITButton`, `ITCard`, `ITText`, etc.
 - **Archivos**: `<nombre>.tsx` + `<nombre>.props.ts` + `<nombre>.stories.tsx`
 - **Props**: Siempre en archivo separado, interfaz `IT<Nombre>Props`
 - **Default export**: función con nombre `IT<Nombre>`
-- **CSS**: Solo Tailwind + CSS variables inline (NO módulos CSS, NO styled-components)
+- **CSS**: Tailwind + CSS variables (`--it-*`). Los estilos propios usan clases con
+  prefijo `it-` (BEM) dentro de `@layer components` y `:where()` para especificidad 0.
+  NO usar clases genéricas (`.card`, `.toast-enter`) ni módulos CSS/styled-components.
+  Validado con `pnpm check:css`.
 - **Todo texto debe usar `<ITText>`** — es la regla #1 del sistema
 
 ---
@@ -207,7 +212,7 @@ En dark mode, los tonos claros (50-400) se mezclan con fondo oscuro en vez de bl
 **TODO texto debe usar `<ITText>`.** Es el wrapper tipográfico universal del sistema.
 
 ```tsx
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 <ITText>Párrafo estándar</ITText>
 <ITText as="span">Texto inline</ITText>
@@ -363,7 +368,7 @@ export interface ITMiComponenteProps {
 
 // components/mi-componente/mi-componente.tsx
 import { ITMiComponenteProps } from "./mi-componente.props";
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 export default function ITMiComponente({
   label,
@@ -383,7 +388,7 @@ export default function ITMiComponente({
 
 ✅ **Correcto**:
 ```tsx
-style={{ backgroundColor: "var(--sidebar-bg, #ffffff)", color: "var(--sidebar-label-color, #333)" }}
+style={{ backgroundColor: "var(--it-sidebar-bg, #ffffff)", color: "var(--it-sidebar-label-color, #333)" }}
 ```
 
 ❌ **Incorrecto** (no se actualiza al cambiar tema):

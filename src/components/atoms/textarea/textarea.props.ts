@@ -1,5 +1,3 @@
-import { InputHTMLAttributes } from "react";
-
 export interface ITTextareaProps {
   /** Controlled value of the textarea. */
   value?: string;

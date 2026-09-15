@@ -1,0 +1,491 @@
+import { useTableState } from "@/hooks/useTableState";
+import { sizeStyles, variantStyles } from "@/types/table.types";
+import clsx from "clsx";
+import React, { useState } from "react";
+import {
+  FaCheck,
+  FaSpinner,
+  FaTimes,
+  FaTable,
+  FaThLarge
+} from "react-icons/fa";
+import { MdOutlineSwapVert } from "react-icons/md";
+import ITInput from "@/components/atoms/input/input";
+import ITPagination from "@/components/molecules/pagination/pagination";
+import ITSelect from "@/components/molecules/select/select";
+import { Column, ITTableProps } from "./table.props";
+import ITText from "@/components/atoms/text/text";
+import {
+  tableActionsCell,
+  tableBody,
+  tableCell,
+  tableCellText,
+  tableContainer,
+  tableEmptyContent,
+  tableHeaderCell,
+  tableHeaderRow,
+  tableRow,
+} from "@/utils/styles";
+import { formatCurrencyMX, getNestedValue } from "@/utils/table.utils";
+
+/**
+ * A feature-rich data table with per-column filtering, sortable columns,
+ * pagination, boolean/catalog type support, and currency formatting.
+ *
+ * @example
+ * <ITTable
+ *   columns={[
+ *     { key: "name", label: "Name", type: "string", sortable: true },
+ *     { key: "active", label: "Active", type: "boolean", filter: true },
+ *     { key: "actions", label: "", type: "actions", actions: (row) => <ITButton>Edit</ITButton> },
+ *   ]}
+ *   data={users}
+ *   title="User List"
+ *   size="sm"
+ * />
+ */
+export default function ITTable<T extends Record<string, unknown>>({
+  columns,
+  data = [],
+  containerClassName,
+  variant = "default",
+  size = "md",
+  itemsPerPageOptions = [5, 10, 20],
+  defaultItemsPerPage = 10,
+  title,
+  renderCard,
+  defaultView = "table",
+  showVerticalBorder = true,
+  verticalBorderClassname,
+}: ITTableProps<T>) {
+  const [viewMode, setViewMode] = useState<"table" | "cards">(defaultView);
+
+  const {
+    currentPage,
+    itemsPerPage,
+    filters,
+    sortConfig,
+    goToPage,
+    handleFilterChange,
+    handleSort,
+    handleItemsPerPageChange,
+  } = useTableState({ defaultItemsPerPage });
+
+  const sortedData = React.useMemo(() => {
+    const safeData = Array.isArray(data) ? data : [];
+    if (!sortConfig) return safeData;
+
+    return [...safeData].sort((a, b) => {
+      const aValue = getNestedValue(a, sortConfig.key);
+      const bValue = getNestedValue(b, sortConfig.key);
+
+      if (aValue == null || bValue == null) return 0;
+
+      let comparison = 0;
+
+      const column = columns.find((col) => col.key === sortConfig.key);
+      if (!column || !column.sortable) return 0;
+
+      switch (column.type) {
+        case "number":
+          comparison = (aValue as number) - (bValue as number);
+          break;
+        case "date":
+          comparison =
+            new Date(aValue as string).getTime() -
+            new Date(bValue as string).getTime();
+          break;
+        case "boolean":
+          comparison = aValue === bValue ? 0 : aValue ? 1 : -1;
+          break;
+        case "catalog": {
+          const catalogItemA = column.catalogOptions?.data.find(
+            (item) => item.id === aValue
+          );
+          const catalogItemB = column.catalogOptions?.data.find(
+            (item) => item.id === bValue
+          );
+          comparison = String(catalogItemA?.name || aValue).localeCompare(
+            String(catalogItemB?.name || bValue)
+          );
+          break;
+        }
+        case "string":
+        default:
+          comparison = (aValue as string).localeCompare(bValue as string);
+          break;
+      }
+
+      return sortConfig.direction === "asc" ? comparison : -comparison;
+    });
+  }, [data, sortConfig, columns]);
+
+  const filteredData = sortedData.filter((row) =>
+    columns.every((col) => {
+      if (
+        !col.filter ||
+        filters[col.key] === undefined ||
+        filters[col.key] === ""
+      )
+        return true;
+
+      const value = getNestedValue(row, col.key);
+      const filterValue = String(filters[col.key]).toLowerCase();
+
+      switch (col.type) {
+        case "number":
+          return String(value).includes(filterValue);
+        case "boolean":
+          return value === filters[col.key];
+        case "catalog": {
+          if (!col.catalogOptions) return true;
+          const catalogItem = col.catalogOptions.data.find(
+            (item) =>
+              String(item.id).toLowerCase().includes(filterValue) ||
+              item.name.toLowerCase().includes(filterValue)
+          );
+          return catalogItem ? value === catalogItem.id : false;
+        }
+        case "string":
+        default:
+          return String(value).toLowerCase().includes(filterValue);
+      }
+    })
+  );
+
+  const computedTotalPages = Math.ceil(filteredData.length / itemsPerPage) || 1;
+  const currentData = filteredData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const renderFilterInput = (col: Column<T>) => {
+    if (!col.filter) return null;
+
+    if (col.type === "boolean") {
+      const currentValue = filters[col.key];
+      const nextValue =
+        currentValue === undefined
+          ? true
+          : currentValue === true
+            ? false
+            : undefined;
+
+      const getToggleLabel = () => {
+        if (currentValue === undefined) return "Mostrar todos";
+        if (currentValue === true) return "Filtrar solo verdaderos";
+        return "Filtrar solo falsos";
+      };
+
+      return (
+        <button
+          className="flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 rounded-full p-1 transition-all duration-200"
+          onClick={() => handleFilterChange(col.key, nextValue)}
+          aria-label={`${getToggleLabel()} para ${col.label}`}
+          title={`${getToggleLabel()} para ${col.label}`}
+        >
+          <div className="relative w-10 h-5 bg-secondary-300 rounded-full">
+            <div
+              className={clsx(
+                "absolute top-0.5 w-4 h-4 rounded-full transition-all duration-300 shadow-sm",
+                {
+                  "left-0.5 bg-secondary-400": currentValue === undefined,
+                  "left-5 bg-slate-500": currentValue === true,
+                  "left-0.5 bg-secondary-500": currentValue === false,
+                }
+              )}
+            />
+          </div>
+        </button>
+      );
+    }
+
+    if (col.filter === "catalog" && col.catalogOptions) {
+      if (col.catalogOptions.loading) {
+        return (
+          <FaSpinner
+            className="animate-spin"
+            aria-label="Cargando opciones"
+            title="Cargando opciones"
+          />
+        );
+      }
+
+      if (col.catalogOptions.error) {
+        return <ITText as="span" className="text-danger-500 text-xs">Error cargando</ITText>;
+      }
+
+      return (
+        <ITSelect
+          name={`filter-${col.key}`}
+          options={[
+            { value: "", label: "Todos" },
+            ...col.catalogOptions.data.map((item) => ({
+              value: String(item.id),
+              label: item.name,
+            })),
+          ]}
+          value={String(filters[col.key] || "")}
+          onChange={(e) => {
+            const value = e.target.value === "" ? undefined : e.target.value;
+            handleFilterChange(col.key, value);
+          }}
+          onBlur={() => { }}
+          className="w-full text-xs"
+        />
+      );
+    }
+
+    return (
+      <ITInput
+        name={`filter-${col.key}`}
+        className="w-full text-xs"
+        placeholder="Buscar..."
+        value={String(filters[col.key] || "")}
+        onChange={(e) => handleFilterChange(col.key, e.target.value)}
+        onBlur={() => { }}
+      />
+    );
+  };
+
+  const renderCellContent = (col: Column<T>, row: T) => {
+    const value = getNestedValue(row, col.key);
+
+    if (col.render) {
+      return col.render(row);
+    }
+
+    switch (col.type) {
+      case "number":
+        return (typeof value === "number") && col.currencyMX ? formatCurrencyMX(value) : value;
+      case "boolean":
+        return value ? (
+          <FaCheck
+            className="text-success-500"
+            aria-label="Verdadero"
+            title="Verdadero"
+          />
+        ) : (
+          <FaTimes
+            className="text-danger-500"
+            aria-label="Falso"
+            title="Falso"
+          />
+        );
+      case "actions":
+        return col.actions ? col.actions(row) : null;
+      case "catalog":
+        if (col.catalogOptions) {
+          const catalogItem = col.catalogOptions.data.find(
+            (item) => item.id === value
+          );
+          return catalogItem?.name || value;
+        }
+        return value as React.ReactNode;
+      default:
+        return value as React.ReactNode;
+    }
+  };
+
+  const renderDefaultCard = (row: T) => {
+    const dataCols = columns.filter((c) => c.type !== "actions");
+    const actionCol = columns.find((c) => c.type === "actions");
+    return (
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-3 space-y-2 shadow-sm">
+        {dataCols.map((col) => (
+          <div key={col.key} className="flex items-center justify-between gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 whitespace-nowrap flex-shrink-0 min-w-[70px]">
+              {col.label}
+            </span>
+            <span className="text-sm font-medium text-slate-800 dark:text-white text-right truncate">
+              {renderCellContent(col, row) as React.ReactNode}
+            </span>
+          </div>
+        ))}
+        {actionCol?.actions && (
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+            {actionCol.actions(row)}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className={clsx("space-y-4 w-full", containerClassName)}>
+      <div className={tableContainer} style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
+        {/* Header outside overflow */}
+        {title && (
+          <div className="px-6 py-5 flex items-center justify-between" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
+            <ITText as="h2" className="text-xl font-bold text-secondary-900 leading-tight">{title}</ITText>
+            <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-700/50">
+              <button
+                onClick={() => setViewMode("table")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                  viewMode === "table"
+                    ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                }`}
+              >
+                <FaTable size={11} />
+                Table
+              </button>
+              <button
+                onClick={() => setViewMode("cards")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                  viewMode === "cards"
+                    ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                }`}
+              >
+                <FaThLarge size={11} />
+                Cards
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!title && (
+          <div className="flex justify-end px-4 pt-3">
+            <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-700/50">
+              <button
+                onClick={() => setViewMode("table")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                  viewMode === "table"
+                    ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                }`}
+              >
+                <FaTable size={11} />
+                Table
+              </button>
+              <button
+                onClick={() => setViewMode("cards")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                  viewMode === "cards"
+                    ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                }`}
+              >
+                <FaThLarge size={11} />
+                Cards
+              </button>
+            </div>
+          </div>
+        )}
+
+        {viewMode === "cards" ? (
+          <div className="p-4 space-y-3 max-h-[400px] overflow-y-auto">
+            {currentData.length > 0 ? (
+              currentData.map((row, i) => (
+                <div key={i}>
+                  {renderCard ? renderCard(row) : renderDefaultCard(row)}
+                </div>
+              ))
+            ) : (
+              <div className={clsx(tableEmptyContent, "py-12")}>
+                <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
+                <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table
+              className={clsx(
+                "min-w-max w-full text-sm text-left text-secondary-600",
+                showVerticalBorder && "[&_th]:border-r [&_th:last-child]:border-r-0 [&_td]:border-r [&_td:last-child]:border-r-0",
+                showVerticalBorder && (verticalBorderClassname || "[&_th]:border-slate-100 dark:[&_th]:border-slate-700/30 [&_td]:border-slate-100 dark:[&_td]:border-slate-700/30"),
+                variantStyles[variant],
+                sizeStyles[size]
+              )}
+            >
+              <thead>
+                <tr className={clsx(tableHeaderRow, "dark:text-slate-200")}>
+                  {columns.map((col) => (
+                    <th
+                      key={col.key}
+                      scope="col"
+                      className={tableHeaderCell(col.className)}
+                    >
+                      <div className="flex flex-col gap-3 min-w-[150px]">
+                        <div className="flex items-center justify-between gap-2">
+                            <ITText as="span" className="text-slate-900 dark:text-white font-bold">{col.label}</ITText>
+                          {col.sortable && col.type !== "actions" && (
+                            <button
+                              onClick={() => handleSort(col.key)}
+                              className={`p-1 rounded-md transition-colors ${sortConfig?.key === col.key
+                                  ? "bg-secondary-200 text-secondary-900"
+                                  : "hover:bg-secondary-200 text-secondary-400 hover:text-secondary-700"
+                                }`}
+                              title={`Ordenar por ${col.label}`}
+                            >
+                              <MdOutlineSwapVert className="w-4 h-4" aria-hidden="true" />
+                            </button>
+                          )}
+                        </div>
+                        <div className="w-full">
+                          {col.filter ? renderFilterInput(col) : null}
+                        </div>
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className={clsx(tableBody, "dark:divide-slate-700/30")}>
+                {currentData.length > 0 ? (
+                  currentData.map((row, rowIndex) => (
+                    <tr
+                      key={rowIndex}
+                      className={clsx(tableRow, variant === "striped" && "odd:bg-secondary-50/40 dark:odd:bg-slate-800/20")}
+                    >
+                      {columns.map((col) => (
+                        <td
+                          key={`${rowIndex}-${col.key}`}
+                          className={tableCell(col.className)}
+                        >
+                          {col.type === "actions" ? (
+                            <div className={tableActionsCell}>
+                              {renderCellContent(col, row) as React.ReactNode}
+                            </div>
+                          ) : (
+                            <div className={tableCellText}>
+                              {renderCellContent(col, row) as React.ReactNode}
+                            </div>
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={columns.length} className="px-6 py-12 text-center">
+                      <div className={tableEmptyContent}>
+                        <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
+                        <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Pagination */}
+        <div className="rounded-b-xl px-6 py-4" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
+          <ITPagination
+            currentPage={currentPage}
+            totalPages={computedTotalPages}
+            onPageChange={goToPage}
+            color="primary"
+            itemsPerPageOptions={itemsPerPageOptions}
+            itemsPerPage={itemsPerPage}
+            onItemsPerPageChange={handleItemsPerPageChange}
+            totalItems={filteredData.length}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { ITRadioGroupProps } from "./radio.props";
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 /**
  * Radio button group with configurable layout direction and themed selection styling.

@@ -1,12 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import ITRadioGroup from "./radio";
-import ITStack from "../stack/stack";
+import ITRadioGroup from "@/components/atoms/radio/radio";
 
 const meta: Meta<typeof ITRadioGroup> = {
   title: "Components/Inputs/ITRadioGroup",
   component: ITRadioGroup,
-  tags: ["autodocs"],
 };
 
 export default meta;

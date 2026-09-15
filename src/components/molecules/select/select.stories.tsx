@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ITSelect from "./select";
+import ITSelect from "@/components/molecules/select/select";
 import { useState } from "react";
 
 const meta: Meta<typeof ITSelect> = {
@@ -8,7 +8,6 @@ const meta: Meta<typeof ITSelect> = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     disabled: { control: "boolean" },
     required: { control: "boolean" },

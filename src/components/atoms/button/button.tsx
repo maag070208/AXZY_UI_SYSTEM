@@ -1,12 +1,12 @@
 import {
   buttonSizes,
   buttonVariants,
-} from "@app/types/button.types";
+} from "@/types/button.types";
 import clsx from "clsx";
 import { useState } from "react";
 import { theme } from "@/theme/theme";
 import { ITButtonProps } from "./button.props";
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 /**
  * Highly configurable action button supporting 8 visual variants, theme colors, 3 sizes, icons, and hover/focus states.
@@ -15,7 +15,7 @@ import ITText from "@/components/text/text";
  * <ITButton label="Submit" color="primary" variant="filled" onClick={() => {}} />
  *
  * @example
- * <ITButton color="danger" variant="outlined" size="small" icon={<FaTrash />}>
+ * <ITButton color="danger" variant="outlined" size="sm" icon={<FaTrash />}>
  *   Delete
  * </ITButton>
  */
@@ -26,7 +26,7 @@ export default function ITButton({
   onClick,
   type = "button",
   color = "primary",
-  size = "medium",
+  size = "md",
   disabled = false,
   className,
   variant = "filled",
@@ -52,7 +52,7 @@ export default function ITButton({
     const mainColor = themeConfig.backgroundColor; // The vibrant color
     const textColor = themeConfig.color; // Usually white for filled
 
-    let style: React.CSSProperties = {
+    const style: React.CSSProperties = {
       // fontSize: themeConfig.fontSize, // Removed to allow size prop to control font size
       fontWeight: themeConfig.fontWeight,
       // padding: themeConfig.padding, // Removed to allow size prop to control padding
@@ -82,9 +82,9 @@ export default function ITButton({
       style.backgroundColor = (isHovered && !disabled) ? `${mainColor}10` : "transparent";
       style.color = mainColor;
     } else if (isRaisedText) {
-      style.backgroundColor = "var(--card-bg, #ffffff)";
+      style.backgroundColor = "var(--it-card-bg, #ffffff)";
       style.color = mainColor;
-      if (isHovered && !disabled) style.backgroundColor = "var(--card-header-bg, #f8fafc)"; 
+      if (isHovered && !disabled) style.backgroundColor = "var(--it-card-header-bg, #f8fafc)"; 
     }
 
     // Apply focus style from theme (box-shadow ring)

@@ -8,7 +8,6 @@ const meta: Meta<typeof ITTimePicker> = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     color: {
       control: "select",
@@ -110,9 +109,9 @@ export const Validation: Story = {
 export const Sizes: Story = {
   render: (args) => (
     <div className="flex flex-col gap-6">
-      <TimePickerWrapper {...args} size="small" label="Small TimePicker" name="sm" />
-      <TimePickerWrapper {...args} size="medium" label="Medium TimePicker" name="md" />
-      <TimePickerWrapper {...args} size="large" label="Large TimePicker" name="lg" />
+      <TimePickerWrapper {...args} size="sm" label="Small TimePicker" name="sm" />
+      <TimePickerWrapper {...args} size="md" label="Medium TimePicker" name="md" />
+      <TimePickerWrapper {...args} size="lg" label="Large TimePicker" name="lg" />
     </div>
   ),
   args: {

@@ -1,7 +1,7 @@
 import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
-import * as Stories from './date-picker.stories';
+import * as StoriesData from './date-picker.stories';
 
-<Meta of={Stories} />
+<Meta of={StoriesData} />
 
 # ITDatePicker
 
@@ -17,7 +17,7 @@ A date picker supporting single date and date range selection. Includes built-in
 | `onBlur` | `(event) => void` | — | Callback when the input loses focus. |
 | `range` | `boolean` | `false` | Enable date-range selection mode. |
 | `variant` | `ColorsTypes` | `"primary"` | Color variant from design system. |
-| `size` | `SizesTypes` | `"medium"` | Size variant from design system. |
+| `size` | `SizesTypes` | `"md"` | Size preset: `"sm"`, `"md"`, `"lg"`. |
 | `className` | `string` | — | CSS classes for the wrapper. |
 | `calendarClassName` | `string` | — | CSS classes for the calendar popover. |
 | `disabled` | `boolean` | `false` | Disables the date picker. |

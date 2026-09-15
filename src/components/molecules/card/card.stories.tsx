@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import ITCard from './card';
-import ITButton from '../button/button';
+import ITCard from '@/components/molecules/card/card';
+import ITButton from '@/components/atoms/button/button';
 
 const meta = {
   title: 'Components/Layout & Navigation/ITCard',
@@ -8,7 +8,6 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  tags: ['autodocs'],
   argTypes: {
     onClick: { action: 'clicked' },
   },

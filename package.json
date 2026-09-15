@@ -4,7 +4,7 @@
   "packageManager": "pnpm@10.34.0",
   "private": false,
   "license": "MIT",
-  "version": "1.2.12",
+  "version": "1.3.0",
   "type": "module",
   "sideEffects": [
     "*.css"
@@ -31,7 +31,9 @@
     "build": "pnpm bundle",
     "build:app": "tsc -b && vite build -c vite.app.config.ts",
     "build:css": "node scripts/build-css.mjs",
-    "lint": "eslint .",
+    "lint": "eslint . && node scripts/check-atomic-deps.mjs && node scripts/check-css-isolation.mjs",
+    "check:atomic": "node scripts/check-atomic-deps.mjs",
+    "check:css": "node scripts/check-css-isolation.mjs",
     "preview": "vite preview",
     "bundle": "tsup src/index.ts && node scripts/build-css.mjs",
     "watch": "tsup src/index.ts --watch",

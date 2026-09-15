@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { FaCheck, FaCopy, FaBookOpen, FaCog, FaCode, FaEye } from "react-icons/fa";
-import ITCard from "../components/card/card";
-import ITGrid from "../components/grid/grid";
+import ITGrid from "../components/atoms/grid/grid";
 import { useITTheme } from "../components/theme-provider/themeProvider";
 
 export const CodeViewer: React.FC<{ code: string; compact?: boolean }> = ({ code, compact }) => {

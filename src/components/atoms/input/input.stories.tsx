@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import ITInput from './input';
+import type { Meta } from '@storybook/react';
+import ITInput from '@/components/atoms/input/input';
 import { FaUser, FaLock, FaEnvelope } from 'react-icons/fa';
 
 const meta = {
@@ -8,7 +8,6 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  tags: ['autodocs'],
   argTypes: {
     type: {
       control: 'select',
@@ -20,7 +19,6 @@ const meta = {
 } satisfies Meta<typeof ITInput>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
 
 export const Default: any = {
   args: {

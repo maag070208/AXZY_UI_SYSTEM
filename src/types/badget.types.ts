@@ -24,9 +24,9 @@ export const outlinedBadgeColors = {
 } as const;
 
 export const badgeSizes = {
-  small: "text-xs px-2 py-1",
-  medium: "text-sm px-3 py-1.5",
-  large: "text-base px-4 py-2",
+  sm: "text-[10px] px-1.5 py-[3px]",
+  md: "text-[11px] px-2 py-[3px]",
+  lg: "text-xs px-2.5 py-1",
 } as const;
 
 export const getBadgeColorClasses = (color: ColorsTypes, variant: keyof typeof badgeVariants) => {

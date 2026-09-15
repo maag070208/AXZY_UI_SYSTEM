@@ -5,7 +5,7 @@ import {
   badgeSizes,
 } from "@/types/badget.types";
 import { theme } from "@/theme/theme";
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 /**
  * Small status tag or label with theme-based colors and filled/outlined variants.
@@ -14,7 +14,7 @@ import ITText from "@/components/text/text";
  * <ITBadget label="Active" color="success" variant="filled" />
  *
  * @example
- * <ITBadget color="danger" variant="outlined" size="small">
+ * <ITBadget color="danger" variant="outlined" size="sm">
  *   <span className="flex items-center gap-1">3 new</span>
  * </ITBadget>
  */
@@ -22,7 +22,7 @@ export default function ITBadget({
   children,
   label,
   color = "primary",
-  size = "medium",
+  size = "md",
   variant = "filled",
   className,
 }: ITBadgetProps) {

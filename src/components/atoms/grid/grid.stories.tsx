@@ -1,10 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ITGrid from "./grid";
+import ITGrid from "@/components/atoms/grid/grid";
 
 const meta: Meta<typeof ITGrid> = {
   title: "Layout/ITGrid",
   component: ITGrid,
-  tags: ["autodocs"],
   argTypes: {
     spacing: { control: { type: "range", min: 0, max: 8, step: 1 } },
     columns: { control: { type: "number", min: 1, max: 12 } },

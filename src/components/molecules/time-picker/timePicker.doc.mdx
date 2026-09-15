@@ -1,7 +1,7 @@
 import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
-import * as Stories from './timePicker.stories';
+import * as StoriesData from './timePicker.stories';
 
-<Meta of={Stories} />
+<Meta of={StoriesData} />
 
 # ITTimePicker
 
@@ -22,7 +22,7 @@ Time selection input with a dual-column dropdown (hours / minutes). Supports man
 | `error` | `string \| boolean` | — | Validation error message or boolean to show error state. |
 | `disabled` | `boolean` | `false` | Disables the time picker when true. |
 | `className` | `string` | — | Additional CSS classes for the wrapper. |
-| `size` | `"small" \| "medium" \| "large"` | `"medium"` | Size preset controlling padding and font size. |
+| `size` | `SizesTypes` | `"md"` | Size preset: `"sm"`, `"md"`, `"lg"`. |
 | `variant` | `"primary" \| "secondary" \| "danger" \| "success" \| "warning" \| "info" \| "purple"` | `"primary"` | Style variant for the input. |
 | `color` | `"primary" \| "secondary" \| "danger" \| "success" \| "warning" \| "info" \| "purple" \| string` | `"primary"` | Theme color used for the dropdown highlight and confirm button. Accepts semantic keys or raw hex. |
 

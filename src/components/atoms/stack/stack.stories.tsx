@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import ITStack from "./stack";
+import ITStack from "@/components/atoms/stack/stack";
 
 const meta: Meta<typeof ITStack> = {
   title: "Layout/ITStack",
   component: ITStack,
-  tags: ["autodocs"],
   argTypes: {
     direction: {
       control: "select",
@@ -262,7 +261,7 @@ export const SectionWithDividers: Story = {
   render: () => (
     <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 w-full max-w-sm">
       <ITStack spacing={0} divider={<div className="h-px bg-slate-100 dark:bg-slate-700" />}>
-        {["Profile Settings", "Security & Privacy", "Notifications", "Billing & Plans", "API Keys"].map((item, i) => (
+        {["Profile Settings", "Security & Privacy", "Notifications", "Billing & Plans", "API Keys"].map((item) => (
           <div key={item} className="flex items-center justify-between py-3 px-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors">
             <span className="text-sm text-slate-700 dark:text-slate-200">{item}</span>
             <span className="text-slate-300 dark:text-slate-600">→</span>

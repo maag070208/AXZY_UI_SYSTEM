@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ITLoader from "./loader";
+import ITLoader from "@/components/atoms/loader/loader";
 
 const meta: Meta<typeof ITLoader> = {
   title: "Components/Feedback/ITLoader",
@@ -7,7 +7,6 @@ const meta: Meta<typeof ITLoader> = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     size: {
       control: "select",
@@ -82,7 +81,7 @@ export const AllColors: Story = {
 };
 
 export const AllVariants: Story = {
-    render: (args) => (
+    render: () => (
       <div className="flex flex-col gap-8 items-center">
         <div className="flex gap-4 items-center">
              <span className="w-20 text-sm font-bold text-gray-500">Spinner</span>

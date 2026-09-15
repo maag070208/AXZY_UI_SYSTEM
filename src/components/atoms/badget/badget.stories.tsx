@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import ITBadget from './badget';
+import ITBadget from '@/components/atoms/badget/badget';
 
 const meta = {
   title: 'Components/Data Display/ITBadge',
@@ -7,7 +7,6 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  tags: ['autodocs'],
   argTypes: {
     color: {
       control: 'select',

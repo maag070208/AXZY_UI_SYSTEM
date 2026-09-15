@@ -23,7 +23,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { ITCalendarProps, CalendarEvent } from './calendar.props';
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -258,8 +258,8 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
     <div 
         className={cn("flex flex-col h-full rounded-lg shadow-sm overflow-hidden select-none", className)}
         style={{
-          backgroundColor: 'var(--calendar-bg, #ffffff)',
-          border: '1px solid var(--calendar-border, #e2e8f0)',
+          backgroundColor: 'var(--it-calendar-bg, #ffffff)',
+          border: '1px solid var(--it-calendar-border, #e2e8f0)',
           ...getVariantStyles(),
         }}
         onMouseUp={handleMouseUp}
@@ -273,19 +273,19 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
       <div 
         className="flex items-center justify-between px-2 py-2 border-b" 
         style={{ 
-          backgroundColor: 'var(--calendar-bg, #ffffff)',
-          borderBottomColor: 'var(--calendar-border, #e2e8f0)'
+          backgroundColor: 'var(--it-calendar-bg, #ffffff)',
+          borderBottomColor: 'var(--it-calendar-border, #e2e8f0)'
         }}
       >
         <ITText
             as="h2"
             className="text-sm font-bold capitalize cursor-pointer transition-colors select-none px-2 py-1 rounded"
             style={{ 
-              color: 'var(--calendar-header-text, #1e293b)',
+              color: 'var(--it-calendar-header-text, #1e293b)',
             }}
              onClick={() => setView(view === 'calendar' ? 'years' : 'calendar')}
              onMouseEnter={(e) => {
-               e.currentTarget.style.backgroundColor = 'var(--calendar-header-hover, #f1f5f9)';
+               e.currentTarget.style.backgroundColor = 'var(--it-calendar-header-hover, #f1f5f9)';
              }}
              onMouseLeave={(e) => {
                e.currentTarget.style.backgroundColor = 'transparent';
@@ -301,8 +301,8 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
             onClick={handlePrev} 
             type="button" 
             className="p-1.5 rounded-md transition-colors"
-            style={{ color: 'var(--calendar-days-text, #334155)' }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--calendar-header-hover, #f1f5f9)'; }}
+            style={{ color: 'var(--it-calendar-days-text, #334155)' }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--it-calendar-header-hover, #f1f5f9)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
           >
             <FaChevronLeft size={14} />
@@ -311,8 +311,8 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
             onClick={handleToday} 
             type="button" 
             className="text-sm font-medium px-3 py-1.5 rounded-md transition-colors"
-            style={{ color: 'var(--calendar-days-text, #334155)' }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--calendar-header-hover, #f1f5f9)'; }}
+            style={{ color: 'var(--it-calendar-days-text, #334155)' }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--it-calendar-header-hover, #f1f5f9)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
           >
             <ITText as="span">Hoy</ITText>
@@ -321,8 +321,8 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
             onClick={handleNext} 
             type="button" 
             className="p-1.5 rounded-md transition-colors"
-            style={{ color: 'var(--calendar-days-text, #334155)' }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--calendar-header-hover, #f1f5f9)'; }}
+            style={{ color: 'var(--it-calendar-days-text, #334155)' }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--it-calendar-header-hover, #f1f5f9)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
           >
             <FaChevronRight size={14} />
@@ -333,7 +333,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
       {/* Content */}
       <div 
         className="flex-1 overflow-auto relative"
-        style={{ backgroundColor: 'var(--calendar-bg, #ffffff)' }}
+        style={{ backgroundColor: 'var(--it-calendar-bg, #ffffff)' }}
       >
         
         {view === 'years' ? (
@@ -345,13 +345,13 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                           className={cn(
                               "h-10 rounded-md text-sm font-medium transition-colors border border-transparent",
                               year === currentDate.getFullYear() 
-                                ? "bg-[var(--calendar-selected-bg)] text-[var(--calendar-selected-text)]" 
-                                : "hover:bg-[var(--calendar-today-bg)] hover:text-[var(--calendar-today-text)]"
+                                ? "bg-[var(--it-calendar-selected-bg)] text-[var(--it-calendar-selected-text)]" 
+                                : "hover:bg-[var(--it-calendar-today-bg)] hover:text-[var(--it-calendar-today-text)]"
                           )}
                           style={{
                               color: year === currentDate.getFullYear() 
-                                ? 'var(--calendar-selected-text, #ffffff)' 
-                                : 'var(--calendar-days-text, #334155)'
+                                ? 'var(--it-calendar-selected-text, #ffffff)' 
+                                : 'var(--it-calendar-days-text, #334155)'
                           }}
                           onClick={() => {
                               setCurrentDate((d) => {
@@ -401,17 +401,17 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                       )}
                       style={{
                         backgroundColor: isSelected || isRangeStart || isRangeEnd 
-                          ? 'var(--calendar-selected-bg, #2563eb)' 
+                          ? 'var(--it-calendar-selected-bg, #2563eb)' 
                           : isInRange 
-                            ? 'var(--calendar-range-bg, #eff6ff)'
+                            ? 'var(--it-calendar-range-bg, #eff6ff)'
                             : isToday(day)
-                              ? 'var(--calendar-today-bg, #eff6ff)'
+                              ? 'var(--it-calendar-today-bg, #eff6ff)'
                               : 'transparent',
                         color: isSelected || isRangeStart || isRangeEnd
-                          ? 'var(--calendar-selected-text, #ffffff)'
+                          ? 'var(--it-calendar-selected-text, #ffffff)'
                           : isToday(day)
-                            ? 'var(--calendar-today-text, #2563eb)'
-                            : 'var(--calendar-days-text, #334155)',
+                            ? 'var(--it-calendar-today-text, #2563eb)'
+                            : 'var(--it-calendar-days-text, #334155)',
                         fontWeight: isSelected || isRangeStart || isRangeEnd || isToday(day) ? '700' : '400',
                       }}
                     >
@@ -419,10 +419,10 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                       
                       {/* Connection for range selection to make it look continuous */}
                       {selectionMode === 'range' && isRangeStart && endDate && (
-                        <div className="absolute right-0 top-0 bottom-0 w-2 bg-[var(--calendar-range-bg)] -z-10" />
+                        <div className="absolute right-0 top-0 bottom-0 w-2 bg-[var(--it-calendar-range-bg)] -z-10" />
                       )}
                       {selectionMode === 'range' && isRangeEnd && startDate && (
-                        <div className="absolute left-0 top-0 bottom-0 w-2 bg-[var(--calendar-range-bg)] -z-10" />
+                        <div className="absolute left-0 top-0 bottom-0 w-2 bg-[var(--it-calendar-range-bg)] -z-10" />
                       )}
                     </button>
                   );
@@ -436,8 +436,8 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
              <div 
                className="flex-none w-16 pt-10 select-none"
                style={{
-                 backgroundColor: 'var(--calendar-header-hover, #f1f5f9)',
-                 borderRight: '1px solid var(--calendar-border, #e2e8f0)',
+                 backgroundColor: 'var(--it-calendar-header-hover, #f1f5f9)',
+                 borderRight: '1px solid var(--it-calendar-border, #e2e8f0)',
                }}
              >
                {TIME_SLOTS.map((hour) => (
@@ -457,22 +457,22 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                 <div 
                   key={day.toISOString()} 
                   className="flex-1 min-w-[120px] relative"
-                  style={{ borderRight: '1px solid var(--calendar-border, #e2e8f0)' }}
+                  style={{ borderRight: '1px solid var(--it-calendar-border, #e2e8f0)' }}
                 >
                   
                   {/* Day Header */}
                   <div 
                     className="h-10 flex flex-col items-center justify-center sticky top-0 z-10"
                     style={{
-                      backgroundColor: isToday(day) ? 'var(--calendar-today-bg, #eff6ff)' : 'var(--calendar-bg, #ffffff)',
-                      borderBottom: '1px solid var(--calendar-border, #e2e8f0)',
+                      backgroundColor: isToday(day) ? 'var(--it-calendar-today-bg, #eff6ff)' : 'var(--it-calendar-bg, #ffffff)',
+                      borderBottom: '1px solid var(--it-calendar-border, #e2e8f0)',
                     }}
                   >
                     <ITText
                       as="span"
                       className="text-xs font-semibold uppercase"
                       style={{
-                        color: isToday(day) ? 'var(--calendar-today-text, #2563eb)' : 'var(--calendar-days-text, #334155)',
+                        color: isToday(day) ? 'var(--it-calendar-today-text, #2563eb)' : 'var(--it-calendar-days-text, #334155)',
                         opacity: isToday(day) ? 1 : 0.6,
                       }}
                     >
@@ -482,8 +482,8 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                       as="span"
                       className="text-sm font-bold w-6 h-6 flex items-center justify-center rounded-full mt-0.5"
                       style={{
-                        color: isToday(day) ? 'var(--calendar-selected-text, #ffffff)' : 'var(--calendar-days-text, #334155)',
-                        backgroundColor: isToday(day) ? 'var(--calendar-selected-bg, #2563eb)' : 'transparent',
+                        color: isToday(day) ? 'var(--it-calendar-selected-text, #ffffff)' : 'var(--it-calendar-days-text, #334155)',
+                        backgroundColor: isToday(day) ? 'var(--it-calendar-selected-bg, #2563eb)' : 'transparent',
                       }}
                     >
                       {format(day, 'd')}
@@ -497,11 +497,11 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                         <div 
                           key={hour} 
                           className="h-20 relative group"
-                          style={{ borderBottom: '1px dashed var(--calendar-border, #e2e8f0)' }}
+                          style={{ borderBottom: '1px dashed var(--it-calendar-border, #e2e8f0)' }}
                         >
                            {/* Slot 00 */}
                            <div 
-                            className="absolute inset-x-0 top-0 h-10 border-b border-transparent hover:border-[var(--calendar-today-bg)] hover:bg-[var(--calendar-today-bg)] transition-colors cursor-pointer z-0"
+                            className="absolute inset-x-0 top-0 h-10 border-b border-transparent hover:border-[var(--it-calendar-today-bg)] hover:bg-[var(--it-calendar-today-bg)] transition-colors cursor-pointer z-0"
                              onMouseDown={(e) => {
                                  const d = new Date(day); d.setHours(hour, 0, 0, 0);
                                  handleMouseDown(d, e);
@@ -513,13 +513,13 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                              onClick={() => {
                                if (!isDraggingRef.current) { 
                                    const d = new Date(day); d.setHours(hour, 0, 0, 0);
-                                   onSlotClick && onSlotClick(d);
+                                   if (onSlotClick) onSlotClick(d);
                                }
                              }}
                            />
                            {/* Slot 30 */}
                            <div 
-                            className="absolute inset-x-0 bottom-0 h-10 hover:border-[var(--calendar-today-bg)] hover:bg-[var(--calendar-today-bg)] transition-colors cursor-pointer z-0"
+                            className="absolute inset-x-0 bottom-0 h-10 hover:border-[var(--it-calendar-today-bg)] hover:bg-[var(--it-calendar-today-bg)] transition-colors cursor-pointer z-0"
                              onMouseDown={(e) => {
                                  const d = new Date(day); d.setHours(hour, 30, 0, 0);
                                  handleMouseDown(d, e);
@@ -531,7 +531,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                              onClick={() => {
                                if (!isDraggingRef.current) {
                                    const d = new Date(day); d.setHours(hour, 30, 0, 0);
-                                   onSlotClick && onSlotClick(d);
+                                   if (onSlotClick) onSlotClick(d);
                                }
                              }}
                            />
@@ -555,7 +555,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
 
                              return (
                                  <div 
-                                     className="absolute left-1 right-1 bg-[var(--calendar-selected-bg)]/30 border border-[var(--calendar-selected-bg)] rounded z-10 pointer-events-none"
+                                     className="absolute left-1 right-1 bg-[var(--it-calendar-selected-bg)]/30 border border-[var(--it-calendar-selected-bg)] rounded z-10 pointer-events-none"
                                      style={{ top: `${top}px`, height: `${height}px` }}
                                  />
                              );
@@ -572,7 +572,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                             key={event.id}
                              className={cn(
                                "absolute left-1 right-1 rounded px-2 py-1 text-xs cursor-pointer hover:brightness-95 transition-all shadow-sm overflow-hidden z-20 border-l-4",
-                               !event.color && "bg-[var(--calendar-today-bg)] text-[var(--calendar-today-text)] border-[var(--calendar-selected-bg)]"
+                               !event.color && "bg-[var(--it-calendar-today-bg)] text-[var(--it-calendar-today-text)] border-[var(--it-calendar-selected-bg)]"
                              )}
                             style={{ 
                               top: style.top, 
@@ -583,7 +583,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                              }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              onEventClick && onEventClick(event);
+                              if (onEventClick) onEventClick(event);
                             }}
                           >
                             <ITText as="div" className="font-semibold truncate">{event.title}</ITText>

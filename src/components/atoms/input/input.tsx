@@ -3,8 +3,8 @@ import clsx from "clsx";
 import { ITInputProps } from "./input.props";
 import { KeyboardEvent, useState, useEffect, useRef, useCallback } from "react";
 import { theme } from "@/theme/theme";
-import { disabledOverlay, iconAbsoluteLeft, iconAbsoluteRight, inputError, inputLabel } from "@/utils/styles";
-import ITText from "@/components/text/text";
+import { disabledOverlay, iconAbsoluteLeft, iconAbsoluteRight, inputError, inputLabel, inputFieldStyle } from "@/utils/styles";
+import ITText from "@/components/atoms/text/text";
 
 /**
  * Text input component with label, validation error display, icon slots,
@@ -65,7 +65,8 @@ export default function ITInput({
   min,
   max,
   readOnly = false,
-  focusContent
+  focusContent,
+  size = "md"
 }: ITInputProps) {
   const isCheckboxOrRadio = type === "checkbox" || type === "radio";
   const isNumberType = type === "number";
@@ -83,17 +84,7 @@ export default function ITInput({
   const inputTheme = (theme as any).input || {};
 
   const getStyle = () => {
-    const style: React.CSSProperties = {
-      backgroundColor: inputTheme.backgroundColor,
-      borderColor: inputTheme.borderColor,
-      borderRadius: inputTheme.borderRadius,
-      padding: inputTheme.padding,
-      fontSize: inputTheme.fontSize,
-      borderWidth: '1px',
-      borderStyle: 'solid',
-      transition: 'all 0.2s',
-      color: 'var(--input-text-color, var(--color-secondary-900))', // Theme-aware text color
-    };
+    const style = inputFieldStyle(inputTheme, size);
 
     if (disabled) {
       style.backgroundColor = inputTheme.disabled?.backgroundColor || style.backgroundColor;

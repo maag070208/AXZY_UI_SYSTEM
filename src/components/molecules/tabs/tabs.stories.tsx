@@ -1,10 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import ITTabs from './tabs';
+import ITTabs from '@/components/molecules/tabs/tabs';
 
 const meta: Meta<typeof ITTabs> = {
   title: 'Components/ITTabs',
   component: ITTabs,
-  tags: ['autodocs'],
 };
 
 export default meta;

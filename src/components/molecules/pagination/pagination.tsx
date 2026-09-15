@@ -3,8 +3,8 @@ import clsx from "clsx";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { ITPaginationProps } from "./pagination.props";
 import { theme } from "@/theme/theme";
-import ITSelect from "../select/select";
-import ITText from "@/components/text/text";
+import ITSelect from "@/components/molecules/select/select";
+import ITText from "@/components/atoms/text/text";
 
 const DOTS = "...";
 
@@ -44,8 +44,8 @@ const usePagination = ({
       Case 2: No left dots to show, but rights dots to be shown
     */
     if (!shouldShowLeftDots && shouldShowRightDots) {
-      let leftItemCount = 3 + 2 * siblingCount;
-      let leftRange = Array.from({ length: leftItemCount }, (_, i) => i + 1);
+      const leftItemCount = 3 + 2 * siblingCount;
+      const leftRange = Array.from({ length: leftItemCount }, (_, i) => i + 1);
       return [...leftRange, DOTS, totalPages];
     }
 
@@ -53,8 +53,8 @@ const usePagination = ({
       Case 3: No right dots to show, but left dots to be shown
     */
     if (shouldShowLeftDots && !shouldShowRightDots) {
-      let rightItemCount = 3 + 2 * siblingCount;
-      let rightRange = Array.from(
+      const rightItemCount = 3 + 2 * siblingCount;
+      const rightRange = Array.from(
         { length: rightItemCount },
         (_, i) => totalPages - rightItemCount + i + 1
       );
@@ -65,7 +65,7 @@ const usePagination = ({
       Case 4: Both left and right dots to be shown
     */
     if (shouldShowLeftDots && shouldShowRightDots) {
-      let middleRange = Array.from(
+      const middleRange = Array.from(
         { length: rightSiblingIndex - leftSiblingIndex + 1 },
         (_, i) => leftSiblingIndex + i
       );
@@ -226,7 +226,7 @@ export default function ITPagination({
               value={String(itemsPerPage)}
               onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
               onBlur={() => {}}
-              size="small"
+              size="sm"
               className="!w-14 !h-6 !text-xs !py-0 !px-1! !border-none !bg-transparent !ring-0 focus:!ring-0 cursor-pointer font-bold text-secondary-700"
               placeholder=""
             />

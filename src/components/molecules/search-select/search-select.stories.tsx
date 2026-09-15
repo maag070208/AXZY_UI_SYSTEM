@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ITSearchSelect from "./search-select";
+import ITSearchSelect from "@/components/molecules/search-select/search-select";
 import { useState } from "react";
 import { ITSearchSelectOption } from "./search-select.props";
 
@@ -9,7 +9,6 @@ const meta: Meta<typeof ITSearchSelect> = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     disabled: { control: "boolean" },
     required: { control: "boolean" },

@@ -1,3 +1,5 @@
+import { SizesTypes } from "@/types/sizes.types";
+
 export interface ITTimePickerProps {
   /** Form field name attribute and key for the change event. */
   name: string;
@@ -21,8 +23,8 @@ export interface ITTimePickerProps {
   disabled?: boolean;
   /** Additional CSS classes for the wrapper. */
   className?: string;
-  /** Size preset: "small" | "medium" | "large". */
-  size?: "small" | "medium" | "large";
+  /** Size preset: "sm" | "md" | "lg". @default "md" */
+  size?: SizesTypes;
   /** Style variant for the input: "primary" | "secondary" | "danger" | "success" | "warning" | "info" | "purple". */
   variant?: "primary" | "secondary" | "danger" | "success" | "warning" | "info" | "purple";
   /** Theme color used for the dropdown highlight and confirm button. Accepts semantic keys or raw hex. */

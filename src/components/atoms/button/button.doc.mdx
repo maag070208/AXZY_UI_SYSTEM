@@ -1,7 +1,7 @@
 import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
-import * as Stories from './button.stories';
+import * as StoriesData from './button.stories';
 
-<Meta of={Stories} />
+<Meta of={StoriesData} />
 
 # ITButton
 
@@ -16,7 +16,7 @@ The primary action component for triggering user interactions. Supports 8 distin
 | `icon` | `ReactNode` | — | Icon element rendered before the label. |
 | `onClick` | `() => void` | — | Click handler for the button. |
 | `color` | `ColorsTypes` | `"primary"` | Color theme key (`"primary"`, `"secondary"`, `"success"`, `"danger"`, `"warning"`, `"purple"`, `"info"`). |
-| `size` | `SizesTypes` | `"medium"` | Button size (`"small"`, `"medium"`, `"large"`). |
+| `size` | `SizesTypes` | `"md"` | Button size (`"sm"`, `"md"`, `"lg"`). |
 | `variant` | `"filled" \| "outlined" \| "raised" \| "rounded" \| "text" \| "raised-text" \| "icon-only" \| "link"` | `"filled"` | Visual style variant. |
 | `disabled` | `boolean` | `false` | Disables interaction and applies reduced opacity. |
 | `className` | `string` | — | Additional CSS class names for the button element. |

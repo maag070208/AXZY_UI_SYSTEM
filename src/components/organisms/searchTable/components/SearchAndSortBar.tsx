@@ -1,0 +1,53 @@
+import React from "react";
+import SearchInput from "./SearchInput";
+import SortButton from "./SortButton";
+import ITButton from "@/components/atoms/button/button";
+import ITText from "@/components/atoms/text/text";
+
+interface SearchAndSortBarProps {
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
+  onClearSearch: () => void;
+  onGlobalSort: () => void;
+  sortConfig?: {
+    key: string;
+    direction: "asc" | "desc";
+  };
+  searchInputPlaceholder?: string;
+}
+
+export default function SearchAndSortBar({
+  searchTerm,
+  onSearchChange,
+  onClearSearch,
+  onGlobalSort,
+  sortConfig,
+  searchInputPlaceholder = "Buscar en todos los campos...",
+}: SearchAndSortBarProps) {
+  return (
+    <div className="bg-secondary-50 px-6 py-4 border-b border-secondary-200">
+      <div className="flex items-center gap-4">
+        <SearchInput
+          placeholder={searchInputPlaceholder}
+          value={searchTerm}
+          onChange={onSearchChange}
+        />
+
+        <SortButton sortConfig={sortConfig} onClick={onGlobalSort} />
+
+        {searchTerm && (
+          <ITButton
+            size="sm"
+            variant="outlined"
+            color="danger"
+            onClick={onClearSearch}
+            ariaLabel="Limpiar búsqueda"
+            title="Limpiar búsqueda"
+          >
+            <ITText as="span">Limpiar</ITText>
+          </ITButton>
+        )}
+      </div>
+    </div>
+  );
+}

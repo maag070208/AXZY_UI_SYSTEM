@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import ITTextarea from "./textarea";
+import ITTextarea from "@/components/atoms/textarea/textarea";
 
 const meta: Meta<typeof ITTextarea> = {
   title: "Components/Inputs/ITTextarea",
   component: ITTextarea,
-  tags: ["autodocs"],
 };
 
 export default meta;

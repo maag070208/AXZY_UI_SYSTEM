@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import * as yup from "yup";
-import type { SearchColumn } from "../components/searchTable/searchTable.props";
+import type { SearchColumn } from "@/components/organisms/searchTable/searchTable.props";
 
 interface UseEditableRowOptions<T> {
   row: T;

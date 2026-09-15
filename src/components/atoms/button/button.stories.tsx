@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import ITButton from './button';
+import ITButton from '@/components/atoms/button/button';
 
 const meta = {
   title: 'Components/Actions/ITButton',
@@ -7,7 +7,6 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  tags: ['autodocs'],
   argTypes: {
     color: {
       control: 'select',

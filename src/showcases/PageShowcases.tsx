@@ -10,37 +10,25 @@ import {
   FaEye,
   FaPlus,
   FaDownload,
-  FaFilter,
   FaSearch,
-  FaCheckCircle,
-  FaTimesCircle,
-  FaClock,
-  FaEnvelope,
-  FaPhone,
-  FaMapMarkerAlt,
   FaBell,
   FaSave,
-  FaSignOutAlt,
   FaShieldAlt,
   FaPalette,
-  FaLanguage,
   FaDollarSign,
-  FaArrowUp,
-  FaArrowDown,
 } from "react-icons/fa";
-import ITPage from "../components/page/page";
-import ITPageHeader from "../components/page-header/page-header";
-import ITButton from "../components/button/button";
-import ITCard from "../components/card/card";
-import ITStack from "../components/stack/stack";
-import ITGrid from "../components/grid/grid";
-import ITStatCard from "../components/stat-card/stat-card";
-import ITFlex from "../components/flex/flex";
-import ITAvatar from "../components/avatar/avatar";
-import ITSlideToggle from "../components/slide/slide";
-import ITText from "@/components/text/text";
-import ITTable from "@/components/table/table";
-import type { Column } from "@/components/table/table.props";
+import ITPage from "../components/templates/page/page";
+import ITPageHeader from "../components/organisms/page-header/page-header";
+import ITButton from "../components/atoms/button/button";
+import ITCard from "../components/molecules/card/card";
+import ITStack from "../components/atoms/stack/stack";
+import ITGrid from "../components/atoms/grid/grid";
+import ITFlex from "../components/atoms/flex/flex";
+import ITAvatar from "../components/atoms/avatar/avatar";
+import ITSlideToggle from "../components/atoms/slide/slide";
+import ITText from "@/components/atoms/text/text";
+import ITTable from "@/components/molecules/table/table";
+import type { Column } from "@/components/molecules/table/table.props";
 import { ShowcaseLayout } from "./ShowcaseLayout";
 
 export const PageHeaderShowcase = () => {
@@ -61,8 +49,8 @@ export const PageHeaderShowcase = () => {
     if (showBack) lines.push(`  backAction={() => history.back()}`);
     if (actionsVariant !== "none") {
       const acts = [];
-      acts.push(`<ITButton label="Add member" variant="filled" color="primary" size="small" />`);
-      if (actionsVariant === "double" || actionsVariant === "full") acts.push(`<ITButton label="Export" variant="outlined" color="gray" size="small" />`);
+      acts.push(`<ITButton label="Add member" variant="filled" color="primary" size="sm" />`);
+      if (actionsVariant === "double" || actionsVariant === "full") acts.push(`<ITButton label="Export" variant="outlined" color="gray" size="sm" />`);
       lines.push(`  actions={<>${acts.join("")}</>}`);
     }
     lines.push(`/>`);
@@ -72,9 +60,9 @@ export const PageHeaderShowcase = () => {
   const actionEl =
     actionsVariant === "none" ? undefined : (
       <ITFlex gap={2}>
-        <ITButton label="Add member" variant="filled" color="primary" size="small" />
+        <ITButton label="Add member" variant="filled" color="primary" size="sm" />
         {(actionsVariant === "double" || actionsVariant === "full") && (
-          <ITButton label="Export" variant="outlined" color="gray" size="small" />
+          <ITButton label="Export" variant="outlined" color="gray" size="sm" />
         )}
       </ITFlex>
     );
@@ -134,7 +122,7 @@ export const PageHeaderShowcase = () => {
                     <option value="pending">Pending</option>
                     <option value="inactive">Inactive</option>
                   </select>
-                  <ITButton label="Clear" variant="text" color="gray" size="small" />
+                  <ITButton label="Clear" variant="text" color="gray" size="sm" />
                 </ITFlex>
               </div>
             )}
@@ -199,7 +187,7 @@ export const PageHeaderShowcase = () => {
                   label={v.charAt(0).toUpperCase() + v.slice(1)}
                   variant={actionsVariant === v ? "filled" : "outlined"}
                   color="primary"
-                  size="small"
+                  size="sm"
                   onClick={() => setActionsVariant(v)}
                 />
               ))}
@@ -231,8 +219,8 @@ export const PageHeaderShowcase = () => {
                   backAction={() => {}}
                   actions={
                     <ITFlex gap={2}>
-                      <ITButton label="Export" variant="outlined" color="gray" size="small" />
-                      <ITButton label="Add member" variant="filled" color="primary" size="small" />
+                      <ITButton label="Export" variant="outlined" color="gray" size="sm" />
+                      <ITButton label="Add member" variant="filled" color="primary" size="sm" />
                     </ITFlex>
                   }
                 />
@@ -294,8 +282,8 @@ export const PageHeaderShowcase = () => {
                   backAction={() => {}}
                   actions={
                     <ITFlex gap={2}>
-                      <ITButton label="Cancel" variant="outlined" color="gray" size="small" />
-                      <ITButton label="Save changes" variant="filled" color="primary" size="small" />
+                      <ITButton label="Cancel" variant="outlined" color="gray" size="sm" />
+                      <ITButton label="Save changes" variant="filled" color="primary" size="sm" />
                     </ITFlex>
                   }
                 />
@@ -335,7 +323,7 @@ export const PageHeaderShowcase = () => {
                         <option>This quarter</option>
                         <option>Custom range</option>
                       </select>
-                      <ITButton label="Refresh" variant="outlined" color="gray" size="small" />
+                      <ITButton label="Refresh" variant="outlined" color="gray" size="sm" />
                     </ITFlex>
                   }
                 />
@@ -353,8 +341,8 @@ export const PageHeaderShowcase = () => {
                   description="Configure your workspace preferences, notifications and security options."
                   actions={
                     <ITFlex gap={2}>
-                      <ITButton label="Reset" variant="outlined" color="gray" size="small" />
-                      <ITButton label="Save" variant="filled" color="primary" size="small" />
+                      <ITButton label="Reset" variant="outlined" color="gray" size="sm" />
+                      <ITButton label="Save" variant="filled" color="primary" size="sm" />
                     </ITFlex>
                   }
                 />
@@ -380,7 +368,7 @@ export const PageHeaderShowcase = () => {
                         <FaSearch size={11} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                         <input type="text" placeholder="Search..." className="w-[180px] pl-9 pr-3 py-2 text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                       </div>
-                      <ITButton label="Invite" variant="filled" color="primary" size="small" />
+                      <ITButton label="Invite" variant="filled" color="primary" size="sm" />
                     </ITFlex>
                   }
                 />
@@ -458,7 +446,7 @@ export const PageShowcase = () => {
   error={error}
   empty={isEmpty}
   onRetry={refetch}
-  actions={<ITButton label="Invite" size="small" />}
+  actions={<ITButton label="Invite" size="sm" />}
 >
   <ITTable columns={[...]} data={users} />
 </ITPage>`;
@@ -616,8 +604,8 @@ export const PageShowcase = () => {
               empty={state === "empty"}
               emptyTitle="No team members yet"
               emptyDescription="Invite your first team member to get started."
-              emptyAction={<ITButton label="Invite members" size="small" icon={<FaPlus />} />}
-              actions={<ITButton label="Invite" size="small" icon={<FaPlus />} />}
+              emptyAction={<ITButton label="Invite members" size="sm" icon={<FaPlus />} />}
+              actions={<ITButton label="Invite" size="sm" icon={<FaPlus />} />}
             >
               <ITTable
                 columns={columns}
@@ -640,7 +628,7 @@ export const PageShowcase = () => {
                   key={s}
                   label={s.charAt(0).toUpperCase() + s.slice(1)}
                   variant={state === s ? "filled" : "outlined"}
-                  size="small"
+                  size="sm"
                   onClick={() => setState(s)}
                 />
               ))}
@@ -659,13 +647,13 @@ export const PageShowcase = () => {
                 <ITButton
                   label="List"
                   variant={screen === "list" ? "filled" : "outlined"}
-                  size="small"
+                  size="sm"
                   onClick={() => handleBackToList()}
                 />
                 <ITButton
                   label="Detail (last viewed)"
                   variant={screen === "detail" ? "filled" : "outlined"}
-                  size="small"
+                  size="sm"
                   disabled={!selectedUser}
                   onClick={() => screen === "list" && selectedUser ? setScreen("detail") : handleBackToList()}
                 />
@@ -693,8 +681,8 @@ export const PageShowcase = () => {
                 breadcrumbs={[{ label: "Admin", href: "#" }, { label: "Users" }]}
                 actions={
                   <ITFlex gap={2}>
-                    <ITButton label="Export" variant="outlined" size="small" icon={<FaDownload />} />
-                    <ITButton label="Add user" size="small" icon={<FaPlus />} />
+                    <ITButton label="Export" variant="outlined" size="sm" icon={<FaDownload />} />
+                    <ITButton label="Add user" size="sm" icon={<FaPlus />} />
                   </ITFlex>
                 }
               >
@@ -721,8 +709,8 @@ export const PageShowcase = () => {
                 backAction={() => {}}
                 actions={
                   <ITFlex gap={2}>
-                    <ITButton label="Delete" variant="outlined" color="gray" size="small" icon={<FaTrash />} />
-                    <ITButton label="Edit" size="small" icon={<FaEdit />} />
+                    <ITButton label="Delete" variant="outlined" color="gray" size="sm" icon={<FaTrash />} />
+                    <ITButton label="Edit" size="sm" icon={<FaEdit />} />
                   </ITFlex>
                 }
               >
@@ -768,8 +756,8 @@ export const PageShowcase = () => {
                 backAction={() => {}}
                 actions={
                   <ITFlex gap={2}>
-                    <ITButton label="Cancel" variant="outlined" color="gray" size="small" />
-                    <ITButton label="Save changes" size="small" icon={<FaSave />} />
+                    <ITButton label="Cancel" variant="outlined" color="gray" size="sm" />
+                    <ITButton label="Save changes" size="sm" icon={<FaSave />} />
                   </ITFlex>
                 }
               >
@@ -778,7 +766,7 @@ export const PageShowcase = () => {
                     <ITCard title="Profile photo">
                       <div className="flex flex-col items-center gap-4">
                         <ITAvatar initials="AL" size="xl" />
-                        <ITButton label="Upload image" variant="outlined" size="small" />
+                        <ITButton label="Upload image" variant="outlined" size="sm" />
                       </div>
                     </ITCard>
                   </ITGrid>
@@ -817,8 +805,8 @@ export const PageShowcase = () => {
                 breadcrumbs={[{ label: "Dashboard", href: "#" }, { label: "Orders" }]}
                 actions={
                   <ITFlex gap={2}>
-                    <ITButton label="Export" variant="outlined" color="gray" size="small" icon={<FaDownload />} />
-                    <ITButton label="New order" size="small" icon={<FaPlus />} />
+                    <ITButton label="Export" variant="outlined" color="gray" size="sm" icon={<FaDownload />} />
+                    <ITButton label="New order" size="sm" icon={<FaPlus />} />
                   </ITFlex>
                 }
               >

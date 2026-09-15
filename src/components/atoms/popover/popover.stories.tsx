@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ITPopover from "./popover";
-import ITButton from "../button/button";
-import ITStack from "../stack/stack";
+import ITPopover from "@/components/atoms/popover/popover";
+import ITButton from "@/components/atoms/button/button";
+import ITStack from "@/components/atoms/stack/stack";
 
 const meta: Meta<typeof ITPopover> = {
   title: "Components/Overlay/ITPopover",
   component: ITPopover,
-  tags: ["autodocs"],
 };
 
 export default meta;

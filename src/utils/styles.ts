@@ -1,4 +1,41 @@
 import clsx from "clsx";
+import type { CSSProperties } from "react";
+import { inputSizeTokens } from "@/theme/theme";
+
+/** Theme shape expected from `theme.input` (used by input-like components). */
+export type InputThemeLike = {
+  backgroundColor?: string;
+  borderColor?: string;
+  borderRadius?: string;
+  disabled?: { backgroundColor?: string; borderColor?: string };
+  error?: { borderColor?: string; ring?: string };
+  focus?: { ring?: string };
+};
+
+/**
+ * Estilo base compartido por componentes de tipo campo (ITInput, ITSelect,
+ * ITSearchSelect…). Aplica los tokens del theme + la medida estándar de `size`.
+ * `extra` permite sobreescribir propiedades específicas del componente.
+ */
+export function inputFieldStyle(
+  inputTheme: InputThemeLike,
+  size: "sm" | "md" | "lg" = "md",
+  extra?: CSSProperties
+): CSSProperties {
+  const sizeConfig = inputSizeTokens[size] ?? inputSizeTokens.md;
+  return {
+    backgroundColor: inputTheme.backgroundColor,
+    borderColor: inputTheme.borderColor,
+    borderRadius: inputTheme.borderRadius,
+    padding: sizeConfig.padding,
+    fontSize: sizeConfig.fontSize,
+    borderWidth: "1px",
+    borderStyle: "solid",
+    transition: "all 0.2s",
+    color: "var(--it-input-text-color, var(--color-secondary-900))",
+    ...extra,
+  };
+}
 
 // ──────────────────────────────────────────────
 //   INPUT-LIKE COMPONENTS

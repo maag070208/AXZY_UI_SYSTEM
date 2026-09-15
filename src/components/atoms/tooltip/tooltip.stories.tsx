@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ITTooltip from "./tooltip";
-import ITButton from "../button/button";
+import ITTooltip from "@/components/atoms/tooltip/tooltip";
+import ITButton from "@/components/atoms/button/button";
 
 const meta: Meta<typeof ITTooltip> = {
   title: "Components/Overlay/ITTooltip",
   component: ITTooltip,
-  tags: ["autodocs"],
 };
 
 export default meta;

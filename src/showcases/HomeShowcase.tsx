@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { FaArrowRight, FaCheck, FaCloud, FaCode, FaDatabase, FaDownload, FaExternalLinkAlt, FaGithub, FaLayerGroup, FaLinkedin, FaMapMarkerAlt, FaMobileAlt, FaSearch, FaServer, FaMedium } from "react-icons/fa";
 import { SiReact, SiNodedotjs } from "react-icons/si";
-import ITBadget from "../components/badget/badget";
-import ITButton from "../components/button/button";
-import ITCard from "../components/card/card";
-import ITDivider from "../components/divider/divider";
-import ITFlex from "../components/flex/flex";
-import ITGrid from "../components/grid/grid";
-import ITStack from "../components/stack/stack";
-import ITText from "../components/text/text";
+import ITBadget from "../components/atoms/badget/badget";
+import ITButton from "../components/atoms/button/button";
+import ITCard from "../components/molecules/card/card";
+import ITDivider from "../components/atoms/divider/divider";
+import ITFlex from "../components/atoms/flex/flex";
+import ITGrid from "../components/atoms/grid/grid";
+import ITStack from "../components/atoms/stack/stack";
+import ITText from "../components/atoms/text/text";
 
 export const HomeShowcase = () => {
   const [techSearch, setTechSearch] = useState("");
@@ -144,7 +144,7 @@ export const HomeShowcase = () => {
                 {/* CTAs */}
                 <ITFlex gap={2.5} wrap="wrap" align="center">
                   <a href="/Martin_Amaro_CV_ES_2026.pdf" download>
-                    <ITButton variant="filled" color="primary" size="small">
+                    <ITButton variant="filled" color="primary" size="sm">
                       <ITFlex align="center" gap={2}>
                         <FaDownload size={12} />
                         Descargar CV
@@ -153,7 +153,7 @@ export const HomeShowcase = () => {
                   </a>
                   <ITText as="span" muted className="text-xs">|</ITText>
                   <a href="https://github.com/maag070208" target="_blank" rel="noopener noreferrer">
-                    <ITButton variant="text" color="gray" size="small">
+                    <ITButton variant="text" color="gray" size="sm">
                       <ITFlex align="center" gap={1.5}>
                         <FaGithub size={14} />
                         GitHub
@@ -161,7 +161,7 @@ export const HomeShowcase = () => {
                     </ITButton>
                   </a>
                   <a href="https://www.linkedin.com/in/maag070208/" target="_blank" rel="noopener noreferrer">
-                    <ITButton variant="text" color="gray" size="small">
+                    <ITButton variant="text" color="gray" size="sm">
                       <ITFlex align="center" gap={1.5}>
                         <FaLinkedin size={14} />
                         LinkedIn
@@ -169,7 +169,7 @@ export const HomeShowcase = () => {
                     </ITButton>
                   </a>
                   <a href="https://medium.com/@axzydev" target="_blank" rel="noopener noreferrer">
-                    <ITButton variant="text" color="gray" size="small">
+                    <ITButton variant="text" color="gray" size="sm">
                       <ITFlex align="center" gap={1.5}>
                         <FaMedium size={14} />
                         Medium

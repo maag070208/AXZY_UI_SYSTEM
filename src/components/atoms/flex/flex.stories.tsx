@@ -1,10 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ITFlex from "./flex";
+import ITFlex from "@/components/atoms/flex/flex";
 
 const meta: Meta<typeof ITFlex> = {
   title: "Layout/ITFlex",
   component: ITFlex,
-  tags: ["autodocs"],
   argTypes: {
     direction: {
       control: "select",

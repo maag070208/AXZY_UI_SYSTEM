@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta } from '@storybook/react';
 import ITDatePicker from './datePicker';
 import { useState } from 'react';
 
@@ -8,7 +8,6 @@ const meta = {
   parameters: {
     layout: 'padded',
   },
-  tags: ['autodocs'],
   argTypes: {
     value: { control: 'date' },
     minDate: { control: 'date' },
@@ -21,7 +20,6 @@ const meta = {
 } satisfies Meta<typeof ITDatePicker>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
 
 // Wrapper for controlled component state
 const DatePickerWrapper = (args: any) => {

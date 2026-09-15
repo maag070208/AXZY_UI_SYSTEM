@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ITPagination from "./pagination";
+import ITPagination from "@/components/molecules/pagination/pagination";
 import { useState } from "react";
 
 const meta: Meta<typeof ITPagination> = {
@@ -8,7 +8,6 @@ const meta: Meta<typeof ITPagination> = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     currentPage: { control: "number" },
     totalPages: { control: "number" },

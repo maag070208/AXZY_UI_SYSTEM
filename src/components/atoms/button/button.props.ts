@@ -1,6 +1,6 @@
 import { buttonVariants } from "@/types/button.types";
-import { ColorsTypes } from "@app/types/colors.types";
-import { SizesTypes } from "@app/types/sizes.types";
+import { ColorsTypes } from "@/types/colors.types";
+import { SizesTypes } from "@/types/sizes.types";
 
 export interface ITButtonProps {
   /** Button text label. Overridden if `children` is provided. */
@@ -13,7 +13,7 @@ export interface ITButtonProps {
   onClick?: () => void;
   /** Color theme key. Values come from the semantic color palette (e.g. `"primary"`, `"secondary"`, `"success"`, `"danger"`, `"warning"`, `"info"`, `"purple"`, `"error"`, `"gray"`). @default "primary" */
   color?: ColorsTypes;
-  /** Button size. Valid values: `"small"`, `"medium"`, `"large"`. @default "medium" */
+  /** Button size. Valid values: `"sm"`, `"md"`, `"lg"`. @default "md" */
   size?: SizesTypes;
   /** Button visual style. Valid values: `"filled"`, `"outlined"`, `"raised"`, `"rounded"`, `"text"`, `"raised-text"`, `"icon-only"`, `"link"`. @default "filled" */
   variant?: keyof typeof buttonVariants;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import clsx from "clsx";
 import { ITTooltipProps, TooltipPosition } from "./tooltip.props";
-import ITText from "@/components/text/text";
+import ITText from "@/components/atoms/text/text";
 
 const positionClasses: Record<TooltipPosition, string> = {
   top: "bottom-full left-1/2 -translate-x-1/2 mb-2",

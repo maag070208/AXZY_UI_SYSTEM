@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import ITImage from './image';
+import ITImage from '@/components/atoms/image/image';
 
 const meta = {
   title: 'Components/Data Display/ITImage',
   component: ITImage,
   parameters: { layout: 'centered' },
-  tags: ['autodocs'],
   argTypes: {
     src: { control: 'text', description: 'Image source URL' },
     alt: { control: 'text', description: 'Alternative text for accessibility' },

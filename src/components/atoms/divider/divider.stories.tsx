@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ITDivider from "./divider";
-import ITStack from "../stack/stack";
-import ITFlex from "../flex/flex";
+import ITDivider from "@/components/atoms/divider/divider";
+import ITStack from "@/components/atoms/stack/stack";
+import ITFlex from "@/components/atoms/flex/flex";
 
 const meta: Meta<typeof ITDivider> = {
   title: "Components/Layout/ITDivider",
   component: ITDivider,
-  tags: ["autodocs"],
 };
 
 export default meta;

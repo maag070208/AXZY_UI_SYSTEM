@@ -3,8 +3,8 @@ import clsx from "clsx";
 import { useState } from "react";
 import { FaAngleDown } from "react-icons/fa";
 import { ITSelectProps } from "./select.props";
-import ITText from "@/components/text/text";
-import { inputError, inputLabel } from "@/utils/styles";
+import ITText from "@/components/atoms/text/text";
+import { inputError, inputLabel, inputFieldStyle } from "@/utils/styles";
 
 export default function ITSelect({
   name,
@@ -22,6 +22,7 @@ export default function ITSelect({
   required,
   error,
   readOnly = false,
+  size = "md",
 }: ITSelectProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [localTouched, setLocalTouched] = useState(false);
@@ -40,19 +41,10 @@ export default function ITSelect({
   const errorMessage = typeof effectiveError === "string" ? effectiveError : "Este campo es requerido";
 
   const getStyle = () => {
-    const style: React.CSSProperties = {
-      backgroundColor: inputTheme.backgroundColor,
-      borderColor: inputTheme.borderColor,
-      borderRadius: inputTheme.borderRadius,
-      padding: inputTheme.padding,
-      fontSize: inputTheme.fontSize,
-      borderWidth: '1px',
-      borderStyle: 'solid',
-      transition: 'all 0.2s',
-      color: 'var(--input-text-color, var(--color-secondary-900))',
-      appearance: 'none',
-      colorScheme: 'light dark',
-    };
+    const style = inputFieldStyle(inputTheme, size, {
+      appearance: "none",
+      colorScheme: "light dark",
+    });
 
     if (disabled) {
       style.backgroundColor = inputTheme.disabled?.backgroundColor || style.backgroundColor;
@@ -97,7 +89,7 @@ export default function ITSelect({
               onBlur={(e) => {
                 setIsFocused(false);
                 setLocalTouched(true);
-                readOnly ? undefined : onBlur?.(e);
+                if (!readOnly) onBlur?.(e);
               }}
               onFocus={() => setIsFocused(true)}
               disabled={disabled}

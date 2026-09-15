@@ -236,6 +236,9 @@ interface ITAvatarProps {
  */
 declare function ITAvatar({ src, alt, initials, size, color, className, badge, onClick, }: ITAvatarProps): react_jsx_runtime.JSX.Element;
 
+/** Escala única de tamaños del sistema: "sm" | "md" | "lg". */
+type SizesTypes = "sm" | "md" | "lg";
+
 declare const semanticColors: {
     primary: {
         50: string;
@@ -363,8 +366,6 @@ declare const badgeVariants: {
     readonly outlined: "outlined";
 };
 
-type SizesTypes = "small" | "medium" | "large";
-
 interface ITBadgetProps {
     /** Text label displayed inside the badge. Overridden if `children` is provided. */
     label?: string;
@@ -372,7 +373,7 @@ interface ITBadgetProps {
     children?: React.ReactNode;
     /** Color theme key. Values come from the semantic color palette (e.g. `"primary"`, `"secondary"`, `"success"`, `"danger"`, `"warning"`, `"info"`, `"purple"`, `"error"`, `"gray"`). @default "primary" */
     color?: ColorsTypes;
-    /** Badge size. Valid values: `"small"`, `"medium"`, `"large"`. @default "medium" */
+    /** Badge size. Valid values: `"sm"`, `"md"`, `"lg"`. @default "md" */
     size?: SizesTypes;
     /** Badge visual style. Valid values: `"filled"`, `"outlined"`. @default "filled" */
     variant?: keyof typeof badgeVariants;
@@ -387,7 +388,7 @@ interface ITBadgetProps {
  * <ITBadget label="Active" color="success" variant="filled" />
  *
  * @example
- * <ITBadget color="danger" variant="outlined" size="small">
+ * <ITBadget color="danger" variant="outlined" size="sm">
  *   <span className="flex items-center gap-1">3 new</span>
  * </ITBadget>
  */
@@ -437,7 +438,7 @@ interface ITButtonProps {
     onClick?: () => void;
     /** Color theme key. Values come from the semantic color palette (e.g. `"primary"`, `"secondary"`, `"success"`, `"danger"`, `"warning"`, `"info"`, `"purple"`, `"error"`, `"gray"`). @default "primary" */
     color?: ColorsTypes;
-    /** Button size. Valid values: `"small"`, `"medium"`, `"large"`. @default "medium" */
+    /** Button size. Valid values: `"sm"`, `"md"`, `"lg"`. @default "md" */
     size?: SizesTypes;
     /** Button visual style. Valid values: `"filled"`, `"outlined"`, `"raised"`, `"rounded"`, `"text"`, `"raised-text"`, `"icon-only"`, `"link"`. @default "filled" */
     variant?: keyof typeof buttonVariants;
@@ -460,7 +461,7 @@ interface ITButtonProps {
  * <ITButton label="Submit" color="primary" variant="filled" onClick={() => {}} />
  *
  * @example
- * <ITButton color="danger" variant="outlined" size="small" icon={<FaTrash />}>
+ * <ITButton color="danger" variant="outlined" size="sm" icon={<FaTrash />}>
  *   Delete
  * </ITButton>
  */
@@ -842,7 +843,7 @@ interface ITDatePickerProps {
     range?: boolean;
     /** Color variant matching the design system (ColorsTypes). @default "primary" */
     variant?: ColorsTypes;
-    /** Size variant matching the design system (SizesTypes). @default "medium" */
+    /** Size preset: "sm" | "md" | "lg". @default "md" */
     size?: SizesTypes;
     /** Additional CSS classes for the wrapper element. */
     className?: string;
@@ -1441,7 +1442,7 @@ interface ITInputProps {
     minLength?: number;
     /** Color variant from the theme palette */
     variant?: ColorsTypes;
-    /** Size preset: "xs" | "sm" | "md" | "lg" | "xl" */
+    /** Size preset: "sm" | "md" | "lg". @default "md" */
     size?: SizesTypes;
     /** Disable the input */
     disabled?: boolean;
@@ -1510,7 +1511,7 @@ interface ITInputProps {
  *   maxLength={10}
  * />
  */
-declare function ITInput({ name, type, label, placeholder, value, onChange, onBlur, disabled, className, containerClassName, labelClassName, touched, error, formatNumber, required, autoFocus, onClick, onKeyDown, iconLeft, iconRight, maxLength, minLength, checked, showHintLength, currencyFormat, rows, min, max, readOnly, focusContent }: ITInputProps): react_jsx_runtime.JSX.Element;
+declare function ITInput({ name, type, label, placeholder, value, onChange, onBlur, disabled, className, containerClassName, labelClassName, touched, error, formatNumber, required, autoFocus, onClick, onKeyDown, iconLeft, iconRight, maxLength, minLength, checked, showHintLength, currencyFormat, rows, min, max, readOnly, focusContent, size }: ITInputProps): react_jsx_runtime.JSX.Element;
 
 /** Represents a navigation item in the sidebar. */
 interface ITNavigationItem$1 {
@@ -1903,6 +1904,8 @@ interface ITSearchSelectProps {
     error?: string | boolean;
     /** Whether the field is read-only. */
     readOnly?: boolean;
+    /** Size preset: "sm" | "md" | "lg". @default "md" */
+    size?: SizesTypes;
     /** Callback for server-side search (Mode 2: API connection). Receives the search query string. */
     onSearch?: (query: string) => void;
     /** Whether options are being loaded from an external API. */
@@ -1940,7 +1943,7 @@ interface ITSearchSelectProps {
  * />
  * ```
  */
-declare function ITSearchSelect({ name, options, label, placeholder, valueField, labelField, value, onChange, onBlur, disabled, className, touched, required, error, readOnly, onSearch, isLoading, noResultsMessage, }: ITSearchSelectProps): react_jsx_runtime.JSX.Element;
+declare function ITSearchSelect({ name, options, label, placeholder, valueField, labelField, value, onChange, onBlur, disabled, className, touched, required, error, readOnly, onSearch, isLoading, noResultsMessage, size, }: ITSearchSelectProps): react_jsx_runtime.JSX.Element;
 
 /** A generic key-value option: e.g. { value: "mx", label: "Mexico" }. */
 interface OptionType {
@@ -1986,7 +1989,7 @@ interface ITSelectProps {
     readOnly?: boolean;
 }
 
-declare function ITSelect({ name, options, label, placeholder, valueField, labelField, value, onChange, onBlur, disabled, className, touched, required, error, readOnly, }: ITSelectProps): react_jsx_runtime.JSX.Element;
+declare function ITSelect({ name, options, label, placeholder, valueField, labelField, value, onChange, onBlur, disabled, className, touched, required, error, readOnly, size, }: ITSelectProps): react_jsx_runtime.JSX.Element;
 
 interface CustomITSearchTableProps<T> extends ITSearchTableProps<T> {
     editingRow?: number | null;
@@ -2023,7 +2026,7 @@ interface CustomITSearchTableProps<T> extends ITSearchTableProps<T> {
  * />
  * ```
  */
-declare function ITSearchTable<T extends Record<string, unknown>>({ columns, data, containerClassName, searchTermInitial, searchInputPlaceholder, className, variant, size, itemsPerPageOptions, defaultItemsPerPage, title, pageIndex, totalCount, totalPages, hasPreviousPage, hasNextPage, onPageChange, onItemsPerPageChange, onSortChange, onFilterChange, sortConfig, editingRow, validationSchema, onClearSearch, onEdit, onSave, onCancel, }: CustomITSearchTableProps<T>): react_jsx_runtime.JSX.Element;
+declare function ITSearchTable<T extends Record<string, unknown>>({ columns, data, containerClassName, searchTermInitial, searchInputPlaceholder, variant, size, itemsPerPageOptions, defaultItemsPerPage, title, pageIndex, totalCount, totalPages, hasPreviousPage, hasNextPage, onPageChange, onItemsPerPageChange, onSortChange, onFilterChange, sortConfig, editingRow, validationSchema, onClearSearch, onEdit, onSave, onCancel, }: CustomITSearchTableProps<T>): react_jsx_runtime.JSX.Element;
 
 /** Available sizes for the segmented control: "sm" | "md". */
 type SegmentedControlSize = "sm" | "md";
@@ -2139,7 +2142,7 @@ interface ITSidebarProps {
  * />
  * ```
  */
-declare function ITSidebar({ navigationItems, isCollapsed, onToggleCollapse, className, visibleOnMobile, onItemClick, onSubItemClick, subitemConnector, }: ITSidebarProps): react_jsx_runtime.JSX.Element;
+declare function ITSidebar({ navigationItems, isCollapsed, className, visibleOnMobile, onItemClick, onSubItemClick, subitemConnector, }: ITSidebarProps): react_jsx_runtime.JSX.Element;
 
 /** Skeleton shape variant: "text" (line) | "circular" (avatar/icon) | "rectangular" (card/image). */
 type SkeletonVariant = "text" | "circular" | "rectangular";
@@ -2354,7 +2357,7 @@ declare function ITStatCard({ label, value, trend, trendDirection, icon, color, 
  *   size="sm"
  * />
  */
-declare function ITTable<T extends Record<string, unknown>>({ columns, data, containerClassName, className, variant, size, itemsPerPageOptions, defaultItemsPerPage, title, renderCard, defaultView, showVerticalBorder, verticalBorderClassname, }: ITTableProps<T>): react_jsx_runtime.JSX.Element;
+declare function ITTable<T extends Record<string, unknown>>({ columns, data, containerClassName, variant, size, itemsPerPageOptions, defaultItemsPerPage, title, renderCard, defaultView, showVerticalBorder, verticalBorderClassname, }: ITTableProps<T>): react_jsx_runtime.JSX.Element;
 
 interface ITTextProps extends HTMLAttributes<HTMLElement> {
     /** The content rendered inside the element. */
@@ -2607,10 +2610,14 @@ interface ITDropfileProps {
     initialPreviewUrl?: string | null;
     /**
      * Presentation mode. `"drop"` renders the dropzone/preview inline (default,
-     * current behavior). `"button"` renders a compact trigger button instead —
-     * clicking it opens the same dropzone/preview UI inside an `ITDialog`, so
-     * callers don't need to build their own "open a modal" button around
-     * `ITDropfile`.
+     * current behavior, unaffected by anything below). `"button"` renders a
+     * compact trigger button instead — clicking it opens the same
+     * dropzone/preview UI inside an `ITDialog`, so callers don't need to build
+     * their own "open a modal" button around `ITDropfile`. Meant for repeated
+     * uploads (e.g. an attachments list): ~900ms after a successful confirm,
+     * the modal closes AND the selection resets, so the trigger goes back to
+     * `buttonLabel` ready for the next file — same effect callers previously
+     * got by remounting `ITDropfile` with a changing `key`.
      * @default "drop"
      */
     view?: "drop" | "button";
@@ -2820,7 +2827,7 @@ interface ITStepperProps {
  */
 declare function ITStepper({ steps, currentStep, onFinish, onStepChange, allowClickToJump, useIcons, disableNext, containerClassName, stepClassName, scrollableContent, maxContentHeight, color, }: ITStepperProps): react_jsx_runtime.JSX.Element;
 
-interface ITThemePalette {
+interface ITThemePalette$1 {
     /** Main brand accent color (hex). Drives primary buttons, active nav items, focus rings, links, and the `--color-primary` CSS variable. @default "#06b6d4" */
     primary: string;
     /** Secondary/neutral accent color (hex). Used for less prominent actions and secondary badges/buttons. @default "#6b7280" */
@@ -2862,99 +2869,18 @@ interface ITThemePalette {
 }
 interface ITThemeProviderProps {
     /** Partial palette overrides merged (deep merge) with the default theme. Supports primary, secondary, ternary, danger, success, info, alert, warning, layout, and table colors. Persisted to `localStorage` under `"it-theme-palette"` once the user edits it via the FAB/drawer. */
-    theme?: Partial<ITThemePalette>;
+    theme?: Partial<ITThemePalette$1>;
     /** The subtree that receives the theme context and CSS variables. Must wrap your entire app (or the portion that uses AXZY UI System components) once, near the root. */
     children: React.ReactNode;
     /** Whether to render the floating action button (bottom-right) that opens the live theme-designer drawer, letting end users tweak colors and persist their choice. Set to `false` to hide the FAB in production and only theme via the `theme` prop. @default true */
     showFab?: boolean;
+    /** Global density/compactness factor. Values below 1 shrink the UI's base sizes, above 1 grow them (e.g. `0.8` = 80%: smaller fonts, paddings, gaps, spacing). Applied by scaling the root font-size so every `rem`-based token in Tailwind components compacts together, keeping the layout fluid (no empty margins, unlike CSS zoom). Clamped to `0.5`–`1.5`. @default 1 */
+    density?: number;
+    /** Global border radius in pixels applied to the entire rounding scale (`rounded-sm/md/lg/xl/2xl/…`). `radius={2}` ⇒ 2px corners (near-square), `8` ⇒ 8px, `0` ⇒ completely square. Every `rounded-*` utility resolves to a `--radius-*` variable, so this reshapes inputs, buttons, cards, dialogs and tables system-wide with no per-component changes. @default 0 (no override, Tailwind defaults) */
+    radius?: number;
+    /** Global shadow strength level. `0` ⇒ no shadows, `1` ⇒ subtle, `2` ⇒ default current look, `3` ⇒ pronounced. Shadows are injected as `--shadow-*`/`.shadow-*` overrides so cards, dropdowns and dialogs follow the level. @default 2 (keeps current default when omitted) */
+    shadow?: number;
 }
-
-interface ITThemeContextType {
-    palette: ITThemePalette;
-    colors: ITThemePalette;
-    setPalette: (newPalette: ITThemePalette) => void;
-    updateColor: (key: string, value: string) => void;
-    resetTheme: () => void;
-    applyPreset: (colors: ITThemePalette) => void;
-    resolvedTheme: "light" | "dark";
-    darkModeMode: "light" | "dark" | "system";
-    setDarkModeMode: (mode: "light" | "dark" | "system") => void;
-}
-declare const useITTheme: () => ITThemeContextType;
-/**
- * Versión segura de useITTheme que retorna undefined
- * si se usa fuera de ITThemeProvider (no lanza error).
- */
-declare const useITThemeSafe: () => ITThemeContextType | undefined;
-/**
- * Root theme context provider that injects CSS custom properties for all components,
- * supports custom color palettes, dark/light mode, and an optional in-app theme designer FAB.
- *
- * @example
- * <ITThemeProvider theme={{ primary: "#3b82f6", danger: "#ef4444" }}>
- *   <App />
- * </ITThemeProvider>
- *
- * @example
- * <ITThemeProvider showFab={false}>
- *   <Dashboard />
- * </ITThemeProvider>
- */
-declare function ITThemeProvider({ children, theme, showFab, }: ITThemeProviderProps): react_jsx_runtime.JSX.Element;
-
-interface ITTimePickerProps {
-    /** Form field name attribute and key for the change event. */
-    name: string;
-    /** Controlled time value in "HH:MM" format. */
-    value?: string;
-    /** Label text displayed above the input. */
-    label?: string;
-    /** Placeholder text when no value is set (default "HH:MM"). */
-    placeholder?: string;
-    /** Callback fired on valid time selection, receives event-like object with `target.name` and `target.value`. */
-    onChange: (e: any) => void;
-    /** Callback fired when the input loses focus. */
-    onBlur?: (e: any) => void;
-    /** Marks the field as required. */
-    required?: boolean;
-    /** Whether the input has been touched (interacted with). */
-    touched?: boolean;
-    /** Validation error message or boolean to show error state. */
-    error?: string | boolean;
-    /** Disables the time picker when true. */
-    disabled?: boolean;
-    /** Additional CSS classes for the wrapper. */
-    className?: string;
-    /** Size preset: "small" | "medium" | "large". */
-    size?: "small" | "medium" | "large";
-    /** Style variant for the input: "primary" | "secondary" | "danger" | "success" | "warning" | "info" | "purple". */
-    variant?: "primary" | "secondary" | "danger" | "success" | "warning" | "info" | "purple";
-    /** Theme color used for the dropdown highlight and confirm button. Accepts semantic keys or raw hex. */
-    color?: "primary" | "secondary" | "danger" | "success" | "warning" | "info" | "purple" | string;
-}
-
-/**
- * Time selection input with a dual-column dropdown (hours / minutes).
- * Supports manual typing with auto-formatting, validation, and keyboard-friendly picker.
- *
- * @example
- * <ITTimePicker
- *   name="startTime"
- *   label="Start Time"
- *   value={startTime}
- *   onChange={(e) => setStartTime(e.target.value)}
- *   color="primary"
- * />
- *
- * @example
- * <ITTimePicker
- *   name="endTime"
- *   value={endTime}
- *   onChange={(e) => setEndTime(e.target.value)}
- *   error={isInvalid ? "Invalid time range" : undefined}
- * />
- */
-declare function ITTimePicker({ name, value, label, placeholder, onChange, onBlur, required, touched, error, disabled, className, size, variant, color, }: ITTimePickerProps): react_jsx_runtime.JSX.Element;
 
 type ColorScale = {
     50: string;
@@ -2969,6 +2895,46 @@ type ColorScale = {
     900: string;
     950?: string;
 };
+interface ITThemePalette {
+    /** Main brand accent color (hex). Drives primary buttons, active nav items, focus rings, links, and the `--color-primary` CSS variable. @default "#06b6d4" */
+    primary: string;
+    /** Secondary/neutral accent color (hex). Used for less prominent actions and secondary badges/buttons. @default "#6b7280" */
+    secondary: string;
+    /** Tertiary accent color (hex), used for a third level of emphasis (e.g. alternate badges, chart accents). @default "#8b5cf6" */
+    ternary: string;
+    /** Semantic color for destructive/error states (hex): delete buttons, error badges, invalid form fields. @default "#ef4444" */
+    danger: string;
+    /** Semantic color for success/confirmation states (hex): success badges, completed steps, positive stats. @default "#22c55e" */
+    success: string;
+    /** Semantic color for informational states (hex): info banners/badges, neutral notices. @default "#3b82f6" */
+    info: string;
+    /** Semantic color for alert/caution states (hex), distinct from `warning`. Used by components that need a stronger visual cue than warning. @default "#f97316" */
+    alert: string;
+    /** Semantic color for warning states (hex): warning badges/banners, pending states. @default "#eab308" */
+    warning: string;
+    /** Colors for the app shell's sidebar and top navbar (ITSidebar, ITNavbar, ITTopbar, ITLayout). */
+    layout: {
+        /** Background color of the sidebar (hex). @default "#ffffff" */
+        sidebarBg: string;
+        /** Text/icon color used on the sidebar. @default "#334155" */
+        sidebarText: string;
+        /** Background color of the top navigation bar (hex). @default "#ffffff" */
+        navbarBg: string;
+        /** Text/icon color used on the top navigation bar. @default "#1e293b" */
+        navbarText: string;
+    };
+    /** Colors for ITTable/ITDataTable/ITSearchTable header and rows. */
+    table: {
+        /** Background color of the table header row (hex). @default "#f8fafc" */
+        headerBg: string;
+        /** Text color of the table header row. @default "#334155" */
+        headerText: string;
+        /** Background color of table body rows (hex). @default "#ffffff" */
+        rowBg: string;
+        /** Text color of table body rows. @default "#1e293b" */
+        rowText: string;
+    };
+}
 type SemanticThemeColors = {
     primary?: ColorScale;
     secondary?: ColorScale;
@@ -3051,6 +3017,99 @@ interface ITThemeConfig {
     };
 }
 
+/**
+ * Contexto de theming compartido por ITThemeProvider y componentes que lo
+ * consumen (p.ej. ITFormHeader). Vive en @/theme para que ninguna capa
+ * atómica dependa de otra a través del provider.
+ */
+interface ITThemeContextType {
+    palette: ITThemePalette;
+    colors: ITThemePalette;
+    setPalette: (newPalette: ITThemePalette) => void;
+    updateColor: (key: string, value: string) => void;
+    resetTheme: () => void;
+    applyPreset: (colors: ITThemePalette) => void;
+    resolvedTheme: "light" | "dark";
+    darkModeMode: "light" | "dark" | "system";
+    setDarkModeMode: (mode: "light" | "dark" | "system") => void;
+}
+declare const useITTheme: () => ITThemeContextType;
+/**
+ * Versión segura de useITTheme que retorna undefined
+ * si se usa fuera de ITThemeProvider (no lanza error).
+ */
+declare const useITThemeSafe: () => ITThemeContextType | undefined;
+
+/**
+ * Root theme context provider that injects CSS custom properties for all components,
+ * supports custom color palettes, dark/light mode, and an optional in-app theme designer FAB.
+ *
+ * @example
+ * <ITThemeProvider theme={{ primary: "#3b82f6", danger: "#ef4444" }}>
+ *   <App />
+ * </ITThemeProvider>
+ *
+ * @example
+ * <ITThemeProvider showFab={false}>
+ *   <Dashboard />
+ * </ITThemeProvider>
+ */
+declare function ITThemeProvider({ children, theme, showFab, density, radius, shadow, }: ITThemeProviderProps): react_jsx_runtime.JSX.Element;
+
+interface ITTimePickerProps {
+    /** Form field name attribute and key for the change event. */
+    name: string;
+    /** Controlled time value in "HH:MM" format. */
+    value?: string;
+    /** Label text displayed above the input. */
+    label?: string;
+    /** Placeholder text when no value is set (default "HH:MM"). */
+    placeholder?: string;
+    /** Callback fired on valid time selection, receives event-like object with `target.name` and `target.value`. */
+    onChange: (e: any) => void;
+    /** Callback fired when the input loses focus. */
+    onBlur?: (e: any) => void;
+    /** Marks the field as required. */
+    required?: boolean;
+    /** Whether the input has been touched (interacted with). */
+    touched?: boolean;
+    /** Validation error message or boolean to show error state. */
+    error?: string | boolean;
+    /** Disables the time picker when true. */
+    disabled?: boolean;
+    /** Additional CSS classes for the wrapper. */
+    className?: string;
+    /** Size preset: "sm" | "md" | "lg". @default "md" */
+    size?: SizesTypes;
+    /** Style variant for the input: "primary" | "secondary" | "danger" | "success" | "warning" | "info" | "purple". */
+    variant?: "primary" | "secondary" | "danger" | "success" | "warning" | "info" | "purple";
+    /** Theme color used for the dropdown highlight and confirm button. Accepts semantic keys or raw hex. */
+    color?: "primary" | "secondary" | "danger" | "success" | "warning" | "info" | "purple" | string;
+}
+
+/**
+ * Time selection input with a dual-column dropdown (hours / minutes).
+ * Supports manual typing with auto-formatting, validation, and keyboard-friendly picker.
+ *
+ * @example
+ * <ITTimePicker
+ *   name="startTime"
+ *   label="Start Time"
+ *   value={startTime}
+ *   onChange={(e) => setStartTime(e.target.value)}
+ *   color="primary"
+ * />
+ *
+ * @example
+ * <ITTimePicker
+ *   name="endTime"
+ *   value={endTime}
+ *   onChange={(e) => setEndTime(e.target.value)}
+ *   error={isInvalid ? "Invalid time range" : undefined}
+ * />
+ */
+declare function ITTimePicker({ name, value, label, placeholder, onChange, onBlur, required, touched, error, disabled, className, size, variant, color, }: ITTimePickerProps): react_jsx_runtime.JSX.Element;
+
 declare const createValidationSchema: (fields: FieldConfig[]) => Yup.ObjectSchema<{
     [x: string]: never;
 }, Yup.AnyObject, {
@@ -3064,10 +3123,10 @@ declare const isLightColor: (hex: string) => boolean;
 /**
  * Traduce un valor de color de CSS (hexadecimal o variable var(--...)) a hexadecimal absoluto.
  */
-declare const resolveCssColor: (colorStr: string, palette?: ITThemePalette, isDarkMode?: boolean) => string;
+declare const resolveCssColor: (colorStr: string, palette?: ITThemePalette$1, isDarkMode?: boolean) => string;
 /**
  * Obtiene la clase de color de texto óptima (blanca o gris oscuro) basado en el fondo.
  */
-declare const getContrastTextColor: (bgColor: string, palette?: ITThemePalette, isDarkMode?: boolean) => "text-white" | "text-slate-800";
+declare const getContrastTextColor: (bgColor: string, palette?: ITThemePalette$1, isDarkMode?: boolean) => "text-white" | "text-slate-800";
 
-export { type Column, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, type LoaderProps as ITLoaderProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useITTheme, useITThemeSafe, useTableState };
+export { type Column, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, type LoaderProps as ITLoaderProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeConfig, type ITThemePalette$1 as ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useITTheme, useITThemeSafe, useTableState };

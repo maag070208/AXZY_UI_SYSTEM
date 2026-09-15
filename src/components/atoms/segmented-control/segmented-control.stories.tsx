@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import { FaList, FaTh } from "react-icons/fa";
-import ITSegmentedControl from "./segmented-control";
+import ITSegmentedControl from "@/components/atoms/segmented-control/segmented-control";
 
 const meta: Meta<typeof ITSegmentedControl> = {
   title: "Components/Inputs/ITSegmentedControl",
   component: ITSegmentedControl,
-  tags: ["autodocs"],
 };
 
 export default meta;
