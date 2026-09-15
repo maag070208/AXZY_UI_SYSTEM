@@ -87,6 +87,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
   } = useTableState({ defaultItemsPerPage });
 
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasFetchedRef = useRef(false);
 
   const computedTotalPages = Math.ceil(totalItems / itemsPerPage) || 1;
 
@@ -101,17 +102,19 @@ export default function ITDataTable<T extends Record<string, unknown>>({
       });
       setData(response.data || []);
       setTotalItems(response.total || 0);
+      hasFetchedRef.current = true;
     } catch (error) {
       console.error("ITDataTable: Error fetching data", error);
       setData([]);
       setTotalItems(0);
+      hasFetchedRef.current = true;
     } finally {
       setIsLoading(false);
     }
   }, [currentPage, itemsPerPage, filters, sortConfig, fetchData, externalFilters]);
 
   useEffect(() => {
-    if (!fetchOnMount && data.length === 0 && !isLoading) return;
+    if (!fetchOnMount && !hasFetchedRef.current) return;
 
     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
 
@@ -122,7 +125,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
     return () => {
       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     };
-  }, [currentPage, itemsPerPage, sortConfig, filters, externalFilters, reloadTrigger, fetchOnMount, performFetch, data.length, isLoading, debounceMs]);
+  }, [currentPage, itemsPerPage, sortConfig, filters, externalFilters, reloadTrigger, fetchOnMount, performFetch, debounceMs]);
 
   const renderFilterInput = (col: Column<T>) => {
     if (!col.filter) return null;
