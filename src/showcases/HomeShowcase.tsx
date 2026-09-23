@@ -209,14 +209,14 @@ export const HomeShowcase = () => {
         <ITGrid item xs={12} md={6}>
           <ITCard title="Frameworks" className="border-slate-200/60 dark:border-slate-800/60 shadow-sm">
             <ITStack spacing={4}>
-              <ITGrid container spacing={2}>
+              <ITGrid container spacing={3}>
                 {FRAMEWORKS.map((fw) => (
-                  <ITGrid item xs={3} key={fw.name}>
-                    <div className="group flex flex-col items-center gap-2 p-3 rounded-xl bg-white/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 hover:border-purple-400/40 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
-                      <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/80 group-hover:scale-110 transition-transform duration-200">
-                        <img src={fw.icon} alt={fw.name} className="w-6 h-6 object-contain" />
+                  <ITGrid item xs={4} sm={4} key={fw.name}>
+                    <div className="group flex flex-col items-center gap-2.5 p-3.5 rounded-xl bg-white/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 hover:border-primary-400/40 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                      <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/80 group-hover:scale-110 transition-transform duration-200">
+                        <img src={fw.icon} alt={fw.name} className="w-7 h-7 object-contain" />
                       </div>
-                      <ITText as="span" className="text-[10px] font-semibold text-slate-600 dark:text-slate-300 text-center leading-tight truncate w-full">
+                      <ITText as="span" className="text-[11px] font-semibold text-slate-600 dark:text-slate-300 text-center">
                         {fw.name}
                       </ITText>
                     </div>

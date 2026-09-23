@@ -1,0 +1,44 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as StoriesData from './chip-input.stories';
+
+<Meta of={StoriesData} />
+
+# ITChipInput
+
+Free-text input that turns entered values into removable tags (chips).
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string[]` | — | Current tags (controlled). |
+| `onChange` | `(values: string[]) => void` | — | Fired with the next list of tags. |
+| `label` | `string` | — | Label above the control. |
+| `placeholder` | `string` | `"Escribe y presiona Enter"` | Input placeholder. |
+| `delimiters` | `string[]` | `["Enter", ","]` | Keys that commit a tag. |
+| `maxTags` | `number` | — | Maximum number of tags. |
+| `allowDuplicates` | `boolean` | `false` | Allows repeated tags. |
+| `validate` | `(value) => string \| undefined` | — | Rejects a tag with a message. |
+| `color` | semantic color key | `"primary"` | Color of the tag chips. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Control size. |
+| `disabled` / `required` / `touched` / `error` / `helpText` | — | — | Standard form states. |
+
+## Usage
+
+```tsx
+import { ITChipInput } from '@axzydev/axzy_ui_system';
+
+<ITChipInput label="Etiquetas" value={tags} onChange={setTags} />
+```
+
+## Notes
+
+- Commits tags on `Enter`, `,`, blur, or when pasting delimited text.
+- `Backspace` on an empty input removes the last tag.
+- Local errors (duplicate, max reached, `validate`) are shown inline.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

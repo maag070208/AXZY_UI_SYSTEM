@@ -1,0 +1,47 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as StoriesData from './accordion.stories';
+
+<Meta of={StoriesData} />
+
+# ITAccordion
+
+Collapsible sections for FAQs, settings panels, and long content.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `ITAccordionItem[]` | — | Sections to render: `{ id, title, content, icon?, disabled? }`. |
+| `allowMultiple` | `boolean` | `false` | Allows several sections open at once. |
+| `defaultOpenIds` | `string[]` | `[]` | Open ids on first render (uncontrolled). |
+| `openIds` | `string[]` | — | Controlled open ids. |
+| `onChange` | `(openIds: string[]) => void` | — | Fired with the next open ids. |
+| `variant` | `"default" \| "separated" \| "bordered"` | `"separated"` | Visual style. |
+| `className` | `string` | — | Extra CSS classes for the wrapper. |
+| `itemClassName` | `string` | — | Extra CSS classes per item. |
+
+## Usage
+
+```tsx
+import { ITAccordion } from '@axzydev/axzy_ui_system';
+
+<ITAccordion
+  items={[
+    { id: "a", title: "¿Qué es AXZY?", content: "Un sistema de componentes." },
+    { id: "b", title: "¿Cómo instalo?", content: "pnpm add @axzydev/axzy_ui_system" },
+  ]}
+  defaultOpenIds={["a"]}
+/>
+```
+
+## Notes
+
+- Controlled via `openIds` + `onChange`; uncontrolled via `defaultOpenIds`.
+- Single-open by default; pass `allowMultiple` to open several.
+- Header buttons expose `aria-expanded` / `aria-controls`; the body is a labelled `region`.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

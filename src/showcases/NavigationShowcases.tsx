@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { FaInfoCircle, FaSlidersH, FaRegBell, FaSync } from "react-icons/fa";
+import { FaInfoCircle, FaSlidersH, FaRegBell, FaSync, FaEdit, FaCopy, FaTrash, FaDownload } from "react-icons/fa";
 import {
   ITTabs,
   ITStepper,
   ITPagination,
   ITTripleFilter,
   ITSelect,
-  ITSlideToggle
+  ITSlideToggle,
+  ITDropdownMenu,
+  ITCard
 } from "../index";
 import { ShowcaseLayout } from "./ShowcaseLayout";
 
@@ -188,6 +190,74 @@ export const TripleFilterShowcase = () => {
           <p className="text-slate-500">Proporciona un layout de tipo segmentado con animación al cambiar entre las opciones disponibles.</p>
         </div>
       }
+    />
+  );
+};
+
+// ITDropdownMenu Showcase
+export const DropdownMenuShowcase = () => {
+  const [lastAction, setLastAction] = useState<string>("—");
+
+  const items = [
+    { id: "edit", label: "Editar", icon: <FaEdit />, onClick: () => setLastAction("Editar") },
+    { id: "copy", label: "Duplicar", icon: <FaCopy />, shortcut: "⌘D", onClick: () => setLastAction("Duplicar") },
+    { id: "download", label: "Descargar", icon: <FaDownload />, disabled: true },
+    { id: "delete", label: "Eliminar", icon: <FaTrash />, danger: true, divider: true, onClick: () => setLastAction("Eliminar") },
+  ];
+
+  const code = `<ITDropdownMenu\n  items={[\n    { id: 'edit', label: 'Editar', icon: <FaEdit />, onClick: edit },\n    { id: 'delete', label: 'Eliminar', icon: <FaTrash />, danger: true, divider: true, onClick: remove },\n  ]}\n/>`;
+
+  return (
+    <ShowcaseLayout
+      title="ITDropdownMenu"
+      description="Menú de acciones con navegación por teclado y semántica ARIA. Se renderiza en portal, por lo que no lo recorta un ITCard ni ancestros con overflow: hidden."
+      code={code}
+      demo={
+        <div className="w-full max-w-md">
+          <ITCard title="Acciones de fila">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Reporte Q3.pdf</p>
+                <p className="text-xs text-slate-500">Última acción: {lastAction}</p>
+              </div>
+              <ITDropdownMenu items={items} />
+            </div>
+          </ITCard>
+        </div>
+      }
+      controls={
+        <p className="text-xs text-slate-500">
+          Teclado: flechas para navegar, Enter para activar, Esc para cerrar. El menú se abre dentro del ITCard sin recortarse.
+        </p>
+      }
+      gallery={
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="w-full max-w-xs">
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Trigger personalizado</p>
+            <ITDropdownMenu items={items} trigger={<span className="text-sm font-semibold px-1">Acciones</span>} triggerLabel="Acciones" placement="bottom-start" />
+          </div>
+          <div className="w-full max-w-xs">
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Placement top-start</p>
+            <ITDropdownMenu items={items.slice(0, 3)} placement="top-start" />
+          </div>
+        </div>
+      }
+      doc={{
+        summary: "Menú de acciones accesible (role=menu) en portal, con teclado y flip automático.",
+        examples: [
+          "<ITDropdownMenu items={items} />",
+          "<ITDropdownMenu items={items} trigger={<span>Acciones</span>} placement=\"bottom-start\" />",
+        ],
+        props: [
+          { name: "items", type: "ITDropdownMenuItem[]", required: true, description: "Acciones { id, label, icon?, shortcut?, onClick?, disabled?, danger?, divider? }." },
+          { name: "trigger", type: "ReactNode", default: "icono elipsis", description: "Contenido del trigger." },
+          { name: "triggerLabel", type: "string", default: '"Abrir menú"', description: "Etiqueta accesible del trigger." },
+          { name: "placement", type: '"bottom-start" | "bottom-end" | "top-start" | "top-end"', default: '"bottom-end"', description: "Posición del menú." },
+          { name: "onSelect", type: "(id, item) => void", description: "Se dispara al activar un item." },
+          { name: "disabled", type: "boolean", default: "false", description: "Deshabilita el trigger." },
+        ],
+        notes: ["El panel voltea arriba cuando no hay espacio abajo.", "role=menu / menuitem + aria-haspopup / aria-expanded."],
+      }}
     />
   );
 };

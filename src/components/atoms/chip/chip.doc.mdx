@@ -1,0 +1,47 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as StoriesData from './chip.stories';
+
+<Meta of={StoriesData} />
+
+# ITChip
+
+Compact tag / pill for labels, active filters, and multi-value selections.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | — | Text label. Overridden by `children`. |
+| `children` | `ReactNode` | — | Custom content inside the chip. |
+| `color` | semantic color key | `"secondary"` | Palette color. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Chip size. |
+| `variant` | `"soft" \| "filled" \| "outlined"` | `"soft"` | Visual style. |
+| `icon` | `ReactNode` | — | Icon before the label. |
+| `removable` | `boolean` | `false` | Shows an (X) button. |
+| `onRemove` | `() => void` | — | Fired when the remove button is pressed. |
+| `onClick` | `() => void` | — | Makes the chip clickable (filter/toggle). |
+| `selected` | `boolean` | `false` | Highlights the chip as selected. |
+| `disabled` | `boolean` | `false` | Disables interactions. |
+| `className` | `string` | — | Extra CSS classes. |
+
+## Usage
+
+```tsx
+import { ITChip } from '@axzydev/axzy_ui_system';
+
+<ITChip label="React" color="primary" />
+<ITChip label="México" color="success" variant="outlined" removable onRemove={remove} />
+<ITChip label="Activos" selected onClick={toggle} />
+```
+
+## Notes
+
+- Colors come from `theme.colors`, so they follow the active theme/dark mode.
+- Interactive chips (`onClick`) expose `role="button"` and keyboard support (Enter/Space).
+- The remove button is a nested `<button>`; keep `onClick` on the chip for selection toggles.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

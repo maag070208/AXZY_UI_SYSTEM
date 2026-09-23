@@ -18,6 +18,7 @@ import {
   CardShowcase,
   LayoutShowcase,
   TextShowcase,
+  AccordionShowcase,
 } from "./showcases/StructureShowcases";
 import {
   StackShowcase,
@@ -41,18 +42,24 @@ import {
   SlideToggleShowcase,
   DropfileShowcase,
   FormBuilderShowcase,
+  WysiwygShowcase,
+  FieldShowcase,
+  MultiSelectShowcase,
+  ChipInputShowcase,
 } from "./showcases/FormShowcases";
 import {
   TableShowcase,
   DataTableShowcase,
   BadgetShowcase,
   ImageShowcase,
+  ChipShowcase,
 } from "./showcases/DataShowcases";
 import {
   TabsShowcase,
   StepperShowcase,
   PaginationShowcase,
   TripleFilterShowcase,
+  DropdownMenuShowcase,
 } from "./showcases/NavigationShowcases";
 import {
   DialogShowcase,
@@ -86,6 +93,7 @@ const categories = [
       { id: "grid", label: "ITGrid" },
       { id: "card", label: "ITCard" },
       { id: "text", label: "ITText" },
+      { id: "accordion", label: "ITAccordion" },
       { id: "pageheader", label: "ITPageHeader" },
       { id: "page", label: "ITPage" },
       { id: "screen-dashboard", label: "Dashboard Ejemplo" },
@@ -101,11 +109,15 @@ const categories = [
       { id: "input", label: "ITInput" },
       { id: "select", label: "ITSelect" },
       { id: "searchselect", label: "ITSearchSelect" },
+      { id: "multiselect", label: "ITMultiSelect" },
+      { id: "chipinput", label: "ITChipInput" },
+      { id: "field", label: "ITField" },
       { id: "datepicker", label: "ITDatePicker" },
       { id: "timepicker", label: "ITTimePicker" },
       { id: "calendar", label: "ITCalendar" },
       { id: "slidetoggle", label: "ITSlideToggle" },
       { id: "dropfile", label: "ITDropfile" },
+      { id: "wysiwyg", label: "ITWysiwyg" },
       { id: "formbuilder", label: "ITFormBuilder" },
     ],
   },
@@ -117,6 +129,7 @@ const categories = [
       { id: "table", label: "ITTable" },
       { id: "datatable", label: "ITDataTable" },
       { id: "badget", label: "ITBadget" },
+      { id: "chip", label: "ITChip" },
       { id: "image", label: "ITImage" },
     ],
   },
@@ -129,6 +142,7 @@ const categories = [
       { id: "stepper", label: "ITStepper" },
       { id: "pagination", label: "ITPagination" },
       { id: "triplefilter", label: "ITTripleFilter" },
+      { id: "dropdownmenu", label: "ITDropdownMenu" },
     ],
   },
   {
@@ -249,6 +263,8 @@ function App() {
         return <CardShowcase />;
       case "text":
         return <TextShowcase />;
+      case "accordion":
+        return <AccordionShowcase />;
       case "pageheader":
         return <PageHeaderShowcase />;
       case "page":
@@ -268,6 +284,12 @@ function App() {
         return <SelectShowcase />;
       case "searchselect":
         return <SearchSelectShowcase />;
+      case "multiselect":
+        return <MultiSelectShowcase />;
+      case "chipinput":
+        return <ChipInputShowcase />;
+      case "field":
+        return <FieldShowcase />;
       case "datepicker":
         return <DatePickerShowcase />;
       case "timepicker":
@@ -278,6 +300,8 @@ function App() {
         return <SlideToggleShowcase />;
       case "dropfile":
         return <DropfileShowcase />;
+      case "wysiwyg":
+        return <WysiwygShowcase />;
       case "formbuilder":
         return <FormBuilderShowcase />;
       // Data
@@ -287,6 +311,8 @@ function App() {
         return <DataTableShowcase />;
       case "badget":
         return <BadgetShowcase />;
+      case "chip":
+        return <ChipShowcase />;
       case "image":
         return <ImageShowcase />;
       // Navigation
@@ -298,6 +324,8 @@ function App() {
         return <PaginationShowcase />;
       case "triplefilter":
         return <TripleFilterShowcase />;
+      case "dropdownmenu":
+        return <DropdownMenuShowcase />;
       // Feedback
       case "dialog":
         return <DialogShowcase />;

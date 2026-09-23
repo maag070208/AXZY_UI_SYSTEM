@@ -1,4 +1,4 @@
-import { FocusEvent } from "react";
+import { FocusEvent, ReactNode } from "react";
 import { SizesTypes } from "@/types/sizes.types";
 
 /** Represents an option in the search-select dropdown. */
@@ -51,4 +51,13 @@ export interface ITSearchSelectProps {
   isLoading?: boolean;
   /** Message displayed when no results are found. Default: "No se encontraron resultados". */
   noResultsMessage?: string;
+  /** Custom template for each option in the dropdown list. Receives the option and its state (`isSelected`, `searchTerm`). */
+  renderOption?: (
+    option: ITSearchSelectOption,
+    state: { isSelected: boolean; searchTerm: string }
+  ) => ReactNode;
+  /** Shows a clear (X) button inside the input. Default: true. */
+  clearable?: boolean;
+  /** Callback fired when the clear button is pressed. */
+  onClear?: () => void;
 }

@@ -1,10 +1,12 @@
 import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { FaCalendarAlt } from "react-icons/fa";
 import { isBefore } from "date-fns";
 import ITCalendar from "@/components/molecules/calendar/calendar";
 import ITInput from "@/components/atoms/input/input";
 import { ITDatePickerProps } from "./date-picker.props";
+import { useFloatingPanel } from "@/hooks/useFloatingPanel";
 import { theme } from "@/theme/theme";
 
 /**
@@ -64,7 +66,12 @@ export default function ITDatePicker({
   const [internalRange, setInternalRange] = useState<[Date | null, Date | null]>([null, null]);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
+
+  // Calendar position (rendered in a portal so it escapes overflow/transform ancestors).
+  const { panelRef, style: panelStyle } = useFloatingPanel(wrapperRef, isOpen, {
+    estimatedHeight: 360,
+    matchWidth: false,
+  });
 
   // Normalize single vs range values
   const dateRange = React.useMemo(() => {
@@ -97,34 +104,16 @@ export default function ITDatePicker({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(event.target as Node)
-      ) {
+      const target = event.target as Node;
+      const inWrapper = wrapperRef.current?.contains(target);
+      const inPanel = panelRef.current?.contains(target);
+      if (!inWrapper && !inPanel) {
         setIsOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const calculateCalendarPosition = () => {
-    if (wrapperRef.current) {
-      const inputRect = wrapperRef.current.getBoundingClientRect();
-      const calendarHeight = 300;
-      const viewportHeight = window.innerHeight;
-
-      let top = inputRect.bottom + 4;
-      if (inputRect.bottom + calendarHeight > viewportHeight) {
-        top = inputRect.top - calendarHeight - 4;
-      }
-
-      setCalendarPosition({
-        top,
-        left: inputRect.left,
-      });
-    }
-  };
 
   const handleDateChange = (date: Date) => {
     if (range) {
@@ -177,7 +166,6 @@ export default function ITDatePicker({
 
   const handleIconClick = () => {
     if (!disabled) {
-      calculateCalendarPosition();
       setIsOpen(!isOpen);
     }
   };
@@ -300,38 +288,39 @@ export default function ITDatePicker({
         onClick={handleIconClick}
       />
 
-      {isOpen && (
-        <div
-          className={clsx(
-            "fixed z-[70]",
-            calendarClassName,
-            range ? "w-[320px]" : "w-[280px]"
-          )}
-          style={{
-            top: `${calendarPosition.top}px`,
-            left: `${calendarPosition.left}px`,
-             backgroundColor: theme.card.backgroundColor,
-             borderColor: theme.card.borderColor,
-             borderWidth: '1px',
-             borderStyle: 'solid',
-             borderRadius: theme.card.borderRadius,
-             boxShadow: theme.card.shadow,
-             padding: '0.5rem',
-          }}
-        >
-          <ITCalendar
-            value={!range ? (startDate as Date) : undefined}
-            startDate={startDate as Date}
-            endDate={endDate as Date}
-            selectionMode={range ? 'range' : 'single'}
-            onChange={handleDateChange}
-            minDate={minDate}
-            maxDate={maxDate}
-            variant={variant}
-            className="h-auto border-none shadow-none w-full"
-          />
-        </div>
-      )}
+      {isOpen &&
+        createPortal(
+          <div
+            ref={panelRef}
+            className={clsx(
+              calendarClassName,
+              range ? "w-[320px]" : "w-[280px]"
+            )}
+            style={{
+              ...panelStyle,
+              backgroundColor: theme.card.backgroundColor,
+              borderColor: theme.card.borderColor,
+              borderWidth: "1px",
+              borderStyle: "solid",
+              borderRadius: theme.card.borderRadius,
+              boxShadow: theme.card.shadow,
+              padding: "0.5rem",
+            }}
+          >
+            <ITCalendar
+              value={!range ? (startDate as Date) : undefined}
+              startDate={startDate as Date}
+              endDate={endDate as Date}
+              selectionMode={range ? 'range' : 'single'}
+              onChange={handleDateChange}
+              minDate={minDate}
+              maxDate={maxDate}
+              variant={variant}
+              className="h-auto border-none shadow-none w-full"
+            />
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

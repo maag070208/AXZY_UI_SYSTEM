@@ -30,6 +30,7 @@ import {
   ITDivider,
   ITProgress,
   ITSelect,
+  ITAccordion,
 } from "../index";
 import { ShowcaseLayout, CodeViewer } from "./ShowcaseLayout";
 
@@ -1087,6 +1088,69 @@ export const LayoutShowcase = () => {
           </div>
         </ITStack>
       }
+    />
+  );
+};
+
+// ─────────────────────────────────────────
+// ITAccordion Showcase
+// ─────────────────────────────────────────
+export const AccordionShowcase = () => {
+  const [allowMultiple, setAllowMultiple] = useState(false);
+
+  const items = [
+    { id: "what", title: "¿Qué es AXZY UI System?", content: "Una librería de componentes React + TypeScript con Tailwind CSS v4." },
+    { id: "install", title: "¿Cómo lo instalo?", content: "pnpm add @axzydev/axzy_ui_system" },
+    { id: "theme", title: "¿Puedo personalizar el tema?", content: "Sí, usa ITThemeProvider para definir la paleta y los tokens." },
+    { id: "disabled", title: "Sección deshabilitada", content: "No se puede abrir.", disabled: true },
+  ];
+
+  const code = `<ITAccordion\n  allowMultiple={${allowMultiple}}\n  defaultOpenIds={['what']}\n  items={[\n    { id: 'what', title: '¿Qué es AXZY?', content: '...' },\n    { id: 'install', title: '¿Cómo lo instalo?', content: '...' },\n  ]}\n/>`;
+
+  return (
+    <ShowcaseLayout
+      title="ITAccordion"
+      description="Secciones plegables para FAQs, paneles de configuración y contenido largo. Controlado o no controlado, single o multiple, con animación CSS grid-rows."
+      code={code}
+      demo={
+        <div className="w-full max-w-xl">
+          <ITAccordion items={items} allowMultiple={allowMultiple} defaultOpenIds={["what"]} />
+        </div>
+      }
+      controls={
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-semibold text-gray-700">Permitir múltiples abiertas</span>
+          <ITSlideToggle isOn={allowMultiple} onToggle={setAllowMultiple} size="sm" />
+        </div>
+      }
+      gallery={
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Bordered</p>
+            <ITAccordion items={items.slice(0, 3)} variant="bordered" defaultOpenIds={["install"]} />
+          </div>
+          <div>
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Separated (default)</p>
+            <ITAccordion items={items.slice(0, 3)} defaultOpenIds={["theme"]} />
+          </div>
+        </div>
+      }
+      doc={{
+        summary: "Secciones plegables (FAQ, settings) controladas o no controladas.",
+        examples: [
+          "<ITAccordion items={items} defaultOpenIds={['a']} />",
+          "<ITAccordion items={items} allowMultiple variant=\"bordered\" />",
+        ],
+        props: [
+          { name: "items", type: "ITAccordionItem[]", required: true, description: "Secciones { id, title, content, icon?, disabled? }." },
+          { name: "allowMultiple", type: "boolean", default: "false", description: "Permite varias abiertas." },
+          { name: "defaultOpenIds", type: "string[]", default: "[]", description: "Abiertas al inicio (no controlado)." },
+          { name: "openIds", type: "string[]", description: "Abiertas (modo controlado)." },
+          { name: "onChange", type: "(openIds: string[]) => void", description: "Devuelve las abiertas." },
+          { name: "variant", type: '"default" | "separated" | "bordered"', default: '"separated"', description: "Estilo visual." },
+        ],
+        notes: ["Los headers exponen aria-expanded / aria-controls; el cuerpo es un region etiquetado."],
+      }}
     />
   );
 };

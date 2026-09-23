@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { FaSync, FaSave, FaTrash, FaEdit, FaCode } from "react-icons/fa";
+import { FaSync, FaSave, FaTrash, FaEdit, FaCode, FaCheck } from "react-icons/fa";
 import {
   ITButton,
   ITInput,
@@ -11,6 +11,11 @@ import {
   ITSlideToggle,
   ITDropfile,
   ITFormBuilder,
+  ITWysiwyg,
+  ITField,
+  ITMultiSelect,
+  ITChipInput,
+  ITBadget,
   UploadStatus
 } from "../index";
 import { ShowcaseLayout, CodeViewer } from "./ShowcaseLayout";
@@ -750,25 +755,29 @@ export const SelectShowcase = () => {
 // 4. ITSearchSelect Showcase
 export const SearchSelectShowcase = () => {
   const [val, setVal] = useState<any>("");
+  const [customVal, setCustomVal] = useState<any>("MX");
+  const [clearVal, setClearVal] = useState<any>("ES");
   const [isLoading, setIsLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
   const options = [
-    { label: "Argentina", value: "AR" },
-    { label: "Brasil", value: "BR" },
-    { label: "Colombia", value: "CO" },
-    { label: "México", value: "MX" },
-    { label: "Perú", value: "PE" },
-    { label: "España", value: "ES" }
+    { label: "Argentina", value: "AR", flag: "🇦🇷", region: "Sudamérica" },
+    { label: "Brasil", value: "BR", flag: "🇧🇷", region: "Sudamérica" },
+    { label: "Colombia", value: "CO", flag: "🇨🇴", region: "Sudamérica" },
+    { label: "México", value: "MX", flag: "🇲🇽", region: "Norteamérica" },
+    { label: "Perú", value: "PE", flag: "🇵🇪", region: "Sudamérica" },
+    { label: "España", value: "ES", flag: "🇪🇸", region: "Europa" }
   ];
 
   const code = `<ITSearchSelect\n  name="country"\n  label="Seleccionar País"\n  value="${val}"\n  options={[\n    { label: 'Argentina', value: 'AR' },\n    { label: 'Brasil', value: 'BR' },...\n  ]}\n  isLoading={${isLoading}}\n  disabled={${disabled}}\n  onChange={(value) => setVal(value)}\n/>`;
+
+  const customCode = `<ITSearchSelect\n  name="country_custom"\n  label="País (template personalizado)"\n  value="${customVal}"\n  options={countries}\n  onChange={(value) => setCustomVal(value)}\n  renderOption={(option, { isSelected }) => (\n    <div className="flex items-center gap-2">\n      <span>{option.flag}</span>\n      <span className="flex-1">{option.label}</span>\n      <span className="text-xs text-secondary-400">{option.region}</span>\n      {isSelected && <FaCheck className="text-primary-500" size={10} />}\n    </div>\n  )}\n/>`;
 
   return (
     <ShowcaseLayout
       title="ITSearchSelect"
       description="Selector avanzado con barra de búsqueda para filtrar colecciones grandes o cargar opciones remotas."
-      code={code}
+      code={`${code}\n\n${customCode}`}
       demo={
         <div className="w-full max-w-sm">
           <ITSearchSelect
@@ -783,6 +792,50 @@ export const SearchSelectShowcase = () => {
           {val && (
             <p className="mt-2 text-xs text-slate-500 font-mono">País seleccionado: "{val}"</p>
           )}
+        </div>
+      }
+      gallery={
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="w-full max-w-sm">
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Template personalizado (renderOption)
+            </p>
+            <ITSearchSelect
+              name="country_custom"
+              label="País (template personalizado)"
+              value={customVal}
+              options={options}
+              onChange={(value) => setCustomVal(value)}
+              renderOption={(option, { isSelected }) => (
+                <div className="flex items-center gap-2">
+                  <span>{option.flag}</span>
+                  <span className="flex-1">{option.label}</span>
+                  <span className="text-xs text-secondary-400">{option.region}</span>
+                  {isSelected && <FaCheck className="text-primary-500" size={10} />}
+                </div>
+              )}
+            />
+            <p className="mt-2 text-xs text-slate-500 font-mono">
+              {customVal ? `País seleccionado: "${customVal}"` : "Sin selección"}
+            </p>
+          </div>
+
+          <div className="w-full max-w-sm">
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Botón de limpiar (X)
+            </p>
+            <ITSearchSelect
+              name="country_clear"
+              label="País (clearable)"
+              value={clearVal}
+              options={options}
+              onChange={(value) => setClearVal(value)}
+              onClear={() => setClearVal("")}
+            />
+            <p className="mt-2 text-xs text-slate-500 font-mono">
+              {clearVal ? `País seleccionado: "${clearVal}"` : "Sin selección"}
+            </p>
+          </div>
         </div>
       }
       controls={
@@ -1120,7 +1173,98 @@ export const DropfileShowcase = () => {
   );
 };
 
-// 10. ITFormBuilder Showcase
+// 10. ITWysiwyg Showcase
+export const WysiwygShowcase = () => {
+  const [html, setHtml] = useState(
+    "<div>Edita este texto con la <strong>barra de herramientas</strong>.</div><ul><li>Negrita, <em>itálica</em> y <u>subrayado</u></li><li><mark style=\"background-color:#fde68a\">Marcador amarillo</mark></li></ul>"
+  );
+  const [size, setSize] = useState<any>("md");
+  const [error, setError] = useState<string | undefined>(undefined);
+
+  const code = `<ITWysiwyg\n  label="Descripción"\n  value={html}\n  onChange={setHtml}\n  size="${size}"\n  highlightColor="#fde68a"\n/>`;
+
+  return (
+    <ShowcaseLayout
+      title="ITWysiwyg"
+      description="Editor WYSIWYG ligero sin dependencias externas: negrita, itálica, subrayado, marcador amarillo y listas. Implementado a mano sobre Selection/Range (sin execCommand)."
+      code={code}
+      doc={{
+        summary:
+          "Editor de texto enriquecido formado por una barra de herramientas y un área contentEditable. Toda la lógica de formato es manual sobre la API Selection/Range.",
+        description:
+          "Soporta bold, italic, underline, marcador amarillo configurable y listas con viñetas/numeradas. Las operaciones togglean envolviendo/desenvolviendo elementos, sin usar document.execCommand.",
+        examples: [
+          '<ITWysiwyg label="Descripción" value={html} onChange={setHtml} />',
+          '<ITWysiwyg size="lg" highlightColor="#fef08a" toolbar={["bold", "ul"]} />',
+        ],
+        props: [
+          { name: "value", type: "string", description: "HTML controlado. Se refleja solo cuando el editor no está enfocado." },
+          { name: "onChange", type: "(html: string) => void", description: "Devuelve el HTML del editor al cambiar." },
+          { name: "label", type: "string", description: "Texto de etiqueta sobre el editor." },
+          { name: "placeholder", type: "string", description: "Texto fantasma cuando el editor está vacío." },
+          { name: "error", type: "string", description: "Mensaje de validación (borde/ring en rojo)." },
+          { name: "disabled", type: "boolean", default: "false", description: "Deshabilita edición y toolbar." },
+          { name: "readOnly", type: "boolean", default: "false", description: "Solo lectura." },
+          { name: "size", type: "sm | md | lg", default: "md", description: "Padding y fuente del área editable." },
+          { name: "minHeight", type: "number", default: "128", description: "Altura mínima en px del área editable." },
+          { name: "highlightColor", type: "string", default: "#fde68a", description: "Color del marcador." },
+          { name: "toolbar", type: "ToolbarAction[]", default: "todas", description: "Subconjunto de acciones: bold, italic, underline, highlight, ul, ol, clear." },
+        ],
+        notes: [
+          "Las listas operan por bloques de primer nivel (no dividen selecciones parciales dentro de un bloque).",
+          "El pegado se inserta como texto plano (sin HTML externo).",
+          "Al estar enfocado el editor, cambios externos del value no se aplican para evitar saltos del cursor.",
+        ],
+      }}
+      demo={
+        <div className="w-full max-w-2xl space-y-4">
+          <ITWysiwyg
+            label="Contenido del artículo"
+            value={html}
+            onChange={setHtml}
+            size={size}
+            error={error}
+            placeholder="Escribe o pega tu contenido..."
+          />
+          <div className="p-4 bg-slate-950 rounded-xl border border-slate-800">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">
+              HTML generado
+            </p>
+            <pre className="text-[11px] text-emerald-300 font-mono whitespace-pre-wrap break-words">
+              {html}
+            </pre>
+          </div>
+        </div>
+      }
+      controls={
+        <>
+          <ITSelect
+            name="size_ctrl"
+            label="Tamaño"
+            value={size}
+            onChange={(e: any) => setSize(e.target.value)}
+            options={[
+              { label: "Small", value: "sm" },
+              { label: "Medium", value: "md" },
+              { label: "Large", value: "lg" },
+            ]}
+          />
+          <div className="flex items-center justify-between pt-2">
+            <span className="text-sm font-semibold text-gray-700">Forzar error</span>
+            <ITSlideToggle
+              isOn={!!error}
+              onToggle={(v) => setError(v ? "Este campo es obligatorio." : undefined)}
+              activeColor="danger"
+              size="sm"
+            />
+          </div>
+        </>
+      }
+    />
+  );
+};
+
+// 11. ITFormBuilder Showcase
 export const FormBuilderShowcase = () => {
   const [values, setValues] = useState({
     name: "",
@@ -1161,7 +1305,38 @@ export const FormBuilderShowcase = () => {
     <div className="space-y-8">
       <ShowcaseLayout
         title="ITFormBuilder"
-        description="Generador dinámico de formularios basado en un esquema estructurado JSON."
+        description="Generador dinámico de formularios basado en un esquema estructurado JSON. Soporta V1 retrocompatible y la arquitectura V2 con motor de reglas, secciones, renderers custom y opciones asíncronas."
+        doc={{
+          summary:
+            "Renderiza un grid responsive de inputs a partir de un arreglo de definiciones de campo. Totalmente controlado: delega el estado a Formik (o cualquier holder externo).",
+          description:
+            "La API V2 (`config`) habilita renderizado condicional (`renderWhen`/`dependsOn`), propiedades dinámicas (`dynamicProps`), campos derivados (`onChangeAction`), carga asíncrona de opciones, secciones anidadas y componentes custom. La API V1 (`fields`) se conserva para compatibilidad y soporta un subconjunto reducido sin reglas ni secciones.",
+          examples: [
+            `<ITFormBuilder config={[{ name: "email", label: "Email", type: "email", required: true }]} values={formik.values} handleChange={formik.handleChange} handleBlur={formik.handleBlur} touched={formik.touched} errors={formik.errors} setFieldValue={formik.setFieldValue} />`,
+            `<ITFormBuilder fields={[{ name: "email", type: "text" }, { name: "pwd", type: "password" }]} values={...} handleChange={...} handleBlur={...} touched={...} errors={...} />`,
+          ],
+          props: [
+            { name: "fields", type: "FieldConfig[]", description: "(V1, legacy) Definiciones de campo. Mantenido por compatibilidad." },
+            { name: "config", type: "FieldConfigV2[]", description: "(V2) Definiciones de campo con motor de reglas, secciones y custom. Recomendado." },
+            { name: "columns", type: "number", default: "12", description: "Número de columnas del grid responsive (1-12)." },
+            { name: "values", type: "Record<string, unknown>", required: true, description: "Valores actuales del formulario, indexados por `name`." },
+            { name: "handleChange", type: "(event) => void", required: true, description: "Handler onChange compatible con Formik." },
+            { name: "handleBlur", type: "(event) => void", required: true, description: "Handler onBlur compatible con Formik." },
+            { name: "touched", type: "Record<string, boolean>", required: true, description: "Estado de touched por campo." },
+            { name: "errors", type: "Record<string, string>", required: true, description: "Errores de validación por campo." },
+            { name: "setFieldValue", type: "(field, value, shouldValidate?) => Promise", description: "Setter programático de valor (Formik parity). Necesario para V2 `onChangeAction`/`dynamicProps`." },
+            { name: "setFieldTouched", type: "(field, touched?, shouldValidate?) => Promise", description: "Setter programático de touched." },
+            { name: "setFieldError", type: "(field, message?) => void", description: "Setter programático de error de campo." },
+            { name: "isSubmitting", type: "boolean", default: "false", description: "Bandera de submit en curso; expuesta al contexto." },
+          ],
+          notes: [
+            "Cuando se pasan ambos `config` y `fields`, gana `config` (V2).",
+            "Si no se pasa `config` ni `fields` el componente renderiza un grid vacío.",
+            "El hook `useFormBuilder` debe usarse dentro del subárbol de un `ITFormBuilder` con la API V2 (lanza un error claro fuera del provider).",
+            "`validation` y `asyncValidation` NO se ejecutan automáticamente — intégralos con Yup en el Formik padre, o ejecútalos manualmente dentro de `onChangeAction`.",
+            "Opciones async (`options: () => Promise<...>`) montan `ITSearchSelect` con un placeholder de spinner mientras cargan.",
+          ],
+        }}
         code={code}
         demo={
           <div className="w-full max-w-md space-y-6">
@@ -1525,5 +1700,216 @@ const CurrencyConverterExample = () => {
         </p>
       )}
     </div>
+  );
+};
+
+// 12. ITField Showcase
+export const FieldShowcase = () => {
+  const [email, setEmail] = useState("");
+  const [showHelp, setShowHelp] = useState(true);
+  const invalid = email.length > 0 && !email.includes("@");
+
+  const code = `<ITField\n  label="Correo"\n  htmlFor="email"\n  required\n  error={${invalid ? '"Ingresa un correo válido."' : "undefined"}}\n  helpText="Nunca compartimos tu correo."\n>\n  <ITInput name="email" value="${email}" onChange={(e) => setEmail(e.target.value)} />\n</ITField>`;
+
+  return (
+    <ShowcaseLayout
+      title="ITField"
+      description="Contenedor de campo de formulario que estandariza label, asterisco de requerido, texto de ayuda y mensaje de error alrededor de cualquier control."
+      code={code}
+      demo={
+        <div className="w-full max-w-sm">
+          <ITField
+            label="Correo"
+            htmlFor="email"
+            required
+            error={invalid ? "Ingresa un correo válido." : undefined}
+            helpText={showHelp ? "Nunca compartimos tu correo." : undefined}
+          >
+            <ITInput name="email" value={email} onChange={(e: any) => setEmail(e.target.value)} onBlur={() => {}} />
+          </ITField>
+        </div>
+      }
+      controls={
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-semibold text-gray-700">Mostrar ayuda</span>
+          <ITSlideToggle isOn={showHelp} onToggle={setShowHelp} size="sm" />
+        </div>
+      }
+      doc={{
+        summary: "Wrapper que unifica label, requerido, ayuda y error para cualquier control.",
+        examples: [
+          '<ITField label="Email" htmlFor="email" required error={errors.email} helpText="...">',
+          '  <ITInput name="email" value={email} onChange={onChange} />',
+          '</ITField>',
+        ],
+        props: [
+          { name: "label", type: "string", description: "Etiqueta sobre el control." },
+          { name: "htmlFor", type: "string", description: "id del control (htmlFor)." },
+          { name: "required", type: "boolean", default: "false", description: "Muestra asterisco rojo." },
+          { name: "error", type: "string | boolean", description: "Mensaje de error o true para el genérico." },
+          { name: "helpText", type: "string", description: "Texto de ayuda si no hay error." },
+          { name: "children", type: "ReactNode", required: true, description: "El control del formulario." },
+        ],
+        notes: ["El error tiene prioridad sobre helpText; solo se muestra uno."],
+      }}
+    />
+  );
+};
+
+// 13. ITMultiSelect Showcase
+export const MultiSelectShowcase = () => {
+  const [value, setValue] = useState<(string | number)[]>(["mx", "es"]);
+
+  const options = [
+    { value: "mx", label: "México" },
+    { value: "es", label: "España" },
+    { value: "co", label: "Colombia" },
+    { value: "ar", label: "Argentina" },
+    { value: "pe", label: "Perú" },
+    { value: "cl", label: "Chile" },
+  ];
+
+  const code = `<ITMultiSelect\n  label="Países"\n  options={countries}\n  value={[${value.map((v) => `'${v}'`).join(", ")}]}\n  onChange={(values) => setValue(values)}\n  maxVisibleChips={3}\n/>`;
+
+  return (
+    <ShowcaseLayout
+      title="ITMultiSelect"
+      description="Selector de múltiples valores con dropdown buscable, chips removibles y navegación por teclado. El dropdown va en portal, así que no se recorta dentro de un ITCard."
+      code={code}
+      demo={
+        <div className="w-full max-w-sm">
+          <ITMultiSelect
+            label="Países"
+            options={options}
+            value={value}
+            onChange={(values) => setValue(values)}
+            maxVisibleChips={3}
+          />
+          <p className="mt-2 text-xs text-slate-500 font-mono">
+            {value.length} seleccionados: {JSON.stringify(value)}
+          </p>
+        </div>
+      }
+      controls={
+        <div className="space-y-2">
+          <p className="text-xs text-slate-500">
+            Usa las flechas para navegar, Enter para alternar y Backspace para quitar el último chip.
+          </p>
+        </div>
+      }
+      gallery={
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="w-full max-w-sm">
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Plantilla de opción (renderOption)</p>
+            <ITMultiSelect
+              label="Skills (template)"
+              options={options}
+              value={value}
+              onChange={(values) => setValue(values)}
+              renderOption={(option, { isSelected }) => (
+                <span className={isSelected ? "font-bold" : ""}>{option.label}</span>
+              )}
+            />
+          </div>
+          <div className="w-full max-w-sm">
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Con error</p>
+            <ITMultiSelect
+              label="Requerido"
+              options={options}
+              value={[]}
+              onChange={() => {}}
+              required
+              touched
+              error
+            />
+          </div>
+        </div>
+      }
+      doc={{
+        summary: "Select múltiple con búsqueda, chips removibles y navegación por teclado.",
+        examples: [
+          '<ITMultiSelect label="Skills" options={skills} value={selected} onChange={setSelected} />',
+          '<ITMultiSelect options={opts} value={v} onChange={setV} renderOption={(o, { isSelected }) => ...} />',
+        ],
+        props: [
+          { name: "options", type: "ITMultiSelectOption[]", required: true, description: "Opciones { label, value, ...custom }." },
+          { name: "value", type: "(string | number)[]", required: true, description: "Valores seleccionados (controlado)." },
+          { name: "onChange", type: "(values, options) => void", description: "Devuelve los valores seleccionados." },
+          { name: "label", type: "string", description: "Etiqueta del control." },
+          { name: "placeholder", type: "string", default: '"Selecciona opciones"', description: "Texto cuando está vacío." },
+          { name: "maxVisibleChips", type: "number", default: "3", description: "Chips visibles antes de +N." },
+          { name: "clearable", type: "boolean", default: "true", description: "Botón de limpiar (X)." },
+          { name: "searchable", type: "boolean", default: "true", description: "Habilita el input de búsqueda." },
+          { name: "onSearch", type: "(query) => void", description: "Búsqueda remota." },
+          { name: "renderOption", type: "(option, state) => ReactNode", description: "Plantilla de opción." },
+          { name: "error", type: "string | boolean", description: "Estado de error." },
+        ],
+        notes: [
+          "role=combobox + listbox con aria-multiselectable.",
+          "Backspace con input vacío elimina el último chip.",
+        ],
+      }}
+    />
+  );
+};
+
+// 14. ITChipInput Showcase
+export const ChipInputShowcase = () => {
+  const [tags, setTags] = useState<string[]>(["react", "typescript"]);
+  const [maxTags, setMaxTags] = useState(5);
+
+  const code = `<ITChipInput\n  label="Etiquetas"\n  value={[${tags.map((t) => `'${t}'`).join(", ")}]}\n  onChange={setTags}\n  maxTags={${maxTags}}\n  placeholder="Agrega una etiqueta..."\n/>`;
+
+  return (
+    <ShowcaseLayout
+      title="ITChipInput"
+      description="Entrada de texto libre que convierte los valores escritos en etiquetas (chips) removibles. Confirma con Enter o coma, al perder foco o al pegar texto delimitado."
+      code={code}
+      demo={
+        <div className="w-full max-w-sm">
+          <ITChipInput
+            label="Etiquetas"
+            value={tags}
+            onChange={setTags}
+            maxTags={maxTags}
+            placeholder="Agrega una etiqueta..."
+            helpText="Enter o coma para agregar. Backspace para borrar la última."
+          />
+          <div className="mt-3 flex flex-wrap gap-1">
+            {tags.map((t) => (
+              <ITBadget key={t} label={t} color="primary" size="sm" />
+            ))}
+          </div>
+        </div>
+      }
+      controls={
+        <ITInput
+          name="maxTags"
+          label="Máximo de etiquetas"
+          type="number"
+          value={maxTags}
+          onChange={(e: any) => setMaxTags(Number(e.target.value) || 0)}
+          onBlur={() => {}}
+        />
+      }
+      doc={{
+        summary: "Input que convierte texto en etiquetas (chips) removibles con validación.",
+        examples: [
+          '<ITChipInput label="Etiquetas" value={tags} onChange={setTags} />',
+          '<ITChipInput value={emails} onChange={setEmails} validate={(v) => isEmail(v) ? undefined : "Correo inválido"} />',
+        ],
+        props: [
+          { name: "value", type: "string[]", required: true, description: "Etiquetas actuales (controlado)." },
+          { name: "onChange", type: "(values: string[]) => void", description: "Devuelve las etiquetas." },
+          { name: "delimiters", type: "string[]", default: '["Enter", ","]', description: "Teclas que confirman una etiqueta." },
+          { name: "maxTags", type: "number", description: "Máximo de etiquetas." },
+          { name: "allowDuplicates", type: "boolean", default: "false", description: "Permite duplicados." },
+          { name: "validate", type: "(value) => string | undefined", description: "Rechaza una etiqueta con mensaje." },
+          { name: "color", type: "ColorsTypes", default: '"primary"', description: "Color de los chips." },
+          { name: "error", type: "string | boolean", description: "Estado de error." },
+        ],
+        notes: ["Backspace en input vacío elimina la última etiqueta."],
+      }}
+    />
   );
 };

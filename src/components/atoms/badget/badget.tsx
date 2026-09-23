@@ -32,9 +32,7 @@ export default function ITBadget({
 
   const getStyle = () => {
     const style: React.CSSProperties = {
-      fontSize: config.fontSize,
       fontWeight: config.fontWeight,
-      padding: config.padding,
       borderRadius: config.borderRadius, // '9999px' in theme
       borderWidth: '1px', // Default border width for consistency
       borderStyle: 'solid',
@@ -60,8 +58,8 @@ export default function ITBadget({
     <span
       className={clsx(
         "inline-flex items-center justify-center",
-        // Fallback size if theme doesn't have it (though theme does have it for primary)
-        !config.padding ? badgeSizes[size] : "", 
+        // Apply size classes (padding/font-size)
+        badgeSizes[size],
         className
       )}
       style={getStyle()}

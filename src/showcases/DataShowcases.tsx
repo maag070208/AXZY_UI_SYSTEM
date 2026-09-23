@@ -8,6 +8,7 @@ import {
   ITInput,
   ITSelect,
   ITSlideToggle,
+  ITChip,
   ITDataTableFetchParams,
   ITDataTableResponse
 } from "../index";
@@ -735,6 +736,81 @@ export const ImageShowcase = () => {
           </div>
         </>
       }
+    />
+  );
+};
+
+// ITChip Showcase
+export const ChipShowcase = () => {
+  const [active, setActive] = useState<string[]>(["mx"]);
+
+  const toggle = (id: string) =>
+    setActive((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+
+  const filters = [
+    { id: "mx", label: "México" },
+    { id: "es", label: "España" },
+    { id: "co", label: "Colombia" },
+  ];
+
+  const code = `<ITChip\n  label="React"\n  color="primary"\n  variant="soft"\n  removable\n  onRemove={() => remove()}\n/>`;
+
+  return (
+    <ShowcaseLayout
+      title="ITChip"
+      description="Etiqueta compacta (tag / pill) para labels, filtros activos y selecciones múltiples. Variantes soft, filled y outlined, icono, botón de quitar (X) y estado seleccionado."
+      code={code}
+      demo={
+        <div className="w-full max-w-lg space-y-5">
+          <div className="flex flex-wrap items-center gap-2">
+            <ITChip label="Soft" variant="soft" color="primary" />
+            <ITChip label="Filled" variant="filled" color="success" />
+            <ITChip label="Outlined" variant="outlined" color="purple" />
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {filters.map((f) => (
+              <ITChip
+                key={f.id}
+                label={f.label}
+                color="primary"
+                selected={active.includes(f.id)}
+                onClick={() => toggle(f.id)}
+              />
+            ))}
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <ITChip label="México" color="danger" variant="outlined" removable onRemove={() => {}} />
+            <ITChip label="Deshabilitado" color="secondary" disabled />
+          </div>
+        </div>
+      }
+      controls={
+        <p className="text-xs text-slate-500">
+          Los chips con onClick son toggles de filtro (role=button, Enter/Space). Los chips removibles muestran una X.
+        </p>
+      }
+      doc={{
+        summary: "Etiqueta/pill para labels, filtros y multi-valor, con variantes y estados.",
+        examples: [
+          '<ITChip label="React" color="primary" />',
+          '<ITChip label="México" color="success" variant="outlined" removable onRemove={remove} />',
+          '<ITChip label="Activos" selected onClick={toggle} />',
+        ],
+        props: [
+          { name: "label", type: "string", description: "Texto del chip." },
+          { name: "children", type: "ReactNode", description: "Contenido custom (sobreescribe label)." },
+          { name: "color", type: "ColorsTypes", default: '"secondary"', description: "Color de la paleta." },
+          { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Tamaño." },
+          { name: "variant", type: '"soft" | "filled" | "outlined"', default: '"soft"', description: "Estilo visual." },
+          { name: "icon", type: "ReactNode", description: "Icono a la izquierda." },
+          { name: "removable", type: "boolean", default: "false", description: "Muestra botón (X)." },
+          { name: "onRemove", type: "() => void", description: "Se dispara al quitar." },
+          { name: "onClick", type: "() => void", description: "Hace el chip clickeable." },
+          { name: "selected", type: "boolean", default: "false", description: "Estado seleccionado." },
+          { name: "disabled", type: "boolean", default: "false", description: "Deshabilitado." },
+        ],
+        notes: ["Colores desde theme.colors: respetan tema y modo oscuro."],
+      }}
     />
   );
 };

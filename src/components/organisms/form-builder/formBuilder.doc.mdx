@@ -5,101 +5,126 @@ import * as StoriesData from './formBuilder.stories';
 
 # ITFormBuilder
 
-A dynamic form generator that renders fields from JSON-like configuration (V1 or V2). Integrates with Formik and Yup for validation. Supports conditional rendering, calculated fields, grid layout, async validation, and custom components.
+Dynamic form generator that renders fields from a JSON-like array. Integrates with
+Formik + Yup, supports both a backward-compatible V1 (`fields`) and the powerful
+Enterprise V2 (`config`) API, and exposes a `useFormBuilder()` hook for building
+custom submit buttons, progress meters, and dirty-state indicators.
+
+## When to use
+
+- You want to drive a form from a declarative config (server-driven forms, CMS schemas).
+- You need conditional fields (`renderWhen`), derived values (`onChangeAction`),
+  dynamic props (`dynamicProps`), or cascading selects.
+- You need to render a custom React component as a field (`type: "custom"`).
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `fields` | `FieldConfig[]` | — | Legacy V1 field definitions (backward compatible). |
-| `config` | `FieldConfigV2[]` | — | V2 field configuration array with conditional logic, dynamic props, and grid layout. |
-| `columns` | `number` | — | Number of grid columns (1–12). |
-| `values` | `any` | — | Current form values keyed by field name. |
-| `handleChange` | `(event) => void` | — | Change handler for input, select, and textarea elements. |
-| `handleBlur` | `(event) => void` | — | Blur handler for input, select, and textarea elements. |
-| `touched` | `any` | — | Touch state keyed by field name. |
-| `errors` | `any` | — | Validation errors keyed by field name. |
-| `setFieldValue` | `(field, value, shouldValidate?) => Promise<void>` | — | Programmatically set a field value. |
-| `setFieldTouched` | `(field, touched?, shouldValidate?) => Promise<void>` | — | Programmatically mark a field as touched. |
-| `setFieldError` | `(field, message?) => void` | — | Programmatically set a field-level error. |
-| `isSubmitting` | `boolean` | — | Whether the form is currently submitting. |
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `fields` | `FieldConfig[]` | — | No | Legacy V1 field definitions. Kept for backward compatibility. |
+| `config` | `FieldConfigV2[]` | — | No | V2 field configuration. Recommended. Shadows `fields` when both supplied. |
+| `columns` | `number` | `12` | No | Grid column count (1–12). |
+| `values` | `Record<string, unknown>` | — | Yes | Current form values keyed by field `name`. |
+| `handleChange` | `(event) => void` | — | Yes | Change handler — pass Formik's `handleChange` directly. |
+| `handleBlur` | `(event) => void` | — | Yes | Blur handler — pass Formik's `handleBlur` directly. |
+| `touched` | `Record<string, boolean>` | — | Yes | Touch state keyed by field `name`. |
+| `errors` | `Record<string, string>` | — | Yes | Errors keyed by field `name`. |
+| `setFieldValue` | `(field, value, shouldValidate?) => Promise` | no-op | No | Required for V2 `onChangeAction` and `dynamicProps` side effects. |
+| `setFieldTouched` | `(field, touched?, shouldValidate?) => Promise` | no-op | No | Programmatic touch. |
+| `setFieldError` | `(field, message?) => void` | no-op | No | Programmatic field-level error. |
+| `isSubmitting` | `boolean` | `false` | No | Surface submit state to the context. |
 
-### FieldConfigV2 Key Properties
+When both `config` and `fields` are supplied, `config` wins. When neither is supplied the
+component renders an empty grid.
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `type` | `"text" \| "number" \| "password" \| "email" \| "select" \| "date" \| "time" \| "checkbox" \| "radio" \| "array" \| "section" \| "custom"` | Field input type. |
-| `column` | `number \| { sm?, md?, lg?, xl? }` | Grid column span (responsive object or single number). |
-| `dependsOn` | `string[]` | Sibling field names to watch for conditional re-evaluation. |
-| `renderWhen` | `(values) => boolean` | When false, the field is not rendered or submitted. |
-| `dynamicProps` | `(values) => Partial<FieldConfigV2>` | Dynamically override field props based on form state. |
-| `validation` | `Yup.AnySchema` | Per-field Yup validation schema. |
-| `asyncValidation` | `(value, values) => Promise<string \| null>` | Async per-field validation returning error string. |
-| `onChangeAction` | `(val, context) => void \| Promise<void>` | Lifecycle hook for side effects (e.g., calculate totals). |
-| `options` | `Array \| () => Promise<Array>` | Select/radio options, sync or async. |
-| `component` | `React.ComponentType` | Custom renderer for `type: "custom"`. |
+## FieldConfigV2 reference
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | `"text" \| "number" \| "password" \| "email" \| "select" \| "date" \| "time" \| "section" \| "custom" \| "array"` | Field kind. |
+| `name` | `string` | Matches the key in `values` / `errors` / `touched`. |
+| `label` | `string` | Text rendered above the field (or as the section heading). |
+| `column` | `number \| { sm?, md?, lg?, xl? }` | Grid span. Responsive object or single number. |
+| `dependsOn` | `string[]` | Sibling field names watched by `renderWhen`/`dynamicProps`. |
+| `renderWhen` | `(values) => boolean` | Hide this field when returns `false`. |
+| `dynamicProps` | `(values) => Partial<FieldConfigV2>` | Compute per-render overrides (e.g. toggle `disabled`). |
+| `validation` | `Yup.AnySchema` | Per-field Yup schema. |
+| `asyncValidation` | `(value, values) => Promise<string \| null>` | Async validator returning an error message or `null`. |
+| `onChangeAction` | `(value, context) => void \| Promise<void>` | Side-effect fired on change. Use to compute derived fields. |
+| `options` | `Array \| () => Promise<Array>` | Sync or async options for `select`. Async → renders `ITSearchSelect`. |
+| `component` | `React.ComponentType` | Renderer for `type: "custom"`. |
+| `fields` | `FieldConfigV2[]` | Nested fields for `type: "section"` (or `array` placeholder). |
+| `placeholder` | `string` | Placeholder text. |
+| `required` | `boolean \| (values) => boolean` | Required flag. |
+| `disabled` | `boolean \| (values) => boolean` | Disabled flag. |
+| `readOnly` | `boolean` | Read-only flag. |
+| `defaultValue` | `any` | Initial value. |
+| `valueField` / `labelField` | `string` | Keys read off each option object. |
+| `leftIcon` / `rightIcon` | `React.ReactNode` | Icon adornments. |
+| `className` | `string` | Extra classes for the field's container. |
+| `maxLength` / `minLength` | `number` | Length bounds for text/textarea. |
+| `rows` | `number` | Rows for textarea-style inputs. |
+| `formatNumber` | `boolean` | Apply thousand-separator formatting as the user types. |
+| `currencyFormat` | `boolean` | Render a `$`-style currency treatment on numeric input. |
+| `showHintLength` | `boolean` | Show a live character counter. |
+
+## FieldConfig (V1) reference (legacy)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | `string` | Key in `values`/`errors`/`touched`. |
+| `label` | `string` | Field label. |
+| `type` | `"text" \| "number" \| "password" \| "select" \| "date"` | Input kind. |
+| `placeholder` | `string` | Placeholder text. |
+| `required` | `boolean` | Required flag. |
+| `disabled` | `boolean` | Disabled flag. |
+| `column` | `number` | Grid span. |
+| `options` | `{ value, label }[]` | Options for `select`. |
+| `leftIcon` / `rightIcon` | `React.ReactNode` | Icon adornments. |
+| `valueField` / `labelField` | `string` | Keys read off each option object. |
+| `maxLength` / `minLength` | `number` | Length bounds. |
+| `rows` | `number` | Rows for multi-line inputs. |
+| `formatNumber` | `boolean` | Thousand-separator formatting. |
+| `currencyFormat` | `boolean` | Currency-style numeric input. |
+| `showHintLength` | `boolean` | Live character counter. |
+| `validation` | `Yup.AnySchema` | Per-field Yup schema. |
+| `onChangeAction` | `(value, setFieldValue) => void` | Side-effect fired on change. |
 
 ## Usage
 
+### 1. Minimal Formik + Yup form (V2)
+
 ```tsx
-import { ITFormBuilder } from '@axzydev/axzy_ui_system';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
+import { Formik } from "formik";
+import * as Yup from "yup";
+import { ITFormBuilder } from "@axzydev/axzy_ui_system";
+import type { FieldConfigV2 } from "@axzydev/axzy_ui_system";
 
 const schema = Yup.object({
-  email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string().min(8).required("Required"),
+  email: Yup.string().email().required(),
+  password: Yup.string().min(8).required(),
 });
 
-const fields = [
-  { name: "email", label: "Email", type: "email", required: true, column: { sm: 12 } },
-  { name: "password", label: "Password", type: "password", required: true, column: { sm: 12 } },
-  {
-    name: "subtotal",
-    label: "Subtotal",
-    type: "number",
-    currencyFormat: true,
-    column: { sm: 12, md: 4 },
-    onChangeAction: (val, { setFieldValue }) => {
-      const num = parseFloat(val) || 0;
-      setFieldValue("total", (num * 1.16).toFixed(2));
-    },
-  },
-  {
-    name: "total",
-    label: "Total",
-    type: "number",
-    currencyFormat: true,
-    disabled: true,
-    column: { sm: 12, md: 4 },
-  },
-  {
-    name: "rfc",
-    label: "RFC",
-    type: "text",
-    dependsOn: ["country"],
-    renderWhen: (vals) => vals.country === "MX",
-    required: true,
-    column: { sm: 12, md: 6 },
-  },
+const config: FieldConfigV2[] = [
+  { name: "email", label: "Email", type: "email", required: true, column: 6 },
+  { name: "password", label: "Password", type: "password", required: true, column: 6 },
 ];
 
 <Formik
-  initialValues={{ email: "", password: "", subtotal: "", total: "", rfc: "" }}
+  initialValues={{ email: "", password: "" }}
   validationSchema={schema}
-  onSubmit={handleSubmit}
+  onSubmit={(values) => console.log(values)}
 >
-  {(formikProps) => (
-    <form onSubmit={formikProps.handleSubmit}>
+  {(p) => (
+    <form onSubmit={p.handleSubmit}>
       <ITFormBuilder
-        config={fields}
-        columns={12}
-        values={formikProps.values}
-        handleChange={formikProps.handleChange}
-        handleBlur={formikProps.handleBlur}
-        touched={formikProps.touched}
-        errors={formikProps.errors}
-        setFieldValue={formikProps.setFieldValue}
+        config={config}
+        values={p.values}
+        handleChange={p.handleChange}
+        handleBlur={p.handleBlur}
+        touched={p.touched}
+        errors={p.errors}
+        setFieldValue={p.setFieldValue}
       />
       <button type="submit">Submit</button>
     </form>
@@ -107,15 +132,117 @@ const fields = [
 </Formik>
 ```
 
+### 2. Conditional + derived fields
+
+```tsx
+const config: FieldConfigV2[] = [
+  {
+    name: "country",
+    label: "País",
+    type: "select",
+    required: true,
+    options: [{ value: "MX", label: "México" }, { value: "US", label: "USA" }],
+  },
+  {
+    name: "rfc",
+    label: "RFC",
+    type: "text",
+    required: true,
+    dependsOn: ["country"],
+    renderWhen: (v) => v.country === "MX",
+  },
+  {
+    name: "subtotal",
+    label: "Subtotal",
+    type: "number",
+    currencyFormat: true,
+    onChangeAction: (val, ctx) => {
+      const n = parseFloat(String(val).replace(/,/g, "")) || 0;
+      ctx.setFieldValue("total", (n * 1.16).toFixed(2));
+    },
+  },
+  { name: "total", label: "Total", type: "number", disabled: true, currencyFormat: true },
+];
+```
+
+### 3. Async / cascading options
+
+```tsx
+{
+  name: "city",
+  label: "Ciudad",
+  type: "select",
+  options: async () => {
+    const res = await fetch(`/api/cities?country=${values.country}`);
+    return res.json();
+  },
+}
+```
+
+Async option lists use `ITSearchSelect` underneath and render a spinner fallback
+while loading (`data-testid="field-loading-{name}"`).
+
+### 4. Custom component
+
+```tsx
+const ConfirmToggle = ({ value, onChange, label }) => (
+  <label>
+    <input type="checkbox" checked={!!value} onChange={(e) => onChange(e.target.checked)} />
+    {label}
+  </label>
+);
+
+{
+  name: "confirm",
+  label: "Acepto términos",
+  type: "custom",
+  component: ConfirmToggle,
+  defaultValue: false,
+}
+```
+
+### 5. Section grouping
+
+```tsx
+{
+  name: "identity",
+  label: "Personal Information",
+  type: "section",
+  fields: [
+    { name: "firstName", label: "First Name", type: "text" },
+    { name: "lastName", label: "Last Name", type: "text" },
+  ],
+}
+```
+
+### 6. Custom submit button via `useFormBuilder`
+
+```tsx
+import { useFormBuilder } from "@axzydev/axzy_ui_system";
+
+const SubmitButton = () => {
+  const { progress, isSubmitting } = useFormBuilder();
+  return (
+    <button type="submit" disabled={progress < 100 || isSubmitting}>
+      {isSubmitting ? "Saving…" : `Submit (${progress}%)`}
+    </button>
+  );
+};
+```
+
+`useFormBuilder` must be rendered inside the `<ITFormBuilder>` subtree (so the
+V2 provider must be active). It throws a clear error if used outside.
+
 ## Notes
 
-- Supports both legacy V1 (`fields` prop) and enterprise V2 (`config` prop) field configurations.
-- V2 fields support a powerful rules engine: `dependsOn`, `renderWhen`, and `dynamicProps` for conditional behavior.
-- `onChangeAction` enables real-time field calculations and cross-field updates.
-- Grid layout uses a responsive 12-column system with per-breakpoint column span configuration.
-- Field types include `section` (grouping with collapsible regions) and `array` (dynamic repeatable lists).
-- Fully Formik-compatible — requires Formik context wrapping for state management.
-- `custom` type allows injecting arbitrary React components for complete layout control.
+- The component is fully controlled — it does not own form state. Pass values
+  and handlers from Formik (or any state holder of your choice).
+- V1 and V2 can coexist on a single page; mixing both on the same `<ITFormBuilder>`
+  is not supported — `config` wins.
+- The V2 registry of registered fields is exposed via `useFormBuilder` and via
+  `useITFormBuilderContext().getAllFieldConfigs()`.
+- `validation`/`asyncValidation` are NOT applied automatically — wire them to
+  Yup at the Formik root, or run them manually inside `onChangeAction`.
 
 ## Stories
 

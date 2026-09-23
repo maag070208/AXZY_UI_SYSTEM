@@ -29,6 +29,9 @@ Searchable dropdown select with support for local client-side filtering and remo
 | `onSearch` | `(query: string) => void` | — | Callback for server-side search. Receives the search query string. |
 | `isLoading` | `boolean` | `false` | Whether options are being loaded from an external API. |
 | `noResultsMessage` | `string` | `"No se encontraron resultados"` | Message displayed when no results match the search. |
+| `renderOption` | `(option, state: { isSelected, searchTerm }) => ReactNode` | — | Custom template for each dropdown option. |
+| `clearable` | `boolean` | `true` | Shows a clear (X) button inside the input. |
+| `onClear` | `() => void` | — | Callback fired when the clear button is pressed. |
 
 ## Usage
 
@@ -64,6 +67,8 @@ import { ITSearchSelect } from '@axzydev/axzy_ui_system';
 - Validation states: `error` string displays inline, `touched` gates error visibility, `required` adds a red asterisk.
 - `readOnly` mode renders the selected value as non-interactive text.
 - Supports `className` for style overrides and width control.
+- **Custom options**: `renderOption` replaces the default option rendering and receives `{ isSelected, searchTerm }`.
+- **Clear button**: an (X) button appears inside the input when there is a search term or a selected value; `clearable={false}` disables it. Clearing resets the search and selection, and calls `onSearch("")` / `onClear()`.
 
 ## Stories
 

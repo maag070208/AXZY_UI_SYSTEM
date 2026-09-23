@@ -106,6 +106,24 @@ export const RemoteAPI: Story = {
   },
 };
 
+export const CustomOptionTemplate: Story = {
+  render: (args) => <SearchSelectWrapper {...args} />,
+  args: {
+    name: "search-select",
+    label: "Usuario (template personalizado)",
+    options: options,
+    placeholder: "Busca un usuario...",
+    renderOption: (option, { isSelected, searchTerm }) => (
+      <div className="flex items-center justify-between gap-2">
+        <span className={isSelected ? "font-semibold" : ""}>{option.label}</span>
+        {searchTerm && (
+          <span className="text-xs text-secondary-400">{option.label}</span>
+        )}
+      </div>
+    ),
+  },
+};
+
 export const WithError: Story = {
   render: (args) => <SearchSelectWrapper {...args} />,
   args: {

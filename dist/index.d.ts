@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
-import * as react_jsx_runtime from 'react/jsx-runtime';
 import * as React$1 from 'react';
-import React__default, { ReactNode, CSSProperties, ElementType, FocusEvent, HTMLAttributes } from 'react';
+import React__default, { RefObject, CSSProperties, ReactNode, ElementType, FocusEvent, HTMLAttributes } from 'react';
+import * as react_jsx_runtime from 'react/jsx-runtime';
 
 declare const useClickOutside: (ref: React.RefObject<HTMLElement>, callback: () => void) => void;
 
@@ -137,6 +137,39 @@ interface UseEditableRowResult<T> {
 }
 declare function useEditableRow<T>({ row, columns, getNestedValue, validationSchema, }: UseEditableRowOptions<T>): UseEditableRowResult<T>;
 
+/** Options for {@link useFloatingPanel}. */
+interface UseFloatingPanelOptions {
+    /** Fallback panel height in px, used before the panel is measured. */
+    estimatedHeight?: number;
+    /** Gap in px between the anchor and the panel. */
+    offset?: number;
+    /** When true, the panel width matches the anchor width. */
+    matchWidth?: boolean;
+    /** Horizontal alignment relative to the anchor. @default "start" */
+    align?: "start" | "end";
+    /** Panel z-index. */
+    zIndex?: number;
+}
+/**
+ * Computes a fixed position for a floating panel anchored to an element.
+ *
+ * Positions are relative to the viewport, so the panel must be rendered
+ * through a portal (e.g. into `document.body`) to escape ancestors with
+ * `overflow: hidden` or `transform`, which otherwise clip or re-anchor it.
+ * When there is not enough room below, the panel flips above and its bottom
+ * edge is pinned to the anchor's top, so it always stays adjacent regardless
+ * of its real height. Repositions on scroll, resize, and panel resize.
+ *
+ * @param anchorRef - Ref to the element the panel is anchored to.
+ * @param isOpen - Whether the panel is currently open.
+ * @param options - Sizing and placement options.
+ * @returns `panelRef` to attach to the portaled panel and the `style` to apply.
+ */
+declare function useFloatingPanel(anchorRef: RefObject<HTMLElement | null>, isOpen: boolean, { estimatedHeight, offset, matchWidth, align, zIndex, }?: UseFloatingPanelOptions): {
+    panelRef: RefObject<HTMLDivElement>;
+    style: CSSProperties;
+};
+
 interface SortConfig {
     key: string;
     direction: "asc" | "desc";
@@ -160,6 +193,57 @@ interface UseTableStateResult {
     clearFilters: () => void;
 }
 declare function useTableState({ defaultItemsPerPage, initialSort, }?: UseTableStateOptions): UseTableStateResult;
+
+/** A single collapsible section inside {@link ITAccordionProps}. */
+interface ITAccordionItem {
+    /** Unique identifier for the item. */
+    id: string;
+    /** Header content (usually text). */
+    title: ReactNode;
+    /** Body content revealed when the item is open. */
+    content: ReactNode;
+    /** Optional icon rendered before the title. */
+    icon?: ReactNode;
+    /** Disables toggling for this item. @default false */
+    disabled?: boolean;
+}
+/** Props for the ITAccordion component. */
+interface ITAccordionProps {
+    /** Sections to render. */
+    items: ITAccordionItem[];
+    /** Allows more than one section open at the same time. @default false */
+    allowMultiple?: boolean;
+    /** Ids open on first render (uncontrolled mode). */
+    defaultOpenIds?: string[];
+    /** Controlled list of open ids. When provided, the component is controlled. */
+    openIds?: string[];
+    /** Fired with the next list of open ids whenever a section toggles. */
+    onChange?: (openIds: string[]) => void;
+    /** Visual style. Valid values: `"default"`, `"separated"`, `"bordered"`. @default "separated" */
+    variant?: "default" | "separated" | "bordered";
+    /** Additional CSS classes for the wrapper. */
+    className?: string;
+    /** Additional CSS classes applied to every item. */
+    itemClassName?: string;
+}
+
+/**
+ * Collapsible sections for FAQs, settings panels, and long content.
+ *
+ * Works uncontrolled (`defaultOpenIds`) or controlled (`openIds` + `onChange`).
+ * Supports single-open (default) or multiple-open mode, and animates the body
+ * with a CSS grid-rows transition (no JS height measurement).
+ *
+ * @example
+ * <ITAccordion
+ *   items={[
+ *     { id: "a", title: "¿Qué es AXZY?", content: "Un sistema de componentes." },
+ *     { id: "b", title: "¿Cómo instalo?", content: "pnpm add @axzydev/axzy_ui_system" },
+ *   ]}
+ *   defaultOpenIds={["a"]}
+ * />
+ */
+declare function ITAccordion({ items, allowMultiple, defaultOpenIds, openIds, onChange, variant, className, itemClassName, }: ITAccordionProps): react_jsx_runtime.JSX.Element;
 
 type AlertVariant = "info" | "success" | "warning" | "error";
 interface ITAlertProps {
@@ -598,6 +682,298 @@ interface ITCheckboxProps {
  * <ITCheckbox label="Select all" indeterminate={someChecked && !allChecked} onChange={toggleAll} />
  */
 declare function ITCheckbox({ checked, onChange, label, disabled, indeterminate, className, name, }: ITCheckboxProps): react_jsx_runtime.JSX.Element;
+
+/** Visual styles available for {@link ITChip}. */
+declare const chipVariants: {
+    readonly soft: "soft";
+    readonly filled: "filled";
+    readonly outlined: "outlined";
+};
+
+/** Props for the ITChip tag/pill component. */
+interface ITChipProps {
+    /** Text label displayed inside the chip. Overridden if `children` is provided. */
+    label?: string;
+    /** Custom content rendered inside the chip. Takes precedence over `label`. */
+    children?: ReactNode;
+    /** Color theme key from the semantic palette (e.g. `"primary"`, `"success"`, `"danger"`). @default "secondary" */
+    color?: ColorsTypes;
+    /** Chip size. Valid values: `"sm"`, `"md"`, `"lg"`. @default "md" */
+    size?: SizesTypes;
+    /** Visual style. Valid values: `"soft"`, `"filled"`, `"outlined"`. @default "soft" */
+    variant?: keyof typeof chipVariants;
+    /** Icon rendered before the label. */
+    icon?: ReactNode;
+    /** Shows a remove (X) button at the end of the chip. @default false */
+    removable?: boolean;
+    /** Callback fired when the remove button is pressed. */
+    onRemove?: () => void;
+    /** Makes the chip clickable (filter/toggle usage). */
+    onClick?: () => void;
+    /** Highlights the chip as selected, using the `color` palette. @default false */
+    selected?: boolean;
+    /** Disables all chip interactions and reduces opacity. @default false */
+    disabled?: boolean;
+    /** Additional CSS classes for the chip element. */
+    className?: string;
+}
+
+/**
+ * Compact tag / pill used for labels, active filters, and multi-value selections.
+ *
+ * Supports soft, filled, and outlined variants, an optional leading icon,
+ * a removable (X) affordance, and a selected state for filter toggles.
+ *
+ * @example
+ * <ITChip label="React" color="primary" />
+ *
+ * @example
+ * <ITChip label="México" color="success" variant="outlined" removable onRemove={() => remove("MX")} />
+ *
+ * @example
+ * <ITChip label="Activos" selected onClick={() => toggle()} />
+ */
+declare function ITChip({ label, children, color, size, variant, icon, removable, onRemove, onClick, selected, disabled, className, }: ITChipProps): react_jsx_runtime.JSX.Element;
+
+/** Props for the ITChipInput component. */
+interface ITChipInputProps {
+    /** Name attribute for form integrations. */
+    name?: string;
+    /** Label displayed above the control. */
+    label?: string;
+    /** Placeholder for the text input. @default "Escribe y presiona Enter" */
+    placeholder?: string;
+    /** Current list of tags (controlled). */
+    value: string[];
+    /** Fired with the next list of tags. */
+    onChange?: (values: string[]) => void;
+    /** Fired when the control loses focus. */
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+    /** Keys that commit the current text as a tag. @default ["Enter", ","] */
+    delimiters?: string[];
+    /** Maximum number of tags allowed. */
+    maxTags?: number;
+    /** Allows duplicated tags. @default false */
+    allowDuplicates?: boolean;
+    /** Returns an error string to reject the tag, or undefined if valid. */
+    validate?: (value: string) => string | undefined;
+    /** Color applied to the tag chips. @default "primary" */
+    color?: ColorsTypes;
+    /** Control size. Valid values: `"sm"`, `"md"`, `"lg"`. @default "md" */
+    size?: SizesTypes;
+    /** Disables the control. @default false */
+    disabled?: boolean;
+    /** Marks the field as required (red asterisk). @default false */
+    required?: boolean;
+    /** Whether the field has been touched (form validation). */
+    touched?: boolean;
+    /** Error message or boolean indicating an error state. */
+    error?: string | boolean;
+    /** Helper text shown below the control when there is no error. */
+    helpText?: string;
+    /** Additional CSS classes for the container. */
+    className?: string;
+}
+
+/**
+ * Free-text input that turns entered values into removable tags (chips).
+ *
+ * Commits a tag on `Enter`/`,` (configurable via `delimiters`), on blur, or on
+ * paste of delimited text. Supports `maxTags`, dedupe control, and per-tag
+ * validation.
+ *
+ * @example
+ * <ITChipInput
+ *   label="Etiquetas"
+ *   value={tags}
+ *   onChange={setTags}
+ *   placeholder="Agrega una etiqueta..."
+ * />
+ */
+declare function ITChipInput({ name, label, placeholder, value, onChange, onBlur, delimiters, maxTags, allowDuplicates, validate, color, size, disabled, required, touched, error, helpText, className, }: ITChipInputProps): react_jsx_runtime.JSX.Element;
+
+/** A single action inside {@link ITDropdownMenuProps}. */
+interface ITDropdownMenuItem {
+    /** Unique identifier for the item. */
+    id: string;
+    /** Item content (usually text). */
+    label: ReactNode;
+    /** Optional leading icon. */
+    icon?: ReactNode;
+    /** Optional shortcut hint rendered on the right (e.g. `"⌘K"`). */
+    shortcut?: string;
+    /** Click handler for the item. */
+    onClick?: () => void;
+    /** Disables the item. @default false */
+    disabled?: boolean;
+    /** Renders the item in the danger color (destructive actions). @default false */
+    danger?: boolean;
+    /** Draws a separator above this item. @default false */
+    divider?: boolean;
+}
+/** Props for the ITDropdownMenu component. */
+interface ITDropdownMenuProps {
+    /** Menu actions. */
+    items: ITDropdownMenuItem[];
+    /** Custom trigger content. Defaults to a vertical ellipsis icon. */
+    trigger?: ReactNode;
+    /** Accessible label for the trigger button. @default "Abrir menú" */
+    triggerLabel?: string;
+    /** Placement of the menu relative to the trigger. Valid values: `"bottom-start"`, `"bottom-end"`, `"top-start"`, `"top-end"`. @default "bottom-end" */
+    placement?: "bottom-start" | "bottom-end" | "top-start" | "top-end";
+    /** Fired after an item is activated, with its id and definition. */
+    onSelect?: (id: string, item: ITDropdownMenuItem) => void;
+    /** Disables the trigger. @default false */
+    disabled?: boolean;
+    /** Additional CSS classes for the trigger button. */
+    className?: string;
+    /** Additional CSS classes for the menu panel. */
+    menuClassName?: string;
+}
+
+/**
+ * Action menu with keyboard navigation and ARIA menu semantics.
+ *
+ * Renders the menu through a portal so it escapes `overflow: hidden` and
+ * transformed ancestors, and flips above the trigger when there is no room
+ * below.
+ *
+ * @example
+ * <ITDropdownMenu
+ *   items={[
+ *     { id: "edit", label: "Editar", icon: <FaEdit />, onClick: edit },
+ *     { id: "delete", label: "Eliminar", icon: <FaTrash />, danger: true, divider: true, onClick: remove },
+ *   ]}
+ * />
+ */
+declare function ITDropdownMenu({ items, trigger, triggerLabel, placement, onSelect, disabled, className, menuClassName, }: ITDropdownMenuProps): react_jsx_runtime.JSX.Element;
+
+/** Props for the ITField form-field wrapper. */
+interface ITFieldProps {
+    /** Label rendered above the control. */
+    label?: string;
+    /** `id` of the control the label points to (`htmlFor`). */
+    htmlFor?: string;
+    /** Shows a red asterisk next to the label. @default false */
+    required?: boolean;
+    /** Validation error. Pass `true` for the generic message or a string for a custom one. */
+    error?: string | boolean;
+    /** Helper text shown below the control when there is no error. */
+    helpText?: string;
+    /** The form control (ITInput, ITSelect, ITTextarea, …). */
+    children: ReactNode;
+    /** Additional CSS classes for the wrapper. */
+    className?: string;
+    /** Additional CSS classes for the label. */
+    labelClassName?: string;
+    /** Additional CSS classes for the control container. */
+    contentClassName?: string;
+}
+
+/**
+ * Form-field wrapper that standardizes label, required marker, helper text,
+ * and error message around any control.
+ *
+ * Keeps spacing and error styling consistent across forms so each control
+ * does not re-implement label/error logic.
+ *
+ * @example
+ * <ITField label="Email" htmlFor="email" required error={errors.email} helpText="We never share it.">
+ *   <ITInput name="email" value={email} onChange={onChange} />
+ * </ITField>
+ */
+declare function ITField({ label, htmlFor, required, error, helpText, children, className, labelClassName, contentClassName, }: ITFieldProps): react_jsx_runtime.JSX.Element;
+
+/** Represents an option in the multi-select dropdown. */
+interface ITMultiSelectOption {
+    /** Display label for the option. */
+    label: string;
+    /** Value associated with the option. */
+    value: string | number;
+    /** Additional custom fields can be attached. */
+    [key: string]: any;
+}
+/** Props for the ITMultiSelect component. */
+interface ITMultiSelectProps {
+    /** Name attribute for form integrations. */
+    name?: string;
+    /** Label displayed above the control. */
+    label?: string;
+    /** Placeholder shown when no value is selected. @default "Selecciona opciones" */
+    placeholder?: string;
+    /** Available options. */
+    options: ITMultiSelectOption[];
+    /** Selected values (controlled). */
+    value: (string | number)[];
+    /** Fired with the next selected values and their option objects. */
+    onChange?: (values: (string | number)[], options: ITMultiSelectOption[]) => void;
+    /** Fired when the control loses focus. */
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+    /** Field used as the option value. @default "value" */
+    valueField?: string;
+    /** Field used as the option display label. @default "label" */
+    labelField?: string;
+    /** Disables the control. @default false */
+    disabled?: boolean;
+    /** Read-only mode: chips shown, no editing. @default false */
+    readOnly?: boolean;
+    /** Marks the field as required (red asterisk). @default false */
+    required?: boolean;
+    /** Whether the field has been touched (form validation). */
+    touched?: boolean;
+    /** Error message or boolean indicating an error state. */
+    error?: string | boolean;
+    /** Control size. Valid values: `"sm"`, `"md"`, `"lg"`. @default "md" */
+    size?: SizesTypes;
+    /** Maximum number of chips shown before collapsing into "+N". @default 3 */
+    maxVisibleChips?: number;
+    /** Shows a clear-all (X) button. @default true */
+    clearable?: boolean;
+    /** Enables the search input inside the control. @default true */
+    searchable?: boolean;
+    /** Callback for server-side search. Receives the query string. */
+    onSearch?: (query: string) => void;
+    /** Whether options are loading from an external source. @default false */
+    isLoading?: boolean;
+    /** Message shown when no options match. @default "No se encontraron resultados" */
+    noResultsMessage?: string;
+    /** Custom template for each dropdown option. */
+    renderOption?: (option: ITMultiSelectOption, state: {
+        isSelected: boolean;
+        searchTerm: string;
+    }) => ReactNode;
+    /** Additional CSS classes for the container. */
+    className?: string;
+}
+
+/**
+ * Multi-value select with searchable dropdown, removable chips, and keyboard navigation.
+ *
+ * Supports local filtering and remote search (`onSearch`), a collapsed chip
+ * summary (`maxVisibleChips`), and custom option templates (`renderOption`).
+ * The dropdown is portaled so it is never clipped by cards or overflow ancestors.
+ *
+ * @example
+ * <ITMultiSelect
+ *   label="Skills"
+ *   options={skills}
+ *   value={selected}
+ *   onChange={(values) => setSelected(values)}
+ * />
+ *
+ * @example
+ * <ITMultiSelect
+ *   label="Etiquetas"
+ *   options={tags}
+ *   value={selected}
+ *   onChange={(values) => setSelected(values)}
+ *   maxVisibleChips={2}
+ *   renderOption={(option, { isSelected }) => (
+ *     <span className={isSelected ? "font-bold" : ""}>{option.label}</span>
+ *   )}
+ * />
+ */
+declare function ITMultiSelect({ name, label, placeholder, options, value, onChange, onBlur, valueField, labelField, disabled, readOnly, required, touched, error, size, maxVisibleChips, clearable, searchable, onSearch, isLoading, noResultsMessage, renderOption, className, }: ITMultiSelectProps): react_jsx_runtime.JSX.Element;
 
 interface ITConfirmDialogProps {
     /** Controls whether the confirmation dialog is visible. */
@@ -1239,75 +1615,191 @@ interface FieldConfigV2 {
     onChangeAction?: (val: any, context: FieldContextV2) => void | Promise<void>;
 }
 
+/**
+ * A single field change event, mirroring the Formik public API surface so any
+ * standard Formik binding (`formik.handleChange`) can be passed through.
+ */
+type ITFormBuilderChangeEvent = React.ChangeEvent<HTMLInputElement> | React.FocusEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement> | {
+    target: {
+        name: string;
+        value: any;
+    };
+};
+/**
+ * A single field blur event, mirroring the Formik public API surface so any
+ * standard Formik binding (`formik.handleBlur`) can be passed through.
+ */
+type ITFormBuilderBlurEvent = React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLSelectElement, Element> | React.FocusEvent<HTMLTextAreaElement, Element> | {
+    target: {
+        name: string;
+        value: any;
+    };
+};
+/**
+ * Form-level values keyed by field `name`. Kept as `Record<string, unknown>` so
+ * the builder does not impose a concrete domain shape on consumers.
+ */
+type ITFormBuilderValues = Record<string, unknown>;
+/**
+ * Validation errors keyed by field `name`.
+ */
+type ITFormBuilderErrors = Record<string, string | undefined>;
+/**
+ * Touch state keyed by field `name`.
+ */
+type ITFormBuilderTouched = Record<string, boolean>;
+/**
+ * Props for {@link ITFormBuilder}. The component accepts either a legacy V1
+ * `fields` array (kept for backward compatibility with projects that adopted
+ * the original API) or the richer V2 `config` array. If both are supplied the
+ * V2 `config` takes precedence; if neither is supplied the component renders
+ * nothing.
+ */
 interface ITFormBuilderProps {
-    /** Legacy field definitions (V1). Use `config` for the V2 architecture instead */
+    /**
+     * Legacy V1 field definitions.
+     *
+     * @deprecated Prefer the `config` prop (V2). V1 is preserved for backward
+     * compatibility and supports a reduced subset of features (no rules engine,
+     * no `section`, no `custom`, no async options).
+     */
     fields?: FieldConfig[];
-    /** V2 field configuration array. Preferred over the legacy `fields` prop */
+    /**
+     * V2 field configuration array. The recommended entry point. Supports the
+     * rules engine (`renderWhen` / `dynamicProps` / `dependsOn`), nested
+     * `sections`, custom renderers via `type: "custom"`, async option loaders, and
+     * per-field `validation` / `asyncValidation`.
+     *
+     * When this prop is supplied it shadows any `fields` prop.
+     */
     config?: FieldConfigV2[];
-    /** Number of grid columns (1-12) */
+    /**
+     * Number of grid columns used by the responsive layout. Allowed range is
+     * 1..12; values outside the supported grid map fall back to a 12-column
+     * layout. @default 12
+     */
     columns?: number;
-    /** Current form values keyed by field name */
-    values: any;
-    /** Change handler for input, select, and textarea elements */
-    handleChange: (event: React.ChangeEvent<HTMLInputElement> | React.FocusEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement> | {
-        target: {
-            name: string;
-            value: any;
-        };
-    }) => void;
-    /** Blur handler for input, select, and textarea elements */
-    handleBlur: (event: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLSelectElement, Element> | React.FocusEvent<HTMLTextAreaElement, Element> | {
-        target: {
-            name: string;
-            value: any;
-        };
-    }) => void;
-    /** Touch state keyed by field name */
-    touched: any;
-    /** Validation errors keyed by field name */
-    errors: any;
-    /** Programmatically set a field value */
+    /** Current form values keyed by field `name`. */
+    values: ITFormBuilderValues;
+    /**
+     * Change handler invoked by every rendered input/select/textarea. Designed
+     * to receive the native `event` from a controlled child, so a Formik
+     * `handleChange` can be passed directly.
+     */
+    handleChange: (event: ITFormBuilderChangeEvent) => void;
+    /**
+     * Blur handler invoked by every rendered input/select/textarea. Designed
+     * to receive the native `event` from a controlled child, so a Formik
+     * `handleBlur` can be passed directly.
+     */
+    handleBlur: (event: ITFormBuilderBlurEvent) => void;
+    /** Touch state keyed by field `name`. */
+    touched: ITFormBuilderTouched;
+    /** Validation errors keyed by field `name`. */
+    errors: ITFormBuilderErrors;
+    /**
+     * Programmatically sets a field value. Mirrors Formik's
+     * `setFieldValue(field, value, shouldValidate?)` so it can be passed through.
+     * Required to enable V2 features such as `onChangeAction` and
+     * `dynamicProps` side effects. Defaults to a no-op.
+     */
     setFieldValue?: (field: string, value: any, shouldValidate?: boolean) => Promise<void | any>;
-    /** Programmatically mark a field as touched */
+    /**
+     * Programmatically marks a field as touched. Mirrors Formik's
+     * `setFieldTouched(field, touched?, shouldValidate?)`. Defaults to a no-op.
+     */
     setFieldTouched?: (field: string, touched?: boolean, shouldValidate?: boolean) => Promise<void | any>;
-    /** Programmatically set a field-level error message */
+    /**
+     * Programmatically sets a field-level error message (Formik parity). Defaults
+     * to a no-op.
+     */
     setFieldError?: (field: string, message: string | undefined) => void;
-    /** Whether the form is currently submitting */
+    /** True while the parent form is submitting. Surfaced via the form context. */
     isSubmitting?: boolean;
+    /**
+     * Optional children rendered **inside** the V2 `ITFormBuilderProvider`,
+     * after the field grid. Useful for custom submit buttons or progress
+     * badges that read live state via {@link useFormBuilder} /
+     * `useITFormBuilderContext`. Ignored in the V1 (legacy) path because
+     * no provider is mounted there.
+     */
+    children?: React.ReactNode;
 }
 
 /**
- * Dynamic form generator from field definitions with validation support.
- * Renders a responsive grid of inputs, selects, and date pickers based on
- * the provided field configuration. Supports both legacy (`fields`) and
- * V2 (`config`) field definition formats.
+ * `ITFormBuilder` is a declarative form generator. It renders a responsive
+ * grid of inputs from either a legacy V1 `fields` array or the richer V2
+ * `config` array and wires every rendered input/select/date to the supplied
+ * Formik-style `handleChange`/`handleBlur`/`setFieldValue` callbacks.
  *
- * @example
+ * **V2 features (recommended):**
+ * - Rules engine: `renderWhen`, `dynamicProps`, `dependsOn`.
+ * - Section grouping with `type: "section"`.
+ * - Custom renderers with `type: "custom"`.
+ * - Async option loaders via `options: () => Promise<...>`.
+ * - Per-field `onChangeAction` for derived fields and side effects.
+ * - Nested sections and grids via `fields?: FieldConfigV2[]`.
+ *
+ * **V1 (legacy):**
+ * The `fields` prop accepts a simpler shape (`text` / `number` / `password` /
+ * `select` / `date`) without rules, sections, or async options. Kept for
+ * backward compatibility.
+ *
+ * The component is fully controlled: it does not own form state. Wrap it in a
+ * Formik `<Formik>` (or any state holder of your choice) and forward its
+ * `values`, `handleChange`, `handleBlur`, `touched`, `errors`, and
+ * `setFieldValue` props.
+ *
+ * @example Minimal login form (V1)
+ * ```tsx
  * <ITFormBuilder
  *   fields={[
- *     { name: "email", label: "Email", type: "text", required: true, column: 6 },
- *     { name: "role", label: "Role", type: "select", options: [{ id: 1, label: "Admin" }], column: 6 },
+ *     { name: "email", label: "Email", type: "text", required: true, column: 12 },
+ *     { name: "password", label: "Password", type: "password", required: true, column: 12 },
  *   ]}
- *   values={formValues}
- *   handleChange={handleChange}
- *   handleBlur={handleBlur}
- *   touched={touched}
- *   errors={errors}
- *   columns={12}
+ *   values={formik.values}
+ *   handleChange={formik.handleChange}
+ *   handleBlur={formik.handleBlur}
+ *   touched={formik.touched}
+ *   errors={formik.errors}
  * />
+ * ```
  *
- * @example
+ * @example Conditional RFC field with derived total (V2)
+ * ```tsx
+ * const config: FieldConfigV2[] = [
+ *   { name: "country", label: "País", type: "select", required: true,
+ *     options: [{ value: "MX", label: "México" }, { value: "US", label: "USA" }] },
+ *   { name: "rfc", label: "RFC", type: "text", required: true,
+ *     dependsOn: ["country"], renderWhen: (v) => v.country === "MX" },
+ *   { name: "subtotal", label: "Subtotal", type: "number", currencyFormat: true,
+ *     onChangeAction: (val, ctx) => ctx.setFieldValue("total", (Number(val) * 1.16).toFixed(2)) },
+ *   { name: "total", label: "Total", type: "number", currencyFormat: true, disabled: true },
+ * ];
+ *
  * <ITFormBuilder
- *   config={v2FieldConfigs}
- *   values={formValues}
- *   handleChange={handleChange}
- *   handleBlur={handleBlur}
- *   touched={touched}
- *   errors={errors}
- *   isSubmitting={loading}
+ *   config={config}
+ *   values={formik.values}
+ *   handleChange={formik.handleChange}
+ *   handleBlur={formik.handleBlur}
+ *   touched={formik.touched}
+ *   errors={formik.errors}
+ *   setFieldValue={formik.setFieldValue}
  * />
+ * ```
+ *
+ * @example Reading form progress from a custom submit button
+ * ```tsx
+ * const SubmitButton = () => {
+ *   const { progress } = useFormBuilder();
+ *   return <button disabled={progress < 100}>Submit ({progress}%)</button>;
+ * };
+ *
+ * <ITFormBuilder config={config} values={...} ... />
+ * <SubmitButton />
+ * ```
  */
-declare function ITFormBuilder({ fields, config, columns, values, handleChange, handleBlur, touched, errors, setFieldValue, setFieldTouched, setFieldError, isSubmitting, }: ITFormBuilderProps): react_jsx_runtime.JSX.Element;
+declare function ITFormBuilder({ fields, config, columns, values, handleChange, handleBlur, touched, errors, setFieldValue, setFieldTouched, setFieldError, isSubmitting, children, }: ITFormBuilderProps): react_jsx_runtime.JSX.Element;
 
 interface ITFormHeaderProps {
     /** Header title text */
@@ -1912,6 +2404,15 @@ interface ITSearchSelectProps {
     isLoading?: boolean;
     /** Message displayed when no results are found. Default: "No se encontraron resultados". */
     noResultsMessage?: string;
+    /** Custom template for each option in the dropdown list. Receives the option and its state (`isSelected`, `searchTerm`). */
+    renderOption?: (option: ITSearchSelectOption, state: {
+        isSelected: boolean;
+        searchTerm: string;
+    }) => ReactNode;
+    /** Shows a clear (X) button inside the input. Default: true. */
+    clearable?: boolean;
+    /** Callback fired when the clear button is pressed. */
+    onClear?: () => void;
 }
 
 /**
@@ -1941,9 +2442,21 @@ interface ITSearchSelectProps {
  *   value={selectedUser}
  *   onChange={(value) => setSelectedUser(value)}
  * />
+ *
+ * // Custom option template + clear button
+ * <ITSearchSelect
+ *   label="User"
+ *   options={users}
+ *   value={selectedUser}
+ *   onChange={(value) => setSelectedUser(value)}
+ *   onClear={() => console.log("cleared")}
+ *   renderOption={(option, { isSelected }) => (
+ *     <span className={isSelected ? "font-bold" : ""}>{option.label}</span>
+ *   )}
+ * />
  * ```
  */
-declare function ITSearchSelect({ name, options, label, placeholder, valueField, labelField, value, onChange, onBlur, disabled, className, touched, required, error, readOnly, onSearch, isLoading, noResultsMessage, size, }: ITSearchSelectProps): react_jsx_runtime.JSX.Element;
+declare function ITSearchSelect({ name, options, label, placeholder, valueField, labelField, value, onChange, onBlur, disabled, className, touched, required, error, readOnly, onSearch, isLoading, noResultsMessage, size, renderOption, clearable, onClear, }: ITSearchSelectProps): react_jsx_runtime.JSX.Element;
 
 /** A generic key-value option: e.g. { value: "mx", label: "Mexico" }. */
 interface OptionType {
@@ -2564,6 +3077,59 @@ interface ITToastProps {
  */
 declare function ITToast({ message, type, duration, position, onClose, }: ITToastProps): react_jsx_runtime.JSX.Element;
 
+/** Toolbar actions supported by ITWysiwyg. */
+type ToolbarAction = "bold" | "italic" | "underline" | "highlight" | "ul" | "ol" | "clear";
+interface ITWysiwygProps {
+    /** Controlled HTML value rendered inside the editor. Overrides the visible content only while the editor is not focused (avoids caret jumps). */
+    value?: string;
+    /** Callback fired with the editor's HTML whenever the content changes. */
+    onChange?: (html: string) => void;
+    /** Label text rendered above the editor. */
+    label?: string;
+    /** Placeholder text shown when the editor is empty. */
+    placeholder?: string;
+    /** Validation error message displayed below the editor. */
+    error?: string;
+    /** Disables the editor and toolbar when true. @default false */
+    disabled?: boolean;
+    /** Renders content in read-only mode (not editable, toolbar disabled). @default false */
+    readOnly?: boolean;
+    /** Name attribute for form submission and label association via `htmlFor`. */
+    name?: string;
+    /** Editor size: controls padding and font size. Valid values: `"sm"`, `"md"`, `"lg"`. @default "md" */
+    size?: SizesTypes;
+    /** Minimum height in pixels of the editable area. @default 128 */
+    minHeight?: number;
+    /** Background color used by the marker tool (yellow highlight). @default "#fde68a" */
+    highlightColor?: string;
+    /** Subset of toolbar actions to render. @default all actions */
+    toolbar?: ToolbarAction[];
+    /** Additional CSS classes for the wrapper. */
+    className?: string;
+}
+
+/**
+ * Lightweight WYSIWYG editor (no external rich-text dependency). Provides bold,
+ * italic, underline, a yellow marker highlight and ordered/unordered lists.
+ * Formatting is applied manually over the Selection/Range API (no deprecated
+ * `document.execCommand`), toggling elements by wrapping/unwrapping text nodes.
+ *
+ * The component is uncontrolled at the DOM level: it renders `value` lazily and
+ * only re-syncs it when the editor is not focused (`onChange` reports the HTML).
+ *
+ * @example
+ * <ITWysiwyg
+ *   label="Descripción"
+ *   value={content}
+ *   onChange={setContent}
+ *   placeholder="Escribe aquí..."
+ * />
+ *
+ * @example
+ * <ITWysiwyg size="lg" highlightColor="#fef08a" toolbar={["bold", "ul"]} />
+ */
+declare function ITWysiwyg({ value, onChange, label, placeholder, error, disabled, readOnly, name, size, minHeight, highlightColor, toolbar, className, }: ITWysiwygProps): react_jsx_runtime.JSX.Element;
+
 /** Allowed file MIME types for the dropzone */
 declare enum FileTypeEnum {
     PDF = "application/pdf",
@@ -3129,4 +3695,4 @@ declare const resolveCssColor: (colorStr: string, palette?: ITThemePalette$1, is
  */
 declare const getContrastTextColor: (bgColor: string, palette?: ITThemePalette$1, isDarkMode?: boolean) => "text-white" | "text-slate-800";
 
-export { type Column, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, type LoaderProps as ITLoaderProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeConfig, type ITThemePalette$1 as ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useITTheme, useITThemeSafe, useTableState };
+export { type Column, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, type LoaderProps as ITLoaderProps, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeConfig, type ITThemePalette$1 as ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITTheme, useITThemeSafe, useTableState };

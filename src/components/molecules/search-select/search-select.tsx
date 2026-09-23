@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { createPortal } from "react-dom";
 import clsx from "clsx";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaTimes } from "react-icons/fa";
 import { ITSearchSelectProps, ITSearchSelectOption } from "./search-select.props";
 import { theme, inputSizeTokens } from "@/theme/theme";
+import { useFloatingPanel } from "@/hooks/useFloatingPanel";
 import ITText from "@/components/atoms/text/text";
 
 /**
@@ -32,6 +34,18 @@ import ITText from "@/components/atoms/text/text";
  *   value={selectedUser}
  *   onChange={(value) => setSelectedUser(value)}
  * />
+ *
+ * // Custom option template + clear button
+ * <ITSearchSelect
+ *   label="User"
+ *   options={users}
+ *   value={selectedUser}
+ *   onChange={(value) => setSelectedUser(value)}
+ *   onClear={() => console.log("cleared")}
+ *   renderOption={(option, { isSelected }) => (
+ *     <span className={isSelected ? "font-bold" : ""}>{option.label}</span>
+ *   )}
+ * />
  * ```
  */
 export default function ITSearchSelect({
@@ -54,13 +68,23 @@ export default function ITSearchSelect({
   isLoading = false,
   noResultsMessage = "No se encontraron resultados",
   size = "md",
+  renderOption,
+  clearable = true,
+  onClear,
 }: ITSearchSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [localTouched, setLocalTouched] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputWrapperRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Panel position (rendered in a portal so it escapes overflow/transform ancestors).
+  const { panelRef, style: panelStyle } = useFloatingPanel(inputWrapperRef, isOpen, {
+    estimatedHeight: 260,
+    matchWidth: true,
+  });
 
   // Encontrar la opción seleccionada inicialmente
   const selectedOption = useMemo(() => {
@@ -77,7 +101,10 @@ export default function ITSearchSelect({
   // Cerrar el dropdown al hacer click afuera
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const inContainer = containerRef.current?.contains(target);
+      const inPanel = panelRef.current?.contains(target);
+      if (!inContainer && !inPanel) {
         setIsOpen(false);
       }
     }
@@ -86,13 +113,16 @@ export default function ITSearchSelect({
   }, []);
 
   // Filtrado local de opciones (Modo 1)
+  const selectedLabel = selectedOption ? String(selectedOption[labelField]) : "";
   const filteredOptions = useMemo(() => {
     if (onSearch) return options; // Modo API
-    if (!searchTerm || !isFocused) return options;
+    // Show every option while the input still displays the selected label;
+    // filter only once the user actually types a different query.
+    if (!searchTerm || !isFocused || searchTerm === selectedLabel) return options;
     return options.filter((opt) =>
       String(opt[labelField]).toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [options, searchTerm, onSearch, labelField, isFocused]);
+  }, [options, searchTerm, selectedLabel, onSearch, labelField, isFocused]);
 
   // Manejar cambio en el input
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,6 +144,16 @@ export default function ITSearchSelect({
     }
     setSearchTerm(String(option[labelField]));
     setIsOpen(false);
+  };
+
+  const handleClear = () => {
+    setSearchTerm("");
+    setIsOpen(true);
+    if (onSearch) onSearch("");
+    if (value !== undefined && value !== null && value !== "") {
+      onChange?.("", undefined);
+    }
+    onClear?.();
   };
 
   const handleFocus = () => {
@@ -145,6 +185,9 @@ export default function ITSearchSelect({
 
   const hasError = isTouched && !!effectiveError;
   const errorMessage = typeof effectiveError === "string" ? effectiveError : "Este campo es requerido";
+
+  const showClearButton =
+    clearable && !disabled && !readOnly && (searchTerm.length > 0 || !isEmpty);
   
   const getInputStyle = () => {
     const sizeConfig = inputSizeTokens[size] ?? inputSizeTokens.md;
@@ -196,7 +239,7 @@ export default function ITSearchSelect({
       )}
 
       <div className="relative">
-        <div className="relative flex items-center">
+        <div ref={inputWrapperRef} className="relative flex items-center">
           <input
             type="text"
             name={name}
@@ -211,40 +254,71 @@ export default function ITSearchSelect({
             style={getInputStyle()}
             autoComplete="off"
           />
-          <div className="absolute right-3 flex items-center gap-2 text-secondary-400 pointer-events-none">
-             {isLoading && <div className="animate-spin h-4 w-4 border-2 border-primary-500 border-t-transparent rounded-full" />}
-             {!isLoading && <FaSearch size={14} className={clsx({ "text-primary-500": isFocused })} />}
+          <div className="absolute right-3 flex items-center gap-2 text-secondary-400">
+             {isLoading && (
+               <div className="pointer-events-none animate-spin h-4 w-4 border-2 border-primary-500 border-t-transparent rounded-full" />
+             )}
+             {!isLoading && showClearButton && (
+               <button
+                 type="button"
+                 aria-label="Limpiar"
+                 title="Limpiar"
+                 onMouseDown={(e) => {
+                   e.preventDefault();
+                   handleClear();
+                 }}
+                 className="flex items-center justify-center text-secondary-400 hover:text-secondary-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded-full"
+               >
+                 <FaTimes size={14} />
+               </button>
+             )}
+             {!isLoading && !showClearButton && (
+               <FaSearch size={14} className={clsx("pointer-events-none", { "text-primary-500": isFocused })} />
+             )}
           </div>
         </div>
 
-        {/* Dropdown Panel */}
-        {isOpen && (
-          <div className="absolute z-[70] w-full mt-1 bg-white dark:bg-slate-900 border border-secondary-200 dark:border-slate-800 rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200 origin-top">
+        {/* Dropdown Panel (portal: escapes overflow-hidden / transform ancestors) */}
+        {isOpen &&
+          createPortal(
+            <div
+              ref={panelRef}
+              style={panelStyle}
+              className="bg-white dark:bg-slate-900 border border-secondary-200 dark:border-slate-800 rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200 origin-top"
+            >
             <div className="max-h-60 overflow-y-auto">
               {filteredOptions.length > 0 ? (
-                filteredOptions.map((option) => (
-                  <ITText
-                    as="div"
-                    key={option[valueField]}
-                    onClick={() => handleSelect(option)}
-                    className={clsx(
-                      "px-4 py-2 text-sm cursor-pointer transition-colors",
-                      value === option[valueField]
-                        ? "bg-primary-50 dark:bg-primary-950/40 text-primary-700 dark:text-primary-300 font-medium"
-                        : "hover:bg-secondary-50 dark:hover:bg-slate-800 text-secondary-700 dark:text-slate-300"
-                    )}
-                  >
-                    <ITText as="span">{option[labelField]}</ITText>
-                  </ITText>
-                ))
+                filteredOptions.map((option) => {
+                  const isSelected = value === option[valueField];
+                  return (
+                    <ITText
+                      as="div"
+                      key={option[valueField]}
+                      onClick={() => handleSelect(option)}
+                      className={clsx(
+                        "px-4 py-2 text-sm cursor-pointer transition-colors",
+                        isSelected
+                          ? "bg-primary-50 dark:bg-primary-950/40 text-primary-700 dark:text-primary-300 font-medium"
+                          : "hover:bg-secondary-50 dark:hover:bg-slate-800 text-secondary-700 dark:text-slate-300"
+                      )}
+                    >
+                      {renderOption ? (
+                        renderOption(option, { isSelected, searchTerm })
+                      ) : (
+                        <ITText as="span">{option[labelField]}</ITText>
+                      )}
+                    </ITText>
+                  );
+                })
               ) : (
                 <ITText as="div" className="px-4 py-6 text-sm text-center text-secondary-500 italic">
                   {isLoading ? "Cargando..." : noResultsMessage}
                 </ITText>
               )}
             </div>
-          </div>
-        )}
+            </div>,
+            document.body
+          )}
       </div>
 
       {/* Error Message */}

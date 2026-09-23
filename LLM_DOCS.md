@@ -462,6 +462,7 @@ Cuando el sidebar usa `--sidebar-bg` con un color oscuro:
 
 | Componente | Uso |
 |---|---|
+| `ITAccordion` | Secciones plegables (FAQ, settings), single o multiple |
 | `ITAlert` | Alertas con variante (success, danger, warning, info) |
 | `ITAvatar` | Avatar con iniciales o imagen |
 | `ITBadget` | Badge con variantes de color |
@@ -470,14 +471,18 @@ Cuando el sidebar usa `--sidebar-bg` con un color oscuro:
 | `ITCalendar` | Calendario completo con eventos |
 | `ITCard` | Tarjeta con título, imagen, contenido y acciones |
 | `ITCheckbox` | Checkbox con label |
+| `ITChip` | Etiqueta/pill (soft, filled, outlined, removable, selected) |
+| `ITChipInput` | Entrada de etiquetas (tags) con delimitadores y validación |
 | `ITConfirmDialog` | Diálogo de confirmación |
 | `ITDataTable` | DataTable server-side (con fetch params) |
 | `ITDatePicker` | Selector de fecha |
 | `ITDialog` | Modal/Dialog |
 | `ITDivider` | Divisor horizontal/vertical |
 | `ITDrawer` | Panel deslizante lateral |
+| `ITDropdownMenu` | Menú de acciones con teclado y ARIA (portal) |
 | `ITDropfile` | Dropzone para archivos |
 | `ITEmptyState` | Estado vacío con icono y descripción |
+| `ITField` | Wrapper de campo (label + error + helpText) |
 | `ITFlex` | Layout flexbox declarativo |
 | `ITFormBuilder` | Generador de formularios desde config JSON |
 | `ITFormHeader` | Encabezado de formulario |
@@ -486,6 +491,7 @@ Cuando el sidebar usa `--sidebar-bg` con un color oscuro:
 | `ITInput` | Input con validación, números, moneda, password, textarea |
 | `ITLayout` | Chasis estructural (topbar + sidebar + content) |
 | `ITLoader` | Spinner/Loader |
+| `ITMultiSelect` | Select múltiple con búsqueda, chips y teclado |
 | `ITNavbar` | Layout all-in-one (sidebar + content + user menu) |
 | `ITPage` | Página con layout estándar |
 | `ITPageHeader` | Encabezado de página |
@@ -513,6 +519,7 @@ Cuando el sidebar usa `--sidebar-bg` con un color oscuro:
 | `ITToast` | Toast notification |
 | `ITTooltip` | Tooltip |
 | `ITTripleFilter` | Filtro triple (checkbox + radio) |
+| `ITWysiwyg` | Editor WYSIWYG (negrita, itálica, subrayado, marcador, listas) |
 
 ---
 

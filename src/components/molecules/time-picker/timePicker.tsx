@@ -1,9 +1,11 @@
 import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { FaClock } from "react-icons/fa";
 import ITInput from "@/components/atoms/input/input";
 import ITButton from "@/components/atoms/button/button";
 import useClickOutside from "@/hooks/useClickOutside";
+import { useFloatingPanel } from "@/hooks/useFloatingPanel";
 import { theme } from "@/theme/theme";
 import { ITTimePickerProps } from "./timePicker.props";
 import ITText from "@/components/atoms/text/text";
@@ -48,12 +50,17 @@ export default function ITTimePicker({
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState(value || "");
   const [isValidTime, setIsValidTime] = useState(true);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
 
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const hoursRef = useRef<HTMLDivElement>(null);
   const minutesRef = useRef<HTMLDivElement>(null);
+
+  // Dropdown position (rendered in a portal so it escapes overflow/transform ancestors).
+  const { panelRef: dropdownRef, style: panelStyle } = useFloatingPanel(
+    wrapperRef,
+    isOpen && !disabled,
+    { estimatedHeight: 300, matchWidth: false }
+  );
 
   useClickOutside(dropdownRef, () => {
     // Only close if it's currently open to avoid setting state unnecessarily
@@ -76,23 +83,7 @@ export default function ITTimePicker({
     setInputValue(value || "");
   }, [value]);
 
-  const calculateDropdownPosition = () => {
-    if (wrapperRef.current) {
-      const inputRect = wrapperRef.current.getBoundingClientRect();
-      const dropdownHeight = 280; // approximate height of the time picker dropdown
-      const viewportHeight = window.innerHeight;
 
-      let top = inputRect.bottom + 4;
-      if (inputRect.bottom + dropdownHeight > viewportHeight) {
-        top = inputRect.top - dropdownHeight - 4;
-      }
-
-      setDropdownPosition({
-        top,
-        left: inputRect.left,
-      });
-    }
-  };
 
   const validateTime = (timeString: string) => {
     const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
@@ -210,7 +201,6 @@ export default function ITTimePicker({
           <FaClock
             onClick={() => {
               if (!disabled) {
-                calculateDropdownPosition();
                 setIsOpen(!isOpen);
               }
             }}
@@ -224,14 +214,11 @@ export default function ITTimePicker({
         }
       />
 
-      {isOpen && !disabled && (
+      {isOpen && !disabled && createPortal(
         <div 
           ref={dropdownRef}
-          className="fixed z-[70] bg-white border border-secondary-100 shadow-xl rounded-xl w-64 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 origin-top it-timepicker-dropdown"
-          style={{
-            top: `${dropdownPosition.top}px`,
-            left: `${dropdownPosition.left}px`,
-          }}
+          className="bg-white border border-secondary-100 shadow-xl rounded-xl w-64 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 origin-top it-timepicker-dropdown"
+          style={panelStyle}
         >
           <div className="flex bg-secondary-50 border-b border-secondary-100 text-xs font-semibold text-secondary-500 uppercase tracking-wider">
             <ITText as="div" className="flex-1 text-center py-2 border-r border-secondary-100">
@@ -331,7 +318,8 @@ export default function ITTimePicker({
               <ITText as="span">Aceptar</ITText>
             </ITButton>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

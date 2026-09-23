@@ -1,0 +1,46 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as StoriesData from './dropdown-menu.stories';
+
+<Meta of={StoriesData} />
+
+# ITDropdownMenu
+
+Action menu with keyboard navigation and ARIA menu semantics. Rendered through a portal, so it is not clipped by cards or `overflow: hidden` ancestors.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `ITDropdownMenuItem[]` | — | Actions: `{ id, label, icon?, shortcut?, onClick?, disabled?, danger?, divider? }`. |
+| `trigger` | `ReactNode` | ellipsis icon | Custom trigger content. |
+| `triggerLabel` | `string` | `"Abrir menú"` | Accessible label for the trigger. |
+| `placement` | `"bottom-start" \| "bottom-end" \| "top-start" \| "top-end"` | `"bottom-end"` | Menu placement. |
+| `onSelect` | `(id, item) => void` | — | Fired after an item is activated. |
+| `disabled` | `boolean` | `false` | Disables the trigger. |
+| `className` | `string` | — | Extra CSS classes for the trigger. |
+| `menuClassName` | `string` | — | Extra CSS classes for the menu. |
+
+## Usage
+
+```tsx
+import { ITDropdownMenu } from '@axzydev/axzy_ui_system';
+
+<ITDropdownMenu
+  items={[
+    { id: "edit", label: "Editar", icon: <FaEdit />, onClick: edit },
+    { id: "delete", label: "Eliminar", icon: <FaTrash />, danger: true, divider: true, onClick: remove },
+  ]}
+/>
+```
+
+## Notes
+
+- Keyboard: `ArrowUp`/`ArrowDown` navigate, `Enter`/`Space` activate, `Esc` closes, `Home`/`End` jump.
+- Uses `role="menu"` / `role="menuitem"` and `aria-haspopup` / `aria-expanded` on the trigger.
+- The panel flips above the trigger automatically when there is no room below.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

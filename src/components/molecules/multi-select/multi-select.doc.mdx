@@ -1,0 +1,55 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as StoriesData from './multi-select.stories';
+
+<Meta of={StoriesData} />
+
+# ITMultiSelect
+
+Multi-value select with searchable dropdown, removable chips, and keyboard navigation.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `options` | `ITMultiSelectOption[]` | — | Available options `{ label, value, ...custom }`. |
+| `value` | `(string \| number)[]` | — | Selected values (controlled). |
+| `onChange` | `(values, options) => void` | — | Fired with the next selected values. |
+| `label` | `string` | — | Label above the control. |
+| `placeholder` | `string` | `"Selecciona opciones"` | Placeholder when empty. |
+| `valueField` | `string` | `"value"` | Field used as the option value. |
+| `labelField` | `string` | `"label"` | Field used as the option label. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Control size. |
+| `maxVisibleChips` | `number` | `3` | Chips shown before collapsing into `+N`. |
+| `clearable` | `boolean` | `true` | Shows a clear-all (X) button. |
+| `searchable` | `boolean` | `true` | Enables the search input. |
+| `onSearch` | `(query) => void` | — | Server-side search callback. |
+| `isLoading` | `boolean` | `false` | Loading state for remote options. |
+| `noResultsMessage` | `string` | `"No se encontraron resultados"` | Empty-results message. |
+| `renderOption` | `(option, { isSelected, searchTerm }) => ReactNode` | — | Custom option template. |
+| `disabled` / `readOnly` / `required` / `touched` / `error` | — | — | Standard form states. |
+
+## Usage
+
+```tsx
+import { ITMultiSelect } from '@axzydev/axzy_ui_system';
+
+<ITMultiSelect
+  label="Skills"
+  options={skills}
+  value={selected}
+  onChange={(values) => setSelected(values)}
+  maxVisibleChips={3}
+/>
+```
+
+## Notes
+
+- Keyboard: `ArrowUp`/`ArrowDown` navigate, `Enter` toggles, `Backspace` removes the last chip, `Esc` closes.
+- `role="combobox"` + `role="listbox"` (`aria-multiselectable`) for accessibility.
+- The dropdown is portaled, so it is not clipped inside cards or `overflow: hidden` ancestors.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

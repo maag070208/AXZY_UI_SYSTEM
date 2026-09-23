@@ -70,8 +70,7 @@ export default function ITGrid({
     return (
       <Component
         className={clsx(
-          "col-span-full",
-          colSpanClass(xs ?? sm, columns),
+          colSpanClass(xs ?? sm, columns) ?? "col-span-full",
           sm !== undefined && breakpointSpan(sm, "sm", columns),
           md !== undefined && breakpointSpan(md, "md", columns),
           lg !== undefined && breakpointSpan(lg, "lg", columns),

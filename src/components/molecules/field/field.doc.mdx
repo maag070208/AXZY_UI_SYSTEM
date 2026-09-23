@@ -1,0 +1,43 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as StoriesData from './field.stories';
+
+<Meta of={StoriesData} />
+
+# ITField
+
+Form-field wrapper that standardizes label, required marker, helper text, and error message around any control.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | — | Label above the control. |
+| `htmlFor` | `string` | — | `id` the label points to. |
+| `required` | `boolean` | `false` | Shows a red asterisk. |
+| `error` | `string \| boolean` | — | Error message, or `true` for the generic message. |
+| `helpText` | `string` | — | Helper text shown when there is no error. |
+| `children` | `ReactNode` | — | The form control. |
+| `className` | `string` | — | Extra CSS classes for the wrapper. |
+| `labelClassName` | `string` | — | Extra CSS classes for the label. |
+| `contentClassName` | `string` | — | Extra CSS classes for the control container. |
+
+## Usage
+
+```tsx
+import { ITField, ITInput } from '@axzydev/axzy_ui_system';
+
+<ITField label="Email" htmlFor="email" required error={errors.email} helpText="We never share it.">
+  <ITInput name="email" value={email} onChange={onChange} />
+</ITField>
+```
+
+## Notes
+
+- Error text takes precedence over `helpText`; only one is shown at a time.
+- `error={true}` renders the generic "Este campo es requerido" message.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

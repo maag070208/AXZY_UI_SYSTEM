@@ -4,9 +4,11 @@ import "./index.css";
 import useClickOutside from "./hooks/useClickOutside";
 import { useDebouncedSearch } from "./hooks/useDebouncedSearch";
 import { useEditableRow } from "./hooks/useEditableRow";
+import { useFloatingPanel } from "./hooks/useFloatingPanel";
 import { useTableState, UseTableStateOptions, UseTableStateResult } from "./hooks/useTableState";
 
 // COMPONENTES
+import ITAccordion from "./components/molecules/accordion/accordion";
 import ITAlert from "./components/molecules/alert/alert";
 import ITAvatar from "./components/atoms/avatar/avatar";
 import ITBadget from "./components/atoms/badget/badget";
@@ -15,6 +17,11 @@ import ITButton from "./components/atoms/button/button";
 import ITCalendar from "./components/molecules/calendar/calendar";
 import ITCard from "./components/molecules/card/card";
 import ITCheckbox from "./components/atoms/checkbox/checkbox";
+import ITChip from "./components/atoms/chip/chip";
+import ITChipInput from "./components/molecules/chip-input/chip-input";
+import ITDropdownMenu from "./components/molecules/dropdown-menu/dropdown-menu";
+import ITField from "./components/molecules/field/field";
+import ITMultiSelect from "./components/molecules/multi-select/multi-select";
 import ITConfirmDialog from "./components/organisms/confirm-dialog/confirm-dialog";
 import ITDataTable from "./components/organisms/data-table/dataTable";
 import ITDatePicker from "./components/molecules/date-picker/datePicker";
@@ -51,6 +58,7 @@ import ITTextarea from "./components/atoms/textarea/textarea";
 import ITTabs from "./components/molecules/tabs/tabs";
 import ITTripleFilter from "./components/organisms/triple-filter/tripleFilter";
 import ITToast from "./components/organisms/toast/toast";
+import ITWysiwyg from "./components/molecules/wysiwyg/wysiwyg";
 
 // PROPS
 import type { ITAlertProps } from "./components/molecules/alert/alert.props";
@@ -61,7 +69,13 @@ import type { ITButtonProps } from "./components/atoms/button/button.props";
 import type { ITCalendarProps } from "./components/molecules/calendar/calendar.props";
 import type { ITCardProps } from "./components/molecules/card/card.props";
 import type { ITCheckboxProps } from "./components/atoms/checkbox/checkbox.props";
+import type { ITChipProps } from "./components/atoms/chip/chip.props";
+import type { ITChipInputProps } from "./components/molecules/chip-input/chip-input.props";
 import type { ITConfirmDialogProps } from "./components/organisms/confirm-dialog/confirm-dialog.props";
+import type { ITAccordionProps, ITAccordionItem } from "./components/molecules/accordion/accordion.props";
+import type { ITDropdownMenuProps, ITDropdownMenuItem } from "./components/molecules/dropdown-menu/dropdown-menu.props";
+import type { ITFieldProps } from "./components/molecules/field/field.props";
+import type { ITMultiSelectProps, ITMultiSelectOption } from "./components/molecules/multi-select/multi-select.props";
 import type { ITDataTableFetchParams, ITDataTableProps, ITDataTableResponse } from "./components/organisms/data-table/dataTable.props";
 import type { ITDatePickerProps } from "./components/molecules/date-picker/date-picker.props";
 import type { ITDialogProps } from "./components/organisms/dialog/dialog.props";
@@ -97,6 +111,7 @@ import type { ITTextareaProps } from "./components/atoms/textarea/textarea.props
 import type { ITTabsProps, ITTabItem } from "./components/molecules/tabs/tabs.props";
 import type { ITTripleFilterProps, ITTripleFilterOption } from "./components/organisms/triple-filter/tripleFilter.props";
 import type { ITToastProps } from "./components/organisms/toast/toast.props";
+import type { ITWysiwygProps } from "./components/molecules/wysiwyg/wysiwyg.props";
 import type { FieldConfig, FieldConfigV2 } from "./types/field.types";
 
 // UTILS
@@ -118,12 +133,14 @@ import { getContrastTextColor, isLightColor, resolveCssColor } from "./utils/col
 
 export {
   // Hooks
-  useClickOutside, useDebouncedSearch, useEditableRow, useTableState,
+  useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useTableState,
   createValidationSchema,
   // Components
+  ITAccordion,
   ITAlert, ITAvatar, ITBadget, ITBreadcrumbs, ITButton,
   ITCalendar,
-  ITCard, ITCheckbox, ITConfirmDialog, ITDataTable, ITDatePicker,
+  ITCard, ITCheckbox, ITChip, ITChipInput, ITConfirmDialog, ITDataTable, ITDatePicker,
+  ITDropdownMenu, ITField, ITMultiSelect,
   ITDialog, ITDivider, ITDrawer,
   ITDropfile, ITEmptyState, ITFlex, ITFormBuilder, ITFormHeader, ITGrid, ITImage, ITInput, ITLayout,
   ITLoader,   ITNavbar, ITPage, ITPageHeader, ITPagination, ITPopover, ITProgress,
@@ -131,7 +148,7 @@ export {
   ITSearchTable,
   ITSegmentedControl, ITSidebar, ITSkeleton, ITSlideToggle, ITSlider, ITStack, ITStatCard, ITStepper,
   ITTable, ITTabs, ITText, ITTextarea, ITTripleFilter, ITThemeProvider,
-  useITTheme, useITThemeSafe, ITTimePicker, ITToast,
+  useITTheme, useITThemeSafe, ITTimePicker, ITToast, ITWysiwyg,
   UploadStatus, FileTypeEnum,
   getContrastTextColor, isLightColor, resolveCssColor
 };
@@ -139,10 +156,12 @@ export {
   export type {
     Column, FieldConfig,
     FieldConfigV2,
+    ITAccordionItem, ITAccordionProps,
     ITAlertProps, ITAvatarProps, ITBadgetProps,
     ITBreadcrumbItem, ITBreadcrumbsProps, ITButtonProps,
     ITCalendarProps,
-    ITCardProps, ITCheckboxProps, ITConfirmDialogProps,
+    ITCardProps, ITCheckboxProps, ITChipProps, ITChipInputProps, ITConfirmDialogProps,
+    ITDropdownMenuItem, ITDropdownMenuProps, ITFieldProps, ITMultiSelectOption, ITMultiSelectProps,
     ITDataTableFetchParams, ITDataTableProps, ITDataTableResponse, ITDatePickerProps,
     ITDialogProps, ITDividerProps, ITDrawerProps,
     ITEmptyStateProps, ITFlexProps,
@@ -159,6 +178,7 @@ export {
     ITTableProps, ITTabsProps, ITTabItem, ITTextProps, ITTextareaProps,
     ITTripleFilterProps, ITTripleFilterOption, ITThemeConfig, ITThemeProviderProps, ITThemePalette,
     ITTimePickerProps, ITToastProps,
+    ITWysiwygProps,
     UseTableStateOptions, UseTableStateResult
   };
 
