@@ -1,0 +1,78 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as StoriesData from './masked-input.stories';
+
+<Meta of={StoriesData} />
+
+# ITMaskedInput
+
+Input con máscara de formato: defines un patrón y el usuario solo escribe los caracteres útiles; los separadores se insertan solos y los huecos se pintan con un carácter de relleno.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `name` | `string` | required | Nombre del campo para formularios. |
+| `mask` | `string` | required | Patrón: `9`=dígito, `A`=letra (mayúscula), `a`=letra, `x`=alfanumérico, `*`=cualquiera. Cualquier otro carácter es un separador literal auto-insertado. |
+| `value` | `string` | — | Valor limpio (raw): solo caracteres útiles, sin separadores ni relleno. |
+| `onChange` | `(e) => void` | required | `e.target.value` es el valor raw. |
+| `onBlur` | `(e) => void` | — | Blur del input. |
+| `onComplete` | `(value) => void` | — | Dispara cuando la máscara queda llena. |
+| `pattern` | `RegExp` | — | Regex validada con full-match contra el raw en blur; si no cumple muestra error. |
+| `placeholderChar` | `string` | `"_"` | Carácter pintado en slots vacíos. |
+| `variant` | `ColorsTypes` | `"primary"` | Color de acento del tema. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Tamaño del input. |
+| `label` | `string` | — | Etiqueta sobre el input. |
+| `disabled` | `boolean` | `false` | Desactiva el input. |
+| `required` | `boolean` | `false` | Marca el campo como requerido. |
+| `touched` | `boolean` | `false` | Indica si el campo fue tocado. |
+| `error` | `string \| boolean` | — | Estado de error. |
+| `className` | `string` | — | Clases del wrapper externo. |
+| `containerClassName` | `string` | — | Clases del contenedor del input. |
+| `iconLeft` / `iconRight` | `ReactNode` | — | Iconos laterales. |
+| `autoFocus` | `boolean` | `false` | Enfoca al montar. |
+
+## Tokens del mask
+
+| Token | Acepta |
+|-------|--------|
+| `9` | un dígito |
+| `A` | una letra (se guarda en mayúsculas) |
+| `a` | una letra (tal cual) |
+| `x` | un carácter alfanumérico |
+| `*` | cualquier carácter |
+| cualquier otro | literal insertado solo (p.ej. `-`, `/`, `(`, `)`, espacio) |
+
+## Usage
+
+```tsx
+import { ITMaskedInput } from '@axzydev/axzy_ui_system';
+
+// Código de activación
+<ITMaskedInput
+  name="code"
+  mask="xxxx-xxxx-xxxx"
+  label="Código"
+  onChange={(e) => setCode(e.target.value)}
+/>
+
+// Teléfono con validación regex sobre el valor limpio
+<ITMaskedInput
+  name="phone"
+  mask="(999) 999-9999"
+  pattern={/^\d{10}$/}
+  onChange={(e) => setPhone(e.target.value)}
+/>
+```
+
+## Notes
+
+- ¿El valor? **Solo caracteres útiles**: escribir `ABC1-2345-6789` devuelve `ABC123456789` en `onChange`.
+- El cursor salta a huecos vacíos con selección automática; borrar un separador lo vuelve a insertar.
+- `pattern` valida contra el raw completo (full-match); el mensaje de error genérico es "Formato inválido" salvo que pases `error` como string.
+- `onComplete` es ideal para tarjetas, CVV o códigos de un solo uso.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

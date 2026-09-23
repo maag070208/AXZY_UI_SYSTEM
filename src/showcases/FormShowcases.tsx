@@ -13,6 +13,7 @@ import {
   ITFormBuilder,
   ITWysiwyg,
   ITField,
+  ITMaskedInput,
   ITMultiSelect,
   ITChipInput,
   ITBadget,
@@ -1909,6 +1910,183 @@ export const ChipInputShowcase = () => {
           { name: "error", type: "string | boolean", description: "Estado de error." },
         ],
         notes: ["Backspace en input vacío elimina la última etiqueta."],
+      }}
+    />
+  );
+};
+
+// 15. ITMaskedInput Showcase
+const MaskedDemo = ({
+  title,
+  mask,
+  pattern,
+  hint,
+  initial,
+}: {
+  title: string;
+  mask: string;
+  pattern?: RegExp;
+  hint?: string;
+  initial?: string;
+}) => {
+  const [raw, setRaw] = useState<string>(initial ?? "");
+  const [complete, setComplete] = useState<string | null>(null);
+  return (
+    <div>
+      <h4 className="text-sm font-bold text-slate-700 mb-2">{title}</h4>
+      <ITMaskedInput
+        name={title.toLowerCase().replace(/\s+/g, "_")}
+        label={mask}
+        mask={mask}
+        pattern={pattern}
+        value={raw}
+        onChange={(e) => {
+          setRaw(e.target.value);
+          setComplete(null);
+        }}
+        onComplete={(v) => setComplete(v)}
+      />
+      <p className="mt-1.5 text-xs font-mono text-slate-500">
+        raw: {raw || "(vacío)"}
+        {complete && <span className="text-emerald-600 ml-2">✓ completo</span>}
+        {hint && <span className="text-slate-400 ml-2">· {hint}</span>}
+      </p>
+    </div>
+  );
+};
+
+export const MaskedInputShowcase = () => {
+  const [code, setCode] = useState<string>("");
+  const [variant, setVariant] = useState<any>("primary");
+  const [size, setSize] = useState<any>("md");
+  const [disabled, setDisabled] = useState(false);
+  const [withError, setWithError] = useState(false);
+
+  const codeExample = `<ITMaskedInput\n  name="code"\n  label="Código de activación"\n  mask="xxxx-xxxx-xxxx"\n  variant="${variant}"\n  size="${size}"\n  disabled={${disabled}}\n  onChange={(e) => setCode(e.target.value)}\n/>`;
+
+  return (
+    <ShowcaseLayout
+      title="ITMaskedInput"
+      description="Input de texto con máscara de formato: teclea solo caracteres útiles y los separadores se insertan solos (xxxx-xxxx-xxxx, (999) 999-9999, etc.)."
+      code={codeExample}
+      demo={
+        <div className="w-full max-w-sm">
+          <ITMaskedInput
+            name="showcase_masked"
+            label="Código de activación"
+            mask="xxxx-xxxx-xxxx"
+            value={code}
+            variant={variant}
+            size={size}
+            disabled={disabled}
+            error={withError}
+            onChange={(e) => setCode(e.target.value)}
+          />
+          {code && (
+            <p className="mt-2 text-xs text-slate-500 font-mono">
+              Valor actual (raw): {code || "—"}
+            </p>
+          )}
+        </div>
+      }
+      controls={
+        <>
+          <ITSelect
+            name="masked_variant_ctrl"
+            label="Tema de Color"
+            value={variant}
+            onChange={(e: any) => setVariant(e.target.value)}
+            options={[
+              { label: "Primary", value: "primary" },
+              { label: "Secondary", value: "secondary" },
+              { label: "Success", value: "success" },
+              { label: "Danger", value: "danger" },
+              { label: "Warning", value: "warning" },
+              { label: "Info", value: "info" },
+            ]}
+          />
+          <ITSelect
+            name="masked_size_ctrl"
+            label="Tamaño"
+            value={size}
+            onChange={(e: any) => setSize(e.target.value)}
+            options={[
+              { label: "Small", value: "sm" },
+              { label: "Medium", value: "md" },
+              { label: "Large", value: "lg" },
+            ]}
+          />
+          <div className="flex items-center justify-between pt-2">
+            <span className="text-sm font-semibold text-gray-700">Deshabilitado</span>
+            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-gray-700">Error</span>
+            <ITSlideToggle isOn={withError} onToggle={setWithError} activeColor="danger" size="sm" />
+          </div>
+        </>
+      }
+      gallery={
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <MaskedDemo
+            title="Código alfanumérico"
+            mask="xxxx-xxxx-xxxx"
+            hint="Escribe: ABC1-2345"
+          />
+          <MaskedDemo
+            title="Número de tarjeta"
+            mask="9999-9999-9999-9999"
+            hint="Escribe 16 dígitos"
+          />
+          <MaskedDemo
+            title="Teléfono"
+            mask="(999) 999-9999"
+            pattern={/^\d{10}$/}
+            hint="Regex /^\\d{10}$/"
+          />
+          <MaskedDemo
+            title="Código postal"
+            mask="99999"
+            hint="Ejemplo: 44100"
+          />
+          <MaskedDemo
+            title="CVV / OTP"
+            mask="999"
+            hint="3 dígitos, onComplete"
+          />
+          <MaskedDemo
+            title="Clave con letras en MAYÚSCULA"
+            mask="A-A-A-999"
+            hint="Token A auto-mayúscula"
+            initial="ABC123"
+          />
+        </div>
+      }
+      doc={{
+        summary: "Input con máscara: value/onChange entregan solo los caracteres útiles y los separadores se auto-insertan.",
+        description:
+          "Define el patrón con tokens (9=dígito, A=letra mayúscula, a=letra, x=alfanumérico, *=cualquiera) y literales (todo lo demás). Los huecos vacíos se pintan con placeholderChar ('_').",
+        examples: [
+          '<ITMaskedInput name="code" mask="xxxx-xxxx-xxxx" onChange={(e) => setCode(e.target.value)} />',
+          '<ITMaskedInput name="phone" mask="(999) 999-9999" pattern={/^\\d{10}$/} onChange={setPhone} />',
+          '<ITMaskedInput name="card" mask="9999-9999-9999-9999" onComplete={validateCard} />',
+        ],
+        props: [
+          { name: "mask", type: "string", required: true, description: "Patrón de la máscara (tokens + literales)." },
+          { name: "value", type: "string", description: "Valor limpio (raw): solo caracteres útiles." },
+          { name: "onChange", type: "(e) => void", description: "e.target.value = raw sin separadores." },
+          { name: "onComplete", type: "(value) => void", description: "Dispara al llenar toda la máscara." },
+          { name: "pattern", type: "RegExp", description: "Validación full-match del raw en blur." },
+          { name: "placeholderChar", type: "string", default: '"_"', description: "Relleno de slots vacíos." },
+          { name: "variant", type: "ColorsTypes", default: '"primary"', description: "Color de acento." },
+          { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Tamaño del input." },
+          { name: "error", type: "string | boolean", description: "Estado de error." },
+        ],
+        notes: [
+          "Los tokens A guardan letras en mayúsculas automáticamente.",
+          "Borrar un separador lo vuelve a insertar; el cursor se conserva en la posición correcta.",
+          "El cursor se preserva también al editar en medio de la máscara.",
+        ],
       }}
     />
   );

@@ -61,7 +61,8 @@ import { ITCalendar } from '@axzydev/axzy_ui_system';
 - **month** — Traditional month grid with date picker, single and range selection modes.
 - **week** — 7-column time grid from 6 AM to 10 PM with event overlays and drag-to-select range.
 - **day** — Single-column time grid for focused daily scheduling.
-- **years** — Click the month/year header to switch to a year selection view (12-year grid).
+- **years** — Click the year in the header to switch to a year selection view (12-year grid).
+- **months** — Click the month name in the header (or pick a year) to switch to a month selection view (12-month grid, same style as the year grid). Flow: header → year → month → days.
 - Uses `date-fns` with Spanish locale (`es`) for month and weekday names.
 - Month view supports `minDate`/`maxDate` boundaries — out-of-range dates are disabled and dimmed.
 - Events render as colored bars in week/day views with customizable `color` prop.

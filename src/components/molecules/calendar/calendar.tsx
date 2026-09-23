@@ -78,7 +78,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
   const mode = modeProp || (onChange ? 'month' : 'week');
   
   const [currentDate, setCurrentDate] = useState(value || new Date());
-  const [view, setView] = useState<'calendar' | 'years'>('calendar');
+  const [view, setView] = useState<'calendar' | 'years' | 'months'>('calendar');
 
   // Selection/Accent colors based on variant
   const getVariantStyles = () => {
@@ -96,6 +96,25 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
     if (value) setCurrentDate(value);
   }, [value]);
 
+  // Shift the view year while keeping the day-of-month safe (clamped to target month).
+  const shiftYear = (yearDelta: number) => {
+    setCurrentDate((d) => {
+      const year = d.getFullYear() + yearDelta;
+      const daysInTarget = new Date(year, d.getMonth() + 1, 0).getDate();
+      return new Date(year, d.getMonth(), Math.min(d.getDate(), daysInTarget));
+    });
+  };
+
+  // Jump to a month of the currently viewed year (day-of-month clamped).
+  const pickMonth = (monthIndex: number) => {
+    setCurrentDate((d) => {
+      const year = d.getFullYear();
+      const daysInTarget = new Date(year, monthIndex + 1, 0).getDate();
+      return new Date(year, monthIndex, Math.min(d.getDate(), daysInTarget));
+    });
+    setView('calendar');
+  };
+
   // Navigation handlers
   const handleNext = () => {
     if (view === 'years') {
@@ -104,6 +123,8 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
         newDate.setFullYear(d.getFullYear() + 12);
         return newDate;
       });
+    } else if (view === 'months') {
+      shiftYear(1);
     } else if (mode === 'month') {
       setCurrentDate((d) => addMonths(d, 1));
     } else if (mode === 'day') {
@@ -120,7 +141,9 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
         newDate.setFullYear(d.getFullYear() - 12);
         return newDate;
       });
-     } else if (mode === 'month') {
+     } else if (view === 'months') {
+      shiftYear(-1);
+    } else if (mode === 'month') {
       setCurrentDate((d) => addMonths(d, -1));
     } else if (mode === 'day') {
       setCurrentDate((d) => addDays(d, -1));
@@ -249,6 +272,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
   // ----------------------------------------------------------------------
   const startYear = currentDate.getFullYear() - 6;
   const years = Array.from({ length: 12 }, (_, i) => startYear + i);
+  const months = Array.from({ length: 12 }, (_, i) => i);
 
   // ----------------------------------------------------------------------
   // Render
@@ -277,25 +301,50 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
           borderBottomColor: 'var(--it-calendar-border, #e2e8f0)'
         }}
       >
-        <ITText
-            as="h2"
-            className="text-sm font-bold capitalize cursor-pointer transition-colors select-none px-2 py-1 rounded"
-            style={{ 
-              color: 'var(--it-calendar-header-text, #1e293b)',
-            }}
-             onClick={() => setView(view === 'calendar' ? 'years' : 'calendar')}
-             onMouseEnter={(e) => {
-               e.currentTarget.style.backgroundColor = 'var(--it-calendar-header-hover, #f1f5f9)';
-             }}
-             onMouseLeave={(e) => {
-               e.currentTarget.style.backgroundColor = 'transparent';
-             }}
-        >
-          {view === 'years' 
-            ? `${years[0]} - ${years[years.length - 1]}` 
-            : format(currentDate, 'MMMM yyyy', { locale: es })
-          }
-        </ITText>
+        {view === 'years' ? (
+          <ITText
+              as="h2"
+              className="text-sm font-bold select-none px-2 py-1"
+              style={{ 
+                color: 'var(--it-calendar-header-text, #1e293b)',
+              }}
+          >
+            {`${years[0]} - ${years[years.length - 1]}`}
+          </ITText>
+        ) : (
+          <div className="flex items-center">
+            {view !== 'months' && (
+              <button
+                type="button"
+                onClick={() => setView('months')}
+                className="text-sm font-bold capitalize select-none px-2 py-1 rounded transition-colors"
+                style={{ color: 'var(--it-calendar-header-text, #1e293b)' }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--it-calendar-header-hover, #f1f5f9)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
+              >
+                {format(currentDate, 'MMMM', { locale: es })}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => setView('years')}
+              className="text-sm font-bold select-none px-2 py-1 rounded transition-colors"
+              style={{ color: 'var(--it-calendar-header-text, #1e293b)' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--it-calendar-header-hover, #f1f5f9)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+            >
+              {format(currentDate, 'yyyy')}
+            </button>
+          </div>
+        )}
         <div className="flex items-center gap-1">
           <button 
             onClick={handlePrev} 
@@ -359,12 +408,40 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                                   newDate.setFullYear(year);
                                   return newDate;
                               });
-                              setView('calendar');
+                              setView('months');
                           }}
                       >
                           <ITText as="span">{year}</ITText>
                       </button>
                   ))}
+              </div>
+        ) : view === 'months' ? (
+              <div className="p-4 grid grid-cols-4 gap-2">
+                  {months.map(monthIndex => {
+                      const isActive = monthIndex === currentDate.getMonth();
+                      return (
+                          <button
+                              key={monthIndex}
+                              type="button"
+                              className={cn(
+                                  "h-10 rounded-md text-sm font-medium transition-colors border border-transparent",
+                                  isActive
+                                    ? "bg-[var(--it-calendar-selected-bg)] text-[var(--it-calendar-selected-text)]"
+                                    : "hover:bg-[var(--it-calendar-today-bg)] hover:text-[var(--it-calendar-today-text)]"
+                              )}
+                              style={{
+                                  color: isActive
+                                    ? 'var(--it-calendar-selected-text, #ffffff)'
+                                    : 'var(--it-calendar-days-text, #334155)'
+                              }}
+                              onClick={() => pickMonth(monthIndex)}
+                          >
+                              <ITText as="span" className="capitalize">
+                                  {format(new Date(2000, monthIndex, 1), 'MMM', { locale: es })}
+                              </ITText>
+                          </button>
+                      );
+                  })}
               </div>
         ) : mode === 'month' ? (
            <div className="p-4">
@@ -396,6 +473,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                       onClick={() => onChange && onChange(day)}
                       className={cn(
                         "h-10 w-full flex items-center justify-center rounded-md text-sm transition-colors relative",
+                        "text-[var(--it-calendar-days-text)] hover:bg-[var(--it-calendar-today-bg)] hover:text-[var(--it-calendar-today-text)]",
                         !isCurrentMonth && "opacity-40",
                         isDisabled && "opacity-20 cursor-not-allowed",
                       )}
@@ -406,12 +484,12 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                             ? 'var(--it-calendar-range-bg, #eff6ff)'
                             : isToday(day)
                               ? 'var(--it-calendar-today-bg, #eff6ff)'
-                              : 'transparent',
+                              : undefined,
                         color: isSelected || isRangeStart || isRangeEnd
                           ? 'var(--it-calendar-selected-text, #ffffff)'
                           : isToday(day)
                             ? 'var(--it-calendar-today-text, #2563eb)'
-                            : 'var(--it-calendar-days-text, #334155)',
+                            : undefined,
                         fontWeight: isSelected || isRangeStart || isRangeEnd || isToday(day) ? '700' : '400',
                       }}
                     >

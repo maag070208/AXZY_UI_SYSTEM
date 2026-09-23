@@ -44,6 +44,7 @@ import {
   FormBuilderShowcase,
   WysiwygShowcase,
   FieldShowcase,
+  MaskedInputShowcase,
   MultiSelectShowcase,
   ChipInputShowcase,
 } from "./showcases/FormShowcases";
@@ -114,6 +115,7 @@ const categories = [
       { id: "field", label: "ITField" },
       { id: "datepicker", label: "ITDatePicker" },
       { id: "timepicker", label: "ITTimePicker" },
+      { id: "maskedinput", label: "ITMaskedInput" },
       { id: "calendar", label: "ITCalendar" },
       { id: "slidetoggle", label: "ITSlideToggle" },
       { id: "dropfile", label: "ITDropfile" },
@@ -294,6 +296,8 @@ function App() {
         return <DatePickerShowcase />;
       case "timepicker":
         return <TimePickerShowcase />;
+      case "maskedinput":
+        return <MaskedInputShowcase />;
       case "calendar":
         return <CalendarShowcase />;
       case "slidetoggle":

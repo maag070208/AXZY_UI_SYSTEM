@@ -21,6 +21,7 @@ import ITChip from "./components/atoms/chip/chip";
 import ITChipInput from "./components/molecules/chip-input/chip-input";
 import ITDropdownMenu from "./components/molecules/dropdown-menu/dropdown-menu";
 import ITField from "./components/molecules/field/field";
+import ITMaskedInput from "./components/molecules/masked-input/masked-input";
 import ITMultiSelect from "./components/molecules/multi-select/multi-select";
 import ITConfirmDialog from "./components/organisms/confirm-dialog/confirm-dialog";
 import ITDataTable from "./components/organisms/data-table/dataTable";
@@ -75,6 +76,7 @@ import type { ITConfirmDialogProps } from "./components/organisms/confirm-dialog
 import type { ITAccordionProps, ITAccordionItem } from "./components/molecules/accordion/accordion.props";
 import type { ITDropdownMenuProps, ITDropdownMenuItem } from "./components/molecules/dropdown-menu/dropdown-menu.props";
 import type { ITFieldProps } from "./components/molecules/field/field.props";
+import type { ITMaskedInputProps } from "./components/molecules/masked-input/masked-input.props";
 import type { ITMultiSelectProps, ITMultiSelectOption } from "./components/molecules/multi-select/multi-select.props";
 import type { ITDataTableFetchParams, ITDataTableProps, ITDataTableResponse } from "./components/organisms/data-table/dataTable.props";
 import type { ITDatePickerProps } from "./components/molecules/date-picker/date-picker.props";
@@ -140,7 +142,7 @@ export {
   ITAlert, ITAvatar, ITBadget, ITBreadcrumbs, ITButton,
   ITCalendar,
   ITCard, ITCheckbox, ITChip, ITChipInput, ITConfirmDialog, ITDataTable, ITDatePicker,
-  ITDropdownMenu, ITField, ITMultiSelect,
+  ITDropdownMenu, ITField, ITMaskedInput, ITMultiSelect,
   ITDialog, ITDivider, ITDrawer,
   ITDropfile, ITEmptyState, ITFlex, ITFormBuilder, ITFormHeader, ITGrid, ITImage, ITInput, ITLayout,
   ITLoader,   ITNavbar, ITPage, ITPageHeader, ITPagination, ITPopover, ITProgress,
@@ -161,7 +163,7 @@ export {
     ITBreadcrumbItem, ITBreadcrumbsProps, ITButtonProps,
     ITCalendarProps,
     ITCardProps, ITCheckboxProps, ITChipProps, ITChipInputProps, ITConfirmDialogProps,
-    ITDropdownMenuItem, ITDropdownMenuProps, ITFieldProps, ITMultiSelectOption, ITMultiSelectProps,
+    ITDropdownMenuItem, ITDropdownMenuProps, ITFieldProps, ITMaskedInputProps, ITMultiSelectOption, ITMultiSelectProps,
     ITDataTableFetchParams, ITDataTableProps, ITDataTableResponse, ITDatePickerProps,
     ITDialogProps, ITDividerProps, ITDrawerProps,
     ITEmptyStateProps, ITFlexProps,

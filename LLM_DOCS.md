@@ -492,6 +492,7 @@ Cuando el sidebar usa `--sidebar-bg` con un color oscuro:
 | `ITLayout` | Chasis estructural (topbar + sidebar + content) |
 | `ITLoader` | Spinner/Loader |
 | `ITMultiSelect` | Select múltiple con búsqueda, chips y teclado |
+| `ITMaskedInput` | Input con máscara (tokens 9/A/a/x/* + literales), value raw |
 | `ITNavbar` | Layout all-in-one (sidebar + content + user menu) |
 | `ITPage` | Página con layout estándar |
 | `ITPageHeader` | Encabezado de página |

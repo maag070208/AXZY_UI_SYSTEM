@@ -55,6 +55,7 @@ mediante variables CSS a través de ITThemeProvider.
 41. ITDropdownMenu (Menú de Acciones)
 42. ITMultiSelect (Selector Múltiple con Búsqueda)
 43. ITChipInput (Entrada de Etiquetas)
+44. ITMaskedInput (Input con Máscara de Formato)
 
 ================================================================================
 1. ITThemeProvider
@@ -2582,3 +2583,95 @@ export default function TagEditor() {
 ### Notas
 - `Backspace` en un input vacío elimina la última etiqueta.
 - Errores locales (duplicado, máximo alcanzado, `validate`) se muestran inline.
+
+================================================================================
+44. ITMaskedInput
+================================================================================
+Input con máscara de formato. El usuario solo escribe los caracteres útiles y
+los separadores se insertan solos. `value` y `onChange` trabajan con el valor
+limpio (raw), sin separadores ni caracteres de relleno.
+
+### Tokens de la máscara
+| Token | Acepta                            | Guarda      |
+|-------|-----------------------------------|-------------|
+| `9`   | un dígito                          | tal cual    |
+| `A`   | una letra                          | MAYÚSCULA   |
+| `a`   | una letra                          | tal cual    |
+| `x`   | alfanumérico                       | tal cual    |
+| `*`   | cualquier carácter                 | tal cual    |
+| otro  | literal separador auto-insertado   | no aplica   |
+
+Ejemplos de máscara: `xxxx-xxxx-xxxx`, `(999) 999-9999`, `9999-9999-9999-9999`,
+`99999`, `A-A-A-999`.
+
+### Props (ITMaskedInputProps)
+```typescript
+export interface ITMaskedInputProps {
+  name: string;                        // Nombre del campo
+  mask: string;                        // Patrón (tokens + literales)
+  value?: string;                      // Valor limpio (raw)
+  onChange: (e: { target: { name: string; value: string } }) => void; // e.target.value = raw
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onComplete?: (value: string) => void; // Dispara al llenar toda la máscara
+  pattern?: RegExp;                    // Validación full-match del raw en blur
+  placeholderChar?: string;            // Relleno de slots vacíos (default "_")
+  variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'purple' | 'gray';
+  size?: 'sm' | 'md' | 'lg';           // default "md"
+  label?: string;
+  disabled?: boolean;
+  required?: boolean;
+  touched?: boolean;
+  error?: string | boolean;
+  className?: string;
+  containerClassName?: string;
+  iconLeft?: ReactNode;
+  iconRight?: ReactNode;
+  autoFocus?: boolean;
+}
+```
+
+### Ejemplo Real
+```tsx
+import { useState } from 'react';
+import { ITMaskedInput } from 'axzy-ui-system';
+
+export default function ActivationCode() {
+  const [code, setCode] = useState('');
+
+  return (
+    <ITMaskedInput
+      name="activation_code"
+      label="Código de activación"
+      mask="xxxx-xxxx-xxxx"
+      value={code}
+      onChange={(e) => setCode(e.target.value)}
+    />
+  );
+}
+```
+
+### Ejemplo con validación regex y onComplete
+```tsx
+import { useState } from 'react';
+import { ITMaskedInput } from 'axzy-ui-system';
+
+export default function PhoneField() {
+  const [phone, setPhone] = useState('');
+
+  return (
+    <ITMaskedInput
+      name="phone"
+      label="Teléfono"
+      mask="(999) 999-9999"
+      pattern={/^\d{10}$/}
+      onChange={(e) => setPhone(e.target.value)}
+      onComplete={(v) => console.log('Teléfono completo:', v)}
+    />
+  );
+}
+```
+
+### Notas
+- El cursor se conserva al editar en medio de la máscara (incluye borrado de separadores).
+- `pattern` valida contra el raw completo; mensaje genérico "Formato inválido" salvo que se pase `error` como string.
+- `onComplete` es útil para tarjetas, CVV u OTP.

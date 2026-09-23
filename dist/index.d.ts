@@ -884,6 +884,105 @@ interface ITFieldProps {
  */
 declare function ITField({ label, htmlFor, required, error, helpText, children, className, labelClassName, contentClassName, }: ITFieldProps): react_jsx_runtime.JSX.Element;
 
+interface ITMaskedInputProps {
+    /** Unique name attribute for the underlying input element. */
+    name: string;
+    /**
+     * Mask pattern. Tokens are filled by the user and everything else is an
+     * auto-inserted literal.
+     * - `9` — digit
+     * - `A` — letter (stored uppercase)
+     * - `a` — letter
+     * - `x` — alphanumeric
+     * - `*` — any character
+     * - any other character ( `-`, `/`, `(`, `)`, ` `, `.` ) is a literal separator
+     * @example "xxxx-xxxx-xxxx"
+     * @example "(999) 999-9999"
+     * @example "9999-9999-9999-9999"
+     */
+    mask: string;
+    /** Clean value containing only the useful characters (no separators, no placeholders). */
+    value?: string;
+    /** Called when the masked value changes. `event.target.value` is the raw value without separators. */
+    onChange: (event: {
+        target: {
+            name: string;
+            value: string;
+        };
+    }) => void;
+    /** Called when the input loses focus. */
+    onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+    /** Fired when all token slots are filled with valid characters. */
+    onComplete?: (value: string) => void;
+    /** Optional regex full-matched against the raw value to validate the field (e.g. `/^\\d{16}$/`). */
+    pattern?: RegExp;
+    /** Character shown for empty token slots. @default "_" */
+    placeholderChar?: string;
+    /** Color variant matching the design system (ColorsTypes). @default "primary" */
+    variant?: ColorsTypes;
+    /** Size preset: "sm" | "md" | "lg". @default "md" */
+    size?: SizesTypes;
+    /** Label displayed above the input. */
+    label?: string;
+    /** Disables the input. @default false */
+    disabled?: boolean;
+    /** Marks the field as required. */
+    required?: boolean;
+    /** Visually indicates the field has been interacted with. */
+    touched?: boolean;
+    /** Error state — pass a string message or `true` for default styling. */
+    error?: string | boolean;
+    /** Additional CSS classes for the outer wrapper element. */
+    className?: string;
+    /** Additional CSS classes for the underlying input container. */
+    containerClassName?: string;
+    /** Icon element rendered on the left side of the input. */
+    iconLeft?: ReactNode;
+    /** Icon element rendered on the right side of the input. */
+    iconRight?: ReactNode;
+    /** Auto-focus the input on mount. @default false */
+    autoFocus?: boolean;
+}
+
+/**
+ * Text input that applies a formatting mask while the user types, exposing only
+ * the clean (raw) value through `onChange`.
+ *
+ * The mask is defined by a pattern string. Tokens are filled by the user and
+ * any other character acts as an auto-inserted literal separator. Empty slots
+ * are painted with `placeholderChar`, so the mask is always visible.
+ *
+ * @example
+ * ```tsx
+ * <ITMaskedInput
+ *   name="code"
+ *   mask="xxxx-xxxx-xxxx"
+ *   label="Código"
+ *   onChange={(e) => setCode(e.target.value)}
+ * />
+ * ```
+ *
+ * @example
+ * ```tsx
+ * <ITMaskedInput
+ *   name="phone"
+ *   mask="(999) 999-9999"
+ *   pattern={/^\d{10}$/}
+ *   onChange={(e) => setPhone(e.target.value)}
+ * />
+ * ```
+ *
+ * @example
+ * ```tsx
+ * <ITMaskedInput
+ *   name="card"
+ *   mask="9999-9999-9999-9999"
+ *   onComplete={(card) => validateCard(card)}
+ * />
+ * ```
+ */
+declare function ITMaskedInput({ name, mask, value, onChange, onBlur, onComplete, pattern, placeholderChar, variant, size, label, disabled, required, touched, error, className, containerClassName, iconLeft, iconRight, autoFocus, }: ITMaskedInputProps): react_jsx_runtime.JSX.Element;
+
 /** Represents an option in the multi-select dropdown. */
 interface ITMultiSelectOption {
     /** Display label for the option. */
@@ -3695,4 +3794,4 @@ declare const resolveCssColor: (colorStr: string, palette?: ITThemePalette$1, is
  */
 declare const getContrastTextColor: (bgColor: string, palette?: ITThemePalette$1, isDarkMode?: boolean) => "text-white" | "text-slate-800";
 
-export { type Column, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, type LoaderProps as ITLoaderProps, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeConfig, type ITThemePalette$1 as ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITTheme, useITThemeSafe, useTableState };
+export { type Column, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, type LoaderProps as ITLoaderProps, ITMaskedInput, type ITMaskedInputProps, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeConfig, type ITThemePalette$1 as ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITTheme, useITThemeSafe, useTableState };
