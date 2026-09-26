@@ -3,12 +3,12 @@
 ## Identidad del Proyecto
 
 - **Nombre**: `@axzydev/axzy_ui_system`
-- **Versión**: 1.1.0
-- **Stack**: React 18 + TypeScript + Tailwind CSS v3 + Vite + tsup
+- **Versión**: 1.3.0
+- **Stack**: React 18+ + TypeScript + Tailwind CSS v4 + Vite + tsup
 - **Ruta raíz**: `/Users/axzy/DEV/AXZY/AXZY_UI_SYSTEM`
 - **Entry point**: `src/index.ts` (escribe todos los exports)
 - **Build**: `tsup` produce `dist/index.cjs` + `dist/index.js` + types
-- **Tests/Stories**: Storybook (`.stories.tsx`)
+- **Tests/Stories**: Storybook (`.stories.tsx`), pero la superficie principal de ejemplos es el sandbox (`pnpm dev` → `src/showcases/*.tsx`)
 - **Package manager**: pnpm
 
 ---
@@ -17,20 +17,21 @@
 
 ```
 src/
-├── components/       → 52 componentes organizados por capas atómicas
+├── components/       → componentes organizados por capas atómicas
 │   ├── atoms/        → Primitivos: text/, button/, input/, flex/, grid/, stack/, ...
 │   ├── molecules/    → Compuestos: card/, date-picker/, select/, table/, stepper/, ...
 │   ├── organisms/    → Complejos: data-table/, form-builder/, dialog/, sidebar/, topbar/, ...
 │   ├── templates/    → layout/ (chasis estructural), page/
 │   ├── isolation/    → Stories de validación de aislamiento CSS
 │   └── theme-provider/ → Sistema de theming central (ITThemeProvider)
-├── showcases/        → Demos para el showroom
+├── showcases/        → Demos primarios del sandbox (`pnpm dev`); Storybook queda secundario
+├── sandbox/          → Router hash, landing, búsqueda y 404 del sandbox (dev-only, NO se publica)
 ├── theme/            → theme.ts (tokens) + theme-context.ts (contexto de theming)
 ├── hooks/            → Custom hooks compartidos
 ├── utils/            → color.utils, styles, table.utils
 ├── types/            → Tipos compartidos (button, table, input...)
 ├── index.ts          → Exporta todo
-└── App.tsx           → Showroom app
+└── App.tsx           → Showroom app (router hash `#ui-system/<grupo>/<item>`; ver AGENTS.md)
 ```
 
 **Regla atómica**: dependencias unidireccionales (atoms → molecules → organisms → templates).
@@ -120,42 +121,42 @@ const { palette, setPalette, updateColor, resetTheme, applyPreset, resolvedTheme
 
 Todas las variables se inyectan dinámicamente por `ITThemeProvider` en un tag `<style id="it-theme-dynamic-overrides">`.
 
-### Sidebar (`--sidebar-*`)
+### Sidebar (`--it-sidebar-*`)
 
 ```css
---sidebar-bg:              var(--color-sidebarBg)
---sidebar-border:          color-mix(in srgb, var(--color-sidebarBg) 85%, #000)
---sidebar-label-color:     var(--color-sidebarText)
---sidebar-icon-color:      color-mix(in srgb, var(--color-sidebarText) 80%, transparent)
---sidebar-hover-bg:        color-mix(in srgb, var(--color-sidebarText) 10%, transparent)
---sidebar-active-bg:       color-mix(in srgb, var(--color-primary) 12%, transparent)
---sidebar-active-color:    var(--color-primary)
---sidebar-active-icon:     var(--color-primary)
---sidebar-badge-bg:        var(--color-primary)
---sidebar-badge-color:     #ffffff
+--it-sidebar-bg:              var(--color-sidebarBg)
+--it-sidebar-border:          color-mix(in srgb, var(--color-sidebarBg) 85%, #000)
+--it-sidebar-label-color:     var(--color-sidebarText)
+--it-sidebar-icon-color:      color-mix(in srgb, var(--color-sidebarText) 80%, transparent)
+--it-sidebar-hover-bg:        color-mix(in srgb, var(--color-sidebarText) 10%, transparent)
+--it-sidebar-active-bg:       color-mix(in srgb, var(--color-primary) 12%, transparent)
+--it-sidebar-active-color:    var(--color-primary)
+--it-sidebar-active-icon:     var(--color-primary)
+--it-sidebar-badge-bg:        var(--color-primary)
+--it-sidebar-badge-color:     #ffffff
 ```
 
-### Topbar (`--topbar-*`)
+### Topbar (`--it-topbar-*`)
 
 ```css
---topbar-bg:                 var(--color-navbarBg)
---topbar-text:               var(--color-navbarText)
---topbar-border:             color-mix(in srgb, var(--color-navbarBg) 85%, #000)
---topbar-icon:               color-mix(in srgb, var(--color-navbarText) 80%, transparent)
---topbar-icon-hover:         var(--color-navbarText)
---topbar-user-bg:            var(--topbar-bg)
---topbar-user-hover:         color-mix(in srgb, var(--color-navbarText) 10%, transparent)
---topbar-user-text:          var(--color-navbarText)
---topbar-user-subtitle:      color-mix(in srgb, var(--color-navbarText) 65%, transparent)
---topbar-user-dropdown-bg:   color-mix(in srgb, var(--color-navbarBg) 100%, #fff)
---topbar-user-dropdown-border: color-mix(in srgb, var(--color-navbarBg) 92%, #000)
---topbar-user-item-hover:    color-mix(in srgb, var(--color-navbarText) 6%, transparent)
+--it-topbar-bg:                 var(--color-navbarBg)
+--it-topbar-text:               var(--color-navbarText)
+--it-topbar-border:             color-mix(in srgb, var(--color-navbarBg) 85%, #000)
+--it-topbar-icon:               color-mix(in srgb, var(--color-navbarText) 80%, transparent)
+--it-topbar-icon-hover:         var(--color-navbarText)
+--it-topbar-user-bg:            var(--it-topbar-bg)
+--it-topbar-user-hover:         color-mix(in srgb, var(--color-navbarText) 10%, transparent)
+--it-topbar-user-text:          var(--color-navbarText)
+--it-topbar-user-subtitle:      color-mix(in srgb, var(--color-navbarText) 65%, transparent)
+--it-topbar-user-dropdown-bg:   color-mix(in srgb, var(--color-navbarBg) 100%, #fff)
+--it-topbar-user-dropdown-border: color-mix(in srgb, var(--color-navbarBg) 92%, #000)
+--it-topbar-user-item-hover:    color-mix(in srgb, var(--color-navbarText) 6%, transparent)
 ```
 
 ### Layout & Text
 
 ```css
---layout-bg:             var(--color-secondary-50)   /* = #f8fafc en light, #090f1d en dark */
+--it-layout-bg:          var(--color-secondary-50)   /* = #f8fafc en light, #090f1d en dark */
 --color-text-default:    var(--color-secondary-900)  /* texto estándar */
 --color-text-muted:      var(--color-secondary-600)  /* texto secundario */
 --color-heading-default: #1e293b (light) / #f8fafc (dark)
@@ -164,21 +165,21 @@ Todas las variables se inyectan dinámicamente por `ITThemeProvider` en un tag `
 ### Card
 
 ```css
---card-bg:               #ffffff (light) / #111827 (dark)
---card-border:           #f1f5f9 (light) / #1f2937 (dark)
---card-header-bg:        #f8fafc (light) / #1f2937 (dark)
---card-header-border:    #e2e8f0 (light) / #374151 (dark)
+--it-card-bg:            #ffffff (light) / #111827 (dark)
+--it-card-border:        #f1f5f9 (light) / #1f2937 (dark)
+--it-card-header-bg:     #f8fafc (light) / #1f2937 (dark)
+--it-card-header-border: #e2e8f0 (light) / #374151 (dark)
 ```
 
 ### Input
 
 ```css
---input-bg:              #ffffff (light) / #1f2937 (dark)
---input-border:          #cbd5e1 (light) / #374151 (dark)
---input-text-color:      #1e293b (light) / #cbd5e1 (dark)
---input-placeholder:     #94a3b8 (light) / #6b7280 (dark)
---input-focus-ring:      0 0 0 3px var(--color-primary-100)
---input-error-ring:      0 0 0 3px var(--color-danger-100)
+--it-input-bg:              #ffffff (light) / #1f2937 (dark)
+--it-input-border:          #cbd5e1 (light) / #374151 (dark)
+--it-input-text-color:      #1e293b (light) / #cbd5e1 (dark)
+--it-input-placeholder:     #94a3b8 (light) / #6b7280 (dark)
+--it-input-focus-ring:      0 0 0 3px var(--color-primary-100)
+--it-input-error-ring:      0 0 0 3px var(--color-danger-100)
 ```
 
 ### Tabla
@@ -272,11 +273,13 @@ import { ITLayout } from "@axzydev/axzy_ui_system";
 - Sidebar colapsable en desktop (default: colapsado, se expande al hacer hover)
 - Drawer móvil (overlay a pantalla completa con backdrop blur)
 - Topbar sticky con menú de usuario y navegación horizontal
-- Sidebar absolutamente posicionada (flota sobre el contenido)
+- Sidebar absolutamente posicionada: cuando está colapsado en reposo (88px) flota sobre el contenido al hacer hover
+- Si controlas `sidebar.isCollapsed={false}`, el contenido reserva el ancho expandido (280px) y el sidebar deja de taparlo
+- El riel colapsado se expande automáticamente al pasar el cursor por encima: no hay botón de colapso
 
 ### ITSidebar
 
-Sidebar con glassmorphism. Usa `--sidebar-*` CSS variables.
+Sidebar con glassmorphism. Usa `--it-sidebar-*` CSS variables. El slot `header` (opcional) se renderiza arriba de la navegación y se oculta al colapsar (solo visible al pasar el cursor). El nav usa `aria-label`, los toggles `role="button"` + `aria-expanded`/`aria-controls` + Enter/Space, los submenús `role="group"` y el subítem activo `aria-current="page"`.
 
 ```tsx
 <ITSidebar
@@ -291,18 +294,20 @@ Sidebar con glassmorphism. Usa `--sidebar-*` CSS variables.
   }]}
   isCollapsed={true}
   onToggleCollapse={() => {}}
-  subitemConnector="dot"  // "dot" | "|"
+  subitemConnector="dot"  // "dot" | "|" | "none"
+  header={<span>AXZY v1.3</span>}  // opcional; oculto al colapsar
 />
 ```
 
 ### ITTopBar
 
-Topbar sticky que usa `--topbar-*` CSS variables.
+Topbar sticky que usa `--it-topbar-*` CSS variables. Acepta `centerContent`, un slot que se renderiza en una región central con `flex-1` visible solo desde `lg` (ideal para un buscador global); por debajo de `lg` la fila queda igual: logo + menú de usuario. Los `children` van al área derecha, justo antes del menú de usuario: el componente coloca la campanita de notificaciones y el caller solo aporta el control. Ambos slots comparten un grupo `flex items-center gap-2`, así que `justify-between` no empuja la campanita al centro de la barra.
 
 ```tsx
 <ITTopBar
   logoText="AXZY"
   logo={<Logo />}
+  centerContent={<SearchBox value={term} onChange={setTerm} />}  // slot central; visible solo desde lg
   showMobileMenuButton
   onToggleMobileMenu={() => {}}
   navItems={[{ id: "home", label: "Home", icon: <FaHome /> }]}
@@ -313,7 +318,9 @@ Topbar sticky que usa `--topbar-*` CSS variables.
     userImage: "/avatar.jpg",
     menuItems: [{ label: "Logout", onClick: () => {} }],
   }}
-/>
+>
+  <NotificationBell count={3} />
+</ITTopBar>
 ```
 
 ---
@@ -333,7 +340,7 @@ Es un layout autónomo que NO usa ITLayout + ITSidebar. Es un template clásico 
 </ITNavbar>
 ```
 
-Usa las mismas `--sidebar-*` y `--topbar-*` CSS variables para consistencia con ITLayout.
+Usa las mismas `--it-sidebar-*` y `--it-topbar-*` CSS variables para consistencia con ITLayout.
 
 ---
 
@@ -341,15 +348,15 @@ Usa las mismas `--sidebar-*` y `--topbar-*` CSS variables para consistencia con 
 
 | Componente | Prefijo CSS Var | Uso en inline style |
 |---|---|---|
-| ITSidebar | `--sidebar-*` | `style={{ backgroundColor: "var(--sidebar-bg)" }}` |
-| ITTopBar | `--topbar-*` | `style={{ color: "var(--topbar-text)" }}` |
-| ITLayout | `--layout-bg` | `style={{ backgroundColor: "var(--layout-bg)" }}` |
+| ITSidebar | `--it-sidebar-*` | `style={{ backgroundColor: "var(--it-sidebar-bg)" }}` |
+| ITTopBar | `--it-topbar-*` | `style={{ color: "var(--it-topbar-text)" }}` |
+| ITLayout | `--it-layout-bg` | `style={{ backgroundColor: "var(--it-layout-bg)" }}` |
 | ITText | `--color-text-default/muted` | Automático (vía ITText) |
-| ITCard | `--card-*` | `style={{ backgroundColor: "var(--card-bg)" }}` |
-| ITInput | `--input-*` | `color: var(--input-text-color)` |
+| ITCard | `--it-card-*` | `style={{ backgroundColor: "var(--it-card-bg)" }}` |
+| ITInput | `--it-input-*` | `color: var(--it-input-text-color)` |
 | ITTable | `--color-table-*` | `style={{ backgroundColor: "var(--color-table-rowBg)" }}` |
 | ITButton | usa `theme.button` (objeto estático) | `getStyle()` con colors del theme |
-| ITNavbar | `--sidebar-*`, `--topbar-*`, `--layout-bg` | Mezcla de Tailwind CSS + vars |
+| ITNavbar | `--it-sidebar-*`, `--it-topbar-*`, `--it-layout-bg` | Mezcla de Tailwind CSS + vars |
 
 ---
 
@@ -417,11 +424,11 @@ export type { ITMiComponenteProps };
 
 ### 5. Alto contraste sobre sidebar oscura
 
-Cuando el sidebar usa `--sidebar-bg` con un color oscuro:
-- Texto activo: `var(--sidebar-active-color)` (usa `var(--color-primary)`)
-- Texto inactivo: `var(--sidebar-label-color)` (hereda de `--color-sidebarText`)
-- Iconos inactivos: `var(--sidebar-icon-color)`
-- Hover: `var(--sidebar-hover-bg)` / `var(--sidebar-active-color)`
+Cuando el sidebar usa `--it-sidebar-bg` con un color oscuro:
+- Texto activo: `var(--it-sidebar-active-color)` (usa `var(--color-primary)`)
+- Texto inactivo: `var(--it-sidebar-label-color)` (hereda de `--color-sidebarText`)
+- Iconos inactivos: `var(--it-sidebar-icon-color)`
+- Hover: `var(--it-sidebar-hover-bg)` / `var(--it-sidebar-active-color)`
 
 ---
 
@@ -453,8 +460,35 @@ Cuando el sidebar usa `--sidebar-bg` con un color oscuro:
 | `button.types.ts` | `buttonVariants`, `buttonSizes` |
 | `colors.types.ts` | `ColorsTypes = keyof typeof semanticColors` |
 | `sizes.types.ts` | `SizesTypes = "small" | "medium" | "large"` |
-| `table.types.ts` | Tipos de tabla |
+| `table.types.ts` | Tipos de tabla (`TableDensity`, `densityStyles`, `sizeLineHeights`, `getRowHeight`, `tableAlignClasses`) |
 | `field.types.ts` | `FieldConfig`, `FieldConfigV2` |
+
+---
+
+## Tablas: layout, densidad y virtualización (ITTable / ITDataTable)
+
+Ambas tablas comparten estas props (todas opt-in, backwards-compatible):
+
+| Prop | Type | Default | Uso |
+|---|---|---|---|
+| `layout` | `"auto" \| "fixed"` | `"auto"` | `"fixed"` respeta `width` por columna y quita `min-w-max` / `min-w-[150px]`. |
+| `density` | `"compact" \| "normal" \| "comfortable"` | `"normal"` | Padding + alto de fila. Baseline `size="md"` = 33/45/53. `size` cambia font-size y desplaza el alto por el line box (sm −4 / md 0 / lg +8): matriz sm 29/41/49 · md 33/45/53 · lg 41/53/61. |
+| `autoCardBreakpoint` | `number` (px) | `0` | Fallback a cards si el CONTENEDOR es más angosto. `0` desactiva. Al dispararse desactiva `virtualized` en silencio (cards nunca se virtualizan): no combinar ambos. |
+| `virtualized` | `boolean` | `false` | Solo vista tabla; cards nunca virtualiza. El toggle interno Table/Cards también la desactiva. |
+| `virtualizedMaxHeight` | `number` | `400` | Alto del contenedor con scroll. |
+| `rowHeight` | `number` | `getRowHeight(size, density)` | Alto uniforme asumido. Size-aware: baseline `size="md"` = 33/45/53; `size` lo desplaza por el line box (sm 16 / md 20 / lg 28 px, es decir −4 / 0 / +8). Exacto solo para celdas de una línea; una celda de dos líneas mide ~50px real. |
+| `overscan` | `number` | `5` | Filas extra arriba/abajo. |
+| `stickyHeader` | `boolean` | `false` | Solo efectivo con `virtualized`. |
+
+`Column<T>` extra: `width` (`number`=px | `string`=CSS), `minWidth` (px), `align` (`"left" | "center" | "right"`, default `"left"`), `truncate` (ellipsis + `title` nativo; default `false`). `<colgroup>` solo si alguna columna define `width`.
+
+**Anti scroll horizontal**: `layout="fixed"` + `width` en cada columna + `truncate` en texto largo + `density="compact"`.
+
+**Virtualización**: rinde solo con page size grande (`defaultItemsPerPage` + `itemsPerPageOptions` altos; defaults 10/[5,10,20] no bastan). En ITDataTable (server-side) la ventana se calcula sobre la PÁGINA ACTUAL (`data.length`), NO sobre `total`. Filas de alto uniforme; usar `truncate` + `layout="fixed"`. Scroll se reinicia al cambiar página/items-per-page, NO al cambiar filtros. `aria-rowcount` refleja la página actual, no el dataset. Hooks `useVirtualRows` y `useElementSize` son INTERNOS (no exportados); `getRowHeight` y `sizeLineHeights` también son internos; `TableDensity` SÍ se exporta.
+
+**ITSearchTable NO tiene** `layout` / `density` / `autoCardBreakpoint` / `virtualized` / `width` por columna — no asumir paridad.
+
+Drift conocido (no tocar sin decisión): `ITTableProps.className` no se aplica; `ITDataTableProps.variant="minimal"` no tiene estilos (igual que `default`); el JSDoc de `debounceMs` dice `@default 400` pero el código usa `500`; `theme.table.cell.padding` es un token muerto.
 
 ---
 
@@ -474,7 +508,7 @@ Cuando el sidebar usa `--sidebar-bg` con un color oscuro:
 | `ITChip` | Etiqueta/pill (soft, filled, outlined, removable, selected) |
 | `ITChipInput` | Entrada de etiquetas (tags) con delimitadores y validación |
 | `ITConfirmDialog` | Diálogo de confirmación |
-| `ITDataTable` | DataTable server-side (con fetch params) |
+| `ITDataTable` | DataTable server-side (con fetch params) · onRowClick (fila/card) · layout/density/autoCardBreakpoint (fixed, compacto, fallback a cards) · virtualized (scroll virtual + stickyHeader) |
 | `ITDatePicker` | Selector de fecha |
 | `ITDialog` | Modal/Dialog |
 | `ITDivider` | Divisor horizontal/vertical |
@@ -511,7 +545,7 @@ Cuando el sidebar usa `--sidebar-bg` con un color oscuro:
 | `ITStack` | Stack layout |
 | `ITStatCard` | Tarjeta de estadística |
 | `ITStepper` | Stepper de pasos |
-| `ITTable` | Tabla con filtros, ordenamiento, paginación |
+| `ITTable` | Tabla con filtros, ordenamiento, paginación · onRowClick (fila/card) · layout/density/autoCardBreakpoint (fixed, compacto, fallback a cards) · virtualized (scroll virtual + stickyHeader) |
 | `ITTabs` | Tabs de navegación |
 | `ITText` | Wrapper tipográfico universal |
 | `ITTextarea` | Textarea estilizado |
@@ -527,12 +561,12 @@ Cuando el sidebar usa `--sidebar-bg` con un color oscuro:
 ## Reglas Esenciales para LLMs
 
 1. **TODO texto debe usar `<ITText>`** — sin excepción. `<span>, <p>, <h1-6>, <label>` → `<ITText as="...">`
-2. **Usar CSS variables, NO el objeto `theme` estático** — `var(--sidebar-bg)` en vez de `theme.sidebar?.backgroundColor`
+2. **Usar CSS variables, NO el objeto `theme` estático** — `var(--it-sidebar-bg)` en vez de `theme.sidebar?.backgroundColor`
 3. **No hardcodear colores** — ni `#ffffff`, ni `#000`, ni colores fijos. Siempre usar var() o Tailwind classes
 4. **Tailwind dark mode funciona automáticamente** para clases como `text-slate-800`, `bg-white`, `border-gray-100` (overrideadas en `.dark`)
 5. **ITLayout + ITSidebar + ITTopBar** son el chassis moderno. ITNavbar es un layout alternativo autónomo
 6. **El palette del usuario** define sidebarBg, sidebarText, navbarBg, navbarText — el sistema se adapta solo
 7. **`color-mix()`** se usa extensivamente para derivar colores hover, borders, iconos desde los colores base
-8. **Siempre incluir fallback** en `var()`, ej: `var(--sidebar-bg, #ffffff)`
+8. **Siempre incluir fallback** en `var()`, ej: `var(--it-sidebar-bg, #ffffff)`
 9. **No mezclar** el objeto `theme` estático con CSS variables. Elegir uno. El estático se depreca.
 10. **Event handlers onMouseEnter/onMouseLeave** deben usar CSS variables igual que los estilos base

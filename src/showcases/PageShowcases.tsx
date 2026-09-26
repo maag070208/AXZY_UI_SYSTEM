@@ -397,6 +397,15 @@ export const PageShowcase = () => {
   const [screen, setScreen] = useState<"list" | "detail">("list");
   const [selectedUser, setSelectedUser] = useState<Record<string, unknown> | null>(null);
   const [showIcon, setShowIcon] = useState(true);
+  const [hPadding, setHPadding] = useState<"default" | "none" | "tight" | "wide">("default");
+
+  // `undefined` lets ITPage fall back to its own default ("px-4 sm:px-6 lg:px-8").
+  const hPaddingValue: string | undefined = {
+    default: undefined,
+    none: "px-0",
+    tight: "px-2 sm:px-3",
+    wide: "px-8 sm:px-12 lg:px-16",
+  }[hPadding];
 
   const isNormal = state === "normal";
   const isDetail = screen === "detail";
@@ -551,6 +560,7 @@ export const PageShowcase = () => {
               error={state === "error" ? "Could not load user details. Please try again." : null}
               errorTitle="Details error"
               onRetry={() => setState("normal")}
+              horizontalPadding={hPaddingValue}
               empty={state === "empty"}
               emptyTitle="No user data"
               emptyDescription="No information available for this user."
@@ -601,6 +611,7 @@ export const PageShowcase = () => {
               error={state === "error" ? "Could not load team members. Check your connection and try again." : null}
               errorTitle="Connection error"
               onRetry={() => setState("normal")}
+              horizontalPadding={hPaddingValue}
               empty={state === "empty"}
               emptyTitle="No team members yet"
               emptyDescription="Invite your first team member to get started."
@@ -640,6 +651,21 @@ export const PageShowcase = () => {
             <ITSlideToggle isOn={showIcon} onToggle={setShowIcon} size="sm" />
           </ITFlex>
 
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Horizontal padding</p>
+            <ITFlex gap={2} wrap="wrap">
+              {(["default", "none", "tight", "wide"] as const).map((p) => (
+                <ITButton
+                  key={p}
+                  label={p === "default" ? "Default" : p === "none" ? "px-0" : p === "tight" ? "px-2" : "px-8"}
+                  variant={hPadding === p ? "filled" : "outlined"}
+                  size="sm"
+                  onClick={() => setHPadding(p)}
+                />
+              ))}
+            </ITFlex>
+          </div>
+
           {isNormal && (
             <div>
               <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Screen</p>
@@ -674,6 +700,7 @@ export const PageShowcase = () => {
             <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Users — table with actions</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITPage
+                horizontalPadding={hPaddingValue}
                 title="Users"
                 description="1,245 registered · 38 active now"
                 icon={<FaUsers size={20} />}
@@ -701,6 +728,7 @@ export const PageShowcase = () => {
             <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Product detail</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITPage
+                horizontalPadding={hPaddingValue}
                 title="MacBook Pro 16'' M3 Max"
                 description="SKU: MBP-16-M3MAX-2024 · Stock: 24"
                 icon={<FaBoxOpen size={20} />}
@@ -748,6 +776,7 @@ export const PageShowcase = () => {
             <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Edit profile</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITPage
+                horizontalPadding={hPaddingValue}
                 title="Edit profile"
                 description="Update your personal information and contact details"
                 icon={<FaEdit size={20} />}
@@ -798,6 +827,7 @@ export const PageShowcase = () => {
             <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Orders — status table</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITPage
+                horizontalPadding={hPaddingValue}
                 title="Orders"
                 description="89 pending · 1,247 completed this month"
                 icon={<FaShoppingCart size={20} />}
@@ -850,6 +880,7 @@ export const PageShowcase = () => {
             <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Settings</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITPage
+                horizontalPadding={hPaddingValue}
                 title="Settings"
                 description="Manage your account and workspace preferences"
                 icon={<FaCog size={20} />}

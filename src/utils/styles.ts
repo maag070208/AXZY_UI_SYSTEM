@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import type { CSSProperties } from "react";
 import { inputSizeTokens } from "@/theme/theme";
+import { densityStyles, type TableDensity } from "@/types/table.types";
 
 /** Theme shape expected from `theme.input` (used by input-like components). */
 export type InputThemeLike = {
@@ -76,8 +77,8 @@ export const tableContainer = "rounded-xl shadow-sm border border-secondary-200 
 
 export const tableHeaderRow = "bg-secondary-50 border-b border-secondary-200 text-xs uppercase tracking-wider font-semibold text-secondary-500";
 
-export function tableHeaderCell(className?: string) {
-  return clsx("px-4 py-4 align-top", className);
+export function tableHeaderCell(className?: string, density: TableDensity = "normal") {
+  return clsx(densityStyles[density].header, "align-top", className);
 }
 
 export const tableSortButtonActive = "bg-secondary-200 text-secondary-900";
@@ -87,8 +88,12 @@ export const tableBody = "divide-y divide-secondary-100";
 
 export const tableRow = "hover:bg-secondary-50/50 transition-colors duration-150 group";
 
-export function tableCell(className?: string) {
-  return clsx("px-4 py-3 align-middle", className);
+export const tableRowClickable = "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-inset";
+
+export const tableCardClickable = "cursor-pointer rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500";
+
+export function tableCell(className?: string, density: TableDensity = "normal") {
+  return clsx(densityStyles[density].cell, "align-middle", className);
 }
 
 export const tableActionsCell = "flex items-center justify-center gap-2";

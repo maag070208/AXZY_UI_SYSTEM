@@ -7,7 +7,8 @@ import {
   FaSlidersH,
   FaTable,
 } from "react-icons/fa";
-import { ITLayout, ITThemeProvider } from "./index";
+import { ITLayout, ITThemeProvider, useDebouncedSearch } from "./index";
+import type { ITNavigationItem } from "./index";
 import "./index.css";
 
 // Import Showcases
@@ -69,187 +70,165 @@ import {
   ThemeProviderShowcase,
 } from "./showcases/FeedbackShowcases";
 
-type ViewMode = "home" | "ui-system";
+// Sandbox routing / landing (dev-only, never published)
+import {
+  SANDBOX_GROUPS,
+  firstItemOf,
+} from "./sandbox/navigation";
+import { useHashRoute } from "./sandbox/useHashRoute";
+import TopbarSearch from "./sandbox/TopbarSearch";
+import { LandingShowcase } from "./sandbox/LandingShowcase";
+import NotFoundShowcase from "./sandbox/NotFoundShowcase";
 
-// Group definitions for the sidebar (UI System showroom). Estático: se define
-// fuera del componente para que su referencia sea estable en los deps del memo.
-const categories = [
-  {
-    id: "general",
-    label: "General",
-    icon: <FaHome />,
-    subitems: [
-      { id: "getting-started", label: "Getting Started" },
-      { id: "sizes", label: "Medidas · sm / md / lg" },
-    ],
-  },
-  {
-    id: "struc",
-    label: "Estructura & Layout",
-    icon: <FaCreditCard />,
-    subitems: [
-      { id: "layout", label: "ITLayout & ITNavbar" },
-      { id: "stack", label: "ITStack" },
-      { id: "flex", label: "ITFlex" },
-      { id: "grid", label: "ITGrid" },
-      { id: "card", label: "ITCard" },
-      { id: "text", label: "ITText" },
-      { id: "accordion", label: "ITAccordion" },
-      { id: "pageheader", label: "ITPageHeader" },
-      { id: "page", label: "ITPage" },
-      { id: "screen-dashboard", label: "Dashboard Ejemplo" },
-      { id: "screen-form", label: "Formulario Ejemplo" },
-    ],
-  },
-  {
-    id: "forms",
-    label: "Formularios & Inputs",
-    icon: <FaKeyboard />,
-    subitems: [
-      { id: "button", label: "ITButton" },
-      { id: "input", label: "ITInput" },
-      { id: "select", label: "ITSelect" },
-      { id: "searchselect", label: "ITSearchSelect" },
-      { id: "multiselect", label: "ITMultiSelect" },
-      { id: "chipinput", label: "ITChipInput" },
-      { id: "field", label: "ITField" },
-      { id: "datepicker", label: "ITDatePicker" },
-      { id: "timepicker", label: "ITTimePicker" },
-      { id: "maskedinput", label: "ITMaskedInput" },
-      { id: "calendar", label: "ITCalendar" },
-      { id: "slidetoggle", label: "ITSlideToggle" },
-      { id: "dropfile", label: "ITDropfile" },
-      { id: "wysiwyg", label: "ITWysiwyg" },
-      { id: "formbuilder", label: "ITFormBuilder" },
-    ],
-  },
-  {
-    id: "data",
-    label: "Visualización Datos",
-    icon: <FaTable />,
-    subitems: [
-      { id: "table", label: "ITTable" },
-      { id: "datatable", label: "ITDataTable" },
-      { id: "badget", label: "ITBadget" },
-      { id: "chip", label: "ITChip" },
-      { id: "image", label: "ITImage" },
-    ],
-  },
-  {
-    id: "nav",
-    label: "Navegación & Control",
-    icon: <FaSlidersH />,
-    subitems: [
-      { id: "tabs", label: "ITTabs" },
-      { id: "stepper", label: "ITStepper" },
-      { id: "pagination", label: "ITPagination" },
-      { id: "triplefilter", label: "ITTripleFilter" },
-      { id: "dropdownmenu", label: "ITDropdownMenu" },
-    ],
-  },
-  {
-    id: "feed",
-    label: "Feedback & Sistema",
-    icon: <FaRegBell />,
-    subitems: [
-      { id: "dialog", label: "ITDialog" },
-      { id: "toast", label: "ITToast" },
-      { id: "loader", label: "ITLoader" },
-      { id: "themeprovider", label: "ITThemeProvider" },
-    ],
-  },
-];
+// Icons per sandbox group (icons stay here; navigation.ts is plain data).
+const GROUP_ICONS: Record<string, React.ReactNode> = {
+  general: <FaHome />,
+  struc: <FaCreditCard />,
+  forms: <FaKeyboard />,
+  data: <FaTable />,
+  nav: <FaSlidersH />,
+  feed: <FaRegBell />,
+};
 
 function App() {
-  const [view, setView] = useState<ViewMode>(() => {
-    const hash = window.location.hash.replace("#", "");
-    return hash.startsWith("ui-system") ? "ui-system" : "home";
-  });
-  const [showroomActive, setShowroomActive] = useState("screen-form");
-  const [searchTerm] = useState("");
-  const [subitemConnector] = useState<
-    "dot" | "|" | "none"
-  >("dot");
+  const { route, goToItem, goToLanding, goToPortfolio } = useHashRoute();
+  const [subitemConnector] = useState<"dot" | "|" | "none">("dot");
 
+  // Debounced term drives filtering; `searchValue` is the live input value.
+  const [debouncedTerm, setDebouncedTerm] = useState("");
+  const {
+    searchTerm: searchValue,
+    handleSearchChange,
+    handleClearSearch,
+  } = useDebouncedSearch({ debounceMs: 250, onSearch: setDebouncedTerm });
+
+  // The active component page (group-only routes fall back to the first item).
+  const showroomActive =
+    route.view === "ui-system" && route.valid
+      ? route.item ?? (route.group ? firstItemOf(route.group) : null)
+      : null;
+
+  // Redirect `#ui-system/<group>` to the group's first item (replace, no history spam).
   useEffect(() => {
-    const onHashChange = () => {
-      const hash = window.location.hash.replace("#", "");
-      setView(hash.startsWith("ui-system") ? "ui-system" : "home");
-    };
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
-  }, []);
+    if (route.view === "ui-system" && route.valid && route.group && !route.item) {
+      const first = firstItemOf(route.group);
+      if (first) goToItem(route.group, first, { replace: true });
+    }
+  }, [route, goToItem]);
 
-  // Filter sidebar navigation items based on search term
-  const filteredNavigationItems = useMemo(() => {
-    return categories
-      .map((cat) => {
-        if (!cat.subitems) {
-          const matches =
-            cat.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            cat.id.toLowerCase().includes(searchTerm.toLowerCase());
-          if (matches) {
-            return {
-              ...cat,
-              isActive: showroomActive === cat.id,
-              action: () => setShowroomActive(cat.id),
-            };
-          }
-          return null;
-        }
+  // Sidebar navigation: grouped when idle, flat filtered leaves when searching.
+  const navigationItems = useMemo<ITNavigationItem[]>(() => {
+    const term = debouncedTerm.trim().toLowerCase();
 
-        const matchingSubitems = cat.subitems.filter(
-          (sub) =>
-            sub.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            sub.id.toLowerCase().includes(searchTerm.toLowerCase()),
-        );
-
-        const mappedSubitems = matchingSubitems.map((sub) => ({
+    if (!term) {
+      return SANDBOX_GROUPS.map((group) => {
+        const subitems = group.subitems.map((sub) => ({
           id: sub.id,
           label: sub.label,
           isActive: showroomActive === sub.id,
-          action: () => setShowroomActive(sub.id),
+          action: () => goToItem(group.id, sub.id),
         }));
-
-        const isAnySubitemActive = mappedSubitems.some((sub) => sub.isActive);
-
         return {
-          ...cat,
-          isActive: isAnySubitemActive,
-          subitems: mappedSubitems,
+          id: group.id,
+          label: group.label,
+          icon: GROUP_ICONS[group.id],
+          isActive: subitems.some((sub) => sub.isActive),
+          subitems,
         };
-      })
-      .filter((cat): cat is Exclude<typeof cat, null> => {
-        if (!cat) return false;
-        if (cat.subitems) return cat.subitems.length > 0;
-        return true;
       });
-  }, [searchTerm, showroomActive]);
+    }
 
+    const flat: ITNavigationItem[] = [];
+    SANDBOX_GROUPS.forEach((group) => {
+      const groupMatches =
+        group.label.toLowerCase().includes(term) ||
+        group.id.toLowerCase().includes(term);
+      const groupBadge = group.label.split(" ")[0];
+
+      group.subitems
+        .filter(
+          (sub) =>
+            groupMatches ||
+            sub.label.toLowerCase().includes(term) ||
+            sub.id.toLowerCase().includes(term),
+        )
+        .forEach((sub) => {
+          flat.push({
+            id: sub.id,
+            label: sub.label,
+            icon: GROUP_ICONS[group.id],
+            badge: groupBadge,
+            isActive: showroomActive === sub.id,
+            action: () => goToItem(group.id, sub.id),
+          });
+        });
+    });
+    return flat;
+  }, [debouncedTerm, showroomActive, goToItem]);
+
+  // Sidebar is UNCONTROLLED: ITLayout's internal default is the 88px rail and the
+  // rail expands automatically on hover. No toggle button — the hover is the control.
+  // The component search lives in the topbar because a hover-only rail can't host it.
   const sidebarProps = {
-    navigationItems: filteredNavigationItems,
+    navigationItems,
     subitemConnector,
   };
 
   const topBarProps = {
     logoText: "AXZY UI System",
+    centerContent: (
+      <TopbarSearch
+        value={searchValue}
+        onChange={handleSearchChange}
+        onClear={handleClearSearch}
+        resultCount={navigationItems.length}
+        pending={searchValue.trim() !== debouncedTerm.trim()}
+      />
+    ),
+    // The topbar places `children` in its right area, right before the user menu.
+    children: (
+      <button
+        type="button"
+        aria-label="Notificaciones"
+        title="Notificaciones"
+        className="relative flex items-center justify-center p-2.5 rounded-xl transition-colors duration-200 hover:bg-[var(--it-topbar-user-hover,#f1f5f9)] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
+        style={{ color: "var(--it-topbar-icon, #94a3b8)" }}
+      >
+        <FaRegBell className="w-5 h-5" aria-hidden="true" />
+        <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white" />
+      </button>
+    ),
+    navItems: [
+      {
+        id: "ui-system",
+        label: "UI System",
+        action: () => goToLanding(),
+      },
+      {
+        id: "portfolio",
+        label: "Portafolio",
+        action: () => goToPortfolio(),
+      },
+    ],
+    onNavItemClick: (id: string) => {
+      if (id === "ui-system") goToLanding();
+      else if (id === "portfolio") goToPortfolio();
+    },
     userMenu: {
       userName: "Alex Dev",
       userEmail: "alex@axzy.dev",
       menuItems: [
         {
           label: "Ir al Portafolio",
-          onClick: () => {
-            window.location.hash = "home";
-          },
+          onClick: () => goToPortfolio(),
         },
       ],
     },
   };
 
   // Render correct component based on active showroom navigation
-  const renderShowcase = () => {
-    switch (showroomActive) {
+  const renderShowcase = (itemId: string | null) => {
+    switch (itemId) {
       case "getting-started":
         return <GettingStartedShowcase />;
       // Structure
@@ -340,13 +319,19 @@ function App() {
       case "themeprovider":
         return <ThemeProviderShowcase />;
       default:
-        return <GettingStartedShowcase />;
+        return (
+          <NotFoundShowcase
+            attempted={route.raw}
+            onGoLanding={() => goToLanding()}
+            onGoPortfolio={goToPortfolio}
+          />
+        );
     }
   };
 
   return (
     <ITThemeProvider showFab={false} density={0.98} radius={10} shadow={2}>
-      {view === "home" ? (
+      {route.view === "home" ? (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-10 px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
             <HomeShowcase />
@@ -354,9 +339,20 @@ function App() {
         </div>
       ) : (
         <ITLayout sidebar={sidebarProps} topBar={topBarProps}>
-          <div className="max-w-7xl mx-auto">
-            {renderShowcase()}
-          </div>
+          {!route.valid ? (
+            <NotFoundShowcase
+              attempted={route.raw}
+              onGoLanding={() => goToLanding()}
+              onGoPortfolio={goToPortfolio}
+            />
+          ) : !route.group && !route.item ? (
+            <LandingShowcase
+              onOpenItem={goToItem}
+              onOpenPortfolio={goToPortfolio}
+            />
+          ) : (
+            renderShowcase(showroomActive)
+          )}
         </ITLayout>
       )}
     </ITThemeProvider>

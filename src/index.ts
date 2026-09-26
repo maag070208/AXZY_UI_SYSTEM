@@ -115,6 +115,7 @@ import type { ITTripleFilterProps, ITTripleFilterOption } from "./components/org
 import type { ITToastProps } from "./components/organisms/toast/toast.props";
 import type { ITWysiwygProps } from "./components/molecules/wysiwyg/wysiwyg.props";
 import type { FieldConfig, FieldConfigV2 } from "./types/field.types";
+import type { TableDensity } from "./types/table.types";
 
 // UTILS
 import ITDropfile, { UploadStatus, FileTypeEnum } from "./components/organisms/dropfile/dropfile";
@@ -178,6 +179,7 @@ export {
     ITSegmentedControlProps, ITSidebarProps, ITSkeletonProps, ITSlideToggleProps, ITSliderProps,
     ITStackProps, ITStatCardProps, ITStepperProps,
     ITTableProps, ITTabsProps, ITTabItem, ITTextProps, ITTextareaProps,
+    TableDensity,
     ITTripleFilterProps, ITTripleFilterOption, ITThemeConfig, ITThemeProviderProps, ITThemePalette,
     ITTimePickerProps, ITToastProps,
     ITWysiwygProps,

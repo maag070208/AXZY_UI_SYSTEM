@@ -11,15 +11,37 @@ Basic data table with column definitions, sorting, and configurable visual varia
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `columns` | `{ key: string; label: string; render?: (value, row) => ReactNode; sortable?: boolean; width?: string }[]` | — | Column definitions |
-| `data` | `Record<string, any>[]` | — | Row data array |
-| `variant` | `'default' \| 'striped' \| 'bordered'` | `'default'` | Visual style variant |
-| `sortKey` | `string` | — | Current sort column key |
-| `sortDirection` | `'asc' \| 'desc'` | — | Current sort direction |
-| `onSort` | `(key: string, direction: 'asc' \| 'desc') => void` | — | Sort handler |
-| `onRowClick` | `(row: Record<string, any>) => void` | — | Row click handler |
-| `loading` | `boolean` | `false` | Show loading state |
-| `emptyMessage` | `string` | `'No data'` | Empty state message |
+| `columns` | `Column<T>[]` | — | Column definitions: key, label, type, sortable, filter, render, actions, plus layout fields `width` (`number` px or CSS `string`), `minWidth` (px), `align` (`"left" \| "center" \| "right"`), and `truncate` (ellipsis + native `title`). |
+| `data` | `T[]` | `[]` | Row data array. |
+| `variant` | `"default" \| "striped" \| "bordered"` | `"default"` | Visual style variant. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Font-size preset (does not change padding). |
+| `containerClassName` | `string` | — | CSS classes for the outermost container. |
+| `className` | `string` | — | Declared for API compatibility but **currently not applied** by ITTable. Use `containerClassName` for the outer wrapper. |
+| `itemsPerPageOptions` | `number[]` | `[5, 10, 20]` | Page-size options shown in the paginator. |
+| `defaultItemsPerPage` | `number` | `10` | Initial rows per page. |
+| `title` | `string` | — | Optional heading rendered above the table. |
+| `renderCard` | `(row: T) => ReactNode` | — | Custom card renderer for the cards view. |
+| `defaultView` | `"table" \| "cards"` | `"table"` | Initial view mode. |
+| `showVerticalBorder` | `boolean` | `true` | Show vertical borders between columns. |
+| `verticalBorderClassname` | `string` | — | Custom class for the vertical borders. |
+| `onRowClick` | `(row: T, event: MouseEvent<HTMLElement> \| KeyboardEvent<HTMLElement>) => void` | — | Row/card activation. `MouseEvent` for pointer, `KeyboardEvent` for Enter/Space. Skipped when the interaction starts inside an interactive child. |
+| `layout` | `"auto" \| "fixed"` | `"auto"` | Table layout algorithm. `"fixed"` honors column `width` values and drops the `min-w-max` / `min-w-[150px]` floors so content no longer forces horizontal scrolling. |
+| `density` | `"compact" \| "normal" \| "comfortable"` | `"normal"` | Cell padding / row-height preset. Independent of `size`, which only controls font-size. |
+| `autoCardBreakpoint` | `number` | `0` | Container width (px) below which the table automatically falls back to the cards view. `0` disables the fallback. |
+| `virtualized` | `boolean` | `false` | Renders only the visible row window with spacer rows preserving scroll height. Table view only; cards view is never virtualized. |
+| `virtualizedMaxHeight` | `number` | `400` | Max height (px) of the virtualized scroll container. Only used when `virtualized` is true. |
+| `rowHeight` | `number` | `getRowHeight(size, density)` | Assumed uniform row height (px). Size-aware: `size="md"` baseline is 33 / 45 / 53 for compact / normal / comfortable; `size` shifts it by the font-size line box (sm 16px / md 20px / lg 28px). |
+| `overscan` | `number` | `5` | Extra rows rendered above and below the viewport to avoid blank gaps. |
+| `stickyHeader` | `boolean` | `false` | Keeps header cells sticky while the virtualized body scrolls. Only effective when `virtualized` is true. |
+
+### Column fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `width` | `number \| string` | — | Fixed column width. `number` = px, `string` = any CSS length (e.g. `"20%"`). A `<colgroup>` is only emitted when at least one column sets it. |
+| `minWidth` | `number` | — | Minimum column width in px, applied to header and body cells via inline style. |
+| `align` | `"left" \| "center" \| "right"` | `"left"` | Horizontal alignment of the column's header and cells. |
+| `truncate` | `boolean` | `false` | Truncates overflowing cell content with an ellipsis and exposes the raw string/number via the native `title` attribute. |
 
 ## Usage
 
@@ -27,28 +49,49 @@ Basic data table with column definitions, sorting, and configurable visual varia
 import { ITTable } from '@axzydev/axzy_ui_system';
 
 const columns = [
-  { key: 'name', label: 'Name', sortable: true },
-  { key: 'role', label: 'Role' },
-  { key: 'status', label: 'Status', render: (v) => <ITBadge>{v}</ITBadge> },
+  { key: 'name', label: 'Name', type: 'string', sortable: true, filter: true },
+  { key: 'role', label: 'Role', type: 'string', filter: 'catalog', catalogOptions: { data: roles } },
+  { key: 'status', label: 'Status', type: 'boolean', filter: true },
 ];
 const data = [
-  { name: 'Alice', role: 'Admin', status: 'Active' },
-  { name: 'Bob', role: 'Editor', status: 'Inactive' },
+  { name: 'Alice', role: 'ADMIN', status: true },
+  { name: 'Bob', role: 'EDITOR', status: false },
 ];
 
-<ITTable columns={columns} data={data} />
-<ITTable columns={columns} data={data} variant="striped" sortKey="name" sortDirection="asc" />
-<ITTable columns={columns} data={data} variant="bordered" onRowClick={(row) => console.log(row)} />
-<ITTable columns={columns} data={[]} emptyMessage="No records found" />
-<ITTable columns={columns} data={data} loading />
+<ITTable columns={columns} data={data} title="Users" />
+<ITTable columns={columns} data={data} variant="striped" size="sm" defaultItemsPerPage={5} />
+<ITTable
+  columns={columns}
+  data={data}
+  defaultView="cards"
+  onRowClick={(row, event) => console.log(row, event.type)}
+/>
+
+// No horizontal scroll: fixed layout + per-column widths + truncation
+const fixedColumns = [
+  { key: 'name',  label: 'Name',  type: 'string', width: '30%', truncate: true },
+  { key: 'email', label: 'Email', type: 'string', width: 220,    truncate: true },
+  { key: 'role',  label: 'Role',  type: 'string', width: 140,    align: 'center' },
+];
+
+<ITTable columns={fixedColumns} data={data} layout="fixed" density="compact" />
 ```
 
 ## Notes
 
 - `columns[].render` provides custom cell rendering via render function
 - `columns[].sortable` enables column header sort toggles
-- Sorting controlled via `sortKey`, `sortDirection`, and `onSort`
-- `onRowClick` fires with the row data on click
+- `onRowClick` fires in **both** the table and cards views. The event is a `MouseEvent` for pointer interaction and a `KeyboardEvent` for Enter/Space activation.
+- Clicks/keys that start inside an interactive child (`button`, `a`, `input`, `select`, `textarea`, `[role="button"]`, `[role="link"]`, `[data-row-click-ignore]`) do **not** trigger `onRowClick`.
+- When `onRowClick` is omitted no `cursor-pointer`, focus ring, `tabIndex`, or `role` is added.
+- `density` controls padding/row height (`compact` 33px / `normal` 45px / `comfortable` 53px at `size="md"`); `size` changes font-size and shifts the row height by the line box (sm 16px / md 20px / lg 28px).
+- **Anti horizontal scroll recipe:** `layout="fixed"` + a `width` on every column + `truncate` on long text + `density="compact"`. `width` accepts a `number` (px) or any CSS length string (`"20%"`, `"12rem"`). A `<colgroup>` is only emitted when at least one column defines a `width`.
+- With the default `layout="auto"`, `min-w-max` stays active so column widths can still reflow as different cell content enters the window during vertical scroll. Use `layout="fixed"` + column `width` for stable widths.
+- `autoCardBreakpoint` swaps to the cards view when the container (not the viewport) is narrower than the given px value; the Table toggle is disabled while forced, the Cards toggle stays enabled.
+- **Virtualization** applies to the **table view only** — the cards view is never virtualized. It only pays off with a large page size: raise `defaultItemsPerPage` and `itemsPerPageOptions` (defaults are `10` and `[5, 10, 20]`). Rows are assumed to have a uniform `rowHeight`; use `truncate` + `layout="fixed"` for predictable heights.
+- Scroll resets to the top on page or items-per-page change, but **not** on filter change (known limitation). `aria-rowcount` reflects the current page (+1), not the whole dataset, because pagination is independent.
+- `virtualizedMaxHeight`, `rowHeight`, `overscan`, and `stickyHeader` only take effect when `virtualized` is true. `stickyHeader` makes each `<th>` sticky using the `--color-table-headerBg` token (fallback `#f8fafc`).
+- `TableDensity` is exported from the package. `ITSearchTable` does **not** support `layout`, `density`, `autoCardBreakpoint`, `virtualized`, or per-column `width` — do not assume parity.
 - Three visual variants: default (no borders), striped (alternating rows), bordered (full grid)
 
 ## Stories

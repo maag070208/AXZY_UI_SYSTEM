@@ -142,6 +142,39 @@ export const Default: Story = {
   },
 };
 
+// Column widths keep the fixed layout from forcing horizontal scroll.
+const fixedColumns = columns.map((col, i) => ({
+  ...col,
+  width: [64, '28%', '34%', '22%', '16%'][i],
+  truncate: col.type === 'string' || col.type === 'catalog',
+})) as any;
+
+export const FixedLayoutCompact: Story = {
+  args: {
+    title: 'Compact fixed layout',
+    columns: fixedColumns,
+    fetchData: mockFetchItems,
+    defaultItemsPerPage: 10,
+    layout: 'fixed',
+    density: 'compact',
+  },
+};
+
+export const VirtualizedLargeDataset: Story = {
+  args: {
+    title: 'Virtualized · 100 rows',
+    columns: fixedColumns,
+    fetchData: mockFetchItems,
+    defaultItemsPerPage: 100,
+    itemsPerPageOptions: [10, 50, 100],
+    virtualized: true,
+    stickyHeader: true,
+    layout: 'fixed',
+    density: 'compact',
+    virtualizedMaxHeight: 360,
+  },
+};
+
 export const RemoteWithExternalFilters: Story = {
   render: () => {
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
@@ -198,6 +231,16 @@ export const RemoteWithExternalFilters: Story = {
       </div>
     );
   }
+};
+
+export const WithRowClick: Story = {
+  args: {
+    title: 'Filas clickeables',
+    columns,
+    fetchData: mockFetchItems,
+    defaultItemsPerPage: 10,
+    onRowClick: (row: any) => console.log('Row clicked:', row),
+  },
 };
 
 export const SkeletonLoading: Story = {

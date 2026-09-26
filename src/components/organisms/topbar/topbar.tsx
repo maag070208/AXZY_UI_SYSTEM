@@ -41,11 +41,28 @@ import ITText from "@/components/atoms/text/text";
  *   showMobileMenuButton
  *   onToggleMobileMenu={() => setSidebarOpen((v) => !v)}
  * />
+ *
+ * @example
+ * // Topbar with a global search box in the centered region (lg and up)
+ * <ITTopBar
+ *   logoText="AXZY"
+ *   centerContent={<SearchBox value={term} onChange={setTerm} />}
+ *   userMenu={{ userName: "Jane Doe", userEmail: "jane@example.com", menuItems: [] }}
+ * />
+ *
+ * @example
+ * // Topbar with a notification bell passed as children, sitting right before
+ * // the user menu. The slot is placed by the component, not by the caller.
+ * <ITTopBar logoText="AXZY" userMenu={userMenu}>
+ *   <NotificationBell count={3} />
+ * </ITTopBar>
  */
 export default function ITTopBar({
   logo,
   logoText,
+  centerContent,
   userMenu,
+  children,
   showMobileMenuButton,
   onToggleMobileMenu,
   navItems,
@@ -131,110 +148,128 @@ export default function ITTopBar({
           )}
         </div>
 
-        {/* RIGHT AREA: User Menu */}
-        {userMenu && (
-          <div className="relative">
-            <button
-              type="button"
-              className="flex items-center gap-3 rounded-full pl-2 pr-4 py-1.5 transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] border border-transparent hover:border-secondary-200"
-              style={{
-                backgroundColor: isUserMenuOpen ? "var(--it-topbar-user-hover, #f1f5f9)" : "transparent",
-              }}
-              onMouseEnter={(e) => {
-                if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = "var(--it-topbar-user-hover, #f1f5f9)";
-              }}
-              onMouseLeave={(e) => {
-                if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = "transparent";
-              }}
-              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-            >
-              {/* Avatar */}
+        {/* CENTER AREA: optional slot (e.g. global search) — lg and up only.
+            `flex-1` is basis 0, so it absorbs every pixel of slack and
+            `justify-between` has nothing left to distribute: the logo/nav and
+            the user menu stay flush with the row edges. */}
+        {centerContent && (
+          <div className="hidden lg:flex flex-1 min-w-0 items-center justify-center px-4">
+            <div className="w-full max-w-[420px]">{centerContent}</div>
+          </div>
+        )}
+
+        {/* RIGHT AREA: optional children (e.g. a notification bell) + the user menu.
+            Both share one flex group so `justify-between` on the row keeps the pair
+            flush to the right edge instead of pushing the bell into the middle of
+            the bar. */}
+        {(children || userMenu) && (
+          <div className="flex items-center gap-2">
+            {children}
+            {userMenu && (
               <div className="relative">
-                {userMenu.userImage ? (
-                  <img
-                    className="w-9 h-9 rounded-full object-cover ring-2 ring-white shadow-sm"
-                    src={userMenu.userImage}
-                    alt="Current user"
-                  />
-                ) : (
-                  <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center ring-2 ring-white shadow-sm">
-                     <FaUserCircle className="w-6 h-6" style={{ color: "var(--it-topbar-icon, #94a3b8)" }} />
+                <button
+                  type="button"
+                  className="flex items-center gap-3 rounded-full pl-2 pr-4 py-1.5 transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] border border-transparent hover:border-secondary-200"
+                  style={{
+                    backgroundColor: isUserMenuOpen ? "var(--it-topbar-user-hover, #f1f5f9)" : "transparent",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = "var(--it-topbar-user-hover, #f1f5f9)";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = "transparent";
+                  }}
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                >
+                  {/* Avatar */}
+                  <div className="relative">
+                    {userMenu.userImage ? (
+                      <img
+                        className="w-9 h-9 rounded-full object-cover ring-2 ring-white shadow-sm"
+                        src={userMenu.userImage}
+                        alt="Current user"
+                      />
+                    ) : (
+                      <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center ring-2 ring-white shadow-sm">
+                         <FaUserCircle className="w-6 h-6" style={{ color: "var(--it-topbar-icon, #94a3b8)" }} />
+                      </div>
+                    )}
+                    {/* Active dot indicator */}
+                    <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
                   </div>
-                )}
-                {/* Active dot indicator */}
-                <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
-              </div>
 
-              {/* Name Details */}
-              <div className="hidden sm:flex flex-col text-left py-0.5">
-                <ITText as="span" 
-                  className="font-semibold text-[0.85rem] leading-tight"
-                  style={{ color: "var(--it-topbar-user-text, #0f172a)" }}
-                >
-                  {userMenu.userName}
-                </ITText>
-                <ITText as="span" 
-                  className="text-[0.7rem] font-medium"
-                  style={{ color: "var(--it-topbar-user-subtitle, #64748b)" }}
-                >
-                  {userMenu.userEmail}
-                </ITText>
-              </div>
-            </button>
+                  {/* Name Details */}
+                  <div className="hidden sm:flex flex-col text-left py-0.5">
+                    <ITText as="span" 
+                      className="font-semibold text-[0.85rem] leading-tight"
+                      style={{ color: "var(--it-topbar-user-text, #0f172a)" }}
+                    >
+                      {userMenu.userName}
+                    </ITText>
+                    <ITText as="span" 
+                      className="text-[0.7rem] font-medium"
+                      style={{ color: "var(--it-topbar-user-subtitle, #64748b)" }}
+                    >
+                      {userMenu.userEmail}
+                    </ITText>
+                  </div>
+                </button>
 
-            {/* Dropdown Menu */}
-            <div
-              ref={userMenuRef}
-              className={`
-                absolute right-0 mt-3 w-64 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] z-[70] overflow-hidden transform origin-top-right transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)]
-                ${isUserMenuOpen ? "scale-100 opacity-100 translate-y-0" : "scale-95 opacity-0 -translate-y-2 pointer-events-none"}
-              `}
-              style={{ 
-                backgroundColor: "var(--it-topbar-user-dropdown-bg, #ffffff)",
-                border: "1px solid var(--it-topbar-user-dropdown-border, #f1f5f9)"
-              }}
-            >
-               {/* Dropdown Header */}
-              <div className="px-5 py-4 border-b" style={{ borderColor: "var(--it-topbar-user-dropdown-border, #f1f5f9)", backgroundColor: "var(--it-topbar-user-bg, #f8fafc)" }}>
-                <ITText as="span" className="block font-bold text-[0.9rem]" style={{ color: "var(--it-topbar-user-text, #0f172a)" }}>
-                  {userMenu.userName}
-                </ITText>
-                <ITText as="span" className="block text-xs font-medium truncate mt-0.5" style={{ color: "var(--it-topbar-user-subtitle, #64748b)" }}>
-                  {userMenu.userEmail}
-                </ITText>
-              </div>
+                {/* Dropdown Menu */}
+                <div
+                  ref={userMenuRef}
+                  className={`
+                    absolute right-0 mt-3 w-64 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] z-[70] overflow-hidden transform origin-top-right transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)]
+                    ${isUserMenuOpen ? "scale-100 opacity-100 translate-y-0" : "scale-95 opacity-0 -translate-y-2 pointer-events-none"}
+                  `}
+                  style={{ 
+                    backgroundColor: "var(--it-topbar-user-dropdown-bg, #ffffff)",
+                    border: "1px solid var(--it-topbar-user-dropdown-border, #f1f5f9)"
+                  }}
+                >
+                   {/* Dropdown Header */}
+                  <div className="px-5 py-4 border-b" style={{ borderColor: "var(--it-topbar-user-dropdown-border, #f1f5f9)", backgroundColor: "var(--it-topbar-user-bg, #f8fafc)" }}>
+                    <ITText as="span" className="block font-bold text-[0.9rem]" style={{ color: "var(--it-topbar-user-text, #0f172a)" }}>
+                      {userMenu.userName}
+                    </ITText>
+                    <ITText as="span" className="block text-xs font-medium truncate mt-0.5" style={{ color: "var(--it-topbar-user-subtitle, #64748b)" }}>
+                      {userMenu.userEmail}
+                    </ITText>
+                  </div>
               
-              {/* Dropdown Items */}
-              <ul className="py-2">
-                {userMenu.menuItems.map((m, i) => {
-                  const isDestructive = m.label.toLowerCase().includes('salir') || m.label.toLowerCase().includes('cerrar') || m.label.toLowerCase().includes('logout');
+                  {/* Dropdown Items */}
+                  <ul className="py-2">
+                    {userMenu.menuItems.map((m, i) => {
+                      const isDestructive = m.label.toLowerCase().includes('salir') || m.label.toLowerCase().includes('cerrar') || m.label.toLowerCase().includes('logout');
                   
-                  return (
-                    <li key={i} className="px-2">
-                       {i === userMenu.menuItems.length - 1 && isDestructive && i > 0 && (
-                          <div className="h-px bg-slate-100 my-1 mx-2"></div>
-                       )}
-                      <button
-                        onClick={() => {
-                           m.onClick();
-                           setIsUserMenuOpen(false);
-                        }}
-                        className="block w-full text-left px-3 py-2.5 rounded-xl text-[0.875rem] font-medium transition-colors duration-150"
-                        style={{ color: isDestructive ? 'var(--color-danger-500)' : "var(--it-topbar-user-text, #334155)" }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = isDestructive ? 'var(--color-danger-50)' : "var(--it-topbar-user-item-hover, #f8fafc)";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = "transparent";
-                        }}
-                      >
-                        <ITText as="span">{m.label}</ITText>
-                      </button>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
+                      return (
+                        <li key={i} className="px-2">
+                           {i === userMenu.menuItems.length - 1 && isDestructive && i > 0 && (
+                              <div className="h-px bg-slate-100 my-1 mx-2"></div>
+                           )}
+                          <button
+                            onClick={() => {
+                               m.onClick();
+                               setIsUserMenuOpen(false);
+                            }}
+                            className="block w-full text-left px-3 py-2.5 rounded-xl text-[0.875rem] font-medium transition-colors duration-150"
+                            style={{ color: isDestructive ? 'var(--color-danger-500)' : "var(--it-topbar-user-text, #334155)" }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = isDestructive ? 'var(--color-danger-50)' : "var(--it-topbar-user-item-hover, #f8fafc)";
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = "transparent";
+                            }}
+                          >
+                            <ITText as="span">{m.label}</ITText>
+                          </button>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

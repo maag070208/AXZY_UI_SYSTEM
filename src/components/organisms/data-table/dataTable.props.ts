@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Column } from "@/components/molecules/table/table.props";
+import { TableDensity } from "@/types/table.types";
 
 /** Parameters passed to `fetchData` every time pagination, filters, or sorting change. */
 export interface ITDataTableFetchParams {
@@ -91,4 +92,67 @@ export interface ITDataTableProps<T extends Record<string, unknown>> {
   showVerticalBorder?: boolean;
   /** Custom class for vertical borders (overrides the default subtle gray). */
   verticalBorderClassname?: string;
+  /**
+   * Callback fired when a row (table view) or card (cards view) is activated,
+   * receiving the row item and the originating event. The event is a
+   * `MouseEvent` for pointer interaction and a `KeyboardEvent` for Enter/Space
+   * activation. Not fired when the interaction starts inside an interactive
+   * child (button, link, input, or any `[data-row-click-ignore]` element).
+   */
+  onRowClick?: (
+    row: T,
+    event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
+  ) => void;
+  /**
+   * Table layout algorithm. `"fixed"` respects column `width` values and drops
+   * the `min-w-max` / `min-w-[150px]` floors so content no longer forces
+   * horizontal scrolling; `"auto"` keeps the content-driven layout.
+   * @default "auto"
+   */
+  layout?: "auto" | "fixed";
+  /**
+   * Cell padding and row-height preset. Independent of `size`, which only
+   * controls font-size: `"compact"` | `"normal"` | `"comfortable"`.
+   * @default "normal"
+   */
+  density?: TableDensity;
+  /**
+   * Container width (in px) below which the table automatically falls back to
+   * the cards view. `0` disables the fallback.
+   * @default 0
+   */
+  autoCardBreakpoint?: number;
+  /**
+   * Enables row virtualization for the table view: only the visible window of
+   * rows is rendered, with spacer rows preserving the full scroll height.
+   * The cards view is never virtualized.
+   * @default false
+   */
+  virtualized?: boolean;
+  /**
+   * Max height (px) of the virtualized table's scroll container.
+   * Only used when `virtualized` is true.
+   * @default 400
+   */
+  virtualizedMaxHeight?: number;
+  /**
+   * Assumed uniform row height (px) used by the virtualizer. Defaults to
+   * `getRowHeight(size, density)`, which is size-aware: the `size="md"`
+   * baseline is 33 / 45 / 53 (compact / normal / comfortable) and `size`
+   * shifts it by the font-size line box (sm 16px / md 20px / lg 28px).
+   * Only used when `virtualized` is true.
+   */
+  rowHeight?: number;
+  /**
+   * Number of extra rows rendered above and below the viewport to avoid blank
+   * gaps while scrolling. Only used when `virtualized` is true.
+   * @default 5
+   */
+  overscan?: number;
+  /**
+   * Makes the header cells sticky while the virtualized body scrolls. Only
+   * effective when `virtualized` is true.
+   * @default false
+   */
+  stickyHeader?: boolean;
 }

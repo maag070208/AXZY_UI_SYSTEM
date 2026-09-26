@@ -116,6 +116,10 @@ pnpm dev
 
 Abre `http://localhost:5173` para ver el Interactive Sandbox con todos los componentes.
 
+El sandbox usa hash routing: `#ui-system` (landing), `#ui-system/<grupo>/<item>` (componente), p. ej.
+`http://localhost:5173/#ui-system/forms/input`. La tabla de rutas y slugs vive en
+`src/sandbox/navigation.ts`.
+
 ### 3. Storybook (documentación visual)
 
 ```bash
@@ -125,7 +129,7 @@ pnpm storybook
 ### 4. Build de producción
 
 ```bash
-pnpm build        # TypeScript + Vite
+pnpm build        # alias de pnpm bundle (tsup + CSS)
 pnpm bundle       # tsup + CSS
 ```
 
@@ -136,7 +140,7 @@ pnpm bundle       # tsup + CSS
 | Comando | Descripción |
 |---------|-------------|
 | `pnpm dev` | Sandbox interactivo (Vite) |
-| `pnpm build` | TypeScript + Vite build |
+| `pnpm build` | Alias de `pnpm bundle` (tsup + CSS) |
 | `pnpm build:app` | Build de la app sandbox |
 | `pnpm bundle` | Bundle del paquete (tsup + CSS) |
 | `pnpm watch` | Watch mode para desarrollo del paquete |

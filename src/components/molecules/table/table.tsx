@@ -1,5 +1,7 @@
 import { useTableState } from "@/hooks/useTableState";
-import { sizeStyles, variantStyles } from "@/types/table.types";
+import { useElementSize } from "@/hooks/useElementSize";
+import { useVirtualRows } from "@/hooks/useVirtualRows";
+import { getRowHeight, sizeStyles, tableAlignClasses, variantStyles } from "@/types/table.types";
 import clsx from "clsx";
 import React, { useState } from "react";
 import {
@@ -18,6 +20,7 @@ import ITText from "@/components/atoms/text/text";
 import {
   tableActionsCell,
   tableBody,
+  tableCardClickable,
   tableCell,
   tableCellText,
   tableContainer,
@@ -25,8 +28,9 @@ import {
   tableHeaderCell,
   tableHeaderRow,
   tableRow,
+  tableRowClickable,
 } from "@/utils/styles";
-import { formatCurrencyMX, getNestedValue } from "@/utils/table.utils";
+import { formatCurrencyMX, getNestedValue, isInteractiveTarget } from "@/utils/table.utils";
 
 /**
  * A feature-rich data table with per-column filtering, sortable columns,
@@ -57,8 +61,27 @@ export default function ITTable<T extends Record<string, unknown>>({
   defaultView = "table",
   showVerticalBorder = true,
   verticalBorderClassname,
+  onRowClick,
+  layout = "auto",
+  density = "normal",
+  autoCardBreakpoint = 0,
+  virtualized = false,
+  virtualizedMaxHeight = 400,
+  rowHeight,
+  overscan = 5,
+  stickyHeader = false,
 }: ITTableProps<T>) {
   const [viewMode, setViewMode] = useState<"table" | "cards">(defaultView);
+  const { ref: rootRef, width: containerWidth } = useElementSize<HTMLDivElement>();
+
+  const isFixed = layout === "fixed";
+  const forcedCards =
+    autoCardBreakpoint > 0 && containerWidth > 0 && containerWidth < autoCardBreakpoint;
+  const effectiveView: "table" | "cards" = forcedCards ? "cards" : viewMode;
+  const hasColumnWidths = columns.some((col) => col.width != null);
+  const tableLayoutClass = isFixed
+    ? "w-full text-sm text-left text-secondary-600"
+    : "min-w-max w-full text-sm text-left text-secondary-600";
 
   const {
     currentPage,
@@ -158,6 +181,29 @@ export default function ITTable<T extends Record<string, unknown>>({
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  const isTableVirtual = virtualized && effectiveView === "table";
+  const isStickyHeader = stickyHeader && isTableVirtual;
+  const resolvedRowHeight = rowHeight ?? getRowHeight(size, density);
+  const columnCount = columns.length;
+
+  const {
+    scrollRef,
+    startIndex,
+    endIndex,
+    topSpacerHeight,
+    bottomSpacerHeight,
+  } = useVirtualRows({
+    count: currentData.length,
+    rowHeight: resolvedRowHeight,
+    overscan,
+    enabled: isTableVirtual,
+    resetKey: `${currentPage}-${itemsPerPage}`,
+  });
+
+  const windowData = isTableVirtual
+    ? currentData.slice(startIndex, endIndex + 1)
+    : currentData;
 
   const renderFilterInput = (col: Column<T>) => {
     if (!col.filter) return null;
@@ -311,8 +357,21 @@ export default function ITTable<T extends Record<string, unknown>>({
     );
   };
 
+  const handleRowClick = (row: T) => (event: React.MouseEvent<HTMLElement>) => {
+    if (!onRowClick || isInteractiveTarget(event.target, event.currentTarget)) return;
+    onRowClick(row, event);
+  };
+
+  const handleRowKeyDown = (row: T) => (event: React.KeyboardEvent<HTMLElement>) => {
+    if (!onRowClick) return;
+    if (event.target !== event.currentTarget) return;
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    onRowClick(row, event);
+  };
+
   return (
-    <div className={clsx("space-y-4 w-full", containerClassName)}>
+    <div ref={rootRef} className={clsx("space-y-4 w-full", containerClassName)}>
       <div className={tableContainer} style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
         {/* Header outside overflow */}
         {title && (
@@ -321,8 +380,9 @@ export default function ITTable<T extends Record<string, unknown>>({
             <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-700/50">
               <button
                 onClick={() => setViewMode("table")}
+                disabled={forcedCards}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
-                  viewMode === "table"
+                  effectiveView === "table"
                     ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
                     : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
                 }`}
@@ -333,7 +393,7 @@ export default function ITTable<T extends Record<string, unknown>>({
               <button
                 onClick={() => setViewMode("cards")}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
-                  viewMode === "cards"
+                  effectiveView === "cards"
                     ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
                     : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
                 }`}
@@ -350,8 +410,9 @@ export default function ITTable<T extends Record<string, unknown>>({
             <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-700/50">
               <button
                 onClick={() => setViewMode("table")}
+                disabled={forcedCards}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
-                  viewMode === "table"
+                  effectiveView === "table"
                     ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
                     : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
                 }`}
@@ -362,7 +423,7 @@ export default function ITTable<T extends Record<string, unknown>>({
               <button
                 onClick={() => setViewMode("cards")}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
-                  viewMode === "cards"
+                  effectiveView === "cards"
                     ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
                     : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
                 }`}
@@ -374,11 +435,18 @@ export default function ITTable<T extends Record<string, unknown>>({
           </div>
         )}
 
-        {viewMode === "cards" ? (
+        {effectiveView === "cards" ? (
           <div className="p-4 space-y-3 max-h-[400px] overflow-y-auto">
             {currentData.length > 0 ? (
               currentData.map((row, i) => (
-                <div key={i}>
+                <div
+                  key={i}
+                  className={clsx(onRowClick && tableCardClickable)}
+                  role={onRowClick ? "button" : undefined}
+                  tabIndex={onRowClick ? 0 : undefined}
+                  onClick={onRowClick ? handleRowClick(row) : undefined}
+                  onKeyDown={onRowClick ? handleRowKeyDown(row) : undefined}
+                >
                   {renderCard ? renderCard(row) : renderDefaultCard(row)}
                 </div>
               ))
@@ -390,25 +458,62 @@ export default function ITTable<T extends Record<string, unknown>>({
             )}
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div
+            ref={isTableVirtual ? scrollRef : undefined}
+            className={isTableVirtual ? "overflow-x-auto overflow-y-auto" : "overflow-x-auto"}
+            style={isTableVirtual ? { maxHeight: virtualizedMaxHeight } : undefined}
+          >
             <table
               className={clsx(
-                "min-w-max w-full text-sm text-left text-secondary-600",
+                tableLayoutClass,
                 showVerticalBorder && "[&_th]:border-r [&_th:last-child]:border-r-0 [&_td]:border-r [&_td:last-child]:border-r-0",
                 showVerticalBorder && (verticalBorderClassname || "[&_th]:border-slate-100 dark:[&_th]:border-slate-700/30 [&_td]:border-slate-100 dark:[&_td]:border-slate-700/30"),
                 variantStyles[variant],
                 sizeStyles[size]
               )}
+              style={isFixed ? { tableLayout: "fixed" } : undefined}
+              aria-rowcount={isTableVirtual ? currentData.length + 1 : undefined}
             >
+              {hasColumnWidths && (
+                <colgroup>
+                  {columns.map((col) => (
+                    <col
+                      key={col.key}
+                      style={
+                        col.width != null
+                          ? { width: typeof col.width === "number" ? `${col.width}px` : col.width }
+                          : undefined
+                      }
+                    />
+                  ))}
+                </colgroup>
+              )}
               <thead>
-                <tr className={clsx(tableHeaderRow, "dark:text-slate-200")}>
+                <tr
+                  className={clsx(tableHeaderRow, "dark:text-slate-200")}
+                  aria-rowindex={isTableVirtual ? 1 : undefined}
+                >
                   {columns.map((col) => (
                     <th
                       key={col.key}
                       scope="col"
-                      className={tableHeaderCell(col.className)}
+                      className={clsx(
+                        tableHeaderCell(col.className, density),
+                        col.align && tableAlignClasses[col.align],
+                        isStickyHeader && "sticky top-0 z-10 bg-secondary-50"
+                      )}
+                      style={
+                        col.minWidth != null || isStickyHeader
+                          ? {
+                              ...(col.minWidth != null ? { minWidth: `${col.minWidth}px` } : {}),
+                              ...(isStickyHeader
+                                ? { backgroundColor: "var(--color-table-headerBg, #f8fafc)" }
+                                : {}),
+                            }
+                          : undefined
+                      }
                     >
-                      <div className="flex flex-col gap-3 min-w-[150px]">
+                      <div className={isFixed ? "flex flex-col gap-3" : "flex flex-col gap-3 min-w-[150px]"}>
                         <div className="flex items-center justify-between gap-2">
                             <ITText as="span" className="text-slate-900 dark:text-white font-bold">{col.label}</ITText>
                           {col.sortable && col.type !== "actions" && (
@@ -434,29 +539,65 @@ export default function ITTable<T extends Record<string, unknown>>({
               </thead>
               <tbody className={clsx(tableBody, "dark:divide-slate-700/30")}>
                 {currentData.length > 0 ? (
-                  currentData.map((row, rowIndex) => (
-                    <tr
-                      key={rowIndex}
-                      className={clsx(tableRow, variant === "striped" && "odd:bg-secondary-50/40 dark:odd:bg-slate-800/20")}
-                    >
-                      {columns.map((col) => (
-                        <td
-                          key={`${rowIndex}-${col.key}`}
-                          className={tableCell(col.className)}
-                        >
-                          {col.type === "actions" ? (
-                            <div className={tableActionsCell}>
-                              {renderCellContent(col, row) as React.ReactNode}
-                            </div>
-                          ) : (
-                            <div className={tableCellText}>
-                              {renderCellContent(col, row) as React.ReactNode}
-                            </div>
+                  <>
+                    {isTableVirtual && topSpacerHeight > 0 && (
+                      <tr aria-hidden="true" style={{ height: topSpacerHeight }}>
+                        <td colSpan={columnCount} style={{ padding: 0, border: 0 }} />
+                      </tr>
+                    )}
+                    {windowData.map((row, windowIndex) => {
+                      const absoluteIndex = isTableVirtual ? startIndex + windowIndex : windowIndex;
+                      return (
+                        <tr
+                          key={absoluteIndex}
+                          aria-rowindex={isTableVirtual ? absoluteIndex + 2 : undefined}
+                          className={clsx(
+                            tableRow,
+                            variant === "striped" && absoluteIndex % 2 === 0 && "bg-secondary-50/40 dark:bg-slate-800/20",
+                            onRowClick && tableRowClickable
                           )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))
+                          tabIndex={onRowClick ? 0 : undefined}
+                          onClick={onRowClick ? handleRowClick(row) : undefined}
+                          onKeyDown={onRowClick ? handleRowKeyDown(row) : undefined}
+                        >
+                          {columns.map((col) => {
+                            const rawValue = getNestedValue(row, col.key);
+                            const truncateTitle =
+                              col.truncate &&
+                              (typeof rawValue === "string" || typeof rawValue === "number")
+                                ? String(rawValue)
+                                : undefined;
+                            return (
+                              <td
+                                key={`${absoluteIndex}-${col.key}`}
+                                className={clsx(
+                                  tableCell(col.className, density),
+                                  col.align && tableAlignClasses[col.align]
+                                )}
+                                style={col.minWidth != null ? { minWidth: `${col.minWidth}px` } : undefined}
+                                title={truncateTitle}
+                              >
+                                {col.type === "actions" ? (
+                                  <div className={tableActionsCell}>
+                                    {renderCellContent(col, row) as React.ReactNode}
+                                  </div>
+                                ) : (
+                                  <div className={clsx(tableCellText, col.truncate && "truncate")}>
+                                    {renderCellContent(col, row) as React.ReactNode}
+                                  </div>
+                                )}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
+                    {isTableVirtual && bottomSpacerHeight > 0 && (
+                      <tr aria-hidden="true" style={{ height: bottomSpacerHeight }}>
+                        <td colSpan={columnCount} style={{ padding: 0, border: 0 }} />
+                      </tr>
+                    )}
+                  </>
                 ) : (
                   <tr>
                     <td colSpan={columns.length} className="px-6 py-12 text-center">

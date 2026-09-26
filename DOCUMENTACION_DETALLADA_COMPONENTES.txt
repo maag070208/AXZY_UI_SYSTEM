@@ -132,6 +132,8 @@ export interface ITLayoutProps {
 }
 ```
 
+> Nota de layout: en desktop el sidebar está posicionado de forma absoluta y el contenido reserva su ancho en reposo. Con `sidebar.isCollapsed` omitido (default no controlado) o controlado a `true`, reserva 88px y el sidebar se expande sobre el contenido al hacer hover. Si controlas `sidebar.isCollapsed={false}`, reserva 280px para que el sidebar no tape el contenido. No hay prop nueva en `ITLayoutProps`: el ancho se deriva de `sidebar.isCollapsed`.
+
 ### Ejemplo Real
 ```tsx
 import React, { useState } from 'react';
@@ -258,7 +260,7 @@ export default function AdminNavbar() {
 ================================================================================
 4. ITSidebar
 ================================================================================
-Barra lateral reactiva. Soporta colapso automático y varios estilos de líneas conectoras para subítems.
+Barra lateral reactiva. Soporta colapso automático y varios estilos de líneas conectoras para subítems. Acepta un slot `header` opcional (p. ej. un wordmark) que se renderiza arriba de la navegación y se oculta mientras está colapsada. El riel colapsado se expande automáticamente al pasar el cursor por encima: no hay botón de colapso. Incluye roles/aria para accesibilidad: `nav` etiquetado, toggles con `role="button"` + `aria-expanded`/`aria-controls` + Enter/Space, submenús `role="group"` etiquetados y subítem activo con `aria-current="page"`.
 
 ### Props (ITSidebarProps)
 ```typescript
@@ -283,11 +285,14 @@ export interface ITSidebarProps {
   navigationItems: ITNavigationItem[];
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
+  /** Expande el riel colapsado al hacer hover. `false` deja el botón como único toggle. Default: true. */
   visibleOnMobile?: boolean;
   onItemClick?: (item: ITNavigationItem) => void;
   onSubItemClick?: (subitem: ITNavigationSubItem) => void;
   subitemConnector?: 'dot' | '|' | 'none';
   className?: string;
+  /** Contenido opcional renderizado arriba de la lista de navegación (ej. un wordmark). Se oculta al colapsar. */
+  header?: React.ReactNode;
 }
 ```
 
@@ -326,7 +331,10 @@ export default function CustomSidebar() {
       navigationItems={items}
       isCollapsed={collapsed}
       onToggleCollapse={() => setCollapsed(!collapsed)}
+      // Con el hover-expand activo (default) el clic se deshace al pasar el cursor.
       subitemConnector="dot" // Prueba con 'dot', '|', o 'none'
+      // Slot opcional arriba de la navegación; se oculta al colapsar.
+      header={<span className="text-xs font-bold tracking-wide">AXZY v1.3</span>}
       className="h-screen"
     />
   );
@@ -341,14 +349,22 @@ Barra de menú horizontal administrativa superior con soporte para botón hambur
 ### Props (ITTopBarProps)
 ```typescript
 export interface ITTopBarProps {
+  logo?: ReactNode;
   logoText?: string;
+  /** Slot central (p. ej. buscador global). Visible solo desde `lg`. */
+  centerContent?: ReactNode;
+  /** Acciones renderizadas en el área derecha, justo antes del menú de
+   *  usuario (p. ej. una campanita de notificaciones). El componente decide
+   *  la posición; el caller solo aporta los controles. */
+  children?: ReactNode;
   userMenu?: {
     userName: string;
     userEmail: string;
     userImage?: string;
     menuItems: Array<{ label: string; onClick: () => void }>;
   };
-  navItems?: Array<{ id: string; label: string; action: () => void }>;
+  navItems?: Array<{ id: string; label: string; icon?: ReactNode; action: () => void }>;
+  onNavItemClick?: (id: string) => void;
   showMobileMenuButton?: boolean;
   onToggleMobileMenu?: () => void;
 }
@@ -1109,27 +1125,123 @@ Componente base para desplegar información tabular estructurada con columnas re
 
 ### Props (ITTableProps)
 ```typescript
+export type ColumnType = 'string' | 'date' | 'number' | 'boolean' | 'actions' | 'catalog';
+
+export interface CatalogOption {
+  id: string | number;
+  name: string;
+}
+
 export interface Column<T = any> {
-  key: string;
+  key: string;                              // soporta dot-notation, ej: "address.city"
   label: string;
-  type: 'string' | 'number' | 'boolean' | 'date' | 'catalog' | 'actions';
-  sortable?: boolean;
-  filter?: boolean | 'catalog';
+  className?: string;
+  currencyMX?: boolean;                     // solo type: "number"; default false
+  actions?: (row: T) => React.ReactNode;    // solo type: "actions"
+  filter?: boolean | 'catalog';             // default false
+  type: ColumnType;
+  sortable?: boolean;                       // default false; ignorado en type: "actions"
   render?: (row: T) => React.ReactNode;
+  editComponent?: (props: {
+    value: any;
+    onChange: (value: any) => void;
+    rowData: T;
+  }) => React.ReactNode;
+  catalogOptions?: {
+    data: CatalogOption[];
+    loading?: boolean;                      // default false
+    error?: boolean;                        // default false
+  };
+  width?: number | string;                  // number = px; string = longitud CSS ("20%", "12rem")
+  minWidth?: number;                        // px; aplica a th/td
+  align?: 'left' | 'center' | 'right';      // default 'left'
+  truncate?: boolean;                       // default false; ellipsis + title nativo
 }
 
 export interface ITTableProps<T> {
   columns: Column<T>[];
+  containerClassName?: string;
   data: T[];
-  variant?: 'default' | 'striped' | 'bordered' | 'clean';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: 'default' | 'striped' | 'bordered';  // default 'default'
+  className?: string;                            // declarado pero NO aplicado por ITTable; usar containerClassName
+  size?: 'sm' | 'md' | 'lg';                     // default 'md'; SOLO font-size
+  itemsPerPageOptions?: number[];                // default [5, 10, 20]
+  defaultItemsPerPage?: number;                  // default 10
+  title?: string;
+  renderCard?: (row: T) => React.ReactNode;
+  defaultView?: 'table' | 'cards';               // default 'table'
+  showVerticalBorder?: boolean;                  // default true
+  verticalBorderClassname?: string;
+  // Fires on row (table view) or card (cards view) activation.
+  // MouseEvent for pointer interaction, KeyboardEvent for Enter/Space.
+  // Skipped when the interaction starts inside an interactive child:
+  // button, a, input, select, textarea, [role="button"], [role="link"],
+  // [data-row-click-ignore].
+  onRowClick?: (
+    row: T,
+    event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
+  ) => void;
+  layout?: 'auto' | 'fixed';                     // default 'auto'; 'fixed' respeta width y quita min-w
+  density?: 'compact' | 'normal' | 'comfortable'; // default 'normal'; padding / alto de fila
+  autoCardBreakpoint?: number;                   // default 0 (desactivado); ancho de contenedor en px
+  virtualized?: boolean;                         // default false; solo vista tabla (cards nunca virtualiza)
+  virtualizedMaxHeight?: number;                 // default 400; alto max del contenedor con scroll
+  rowHeight?: number;                            // default getRowHeight(size, density); baseline size="md" 33/45/53
+  overscan?: number;                             // default 5; filas extra arriba/abajo
+  stickyHeader?: boolean;                        // default false; solo efectivo si virtualized
 }
 ```
+
+### Guía de layout, densidad y virtualización
+
+- `layout="auto"` (default) mantiene `min-w-max`: el ancho de las columnas puede reajustarse al entrar/salir contenido durante el scroll vertical. `layout="fixed"` respeta `width` por columna y elimina `min-w-max` y el piso `min-w-[150px]` del header.
+- `density` controla padding y alto de fila. El alto asumido por defecto se calcula con `getRowHeight(size, density)` = padding vertical de celda + line box del `size` + 1px del `divide-y`. Baseline `size="md"` (line box `text-sm` = 20px): compact = 33px (`px-3 py-2` header / `px-3 py-1.5` cell), normal = 45px (`px-4 py-4` / `px-4 py-3`), comfortable = 53px (`px-4 py-5` / `px-4 py-4`).
+- `size` cambia el font-size (`text-xs|sm|lg`) y con ello el line box (sm 16 / md 20 / lg 28 px), desplazando el alto asumido: sm −4 / md 0 / lg +8 px. Matriz completa de `getRowHeight(size, density)` (filas = density, columnas = size):
+
+  | density \ size | sm (16px) | md (20px) | lg (28px) |
+  |----------------|-----------|-----------|-----------|
+  | compact        | 29        | 33        | 41        |
+  | normal         | 41        | 45        | 53        |
+  | comfortable    | 49        | 53        | 61        |
+
+  El alto asumido es EXACTO solo para celdas de UNA línea. Una celda de dos líneas (avatar + texto) mide ~50px real y desalinea los spacers de la virtualización.
+- `autoCardBreakpoint`: cae a la vista cards cuando el CONTENEDOR (no el viewport) mide menos que el valor en px. Mientras está forzado, el toggle "Table" queda deshabilitado y "Cards" sigue habilitado. `0` desactiva. Como la vista cards nunca se virtualiza, `autoCardBreakpoint` desactiva `virtualized` en silencio al dispararse: NO combinar `virtualized` + `autoCardBreakpoint`.
+- `virtualized`: renderiza solo la ventana visible de filas con spacer rows que preservan la altura total. Aplica SOLO a la vista tabla; la vista cards NUNCA se virtualiza. El toggle interno Table/Cards también desactiva la virtualización al pasar a cards.
+
+### Receta para eliminar el scroll horizontal
+
+```tsx
+<ITTable
+  columns={[
+    { key: 'name',  label: 'Nombre', type: 'string', width: '28%', truncate: true },
+    { key: 'email', label: 'Email',  type: 'string', width: 220,    truncate: true },
+    { key: 'role',  label: 'Rol',    type: 'string', width: 140,    align: 'center' },
+  ]}
+  data={data}
+  layout="fixed"     // respeta width y quita min-w-max / min-w-[150px]
+  density="compact"  // reduce padding y alto de fila
+/>
+```
+Pasos: (1) `layout="fixed"`, (2) `width` en cada columna (number = px; string = cualquier longitud CSS, ej. `"20%"`, `"12rem"`), (3) `truncate` en columnas de texto largo (agrega ellipsis y `title` nativo con el valor string/number), (4) `density` para compactar. El `<colgroup>` solo se emite si al menos una columna define `width`.
+
+### Virtualización: cuándo usarla y límites
+
+- Rinde SOLO con un page size grande. Los defaults (`defaultItemsPerPage=10`, `itemsPerPageOptions=[5,10,20]`) son demasiado chicos: subir ambos (ej. 300) para notar la diferencia.
+- Las filas asumen alto UNIFORME (`rowHeight`, default `getRowHeight(size, density)`). Baseline `size="md"` = compact 33 / normal 45 / comfortable 53; `size` lo desplaza por el line box (sm −4 / md 0 / lg +8), es decir sm 29/41/49 · md 33/45/53 · lg 41/53/61. Contenido que hace wrap rompe el cálculo: usar `truncate` + `layout="fixed"`. El asumido es exacto solo para celdas de una línea; una celda de dos líneas (avatar + texto) mide ~50px real y desalinea los spacers.
+- `virtualizedMaxHeight` (default 400) es el alto del contenedor con scroll; `overscan` (default 5) son las filas extra arriba/abajo; `stickyHeader` (default false) fija los `<th>` usando el token `--color-table-headerBg` (fallback `#f8fafc`). Las tres solo aplican con `virtualized`.
+- El scroll se reinicia al cambiar página o items-per-page (`resetKey = página-itemsPerPage`), pero NO al cambiar filtros (limitación conocida y aceptada).
+- `aria-rowcount` refleja la página actual (+1), no el dataset completo, porque la paginación es independiente.
+- A11y al virtualizar: `<table aria-rowcount={filas+1}>`, header `<tr aria-rowindex={1}>`, filas `aria-rowindex={absoluto+2}`, spacers `aria-hidden="true"`.
+- `TableDensity` se exporta desde `src/index.ts`. Los hooks `useVirtualRows` y `useElementSize` son internos y NO se exportan. `getRowHeight` y `sizeLineHeights` (junto con `densityStyles` y `tableAlignClasses`) también son internos: se exportan desde `src/types/table.types.ts` pero NO desde `src/index.ts`.
+
+Nota de paridad: ITSearchTable NO fue modificado; no tiene `layout`, `density`, `autoCardBreakpoint`, `virtualized` ni `width` por columna.
+
+Drift conocido (no corregido en código): `ITTableProps.className` está declarado pero NO se aplica en `table.tsx` (usar `containerClassName`). `ITDataTableProps.debounceMs` tiene JSDoc `@default 400` pero el valor real en `dataTable.tsx` es `500`.
 
 ### Ejemplo Real
 ```tsx
 import React from 'react';
-import { ITTable, ITBadget } from 'axzy-ui-system';
+import { ITTable, ITBadget } from '@axzydev/axzy_ui_system';
 
 interface Transaction {
   id: string;
@@ -1171,6 +1283,7 @@ export default function BillingTable() {
       data={data}
       variant="striped"
       size="md"
+      onRowClick={(row, event) => console.log('Fila seleccionada:', row, event.type)}
     />
   );
 }
@@ -1184,31 +1297,69 @@ Tabla con integración inteligente para consumo remoto de APIs, ordenamiento, fi
 ### Props (ITDataTableProps)
 ```typescript
 export interface ITDataTableFetchParams {
-  pageIndex: number;
-  pageSize: number;
-  sortConfig?: { key: string; direction: 'asc' | 'desc' } | null;
-  filters?: Record<string, any>;
-  searchTerm?: string;
+  page: number;                       // 1-indexado
+  limit: number;                      // filas por página
+  filters: Record<string, string | number | boolean | Date>;
+  sort?: { key: string; direction: 'asc' | 'desc' };
 }
 
 export interface ITDataTableResponse<T> {
   data: T[];
-  totalCount: number;
-  totalPages: number;
+  total: number;                      // total de filas en todas las páginas
 }
 
-export interface ITDataTableProps<T> {
-  columns: Column[];
+export interface ITDataTableProps<T extends Record<string, unknown>> {
+  columns: Column<T>[];
   fetchData: (params: ITDataTableFetchParams) => Promise<ITDataTableResponse<T>>;
-  externalFilters?: Record<string, any>;
-  defaultItemsPerPage?: number;
+  debounceMs?: number;                          // default 500
+  externalFilters?: Record<string, string | number | boolean | Date>;
+  loadingIndicator?: React.ReactNode;
+  fetchOnMount?: boolean;                       // default true
+  reloadTrigger?: number | string | boolean;
+  containerClassName?: string;
+  className?: string;                           // se aplica al elemento <table>
+  variant?: 'default' | 'striped' | 'bordered' | 'minimal';  // default 'default'; 'minimal' no tiene estilos (igual que 'default')
+  size?: 'sm' | 'md' | 'lg';                    // default 'md'; SOLO font-size
+  itemsPerPageOptions?: number[];               // default [5, 10, 20]
+  defaultItemsPerPage?: number;                 // default 10
+  title?: string | React.ReactNode;
+  renderCard?: (row: T) => React.ReactNode;
+  defaultView?: 'table' | 'cards';              // default 'table'
+  showVerticalBorder?: boolean;                 // default true
+  verticalBorderClassname?: string;
+  // Fires on row (table view) or card (cards view) activation.
+  // MouseEvent for pointer interaction, KeyboardEvent for Enter/Space.
+  // Not fired while loading; skipped for interactive children
+  // (button, a, input, select, textarea, [role="button"], [role="link"],
+  //  [data-row-click-ignore]).
+  onRowClick?: (
+    row: T,
+    event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
+  ) => void;
+  layout?: 'auto' | 'fixed';                     // default 'auto'; 'fixed' respeta width y quita min-w
+  density?: 'compact' | 'normal' | 'comfortable'; // default 'normal'; padding / alto de fila
+  autoCardBreakpoint?: number;                   // default 0 (desactivado); ancho de contenedor en px
+  virtualized?: boolean;                         // default false; solo vista tabla (cards nunca virtualiza)
+  virtualizedMaxHeight?: number;                 // default 400; alto max del contenedor con scroll
+  rowHeight?: number;                            // default getRowHeight(size, density); baseline size="md" 33/45/53
+  overscan?: number;                             // default 5; filas extra arriba/abajo
+  stickyHeader?: boolean;                        // default false; solo efectivo si virtualized
 }
 ```
+### Guía de layout, densidad y virtualización
+
+ITDataTable comparte exactamente las mismas props de configuración que ITTable (ver §16 para el detalle completo): `layout` (`'auto'` default | `'fixed'`), `density` (`'compact' | 'normal' | 'comfortable'`, default `'normal'`), `autoCardBreakpoint` (px, default `0`), `virtualized` (default `false`), `virtualizedMaxHeight` (default `400`), `rowHeight` (default `getRowHeight(size, density)`, size-aware), `overscan` (default `5`) y `stickyHeader` (default `false`). `Column<T>` también acepta `width` / `minWidth` / `align` / `truncate`.
+
+Receta anti-scroll-horizontal: `layout="fixed"` + `width` por columna + `truncate` en texto largo + `density` para compactar. `width` number = px, string = longitud CSS. El `<colgroup>` solo se emite si alguna columna define `width`.
+
+Virtualización (solo vista tabla; cards nunca virtualiza): rinde solo con un page size grande (`defaultItemsPerPage` + `itemsPerPageOptions` altos; los defaults 10/[5,10,20] no bastan). En ITDataTable (server-side) la ventana se calcula sobre la PÁGINA ACTUAL (`data.length`), NO sobre `total`: con un page size chico el efecto es invisible porque la página entera cabe en el viewport. Filas de alto uniforme (`rowHeight`, default `getRowHeight(size, density)` size-aware: sm 29/41/49 · md 33/45/53 · lg 41/53/61; exacto solo para celdas de una línea); usar `truncate` + `layout="fixed"`. El scroll se reinicia al cambiar página o items-per-page, NO al cambiar filtros. `aria-rowcount` refleja la página actual (+1), no el dataset. `useVirtualRows` / `useElementSize` son hooks internos NO exportados; `getRowHeight` / `sizeLineHeights` también son internos; `TableDensity` sí se exporta.
+
+Nota de paridad: ITSearchTable NO fue modificado; no tiene `layout`, `density`, `autoCardBreakpoint`, `virtualized` ni `width` por columna.
 
 ### Ejemplo Real
 ```tsx
-import React, { useRef } from 'react';
-import { ITDataTable } from 'axzy-ui-system';
+import React from 'react';
+import { ITDataTable, type ITDataTableFetchParams } from '@axzydev/axzy_ui_system';
 
 interface Member {
   id: string;
@@ -1235,8 +1386,7 @@ export default function AsyncMembersTable() {
         { id: '1', name: 'Asael Amaro', role: 'Administrador' },
         { id: '2', name: 'Alex Dev', role: 'Diseñador UI' }
       ],
-      totalCount: 2,
-      totalPages: 1
+      total: 2
     };
   };
 
@@ -1245,6 +1395,7 @@ export default function AsyncMembersTable() {
       columns={columns}
       fetchData={fetchBackendData}
       defaultItemsPerPage={5}
+      onRowClick={(row, event) => console.log('Fila seleccionada:', row, event.type)}
     />
   );
 }
@@ -2125,10 +2276,20 @@ export interface ITPageProps {
   emptyAction?: ReactNode;
   className?: string;
   children: ReactNode;
+  maxWidth?: '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | '7xl';
+  noPadding?: boolean;
+  /** Clases Tailwind del padding horizontal del wrapper. Default: "px-4 sm:px-6 lg:px-8".
+   *  Debe escribirse como literal: Tailwind escanea el código fuente, así que un
+   *  valor armado en runtime no se genera. */
+  horizontalPadding?: string;
 }
 ```
 
 ### Tipos Literales
+- `maxWidth`: une de `2xl` a `7xl` — ancho máximo del contenedor. Default `7xl`.
+- `noPadding`: `boolean` — quita el padding en ambos ejes y gana sobre `horizontalPadding`.
+- `horizontalPadding`: `string` — solo el gutter horizontal, para contenido edge-to-edge
+  conservando el ritmo vertical (`horizontalPadding="px-0"`). Default `"px-4 sm:px-6 lg:px-8"`.
 - `loading`: `boolean` — muestra skeletons (título + 3 rectángulos).
 - `error`: `string | null` — mensaje a mostrar; si hay `onRetry` se renderiza botón de reintento.
 - `empty`: `boolean` — muestra `ITEmptyState` con `emptyTitle`/`emptyDescription`/`emptyAction` personalizables.

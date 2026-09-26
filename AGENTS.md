@@ -3,7 +3,7 @@
 ## What this repo is
 
 - React + TypeScript **component library** published to npm as `@axzydev/axzy_ui_system` (Tailwind CSS v4).
-- Shipped entrypoint is `src/index.ts`. `src/main.tsx`, `src/App.tsx`, and `src/showcases/*` are the local sandbox/showroom only.
+- Shipped entrypoint is `src/index.ts`. `src/main.tsx`, `src/App.tsx`, `src/showcases/*`, `src/sandbox/*`, and `src/dev.css` are the local sandbox/showroom only.
 - Package manager is pnpm (pinned `10.34.0`). Use `pnpm`, not npm.
 
 ## Commands
@@ -13,7 +13,7 @@
 - `pnpm lint` — ESLint + `check:atomic` + `check:css`. Must end with `0 errors` (the many `no-explicit-any` warnings are intentional).
 - `pnpm check:atomic` / `pnpm check:css` — run a single check
 - `pnpm bundle` — build the published package: tsup (JS + `.d.ts`) then `scripts/build-css.mjs` → `dist/`
-- `pnpm build` — **alias of `pnpm bundle`**. The README's "TypeScript + Vite build" description is stale; trust `package.json`.
+- `pnpm build` — **alias of `pnpm bundle`** (tsup + CSS). Trust `package.json`.
 - `pnpm build:app` — build the sandbox into `dist-app/`
 - No `test` script. Tests are Storybook interaction tests run through Vitest + Playwright Chromium (`pnpm exec vitest run`; config in `vite.config.ts` under `test.projects`).
 
@@ -24,12 +24,26 @@
 - Import aliases: `@/` and `@app/` → `src/`, `@components/` → `src/components/`, `@types/` → `src/types/`.
 - Theming: `import { theme } from "@/theme/theme"`. Do not hardcode colors.
 
+## Dev sandbox
+
+- Dev-only, never bundled: `src/main.tsx`, `src/App.tsx`, `src/showcases/*`, `src/sandbox/*`, and `src/dev.css`. `src/index.ts` is the only published entrypoint; `dist/` contains no sandbox code.
+- Route scheme (hash router, `src/sandbox/useHashRoute.ts`):
+  - `#ui-system` → landing/dashboard (`src/sandbox/LandingShowcase.tsx`).
+  - `#ui-system/<group-slug>` → redirects (history replace) to that group's first item.
+  - `#ui-system/<group-slug>/<item-id>` → that showcase.
+  - any other hash under `#ui-system` → 404 (`src/sandbox/NotFoundShowcase.tsx`).
+  - empty hash / unknown first segment → the personal portfolio at `/`.
+- Group slug map: `general→general`, `struc→structure`, `forms→forms`, `data→viewdata`, `nav→navigation`, `feed→feedback`. The catalog, slug map and helpers (`SANDBOX_GROUPS`, `GROUP_SLUGS`, `SLUG_TO_GROUP`, `groupBySlug`, `firstItemOf`, `isValidItem`, `TOTAL_ITEMS`) live in `src/sandbox/navigation.ts`; item ids are the `renderShowcase` cases in `src/App.tsx`.
+- Sandbox-only keyframes (`it-landing-rise` / `it-landing-float` / `it-landing-grid`) live in `src/dev.css`; only `src/main.tsx` imports it, so they never reach `dist/index.css`.
+- Note: `package.json#files` includes `src/`, so sandbox sources ship in the npm tarball (same pre-existing behavior as `src/showcases/**`); they are not part of the published JS/CSS bundle.
+
 ## Component conventions
 
 - New component lives at `src/components/<layer>/<kebab-name>/` with `<name>.tsx`, `<name>.props.ts`, `<name>.stories.tsx` (optional `.doc.mdx`). Name is `IT` + PascalCase.
 - Every prop needs a JSDoc comment; every default export needs a JSDoc block with at least one `@example`.
 - Register the component and its props type in `src/index.ts` (`import` + `export type`).
 - After changing a component, update `DOCUMENTACION_DETALLADA_COMPONENTES.txt`, `LLM_DOCS.md`, and the matching `src/showcases/*.tsx` (`ShowcaseLayout` `doc` prop). Full standard: `.agents/skills/component-gen/SKILL.md`.
+- **Examples live in the dev sandbox** (`pnpm dev` → `src/showcases/*.tsx`) and that is the primary example surface. Storybook stories (`.stories.tsx` / `.doc.mdx`) still exist and must keep compiling, but they are deliberately not the primary place for examples.
 
 ## CSS gotchas
 

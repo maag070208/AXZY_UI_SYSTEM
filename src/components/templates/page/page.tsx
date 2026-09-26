@@ -41,6 +41,14 @@ const renderHeader = (props: ITPageProps) => {
  *   <ITCard>Dashboard content</ITCard>
  * </ITPage>
  * ```
+ *
+ * @example
+ * ```tsx
+ * // Edge-to-edge content: no horizontal gutter, vertical padding kept.
+ * <ITPage title="Reportes" horizontalPadding="px-0">
+ *   <ITTable data={rows} columns={columns} />
+ * </ITPage>
+ * ```
  */
 export default function ITPage(props: ITPageProps) {
   const {
@@ -57,11 +65,13 @@ export default function ITPage(props: ITPageProps) {
     children,
     maxWidth = "7xl",
     noPadding = false,
+    horizontalPadding = "px-4 sm:px-6 lg:px-8",
   } = props;
 
   const wrapperClass = clsx(
     "mx-auto w-full",
-    !noPadding && "px-4 sm:px-6 lg:px-8 py-6",
+    !noPadding && horizontalPadding,
+    !noPadding && "py-6",
     `max-w-${maxWidth}`,
     "space-y-8",
     className

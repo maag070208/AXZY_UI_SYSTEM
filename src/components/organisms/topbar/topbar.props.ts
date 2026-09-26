@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 export interface ITTopBarNavItem {
   /** Unique identifier for the navigation item. */
   id: string;
@@ -14,6 +16,20 @@ export interface ITTopBarProps {
   logo?: any;
   /** Text displayed next to the logo. */
   logoText?: string;
+  /**
+   * Content rendered in the centered region between the left (logo / nav) and
+   * right (user menu) areas — e.g. a global search box. The region is rendered
+   * only when this prop is provided, and only from the `lg` breakpoint up;
+   * below `lg` the row stays logo + user menu so nothing is squeezed.
+   */
+  centerContent?: ReactNode;
+  /**
+   * Actions rendered in the right area, immediately before the user menu —
+   * e.g. a notification bell, a help link, a theme switcher. The component
+   * decides the placement, so the caller only supplies the controls. The area
+   * is rendered only when this prop or `userMenu` is provided.
+   */
+  children?: ReactNode;
   /** User dropdown configuration including name, email, avatar, and menu items. */
   userMenu?: {
     /** Display name shown in the trigger button and dropdown header. */

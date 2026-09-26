@@ -21,6 +21,14 @@ const meta: Meta<typeof ITTable> = {
       control: "select",
       options: ["sm", "md", "lg"],
     },
+    density: {
+      control: "select",
+      options: ["compact", "normal", "comfortable"],
+    },
+    layout: {
+      control: "select",
+      options: ["auto", "fixed"],
+    },
   },
 };
 
@@ -169,4 +177,151 @@ export const EmptyState: Story = {
       data: [],
       title: "No Data Available",
     } as any,
+};
+
+// Wrapper for clickable rows/cards
+const RowClickWrapper = (args: any) => {
+    const [selected, setSelected] = useState<User | null>(null);
+
+    return (
+      <div className="space-y-3">
+        <p className="text-sm font-medium text-slate-500">
+          {selected
+            ? `Selected: ${selected.name} (id ${selected.id})`
+            : "Click a row/card or press Enter/Space while focused"}
+        </p>
+        <ITTable
+          {...args}
+          onRowClick={(row: User) => setSelected(row)}
+        />
+      </div>
+    );
+};
+
+export const WithRowClick: Story = {
+    render: (args) => <RowClickWrapper {...args} />,
+    args: {
+      columns: basicColumns,
+      data: mockData.slice(0, 5),
+      title: "Clickable Rows",
+    } as any,
+};
+
+export const WithRowClickCards: Story = {
+    render: (args) => <RowClickWrapper {...args} />,
+    args: {
+      columns: basicColumns,
+      data: mockData.slice(0, 5),
+      title: "Clickable Cards",
+      defaultView: "cards",
+    } as any,
+};
+
+// --- CONFIGURABLE LAYOUT / DENSITY ---
+
+const longCellData: User[] = [
+  {
+    id: 1,
+    name: "Extraordinariamente Largo Nombre de Usuario Que No Cabe",
+    email: "usuario.con.un.correo.extremadamente.largo@example-enterprise-domain.com",
+    roleId: 1,
+    balance: 28400,
+    isActive: true,
+    lastLogin: "2026-07-18T09:30:00",
+  },
+  {
+    id: 2,
+    name: "Otra Persona Con Un Nombre Bastante Extenso Para Probar",
+    email: "otra.persona.con.correo.extenso@example-enterprise-domain.com",
+    roleId: 2,
+    balance: 15200,
+    isActive: false,
+    lastLogin: "2026-07-17T14:22:00",
+  },
+];
+
+const fixedColumns: Column<User>[] = [
+  { key: "id", label: "ID", type: "number", width: 64, minWidth: 48, align: "center" },
+  { key: "name", label: "Name", type: "string", width: "35%", truncate: true },
+  { key: "email", label: "Email", type: "string", width: "45%", truncate: true },
+];
+
+export const CompactDensity: Story = {
+  args: {
+    columns: advancedColumns.map(col => ({ ...col, render: undefined })),
+    data: mockData,
+    title: "Compact Density",
+    density: "compact",
+    defaultItemsPerPage: 8,
+  } as any,
+};
+
+export const FixedLayoutWithWidths: Story = {
+  render: (args: any) => (
+    <div style={{ width: 480 }} className="rounded-lg border border-dashed border-slate-300">
+      <ITTable {...args} />
+    </div>
+  ),
+  args: {
+    columns: fixedColumns,
+    data: longCellData,
+    title: "Fixed layout · no horizontal scroll",
+    layout: "fixed",
+    density: "compact",
+    defaultItemsPerPage: 5,
+  } as any,
+};
+
+export const AutoCardsNarrowContainer: Story = {
+  render: (args: any) => (
+    <div style={{ width: 420 }} className="rounded-lg border border-dashed border-slate-300">
+      <ITTable {...args} />
+    </div>
+  ),
+  args: {
+    columns: basicColumns,
+    data: mockData.slice(0, 6),
+    title: "Auto cards under 640px",
+    autoCardBreakpoint: 640,
+    defaultItemsPerPage: 6,
+  } as any,
+};
+
+// --- VIRTUALIZATION ---
+
+const virtualColumns: Column<User>[] = [
+  { key: "id", label: "ID", type: "number", width: 72, minWidth: 56, align: "center" },
+  { key: "name", label: "Name", type: "string", width: "30%", truncate: true },
+  { key: "email", label: "Email", type: "string", width: "40%", truncate: true },
+  {
+    key: "roleId",
+    label: "Role",
+    type: "catalog",
+    width: "30%",
+    truncate: true,
+    catalogOptions: { data: mockRoles },
+  },
+];
+
+export const VirtualizedLargeDataset: Story = {
+  render: (args: any) => (
+    <div className="space-y-2">
+      <p className="text-xs text-slate-500">
+        250 rows · only the visible window is mounted (~10–20 &lt;tr&gt; + at most 2 spacer rows)
+      </p>
+      <ITTable {...args} />
+    </div>
+  ),
+  args: {
+    columns: virtualColumns,
+    data: generateMockData(250),
+    title: "Virtualized · 250 rows",
+    virtualized: true,
+    stickyHeader: true,
+    layout: "fixed",
+    density: "compact",
+    virtualizedMaxHeight: 360,
+    defaultItemsPerPage: 250,
+    itemsPerPageOptions: [50, 100, 250],
+  } as any,
 };

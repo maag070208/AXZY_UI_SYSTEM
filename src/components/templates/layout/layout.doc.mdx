@@ -40,7 +40,9 @@ import { ITLayout } from '@axzydev/axzy_ui_system';
 
 - The topbar spans the full viewport width at the top of the page.
 - The sidebar sits under the topbar on the left and floats over content when expanded via hover.
+- Reserved desktop width follows `sidebar.isCollapsed`: omitted/uncontrolled or `true` reserves the 88px rail (hover expands over content); controlled-expanded (`sidebar.isCollapsed={false}`) reserves the full 280px so it never overlays content.
 - Sidebar in collapsed state shows only icons; expanding reveals labels.
+- The collapsed rail expands automatically on hover. Keep global search in `topBar.centerContent` (always visible, `lg` and up) rather than `sidebar.header`, which is expanded-only and disappears in the 88px rail.
 - Themed entirely through CSS custom properties from ITThemeProvider.
 - Includes mobile responsive behavior with a hamburger-style toggle.
 

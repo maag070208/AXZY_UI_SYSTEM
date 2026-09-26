@@ -901,13 +901,20 @@ export const TextShowcase = () => {
 
 // 3. ITLayout & ITNavbar Showcase
 export const LayoutShowcase = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [activeId, setActiveId] = useState("dashboard");
   const [navActiveId, setNavActiveId] = useState<string | null>("1");
 
   const topBar = {
     logo: <div className="w-9 h-9 rounded-lg bg-primary-500 flex items-center justify-center text-white font-bold">A</div>,
     logoText: "AXZY Console",
+    centerContent: (
+      <input
+        type="search"
+        placeholder="Buscar componente…"
+        className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-primary-500/40"
+      />
+    ),
     navItems: [
       { id: "home", label: "Inicio", icon: <FaHome />, action: () => setActiveId("home") },
       { id: "docs", label: "Documentos", icon: <FaFileAlt />, action: () => setActiveId("docs") },
@@ -942,19 +949,29 @@ export const LayoutShowcase = () => {
       { id: "settings", label: "Configuración", icon: <FaCog />, isActive: activeId === "settings", action: () => setActiveId("settings") },
     ],
     isCollapsed: collapsed,
-    onToggleCollapse: () => setCollapsed(v => !v),
+    header: (
+      <ITText
+        className="text-xs font-bold tracking-wide"
+        style={{ color: "var(--it-sidebar-label-color, var(--color-secondary-700))" }}
+      >
+        AXZY v1.3
+      </ITText>
+    ),
   };
 
   const code = `<ITLayout
   topBar={{
     logo: <Logo />,
     logoText: "AXZY Console",
+    // Slot central opcional (visible desde lg) — ideal para un buscador global
+    centerContent: <SearchBox value={term} onChange={setTerm} />,
     userMenu: { userName, userEmail, menuItems }
   }}
   sidebar={{
     navigationItems: [...],
     isCollapsed: ${collapsed},
-    onToggleCollapse: () => setCollapsed(v => !v)
+    // Slot opcional sobre la navegación (oculto al colapsar)
+    header: <span>AXZY v1.3</span>
   }}
 >
   {/* Tu contenido */}
@@ -1025,7 +1042,7 @@ export const LayoutShowcase = () => {
             <ITSlideToggle isOn={collapsed} onToggle={setCollapsed} size="sm" />
           </div>
           <div className="text-xs text-slate-500">
-            En móvil (&lt;lg) el sidebar se abre como drawer con un fondo oscuro. Usa el botón ☰ del topbar.
+            En móvil (&lt;lg) el sidebar se abre como drawer con un fondo oscuro. Usa el botón ☰ del topbar. El botón ⟩ del propio sidebar también colapsa/expande.
           </div>
         </ITStack>
       }
@@ -1088,6 +1105,27 @@ export const LayoutShowcase = () => {
           </div>
         </ITStack>
       }
+      doc={{
+        summary: "Chasis estructural del portal: topbar + sidebar colapsable + área de contenido.",
+        examples: [
+          '<ITLayout topBar={{ centerContent: <SearchBox /> }} sidebar={{ navigationItems }}>',
+          "  <Dashboard />",
+          "</ITLayout>",
+        ],
+        props: [
+          { name: "topBar", type: "ITTopBarProps", required: true, description: "Configuración de la barra superior." },
+          { name: "sidebar", type: "ITSidebarProps", required: true, description: "Configuración del sidebar (navigationItems, isCollapsed, header…)." },
+          { name: "children", type: "React.ReactNode", required: true, description: "Contenido principal." },
+          { name: "className", type: "string", description: "Clases del wrapper externo." },
+          { name: "contentClassName", type: "string", description: "Clases del contenedor de contenido." },
+          { name: "sidebar.header", type: "React.ReactNode", description: "Slot opcional sobre la navegación (ej. wordmark o filtro). Oculto al colapsar." },
+        ],
+        notes: [
+          "El sidebar hereda aria-current/aria-expanded y acepta un slot header opcional.",
+          "Con `sidebar.isCollapsed` omitido el contenido reserva 88px (hover expande sobre el contenido). Si lo controlas a `false`, reserva 280px y no tapa el contenido.",
+          "El riel colapsado se expande automáticamente al pasar el cursor por encima; no hay botón de colapso.",
+        ],
+      }}
     />
   );
 };

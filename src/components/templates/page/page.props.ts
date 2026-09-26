@@ -41,6 +41,16 @@ export interface ITPageProps {
   children: ReactNode;
   /** Maximum width of the page content. Options: "2xl", "3xl", "4xl", "5xl", "6xl", "7xl". Default: "7xl". */
   maxWidth?: "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl";
-  /** Whether to remove default padding from the page wrapper. */
+  /** Whether to remove default padding from the page wrapper. Overrides `horizontalPadding`. */
   noPadding?: boolean;
+  /**
+   * Tailwind classes for the page wrapper's horizontal padding. Pass `"px-0"`
+   * for edge-to-edge content, or a responsive scale like `"px-2 sm:px-4"`.
+   *
+   * Must be written as a literal: Tailwind scans source files, so a value
+   * assembled at runtime will not be generated into the stylesheet.
+   *
+   * @default "px-4 sm:px-6 lg:px-8"
+   */
+  horizontalPadding?: string;
 }

@@ -5,7 +5,8 @@ import ITText from "@/components/atoms/text/text";
 
 /**
  * Vertical navigation sidebar with submenu expand/collapse, hover tooltips in collapsed mode,
- * and glassmorphism styling.
+ * and glassmorphism styling. The collapsed rail expands automatically on pointer hover — there
+ * is no toggle button; the hover is the only way to expand and collapse it.
  *
  * @example
  * ```tsx
@@ -20,8 +21,7 @@ import ITText from "@/components/atoms/text/text";
  *       ],
  *     },
  *   ]}
- *   isCollapsed={collapsed}
- *   onToggleCollapse={() => setCollapsed(!collapsed)}
+ *   isCollapsed
  * />
  * ```
  */
@@ -33,6 +33,7 @@ export default function ITSidebar({
   onItemClick,
   onSubItemClick,
   subitemConnector = 'dot',
+  header,
 }: ITSidebarProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [isHovering, setIsHovering] = useState(false);
@@ -133,12 +134,24 @@ export default function ITSidebar({
         backdropFilter: 'blur(12px)',
       }}
     >
+      {header && !isSidebarCollapsed && (
+        <div className="px-4 pt-4 pb-1 flex-shrink-0">{header}</div>
+      )}
+
       {/* Navigation Items */}
-      <nav className="flex-1 py-4 overflow-y-auto overflow-x-hidden custom-scrollbar px-4">
+      <nav aria-label="Componentes de la librería" className="flex-1 py-4 overflow-y-auto overflow-x-hidden custom-scrollbar px-4">
         <ul className="space-y-1">
-          {navigationItems.map((item) => (
+          {navigationItems.map((item) => {
+            const hasSubmenu = !!item.subitems && item.subitems.length > 0;
+            const submenuId = `it-sidebar-submenu-${item.id}`;
+            return (
             <li key={item.id} className="relative group/navitem">
               <div
+                role="button"
+                tabIndex={0}
+                aria-label={item.label}
+                aria-expanded={hasSubmenu ? expandedItems.has(item.id) : undefined}
+                aria-controls={hasSubmenu ? submenuId : undefined}
                 className={`flex items-center cursor-pointer 
                   transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)]
                   rounded-xl relative overflow-visible
@@ -156,6 +169,12 @@ export default function ITSidebar({
                   if (!item.isActive) e.currentTarget.style.backgroundColor = 'transparent';
                 }}
                 onClick={() => handleItemClick(item)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleItemClick(item);
+                  }
+                }}
               >
                 {item.isActive && !isSidebarCollapsed && (
                   <div
@@ -264,7 +283,7 @@ export default function ITSidebar({
 
               {/* Submenu - smooth height/opacity when not collapsed */}
               {!isSidebarCollapsed && item.subitems && item.subitems.length > 0 && (
-                <div className={`overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] ${expandedItems.has(item.id) ? "max-h-[500px] opacity-100 mt-1" : "max-h-0 opacity-0"}`}>
+                <div id={submenuId} role="group" aria-label={item.label} className={`overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] ${expandedItems.has(item.id) ? "max-h-[500px] opacity-100 mt-1" : "max-h-0 opacity-0"}`}>
                   <ul
                     className="ml-4 flex flex-col gap-0 py-0.5"
                     style={{
@@ -276,6 +295,7 @@ export default function ITSidebar({
                     {item.subitems.map((subitem) => (
                       <li key={subitem.id} className="relative">
                         <button
+                          aria-current={subitem.isActive ? "page" : undefined}
                           onClick={() => {
                             if (subitem.action) subitem.action();
                             if (onSubItemClick) onSubItemClick(subitem);
@@ -329,7 +349,7 @@ export default function ITSidebar({
                 </div>
               )}
             </li>
-          ))}
+          );})}
         </ul>
       </nav>
     </aside>

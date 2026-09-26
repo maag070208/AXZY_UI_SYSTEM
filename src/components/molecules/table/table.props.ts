@@ -1,4 +1,4 @@
-import { TableSize, TableVariants } from "@/types/table.types";
+import { TableDensity, TableSize, TableVariants } from "@/types/table.types";
 
 /** Data type of a table column, controls default rendering, filter UI, and sort comparison. */
 export type ColumnType = "string" | "date" | "number" | "boolean" | "actions" | "catalog";
@@ -46,6 +46,22 @@ export interface Column<T = any> {
     /** Shows an error state in the filter UI when the catalog failed to load. @default false */
     error?: boolean;
   };
+  /**
+   * Fixed column width. A `number` is treated as pixels (`width: 120` → `120px`);
+   * a `string` is passed through as any CSS length (`"20%"`, `"12rem"`).
+   * A `<colgroup>` is only rendered when at least one column defines a width.
+   */
+  width?: number | string;
+  /** Minimum column width in pixels, applied to the header and body cells via inline style. */
+  minWidth?: number;
+  /** Horizontal alignment of this column's header and body cells. @default "left" */
+  align?: "left" | "center" | "right";
+  /**
+   * Truncates overflowing cell content with an ellipsis and exposes the raw
+   * string/number value through the native `title` attribute.
+   * @default false
+   */
+  truncate?: boolean;
 }
 
 export interface ITTableProps<T> {
@@ -55,7 +71,7 @@ export interface ITTableProps<T> {
   containerClassName?: string;
   /** The data array to render in the table body. */
   data: T[];
-  /** Visual variant: "default", "striped", "bordered", "borderless". */
+  /** Visual variant: "default", "striped", "bordered". */
   variant?: TableVariants;
   /** Additional CSS classes for the root table wrapper. */
   className?: string;
@@ -75,4 +91,67 @@ export interface ITTableProps<T> {
   showVerticalBorder?: boolean;
   /** Custom class for vertical borders (overrides the default subtle gray). */
   verticalBorderClassname?: string;
+  /**
+   * Callback fired when a row (table view) or card (cards view) is activated,
+   * receiving the row item and the originating event. The event is a
+   * `MouseEvent` for pointer interaction and a `KeyboardEvent` for Enter/Space
+   * activation. Not fired when the interaction starts inside an interactive
+   * child (button, link, input, or any `[data-row-click-ignore]` element).
+   */
+  onRowClick?: (
+    row: T,
+    event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
+  ) => void;
+  /**
+   * Table layout algorithm. `"fixed"` respects column `width` values and drops
+   * the `min-w-max` / `min-w-[150px]` floors so content no longer forces
+   * horizontal scrolling; `"auto"` keeps the content-driven layout.
+   * @default "auto"
+   */
+  layout?: "auto" | "fixed";
+  /**
+   * Cell padding and row-height preset. Independent of `size`, which only
+   * controls font-size: `"compact"` | `"normal"` | `"comfortable"`.
+   * @default "normal"
+   */
+  density?: TableDensity;
+  /**
+   * Container width (in px) below which the table automatically falls back to
+   * the cards view. `0` disables the fallback.
+   * @default 0
+   */
+  autoCardBreakpoint?: number;
+  /**
+   * Enables row virtualization for the table view: only the visible window of
+   * rows is rendered, with spacer rows preserving the full scroll height.
+   * The cards view is never virtualized.
+   * @default false
+   */
+  virtualized?: boolean;
+  /**
+   * Max height (px) of the virtualized table's scroll container.
+   * Only used when `virtualized` is true.
+   * @default 400
+   */
+  virtualizedMaxHeight?: number;
+  /**
+   * Assumed uniform row height (px) used by the virtualizer. Defaults to
+   * `getRowHeight(size, density)`, which is size-aware: the `size="md"`
+   * baseline is 33 / 45 / 53 (compact / normal / comfortable) and `size`
+   * shifts it by the font-size line box (sm 16px / md 20px / lg 28px).
+   * Only used when `virtualized` is true.
+   */
+  rowHeight?: number;
+  /**
+   * Number of extra rows rendered above and below the viewport to avoid blank
+   * gaps while scrolling. Only used when `virtualized` is true.
+   * @default 5
+   */
+  overscan?: number;
+  /**
+   * Makes the header cells sticky while the virtualized body scrolls. Only
+   * effective when `virtualized` is true.
+   * @default false
+   */
+  stickyHeader?: boolean;
 }

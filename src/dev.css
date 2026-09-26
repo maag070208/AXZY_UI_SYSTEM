@@ -1,2 +1,59 @@
 @import "tailwindcss";
 @import "./index.css";
+
+/* ──────────────────────────────────────────────
+   SANDBOX-ONLY ANIMATIONS (dev.css)
+   Never shipped: only src/main.tsx imports this file and `pnpm bundle`
+   builds from src/index.ts, so these never reach dist/index.css.
+   ────────────────────────────────────────────── */
+
+@keyframes it-landing-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.it-landing-rise {
+  animation: it-landing-rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes it-landing-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-18px);
+  }
+}
+
+.it-landing-float {
+  animation: it-landing-float 8s ease-in-out infinite;
+}
+
+.it-landing-grid {
+  background-image: radial-gradient(
+    circle at center,
+    currentColor 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(
+    ellipse at center,
+    black 40%,
+    transparent 78%
+  );
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 78%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .it-landing-rise,
+  .it-landing-float {
+    animation: none;
+  }
+}

@@ -71,7 +71,7 @@ export const Default: Story = {
   render: (args) => (
     <div className="h-screen bg-gray-50 flex">
       <ITSidebar {...args} />
-      <div className="flex-1 p-8 text-zinc-500 font-medium">Contenido principal simulado. Juega con el botón de colapsar para ver las transiciones suaves.</div>
+      <div className="flex-1 p-8 text-zinc-500 font-medium">Contenido principal simulado. Pasa el cursor por los íconos para ver el efecto de glassmorphism en los tooltips flotantes.</div>
     </div>
   ),
 };

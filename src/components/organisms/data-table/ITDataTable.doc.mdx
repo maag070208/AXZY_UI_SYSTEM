@@ -11,7 +11,7 @@ Advanced server-side data table with automatic pagination, column sorting, and f
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `columns` | `Column<T>[]` | — | Column definitions with key, label, type, sortable, filter, render, and width. |
+| `columns` | `Column<T>[]` | — | Column definitions with key, label, type, sortable, filter, render, plus layout fields: `width` (`number` px or CSS `string`), `minWidth` (px), `align` (`"left" \| "center" \| "right"`), and `truncate` (ellipsis + native `title`). |
 | `fetchData` | `(params: ITDataTableFetchParams) => Promise<ITDataTableResponse<T>>` | — | Async callback triggered on pagination, filter, or sort change. Must return `{ data, total }`. |
 | `debounceMs` | `number` | `500` | Delay in ms before firing fetch after filter state changes. |
 | `externalFilters` | `Record<string, string \| number \| boolean \| Date>` | `{}` | Filters managed outside the table (e.g., date pickers) merged with internal column filters. |
@@ -20,11 +20,24 @@ Advanced server-side data table with automatic pagination, column sorting, and f
 | `reloadTrigger` | `number \| string \| boolean` | — | Changing this value forces a re-fetch. Use after mutations. |
 | `containerClassName` | `string` | — | CSS classes for the outer wrapper. |
 | `className` | `string` | — | CSS classes applied to the `<table>` element. |
-| `variant` | `"default" \| "striped" \| "bordered" \| "minimal"` | `"default"` | Visual style variant. |
-| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Row density preset. |
+| `variant` | `"default" \| "striped" \| "bordered" \| "minimal"` | `"default"` | Visual style variant. `"minimal"` is accepted by the type but has no styles (renders like `"default"`). |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Font-size preset (does not change padding; use `density` for that). |
 | `itemsPerPageOptions` | `number[]` | `[5, 10, 20]` | Selectable page-size options. |
 | `defaultItemsPerPage` | `number` | `10` | Initial rows per page. |
 | `title` | `string \| ReactNode` | — | Heading displayed above the table. |
+| `renderCard` | `(row: T) => ReactNode` | — | Custom card renderer for the cards view. |
+| `defaultView` | `"table" \| "cards"` | `"table"` | Initial view mode. |
+| `showVerticalBorder` | `boolean` | `true` | Show vertical borders between columns. |
+| `verticalBorderClassname` | `string` | — | Custom class for the vertical borders. |
+| `onRowClick` | `(row: T, event: MouseEvent<HTMLElement> \| KeyboardEvent<HTMLElement>) => void` | — | Row/card activation. `MouseEvent` for pointer, `KeyboardEvent` for Enter/Space. Skipped when the interaction starts inside an interactive child. |
+| `layout` | `"auto" \| "fixed"` | `"auto"` | Table layout algorithm. `"fixed"` honors column `width` values and drops the `min-w-max` / `min-w-[150px]` floors so content no longer forces horizontal scrolling. |
+| `density` | `"compact" \| "normal" \| "comfortable"` | `"normal"` | Cell padding / row-height preset. Independent of `size`, which only controls font-size. |
+| `autoCardBreakpoint` | `number` | `0` | Container width (px) below which the table automatically falls back to the cards view. `0` disables the fallback. |
+| `virtualized` | `boolean` | `false` | Renders only the visible row window with spacer rows preserving scroll height. Table view only; cards view is never virtualized. |
+| `virtualizedMaxHeight` | `number` | `400` | Max height (px) of the virtualized scroll container. Only used when `virtualized` is true. |
+| `rowHeight` | `number` | `getRowHeight(size, density)` | Assumed uniform row height (px). Size-aware: `size="md"` baseline is 33 / 45 / 53 for compact / normal / comfortable; `size` shifts it by the font-size line box (sm 16px / md 20px / lg 28px). |
+| `overscan` | `number` | `5` | Extra rows rendered above and below the viewport to avoid blank gaps. |
+| `stickyHeader` | `boolean` | `false` | Keeps header cells sticky while the virtualized body scrolls. Only effective when `virtualized` is true. |
 
 ## Usage
 
@@ -42,6 +55,18 @@ import { ITDataTable } from '@axzydev/axzy_ui_system';
   fetchData={async (params) => api.fetchItems(params)}
   variant="bordered"
 />
+
+// No horizontal scroll: fixed layout + per-column widths + truncation
+<ITDataTable
+  columns={[
+    { key: 'name',  label: 'Name',  type: 'string', width: '30%', truncate: true },
+    { key: 'email', label: 'Email', type: 'string', width: 220,    truncate: true },
+    { key: 'role',  label: 'Role',  type: 'string', width: 140,    align: 'center' },
+  ]}
+  fetchData={async (params) => api.fetchItems(params)}
+  layout="fixed"
+  density="compact"
+/>
 ```
 
 ## Notes
@@ -51,6 +76,15 @@ import { ITDataTable } from '@axzydev/axzy_ui_system';
 - Debounce prevents excessive API calls while the user types in filter inputs.
 - A loading skeleton overlay covers the table body while fetching, keeping the header visible.
 - Empty state is shown automatically when no results match the current filters.
+- `onRowClick` fires in **both** the table and cards views. The event is a `MouseEvent` for pointer interaction and a `KeyboardEvent` for Enter/Space activation. It is not fired while `isLoading`, and interactions that start inside an interactive child (button, link, input, or `[data-row-click-ignore]`) are ignored.
+- `density` controls padding/row height (`compact` 33px / `normal` 45px / `comfortable` 53px at `size="md"`); `size` changes font-size and shifts the row height by the line box (sm 16px / md 20px / lg 28px).
+- **Anti horizontal scroll recipe:** `layout="fixed"` + a `width` on every column + `truncate` on long text + `density="compact"`. `width` accepts a `number` (px) or any CSS length string (`"20%"`, `"12rem"`). A `<colgroup>` is only emitted when at least one column defines a `width`.
+- With the default `layout="auto"`, `min-w-max` stays active so column widths can still reflow as different cell content enters the window during vertical scroll. Use `layout="fixed"` + column `width` for stable widths.
+- `autoCardBreakpoint` swaps to the cards view when the container (not the viewport) is narrower than the given px value; the Table toggle is disabled while forced, the Cards toggle stays enabled.
+- **Virtualization** applies to the **table view only** — the cards view is never virtualized. It only pays off with a large page size: raise `defaultItemsPerPage` and `itemsPerPageOptions` (defaults are `10` and `[5, 10, 20]`). Rows are assumed to have a uniform `rowHeight`; use `truncate` + `layout="fixed"` for predictable heights.
+- Scroll resets to the top on page or items-per-page change, but **not** on filter change (known limitation). `aria-rowcount` reflects the current page (+1), not the whole dataset, because pagination is independent.
+- `virtualizedMaxHeight`, `rowHeight`, `overscan`, and `stickyHeader` only take effect when `virtualized` is true. `stickyHeader` makes each `<th>` sticky using the `--color-table-headerBg` token (fallback `#f8fafc`).
+- `TableDensity` is exported from the package. `ITSearchTable` does **not** support `layout`, `density`, `autoCardBreakpoint`, `virtualized`, or per-column `width` — do not assume parity.
 
 ## Stories
 

@@ -1,5 +1,7 @@
 import { useTableState } from "@/hooks/useTableState";
-import { sizeStyles, variantStyles } from "@/types/table.types";
+import { useElementSize } from "@/hooks/useElementSize";
+import { useVirtualRows } from "@/hooks/useVirtualRows";
+import { getRowHeight, sizeStyles, tableAlignClasses, variantStyles } from "@/types/table.types";
 import clsx from "clsx";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { FaCheck, FaSpinner, FaTimes, FaTable, FaThLarge } from "react-icons/fa";
@@ -8,12 +10,13 @@ import ITInput from "@/components/atoms/input/input";
 import ITPagination from "@/components/molecules/pagination/pagination";
 import ITSelect from "@/components/molecules/select/select";
 import { Column } from "@/components/molecules/table/table.props";
-import { formatCurrencyMX } from "@/utils/table.utils";
+import { formatCurrencyMX, isInteractiveTarget } from "@/utils/table.utils";
 import { ITDataTableProps } from "./dataTable.props";
 import ITText from "@/components/atoms/text/text";
 import {
   tableActionsCell,
   tableBody,
+  tableCardClickable,
   tableCell,
   tableCellText,
   tableContainer,
@@ -21,6 +24,7 @@ import {
   tableHeaderCell,
   tableHeaderRow,
   tableRow,
+  tableRowClickable,
 } from "@/utils/styles";
 
 const getNestedValue = (obj: unknown, path: string) => {
@@ -69,11 +73,38 @@ export default function ITDataTable<T extends Record<string, unknown>>({
   defaultView,
   showVerticalBorder = true,
   verticalBorderClassname,
+  onRowClick,
+  layout = "auto",
+  density = "normal",
+  autoCardBreakpoint = 0,
+  virtualized = false,
+  virtualizedMaxHeight = 400,
+  rowHeight,
+  overscan = 5,
+  stickyHeader = false,
 }: ITDataTableProps<T>) {
   const [viewMode, setViewMode] = useState<"table" | "cards">(defaultView || "table");
+  const { ref: rootRef, width: containerWidth } = useElementSize<HTMLDivElement>();
   const [data, setData] = useState<T[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const [isLoading, setIsLoading] = useState(fetchOnMount);
+
+  const isFixed = layout === "fixed";
+  const forcedCards =
+    autoCardBreakpoint > 0 && containerWidth > 0 && containerWidth < autoCardBreakpoint;
+  const effectiveView: "table" | "cards" = forcedCards ? "cards" : viewMode;
+  const hasColumnWidths = columns.some((col) => col.width != null);
+  const tableLayoutClass = isFixed
+    ? "w-full text-sm text-left text-secondary-600 transition-opacity duration-300"
+    : "min-w-max w-full text-sm text-left text-secondary-600 transition-opacity duration-300";
+
+  const isTableVirtual = virtualized && effectiveView === "table";
+  const isStickyHeader = stickyHeader && isTableVirtual;
+  const resolvedRowHeight = rowHeight ?? getRowHeight(size, density);
+  const columnCount = columns.length;
+  const scrollOuterClass = isTableVirtual
+    ? "relative min-h-[200px]"
+    : "overflow-x-auto relative min-h-[200px]";
 
   const {
     currentPage,
@@ -85,6 +116,22 @@ export default function ITDataTable<T extends Record<string, unknown>>({
     handleSort,
     handleItemsPerPageChange,
   } = useTableState({ defaultItemsPerPage });
+
+  const {
+    scrollRef,
+    startIndex,
+    endIndex,
+    topSpacerHeight,
+    bottomSpacerHeight,
+  } = useVirtualRows({
+    count: data.length,
+    rowHeight: resolvedRowHeight,
+    overscan,
+    enabled: isTableVirtual,
+    resetKey: `${currentPage}-${itemsPerPage}`,
+  });
+
+  const windowData = isTableVirtual ? data.slice(startIndex, endIndex + 1) : data;
 
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasFetchedRef = useRef(false);
@@ -270,13 +317,181 @@ export default function ITDataTable<T extends Record<string, unknown>>({
 
   const segCtrlClass = (mode: "table" | "cards") =>
     `flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
-      viewMode === mode
+      effectiveView === mode
         ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
         : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
     }`;
 
+  const handleRowClick = (row: T) => (event: React.MouseEvent<HTMLElement>) => {
+    if (!onRowClick || isLoading || isInteractiveTarget(event.target, event.currentTarget)) return;
+    onRowClick(row, event);
+  };
+
+  const handleRowKeyDown = (row: T) => (event: React.KeyboardEvent<HTMLElement>) => {
+    if (!onRowClick || isLoading) return;
+    if (event.target !== event.currentTarget) return;
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    onRowClick(row, event);
+  };
+
+  const tableEl = (
+    <table
+      className={clsx(
+        tableLayoutClass,
+        showVerticalBorder && "[&_th]:border-r [&_th:last-child]:border-r-0 [&_td]:border-r [&_td:last-child]:border-r-0",
+        showVerticalBorder && (verticalBorderClassname || "[&_th]:border-slate-100 dark:[&_th]:border-slate-700/30 [&_td]:border-slate-100 dark:[&_td]:border-slate-700/30"),
+        isLoading ? "opacity-50" : "opacity-100",
+        variantStyles[variant],
+        sizeStyles[size],
+        className
+      )}
+      style={isFixed ? { tableLayout: "fixed" } : undefined}
+      aria-rowcount={isTableVirtual ? data.length + 1 : undefined}
+    >
+      {hasColumnWidths && (
+        <colgroup>
+          {columns.map((col) => (
+            <col
+              key={col.key}
+              style={
+                col.width != null
+                  ? { width: typeof col.width === "number" ? `${col.width}px` : col.width }
+                  : undefined
+              }
+            />
+          ))}
+        </colgroup>
+      )}
+      <thead>
+        <tr
+          className={clsx(tableHeaderRow, "dark:text-slate-200")}
+          aria-rowindex={isTableVirtual ? 1 : undefined}
+        >
+          {columns.map((col) => (
+            <th
+              key={col.key}
+              scope="col"
+              className={clsx(
+                tableHeaderCell(col.className, density),
+                col.align && tableAlignClasses[col.align],
+                isStickyHeader && "sticky top-0 z-10 bg-secondary-50"
+              )}
+              style={
+                col.minWidth != null || isStickyHeader
+                  ? {
+                      ...(col.minWidth != null ? { minWidth: `${col.minWidth}px` } : {}),
+                      ...(isStickyHeader
+                        ? { backgroundColor: "var(--color-table-headerBg, #f8fafc)" }
+                        : {}),
+                    }
+                  : undefined
+              }
+            >
+              <div className={isFixed ? "flex flex-col gap-3" : "flex flex-col gap-3 min-w-[150px]"}>
+                <div className="flex items-center justify-between gap-2">
+                   <ITText as="span" className="text-slate-900 dark:text-white font-bold">{col.label}</ITText>
+                  {col.sortable && col.type !== "actions" && (
+                    <button
+                      onClick={() => handleSort(col.key)}
+                      disabled={isLoading}
+                      className={`p-1 rounded-md transition-colors ${
+                        sortConfig?.key === col.key
+                          ? "bg-secondary-200 text-secondary-900"
+                          : "hover:bg-secondary-200 text-secondary-400 hover:text-secondary-700"
+                      } disabled:opacity-50`}
+                      title={`Ordenar por ${col.label}`}
+                    >
+                      <MdOutlineSwapVert className="w-4 h-4" aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+
+                <div className="w-full">{col.filter ? renderFilterInput(col) : null}</div>
+              </div>
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody className={clsx(tableBody, "dark:divide-slate-700/30")}>
+        {data.length > 0 ? (
+          <>
+            {isTableVirtual && topSpacerHeight > 0 && (
+              <tr aria-hidden="true" style={{ height: topSpacerHeight }}>
+                <td colSpan={columnCount} style={{ padding: 0, border: 0 }} />
+              </tr>
+            )}
+            {windowData.map((row, windowIndex) => {
+              const absoluteIndex = isTableVirtual ? startIndex + windowIndex : windowIndex;
+              return (
+                <tr
+                  key={absoluteIndex}
+                  aria-rowindex={isTableVirtual ? absoluteIndex + 2 : undefined}
+                  className={clsx(
+                    tableRow,
+                    variant === "striped" && absoluteIndex % 2 === 0 && "bg-secondary-50/40 dark:bg-slate-800/20",
+                    onRowClick && !isLoading && tableRowClickable
+                  )}
+                  tabIndex={onRowClick && !isLoading ? 0 : undefined}
+                  onClick={onRowClick && !isLoading ? handleRowClick(row) : undefined}
+                  onKeyDown={onRowClick && !isLoading ? handleRowKeyDown(row) : undefined}
+                >
+                  {columns.map((col) => {
+                    const rawValue = getNestedValue(row, col.key);
+                    const truncateTitle =
+                      col.truncate &&
+                      (typeof rawValue === "string" || typeof rawValue === "number")
+                        ? String(rawValue)
+                        : undefined;
+                    return (
+                      <td
+                        key={`${absoluteIndex}-${col.key}`}
+                        className={clsx(
+                          tableCell(col.className, density),
+                          col.align && tableAlignClasses[col.align]
+                        )}
+                        style={col.minWidth != null ? { minWidth: `${col.minWidth}px` } : undefined}
+                        title={truncateTitle}
+                      >
+                        {col.type === "actions" ? (
+                          <div className={tableActionsCell}>
+                            {renderCellContent(col, row) as React.ReactNode}
+                          </div>
+                        ) : (
+                          <div className={clsx(tableCellText, col.truncate && "truncate")}>
+                            {renderCellContent(col, row) as React.ReactNode}
+                          </div>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+            {isTableVirtual && bottomSpacerHeight > 0 && (
+              <tr aria-hidden="true" style={{ height: bottomSpacerHeight }}>
+                <td colSpan={columnCount} style={{ padding: 0, border: 0 }} />
+              </tr>
+            )}
+          </>
+        ) : (
+          <tr>
+            <td colSpan={columns.length} className="px-6 py-12 text-center">
+              {!isLoading && (
+                <div className={tableEmptyContent}>
+                  <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
+                  <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
+                </div>
+              )}
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  );
+
   return (
-    <div className={clsx("space-y-4 w-full relative", containerClassName)}>
+    <div ref={rootRef} className={clsx("space-y-4 w-full relative", containerClassName)}>
       <div className={tableContainer} style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
         {title && (
           <div className="px-6 py-5 flex items-center justify-between" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
@@ -288,7 +503,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                 </div>
               )}
               <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-700/50">
-                <button onClick={() => setViewMode("table")} className={segCtrlClass("table")}>
+                <button onClick={() => setViewMode("table")} disabled={forcedCards} className={segCtrlClass("table")}>
                   <FaTable size={11} />
                   Table
                 </button>
@@ -304,7 +519,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
         {!title && (
           <div className="flex justify-end px-4 pt-3">
             <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-700/50">
-              <button onClick={() => setViewMode("table")} className={segCtrlClass("table")}>
+              <button onClick={() => setViewMode("table")} disabled={forcedCards} className={segCtrlClass("table")}>
                 <FaTable size={11} />
                 Table
               </button>
@@ -316,7 +531,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
           </div>
         )}
 
-        <div className="overflow-x-auto relative min-h-[200px]">
+        <div className={scrollOuterClass}>
           {isLoading && (
             <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/40 backdrop-blur-[2px] transition-all duration-300">
              <div className="flex flex-col items-center gap-3 p-6 rounded-2xl shadow-xl border border-secondary-100 animate-in fade-in zoom-in duration-300" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
@@ -330,11 +545,18 @@ export default function ITDataTable<T extends Record<string, unknown>>({
             </div>
           )}
 
-          {viewMode === "cards" ? (
+          {effectiveView === "cards" ? (
             <div className="p-4 space-y-3 max-h-[400px] overflow-y-auto">
               {data.length > 0 ? (
                 data.map((row, i) => (
-                  <div key={i}>
+                  <div
+                    key={i}
+                    className={clsx(onRowClick && !isLoading && tableCardClickable)}
+                    role={onRowClick && !isLoading ? "button" : undefined}
+                    tabIndex={onRowClick && !isLoading ? 0 : undefined}
+                    onClick={onRowClick && !isLoading ? handleRowClick(row) : undefined}
+                    onKeyDown={onRowClick && !isLoading ? handleRowKeyDown(row) : undefined}
+                  >
                     {renderCard ? renderCard(row) : renderDefaultCard(row)}
                   </div>
                 ))
@@ -347,80 +569,16 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                 )
               )}
             </div>
-          ) : (
-            <table
-              className={clsx(
-                "min-w-max w-full text-sm text-left text-secondary-600 transition-opacity duration-300",
-                showVerticalBorder && "[&_th]:border-r [&_th:last-child]:border-r-0 [&_td]:border-r [&_td:last-child]:border-r-0",
-                showVerticalBorder && (verticalBorderClassname || "[&_th]:border-slate-100 dark:[&_th]:border-slate-700/30 [&_td]:border-slate-100 dark:[&_td]:border-slate-700/30"),
-                isLoading ? "opacity-50" : "opacity-100",
-                variantStyles[variant],
-                sizeStyles[size],
-                className
-              )}
+          ) : isTableVirtual ? (
+            <div
+              ref={scrollRef}
+              className="overflow-x-auto overflow-y-auto"
+              style={{ maxHeight: virtualizedMaxHeight }}
             >
-              <thead>
-                <tr className={clsx(tableHeaderRow, "dark:text-slate-200")}>
-                  {columns.map((col) => (
-                    <th key={col.key} scope="col" className={tableHeaderCell(col.className)}>
-                      <div className="flex flex-col gap-3 min-w-[150px]">
-                        <div className="flex items-center justify-between gap-2">
-                           <ITText as="span" className="text-slate-900 dark:text-white font-bold">{col.label}</ITText>
-                          {col.sortable && col.type !== "actions" && (
-                            <button
-                              onClick={() => handleSort(col.key)}
-                              disabled={isLoading}
-                              className={`p-1 rounded-md transition-colors ${
-                                sortConfig?.key === col.key
-                                  ? "bg-secondary-200 text-secondary-900"
-                                  : "hover:bg-secondary-200 text-secondary-400 hover:text-secondary-700"
-                              } disabled:opacity-50`}
-                              title={`Ordenar por ${col.label}`}
-                            >
-                              <MdOutlineSwapVert className="w-4 h-4" aria-hidden="true" />
-                            </button>
-                          )}
-                        </div>
-
-                        <div className="w-full">{col.filter ? renderFilterInput(col) : null}</div>
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className={clsx(tableBody, "dark:divide-slate-700/30")}>
-                {data.length > 0 ? (
-                  data.map((row, rowIndex) => (
-                    <tr key={rowIndex} className={clsx(tableRow, variant === "striped" && "odd:bg-secondary-50/40 dark:odd:bg-slate-800/20")}>
-                      {columns.map((col) => (
-                        <td key={`${rowIndex}-${col.key}`} className={tableCell(col.className)}>
-                          {col.type === "actions" ? (
-                            <div className={tableActionsCell}>
-                              {renderCellContent(col, row) as React.ReactNode}
-                            </div>
-                          ) : (
-                            <div className={tableCellText}>
-                              {renderCellContent(col, row) as React.ReactNode}
-                            </div>
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={columns.length} className="px-6 py-12 text-center">
-                      {!isLoading && (
-                        <div className={tableEmptyContent}>
-                          <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
-                          <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+              {tableEl}
+            </div>
+          ) : (
+            tableEl
           )}
         </div>
       </div>

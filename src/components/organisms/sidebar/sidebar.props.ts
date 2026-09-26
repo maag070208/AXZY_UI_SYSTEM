@@ -46,5 +46,10 @@ export interface ITSidebarProps {
   subitemConnector?: 'dot' | '|' | 'none';
   /** Additional CSS classes on the sidebar `<aside>`. */
   className?: string;
+  /**
+   * Optional content rendered above the navigation list (e.g. a wordmark).
+   * Hidden while the sidebar is collapsed, so it only shows on hover.
+   */
+  header?: React.ReactNode;
 }
 

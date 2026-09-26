@@ -20,6 +20,11 @@ declare function useDebouncedSearch({ initialValue, debounceMs, onSearch, }: Use
 
 type TableVariants = "default" | "striped" | "bordered";
 type TableSize = "sm" | "md" | "lg";
+/**
+ * Cell padding / row-height preset for tables. Independent of `TableSize`
+ * (which only controls font-size, and shifts the row height via the line box).
+ */
+type TableDensity = "compact" | "normal" | "comfortable";
 
 /** Definition of a single searchable, sortable, editable table column. */
 interface SearchColumn<T = any> {
@@ -1160,6 +1165,22 @@ interface Column<T = any> {
         /** Shows an error state in the filter UI when the catalog failed to load. @default false */
         error?: boolean;
     };
+    /**
+     * Fixed column width. A `number` is treated as pixels (`width: 120` → `120px`);
+     * a `string` is passed through as any CSS length (`"20%"`, `"12rem"`).
+     * A `<colgroup>` is only rendered when at least one column defines a width.
+     */
+    width?: number | string;
+    /** Minimum column width in pixels, applied to the header and body cells via inline style. */
+    minWidth?: number;
+    /** Horizontal alignment of this column's header and body cells. @default "left" */
+    align?: "left" | "center" | "right";
+    /**
+     * Truncates overflowing cell content with an ellipsis and exposes the raw
+     * string/number value through the native `title` attribute.
+     * @default false
+     */
+    truncate?: boolean;
 }
 interface ITTableProps<T> {
     /** Column definitions: key, label, type, sortable behavior, filters, and custom rendering. */
@@ -1168,7 +1189,7 @@ interface ITTableProps<T> {
     containerClassName?: string;
     /** The data array to render in the table body. */
     data: T[];
-    /** Visual variant: "default", "striped", "bordered", "borderless". */
+    /** Visual variant: "default", "striped", "bordered". */
     variant?: TableVariants;
     /** Additional CSS classes for the root table wrapper. */
     className?: string;
@@ -1188,6 +1209,66 @@ interface ITTableProps<T> {
     showVerticalBorder?: boolean;
     /** Custom class for vertical borders (overrides the default subtle gray). */
     verticalBorderClassname?: string;
+    /**
+     * Callback fired when a row (table view) or card (cards view) is activated,
+     * receiving the row item and the originating event. The event is a
+     * `MouseEvent` for pointer interaction and a `KeyboardEvent` for Enter/Space
+     * activation. Not fired when the interaction starts inside an interactive
+     * child (button, link, input, or any `[data-row-click-ignore]` element).
+     */
+    onRowClick?: (row: T, event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => void;
+    /**
+     * Table layout algorithm. `"fixed"` respects column `width` values and drops
+     * the `min-w-max` / `min-w-[150px]` floors so content no longer forces
+     * horizontal scrolling; `"auto"` keeps the content-driven layout.
+     * @default "auto"
+     */
+    layout?: "auto" | "fixed";
+    /**
+     * Cell padding and row-height preset. Independent of `size`, which only
+     * controls font-size: `"compact"` | `"normal"` | `"comfortable"`.
+     * @default "normal"
+     */
+    density?: TableDensity;
+    /**
+     * Container width (in px) below which the table automatically falls back to
+     * the cards view. `0` disables the fallback.
+     * @default 0
+     */
+    autoCardBreakpoint?: number;
+    /**
+     * Enables row virtualization for the table view: only the visible window of
+     * rows is rendered, with spacer rows preserving the full scroll height.
+     * The cards view is never virtualized.
+     * @default false
+     */
+    virtualized?: boolean;
+    /**
+     * Max height (px) of the virtualized table's scroll container.
+     * Only used when `virtualized` is true.
+     * @default 400
+     */
+    virtualizedMaxHeight?: number;
+    /**
+     * Assumed uniform row height (px) used by the virtualizer. Defaults to
+     * `getRowHeight(size, density)`, which is size-aware: the `size="md"`
+     * baseline is 33 / 45 / 53 (compact / normal / comfortable) and `size`
+     * shifts it by the font-size line box (sm 16px / md 20px / lg 28px).
+     * Only used when `virtualized` is true.
+     */
+    rowHeight?: number;
+    /**
+     * Number of extra rows rendered above and below the viewport to avoid blank
+     * gaps while scrolling. Only used when `virtualized` is true.
+     * @default 5
+     */
+    overscan?: number;
+    /**
+     * Makes the header cells sticky while the virtualized body scrolls. Only
+     * effective when `virtualized` is true.
+     * @default false
+     */
+    stickyHeader?: boolean;
 }
 
 /** Parameters passed to `fetchData` every time pagination, filters, or sorting change. */
@@ -1270,6 +1351,66 @@ interface ITDataTableProps<T extends Record<string, unknown>> {
     showVerticalBorder?: boolean;
     /** Custom class for vertical borders (overrides the default subtle gray). */
     verticalBorderClassname?: string;
+    /**
+     * Callback fired when a row (table view) or card (cards view) is activated,
+     * receiving the row item and the originating event. The event is a
+     * `MouseEvent` for pointer interaction and a `KeyboardEvent` for Enter/Space
+     * activation. Not fired when the interaction starts inside an interactive
+     * child (button, link, input, or any `[data-row-click-ignore]` element).
+     */
+    onRowClick?: (row: T, event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => void;
+    /**
+     * Table layout algorithm. `"fixed"` respects column `width` values and drops
+     * the `min-w-max` / `min-w-[150px]` floors so content no longer forces
+     * horizontal scrolling; `"auto"` keeps the content-driven layout.
+     * @default "auto"
+     */
+    layout?: "auto" | "fixed";
+    /**
+     * Cell padding and row-height preset. Independent of `size`, which only
+     * controls font-size: `"compact"` | `"normal"` | `"comfortable"`.
+     * @default "normal"
+     */
+    density?: TableDensity;
+    /**
+     * Container width (in px) below which the table automatically falls back to
+     * the cards view. `0` disables the fallback.
+     * @default 0
+     */
+    autoCardBreakpoint?: number;
+    /**
+     * Enables row virtualization for the table view: only the visible window of
+     * rows is rendered, with spacer rows preserving the full scroll height.
+     * The cards view is never virtualized.
+     * @default false
+     */
+    virtualized?: boolean;
+    /**
+     * Max height (px) of the virtualized table's scroll container.
+     * Only used when `virtualized` is true.
+     * @default 400
+     */
+    virtualizedMaxHeight?: number;
+    /**
+     * Assumed uniform row height (px) used by the virtualizer. Defaults to
+     * `getRowHeight(size, density)`, which is size-aware: the `size="md"`
+     * baseline is 33 / 45 / 53 (compact / normal / comfortable) and `size`
+     * shifts it by the font-size line box (sm 16px / md 20px / lg 28px).
+     * Only used when `virtualized` is true.
+     */
+    rowHeight?: number;
+    /**
+     * Number of extra rows rendered above and below the viewport to avoid blank
+     * gaps while scrolling. Only used when `virtualized` is true.
+     * @default 5
+     */
+    overscan?: number;
+    /**
+     * Makes the header cells sticky while the virtualized body scrolls. Only
+     * effective when `virtualized` is true.
+     * @default false
+     */
+    stickyHeader?: boolean;
 }
 
 /**
@@ -1293,7 +1434,7 @@ interface ITDataTableProps<T extends Record<string, unknown>> {
  * />
  * ```
  */
-declare function ITDataTable<T extends Record<string, unknown>>({ columns, fetchData, debounceMs, externalFilters, loadingIndicator, fetchOnMount, reloadTrigger, containerClassName, className, variant, size, itemsPerPageOptions, defaultItemsPerPage, title, renderCard, defaultView, showVerticalBorder, verticalBorderClassname, }: ITDataTableProps<T>): react_jsx_runtime.JSX.Element;
+declare function ITDataTable<T extends Record<string, unknown>>({ columns, fetchData, debounceMs, externalFilters, loadingIndicator, fetchOnMount, reloadTrigger, containerClassName, className, variant, size, itemsPerPageOptions, defaultItemsPerPage, title, renderCard, defaultView, showVerticalBorder, verticalBorderClassname, onRowClick, layout, density, autoCardBreakpoint, virtualized, virtualizedMaxHeight, rowHeight, overscan, stickyHeader, }: ITDataTableProps<T>): react_jsx_runtime.JSX.Element;
 
 interface ITDatePickerProps {
     /** Unique name attribute for the underlying input element. */
@@ -2243,8 +2384,18 @@ interface ITPageProps {
     children: ReactNode;
     /** Maximum width of the page content. Options: "2xl", "3xl", "4xl", "5xl", "6xl", "7xl". Default: "7xl". */
     maxWidth?: "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl";
-    /** Whether to remove default padding from the page wrapper. */
+    /** Whether to remove default padding from the page wrapper. Overrides `horizontalPadding`. */
     noPadding?: boolean;
+    /**
+     * Tailwind classes for the page wrapper's horizontal padding. Pass `"px-0"`
+     * for edge-to-edge content, or a responsive scale like `"px-2 sm:px-4"`.
+     *
+     * Must be written as a literal: Tailwind scans source files, so a value
+     * assembled at runtime will not be generated into the stylesheet.
+     *
+     * @default "px-4 sm:px-6 lg:px-8"
+     */
+    horizontalPadding?: string;
 }
 
 /**
@@ -2262,6 +2413,14 @@ interface ITPageProps {
  *   onRetry={fetchData}
  * >
  *   <ITCard>Dashboard content</ITCard>
+ * </ITPage>
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Edge-to-edge content: no horizontal gutter, vertical padding kept.
+ * <ITPage title="Reportes" horizontalPadding="px-0">
+ *   <ITTable data={rows} columns={columns} />
  * </ITPage>
  * ```
  */
@@ -2730,11 +2889,17 @@ interface ITSidebarProps {
     subitemConnector?: 'dot' | '|' | 'none';
     /** Additional CSS classes on the sidebar `<aside>`. */
     className?: string;
+    /**
+     * Optional content rendered above the navigation list (e.g. a wordmark).
+     * Hidden while the sidebar is collapsed, so it only shows on hover.
+     */
+    header?: React.ReactNode;
 }
 
 /**
  * Vertical navigation sidebar with submenu expand/collapse, hover tooltips in collapsed mode,
- * and glassmorphism styling.
+ * and glassmorphism styling. The collapsed rail expands automatically on pointer hover — there
+ * is no toggle button; the hover is the only way to expand and collapse it.
  *
  * @example
  * ```tsx
@@ -2749,12 +2914,11 @@ interface ITSidebarProps {
  *       ],
  *     },
  *   ]}
- *   isCollapsed={collapsed}
- *   onToggleCollapse={() => setCollapsed(!collapsed)}
+ *   isCollapsed
  * />
  * ```
  */
-declare function ITSidebar({ navigationItems, isCollapsed, className, visibleOnMobile, onItemClick, onSubItemClick, subitemConnector, }: ITSidebarProps): react_jsx_runtime.JSX.Element;
+declare function ITSidebar({ navigationItems, isCollapsed, className, visibleOnMobile, onItemClick, onSubItemClick, subitemConnector, header, }: ITSidebarProps): react_jsx_runtime.JSX.Element;
 
 /** Skeleton shape variant: "text" (line) | "circular" (avatar/icon) | "rectangular" (card/image). */
 type SkeletonVariant = "text" | "circular" | "rectangular";
@@ -2969,7 +3133,7 @@ declare function ITStatCard({ label, value, trend, trendDirection, icon, color, 
  *   size="sm"
  * />
  */
-declare function ITTable<T extends Record<string, unknown>>({ columns, data, containerClassName, variant, size, itemsPerPageOptions, defaultItemsPerPage, title, renderCard, defaultView, showVerticalBorder, verticalBorderClassname, }: ITTableProps<T>): react_jsx_runtime.JSX.Element;
+declare function ITTable<T extends Record<string, unknown>>({ columns, data, containerClassName, variant, size, itemsPerPageOptions, defaultItemsPerPage, title, renderCard, defaultView, showVerticalBorder, verticalBorderClassname, onRowClick, layout, density, autoCardBreakpoint, virtualized, virtualizedMaxHeight, rowHeight, overscan, stickyHeader, }: ITTableProps<T>): react_jsx_runtime.JSX.Element;
 
 interface ITTextProps extends HTMLAttributes<HTMLElement> {
     /** The content rendered inside the element. */
@@ -3339,6 +3503,20 @@ interface ITTopBarProps {
     logo?: any;
     /** Text displayed next to the logo. */
     logoText?: string;
+    /**
+     * Content rendered in the centered region between the left (logo / nav) and
+     * right (user menu) areas — e.g. a global search box. The region is rendered
+     * only when this prop is provided, and only from the `lg` breakpoint up;
+     * below `lg` the row stays logo + user menu so nothing is squeezed.
+     */
+    centerContent?: ReactNode;
+    /**
+     * Actions rendered in the right area, immediately before the user menu —
+     * e.g. a notification bell, a help link, a theme switcher. The component
+     * decides the placement, so the caller only supplies the controls. The area
+     * is rendered only when this prop or `userMenu` is provided.
+     */
+    children?: ReactNode;
     /** User dropdown configuration including name, email, avatar, and menu items. */
     userMenu?: {
         /** Display name shown in the trigger button and dropdown header. */
@@ -3794,4 +3972,4 @@ declare const resolveCssColor: (colorStr: string, palette?: ITThemePalette$1, is
  */
 declare const getContrastTextColor: (bgColor: string, palette?: ITThemePalette$1, isDarkMode?: boolean) => "text-white" | "text-slate-800";
 
-export { type Column, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, type LoaderProps as ITLoaderProps, ITMaskedInput, type ITMaskedInputProps, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeConfig, type ITThemePalette$1 as ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITTheme, useITThemeSafe, useTableState };
+export { type Column, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, type LoaderProps as ITLoaderProps, ITMaskedInput, type ITMaskedInputProps, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeConfig, type ITThemePalette$1 as ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type TableDensity, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITTheme, useITThemeSafe, useTableState };

@@ -29,7 +29,8 @@ A page template component that wraps an ITPageHeader with content area and built
 | `emptyAction` | `ReactNode` | `undefined` | Custom action element for the empty state. |
 | `children` | `ReactNode` | required | Content rendered when no special state (loading/error/empty) is active. |
 | `maxWidth` | `'2xl' \| '3xl' \| '4xl' \| '5xl' \| '6xl' \| '7xl'` | `'7xl'` | Maximum width of the page content container. |
-| `noPadding` | `boolean` | `false` | When true, removes default padding from the page wrapper. |
+| `noPadding` | `boolean` | `false` | When true, removes default padding from the page wrapper. Overrides `horizontalPadding`. |
+| `horizontalPadding` | `string` | `'px-4 sm:px-6 lg:px-8'` | Tailwind classes for the wrapper's horizontal padding. Use `'px-0'` for edge-to-edge content. Must be a literal — Tailwind scans source, so runtime-assembled values are not generated. |
 | `className` | `string` | `undefined` | Additional CSS classes for the page wrapper. |
 
 ## Usage
@@ -71,7 +72,12 @@ import { ITPage } from '@axzydev/axzy_ui_system';
 - The empty state renders a centered placeholder with optional title, description, and action.
 - All header props (`title`, `description`, `breadcrumbs`, `actions`, `backAction`, `icon`) are forwarded to ITPageHeader.
 - Content maximum width is controlled by Tailwind max-width classes via `maxWidth`.
-- `noPadding` is useful for full-bleed layouts like dashboards.
+- `noPadding` is useful for full-bleed layouts like dashboards. It removes both axes and wins over `horizontalPadding`.
+- `horizontalPadding` tunes only the horizontal gutter, so you can keep the vertical rhythm while going edge-to-edge:
+  ```tsx
+  <ITPage title="Reportes" horizontalPadding="px-0">...</ITPage>
+  ```
+  Because Tailwind scans your source files, write the value as a literal. A value built at runtime (`"px-" + n`) will silently produce no padding.
 
 ## Stories
 

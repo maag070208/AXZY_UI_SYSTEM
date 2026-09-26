@@ -13,6 +13,8 @@ Sticky top navigation bar with glassmorphism effect, logo, breadcrumb-style nav 
 |------|------|---------|-------------|
 | `logo` | `ReactNode` | — | Optional logo element (e.g. an `<img>` or SVG component). |
 | `logoText` | `string` | — | Text displayed next to the logo as the brand/title. |
+| `centerContent` | `ReactNode` | — | Content rendered in the centered region between the left (logo / nav) and right (user menu) areas — e.g. a global search box. Rendered only when provided, and only from the `lg` breakpoint up. |
+| `children` | `ReactNode` | — | Actions rendered in the right area, immediately before the user menu — e.g. a notification bell, a help link, a theme switcher. The component owns the placement; the caller only supplies the controls. The area renders only when this prop or `userMenu` is provided. |
 | `userMenu` | `object` | — | User dropdown configuration with name, email, avatar, and menu items. |
 | `userMenu.userName` | `string` | — | Display name shown in the trigger button and dropdown header. |
 | `userMenu.userEmail` | `string` | — | User email shown in the trigger button and dropdown header. |
@@ -53,6 +55,7 @@ import { FaChartBar, FaUserCog } from 'react-icons/fa';
 
 ## Notes
 
+- The `centerContent` slot renders in a centered `flex-1` (basis 0) region that absorbs all the slack, so the left and right areas stay flush with the row edges. It is `hidden` below `lg`, which leaves the below-`lg` layout exactly as before (logo + user menu).
 - The bar uses a **glassmorphism** backdrop blur effect (`backdrop-blur-xl`), giving it a translucent appearance over scrolling content.
 - Navigation items support **icons** and highlight the active item with the primary color and an underline indicator.
 - The **user menu** dropdown opens on avatar click and closes on outside click (via `useClickOutside` hook).

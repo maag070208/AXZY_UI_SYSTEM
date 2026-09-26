@@ -32,6 +32,21 @@ const TABLE_DATA: Record<string, unknown>[] = [
   { id: 15, name: "Florencia Díaz", email: "florencia@axzy.dev", role: "Admin", status: "active", lastLogin: "2026-07-18T07:15:00", sales: 48900 },
 ];
 
+const VIRTUAL_USERS = Array.from({ length: 240 }, (_, i) => ({
+  id: i + 1,
+  name: `User ${String(i + 1).padStart(3, "0")}`,
+  email: `user${i + 1}@axzy.dev`,
+  role: (["Admin", "Editor", "Viewer"] as const)[i % 3],
+  active: i % 2 === 0,
+}));
+const virtualUserColumns: any = [
+  { key: "id", label: "ID", type: "number", width: 64 },
+  { key: "name", label: "Name", type: "string", width: "26%", truncate: true },
+  { key: "email", label: "Email", type: "string", width: "28%", truncate: true },
+  { key: "role", label: "Role", type: "string", width: "16%" },
+  { key: "active", label: "Active", type: "boolean", width: "12%" },
+];
+
 const nameColumn = {
   key: "name",
   label: "Name",
@@ -67,6 +82,7 @@ export const TableShowcase = () => {
   const [variant, setVariant] = useState<any>("default");
   const [size, setSize] = useState<any>("sm");
   const [useCustomCard, setUseCustomCard] = useState(true);
+  const [selectedRow, setSelectedRow] = useState<Record<string, unknown> | null>(null);
 
   const customCard = (row: Record<string, unknown>) => {
     const initials = (row.name as string).split(" ").map((w: string) => w[0]).join("");
@@ -157,6 +173,31 @@ export const TableShowcase = () => {
     }
   ];
 
+  const fixedColumns: any = columns.map((col: any, i: number) => ({
+    ...col,
+    width: [64, "18%", "18%", "14%", "20%", "10%"][i],
+    truncate: col.key === "email" || col.key === "name",
+  }));
+
+  // Single-line columns for virtualization: no avatar, no actions, no custom
+  // render, so every row is a deterministic one-line box.
+  const virtualColumns: any = [
+    { key: "id", label: "ID", type: "number", width: 64 },
+    { key: "name", label: "Name", type: "string", width: "28%", truncate: true },
+    { key: "email", label: "Email", type: "string", width: "28%", truncate: true },
+    { key: "role", label: "Role", type: "string", width: "16%" },
+    { key: "sales", label: "Sales", type: "number", width: "18%" },
+  ];
+
+  const virtualData = useMemo(
+    () =>
+      Array.from({ length: 300 }, (_, i) => ({
+        ...TABLE_DATA[i % TABLE_DATA.length],
+        id: i + 1,
+      })),
+    []
+  );
+
   const code = `<ITTable
   columns={columns}
   data={data}
@@ -173,16 +214,24 @@ export const TableShowcase = () => {
       description="Tabla con vista responsive Table / Cards, paginación, filtros y template de card personalizable."
       code={code}
       demo={
-        <div className="w-full bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm">
-          <ITTable
-            columns={columns}
-            data={TABLE_DATA}
-            title="Team members"
-            variant={variant}
-            size={size}
-            defaultItemsPerPage={5}
-            renderCard={useCustomCard ? customCard : undefined}
-          />
+        <div className="w-full space-y-2">
+          <div className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
+            {selectedRow
+              ? `Selected: ${selectedRow.name as string}`
+              : "Click a row/card or press Enter/Space to select"}
+          </div>
+          <div className="w-full bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm">
+            <ITTable
+              columns={columns}
+              data={TABLE_DATA}
+              title="Team members"
+              variant={variant}
+              size={size}
+              defaultItemsPerPage={5}
+              renderCard={useCustomCard ? customCard : undefined}
+              onRowClick={(row) => setSelectedRow(row)}
+            />
+          </div>
         </div>
       }
       controls={
@@ -195,8 +244,7 @@ export const TableShowcase = () => {
             options={[
               { label: "Default", value: "default" },
               { label: "Striped", value: "striped" },
-              { label: "Bordered", value: "bordered" },
-              { label: "Clean", value: "clean" }
+              { label: "Bordered", value: "bordered" }
             ]}
           />
           <ITSelect
@@ -221,6 +269,48 @@ export const TableShowcase = () => {
           )}
         </>
       }
+      doc={{
+        summary: "Tabla de datos con vistas Table/Cards, paginación, filtros, ordenamiento y activación de fila.",
+        examples: [
+          '<ITTable columns={columns} data={data} title="Users" />',
+          '<ITTable columns={columns} data={data} defaultView="cards" onRowClick={(row) => open(row)} />',
+          '<ITTable columns={fixedColumns} data={data} layout="fixed" density="compact" />',
+          '<ITTable columns={cols} data={rows} virtualized stickyHeader layout="fixed" density="compact" defaultItemsPerPage={300} itemsPerPageOptions={[50, 100, 300]} />',
+        ],
+        props: [
+          { name: "columns", type: "Column<T>[]", description: "Definiciones de columna: key, label, type, sortable, filter, render, actions." },
+          { name: "data", type: "T[]", default: "[]", description: "Arreglo de filas a renderizar." },
+          { name: "containerClassName", type: "string", description: "Clases del contenedor externo." },
+          { name: "className", type: "string", description: "Declarado por compatibilidad, pero ITTable no lo aplica; usar containerClassName." },
+          { name: "variant", type: '"default" | "striped" | "bordered"', default: '"default"', description: "Variante visual." },
+          { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Tamaño de fuente; no cambia padding (usar density)." },
+          { name: "itemsPerPageOptions", type: "number[]", default: "[5, 10, 20]", description: "Opciones del selector de filas por página." },
+          { name: "defaultItemsPerPage", type: "number", default: "10", description: "Filas por página iniciales." },
+          { name: "title", type: "string", description: "Título opcional sobre la tabla." },
+          { name: "renderCard", type: "(row: T) => ReactNode", description: "Renderer custom de card para la vista cards." },
+          { name: "defaultView", type: '"table" | "cards"', default: '"table"', description: "Vista inicial." },
+          { name: "showVerticalBorder", type: "boolean", default: "true", description: "Bordes verticales entre columnas." },
+          { name: "verticalBorderClassname", type: "string", description: "Clases custom de los bordes verticales." },
+          { name: "onRowClick", type: "(row: T, event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>) => void", description: "Activa fila/card. MouseEvent en puntero, KeyboardEvent en Enter/Space. Se ignora si la interacción inicia en un hijo interactivo." },
+          { name: "layout", type: '"auto" | "fixed"', default: '"auto"', description: "fixed respeta width de columna y elimina min-w, evitando scroll horizontal." },
+          { name: "density", type: '"compact" | "normal" | "comfortable"', default: '"normal"', description: "Padding / alto de fila (independiente de size, que solo cambia font-size)." },
+          { name: "autoCardBreakpoint", type: "number", default: "0", description: "Ancho de contenedor (px) bajo el cual cae a la vista cards. 0 desactiva." },
+          { name: "virtualized", type: "boolean", default: "false", description: "Vista tabla: renderiza solo la ventana visible con spacer rows. Cards nunca virtualiza." },
+          { name: "virtualizedMaxHeight", type: "number", default: "400", description: "Alto máx (px) del contenedor con scroll virtual." },
+          { name: "rowHeight", type: "number", default: "getRowHeight(size, density)", description: "Alto de fila asumido (px). Size-aware: baseline size=\"md\" = 33/45/53 según densidad; size lo desplaza por el line box (sm 16 / md 20 / lg 28 px)." },
+          { name: "overscan", type: "number", default: "5", description: "Filas extra renderizadas arriba/abajo del viewport." },
+          { name: "stickyHeader", type: "boolean", default: "false", description: "Header sticky mientras scrollea el cuerpo virtualizado." },
+        ],
+        notes: [
+          "onRowClick funciona en ambas vistas (tabla y cards).",
+          "Cuando se omite no se agrega cursor-pointer, foco, tabIndex ni role.",
+          "Column acepta width (number=px | string CSS), minWidth (px), align (left/center/right) y truncate (ellipsis + title nativo).",
+          "Anti scroll horizontal: layout=\"fixed\" + width por columna + truncate + density.",
+          "Virtualización: solo vista tabla; rinde con page size grande; filas de alto uniforme; el scroll no se reinicia al cambiar filtros.",
+          "Virtualización exige alto de fila uniforme. El default es size-aware (getRowHeight(size, density)): con size=\"md\" el baseline es compact 33 / normal 45 / comfortable 53 (padding de celda + line box text-sm de 20px + 1px del divide-y); size lo desplaza por el line box (sm 16 / md 20 / lg 28 px, es decir −4 / 0 / +8 px). Una celda de dos líneas (avatar + texto) mide ~50px real, distinto de ese alto asumido, así que los spacers se desalinean: usar celdas de una sola línea o pasar un rowHeight explícito.",
+          "ITSearchTable no soporta layout/density/autoCardBreakpoint/virtualized/width — no asumir paridad.",
+        ],
+      }}
       gallery={
         <div className="space-y-6">
           <div>
@@ -269,6 +359,7 @@ export const TableShowcase = () => {
                 size="sm"
                 defaultItemsPerPage={6}
                 defaultView="cards"
+                onRowClick={(row) => setSelectedRow(row)}
               />
             </div>
           </div>
@@ -304,6 +395,51 @@ export const TableShowcase = () => {
               />
             </div>
           </div>
+
+          <div>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Compact fixed layout — no horizontal scroll</h4>
+            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden" style={{ maxWidth: 560 }}>
+              <ITTable
+                columns={fixedColumns}
+                data={TABLE_DATA}
+                title="Fixed layout"
+                layout="fixed"
+                density="compact"
+                defaultItemsPerPage={5}
+              />
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Auto cards fallback (&lt; 640px container)</h4>
+            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden" style={{ maxWidth: 420 }}>
+              <ITTable
+                columns={columns}
+                data={TABLE_DATA.slice(0, 6)}
+                title="Narrow container"
+                autoCardBreakpoint={640}
+                defaultItemsPerPage={6}
+              />
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Virtualized table — 300 rows (only visible window mounted)</h4>
+            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+              <ITTable
+                columns={virtualColumns}
+                data={virtualData}
+                title="Virtualized · 300 rows"
+                virtualized
+                stickyHeader
+                layout="fixed"
+                density="compact"
+                virtualizedMaxHeight={360}
+                defaultItemsPerPage={300}
+                itemsPerPageOptions={[50, 100, 300]}
+              />
+            </div>
+          </div>
         </div>
       }
     />
@@ -317,6 +453,13 @@ export const DataTableShowcase = () => {
   const [reloadKey, setReloadKey] = useState(0);
   const [showVBorder, setShowVBorder] = useState(true);
   const [borderStyle, setBorderStyle] = useState<"default" | "blue" | "rose" | "none">("default");
+  const [selectedRow, setSelectedRow] = useState<any>(null);
+  const [dtSize, setDtSize] = useState<"sm" | "md" | "lg">("md");
+  const [dtDensity, setDtDensity] = useState<"compact" | "normal" | "comfortable">("normal");
+  const [dtLayout, setDtLayout] = useState<"auto" | "fixed">("auto");
+  const [dtAutoCardBreakpoint, setDtAutoCardBreakpoint] = useState(0);
+  const [dtVirtualized, setDtVirtualized] = useState(true);
+  const [dtStickyHeader, setDtStickyHeader] = useState(false);
 
   const userColumns = useMemo(() => [
     { key: "id", label: "ID", type: "number" as const },
@@ -403,6 +546,12 @@ export const DataTableShowcase = () => {
     };
   }, [apiState, MOCK_USERS]);
 
+  const virtualFetchData = useCallback(async (params: ITDataTableFetchParams): Promise<ITDataTableResponse<any>> => {
+    await new Promise((r) => setTimeout(r, 150));
+    const start = (params.page - 1) * params.limit;
+    return { data: VIRTUAL_USERS.slice(start, start + params.limit), total: VIRTUAL_USERS.length };
+  }, []);
+
   const handleStateChange = (s: typeof apiState) => {
     setApiState(s);
     setReloadKey(k => k + 1);
@@ -412,7 +561,10 @@ export const DataTableShowcase = () => {
   columns={columns}
   fetchData={api.fetchUsers}
   title="Users"
-  defaultItemsPerPage={5}
+  defaultItemsPerPage={4}
+  size="${dtSize}"
+  layout="${dtLayout}"
+  density="${dtDensity}"${dtAutoCardBreakpoint > 0 ? `\n  autoCardBreakpoint={${dtAutoCardBreakpoint}}` : ""}
   showVerticalBorder={${showVBorder}}${borderStyle !== "default" ? `\n  verticalBorderClassname="${borderStyle === "blue" ? "[&_th]:border-blue-200 [&_td]:border-blue-100" : "[&_th]:border-rose-200 [&_td]:border-rose-100"}"` : ""}
   renderCard={(row) => <CustomCard row={row} />}
 />`;
@@ -425,16 +577,27 @@ export const DataTableShowcase = () => {
       description="Tabla auto-suficiente con carga dinámica, filtros, paginación y vista responsive Cards/Table."
       code={code}
       demo={
-        <div className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-md">
-          <ITDataTable
-            key={reloadKey}
-            columns={userColumns}
-            fetchData={fetchData}
-            title={apiState === "error" ? "Connection error" : apiState === "empty" ? "No data" : "Users"}
-            defaultItemsPerPage={4}
-            showVerticalBorder={showVBorder}
-            verticalBorderClassname={borderClass}
-            renderCard={useCustomCard ? (row: any) => {
+        <div className="w-full space-y-2">
+          <div className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
+            {selectedRow
+              ? `Selected: ${selectedRow.name as string} (id ${selectedRow.id as number})`
+              : "Click a row/card or press Enter/Space to select"}
+          </div>
+          <div className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-md">
+            <ITDataTable
+              key={reloadKey}
+              columns={userColumns}
+              fetchData={fetchData}
+              title={apiState === "error" ? "Connection error" : apiState === "empty" ? "No data" : "Users"}
+              defaultItemsPerPage={4}
+              size={dtSize}
+              layout={dtLayout}
+              density={dtDensity}
+              autoCardBreakpoint={dtAutoCardBreakpoint}
+              showVerticalBorder={showVBorder}
+              verticalBorderClassname={borderClass}
+              onRowClick={(row) => setSelectedRow(row)}
+              renderCard={useCustomCard ? (row: any) => {
               const initials = (row.name as string).split(" ").map((w: string) => w[0]).join("");
               return (
                 <div className="group bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600">
@@ -458,7 +621,8 @@ export const DataTableShowcase = () => {
                 </div>
               );
             } : undefined}
-          />
+            />
+          </div>
         </div>
       }
       controls={
@@ -511,8 +675,120 @@ export const DataTableShowcase = () => {
               ))}
             </div>
           </div>
+          <div className="space-y-3">
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Table capabilities</p>
+            <ITSelect
+              name="dt_size"
+              label="Size"
+              value={dtSize}
+              onChange={(e: any) => setDtSize(e.target.value as "sm" | "md" | "lg")}
+              options={[
+                { label: "Small", value: "sm" },
+                { label: "Medium", value: "md" },
+                { label: "Large", value: "lg" },
+              ]}
+            />
+            <ITSelect
+              name="dt_density"
+              label="Density"
+              value={dtDensity}
+              onChange={(e: any) => setDtDensity(e.target.value as "compact" | "normal" | "comfortable")}
+              options={[
+                { label: "Compact", value: "compact" },
+                { label: "Normal", value: "normal" },
+                { label: "Comfortable", value: "comfortable" },
+              ]}
+            />
+            <ITSelect
+              name="dt_layout"
+              label="Layout"
+              value={dtLayout}
+              onChange={(e: any) => setDtLayout(e.target.value as "auto" | "fixed")}
+              options={[
+                { label: "Auto", value: "auto" },
+                { label: "Fixed", value: "fixed" },
+              ]}
+            />
+            <ITSelect
+              name="dt_autocards"
+              label="Auto cards below (px)"
+              value={String(dtAutoCardBreakpoint)}
+              onChange={(e: any) => setDtAutoCardBreakpoint(Number(e.target.value))}
+              options={[
+                { label: "Off", value: "0" },
+                { label: "640px", value: "640" },
+                { label: "900px", value: "900" },
+                { label: "1200px", value: "1200" },
+              ]}
+            />
+            <div className="flex items-center justify-between pt-2">
+              <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">Virtualized (gallery)</span>
+              <ITSlideToggle isOn={dtVirtualized} onToggle={setDtVirtualized} size="sm" />
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">Sticky header</span>
+              <ITSlideToggle isOn={dtStickyHeader} onToggle={setDtStickyHeader} size="sm" disabled={!dtVirtualized} />
+            </div>
+            {dtVirtualized && (
+              <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded text-xs text-slate-500">
+                size, density, layout y auto-cards aplican al demo principal; virtualized y sticky header solo al bloque "Server-side virtualization" de la galería. Ese bloque no recibe autoCardBreakpoint: las cards nunca se virtualizan y el fallback de auto-cards desactivaría la virtualización en silencio.
+              </div>
+            )}
+          </div>
         </div>
       }
+      doc={{
+        summary: "Tabla server-side con fetch, filtros, ordenamiento, paginación y activación de fila/card.",
+        examples: [
+          '<ITDataTable columns={columns} fetchData={api.fetchUsers} />',
+          '<ITDataTable columns={columns} fetchData={api.fetchUsers} onRowClick={(row) => open(row)} />',
+          '<ITDataTable columns={fixedColumns} fetchData={api.fetchUsers} layout="fixed" density="compact" />',
+          '<ITDataTable columns={cols} fetchData={api.page} virtualized stickyHeader defaultItemsPerPage={200} itemsPerPageOptions={[50, 100, 200]} debounceMs={0} />',
+          '<ITDataTable columns={cols} fetchData={api.page} layout="fixed" density="compact" autoCardBreakpoint={640} />',
+        ],
+        props: [
+          { name: "columns", type: "Column<T>[]", description: "Definiciones de columna." },
+          { name: "fetchData", type: "(params: ITDataTableFetchParams) => Promise<ITDataTableResponse<T>>", required: true, description: "Callback asíncrono disparado al cambiar página, filtros u orden. Retorna { data, total }." },
+          { name: "debounceMs", type: "number", default: "500", description: "Espera antes de refetch tras cambiar filtros." },
+          { name: "externalFilters", type: "Record<string, string | number | boolean | Date>", default: "{}", description: "Filtros externos fusionados con los internos." },
+          { name: "loadingIndicator", type: "ReactNode", description: "Elemento custom mostrado mientras carga." },
+          { name: "fetchOnMount", type: "boolean", default: "true", description: "Dispara fetch al montar." },
+          { name: "reloadTrigger", type: "number | string | boolean", description: "Cambiar su valor fuerza un refetch." },
+          { name: "containerClassName", type: "string", description: "Clases del contenedor externo." },
+          { name: "className", type: "string", description: "Clases aplicadas al elemento <table>." },
+          { name: "variant", type: '"default" | "striped" | "bordered" | "minimal"', default: '"default"', description: "Variante visual. minimal no tiene estilos (igual que default)." },
+          { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Tamaño de fuente; no cambia padding (usar density)." },
+          { name: "itemsPerPageOptions", type: "number[]", default: "[5, 10, 20]", description: "Opciones del selector de filas por página." },
+          { name: "defaultItemsPerPage", type: "number", default: "10", description: "Filas por página iniciales." },
+          { name: "title", type: "string | ReactNode", description: "Título sobre la tabla." },
+          { name: "renderCard", type: "(row: T) => ReactNode", description: "Renderer custom de card." },
+          { name: "defaultView", type: '"table" | "cards"', default: '"table"', description: "Vista inicial." },
+          { name: "showVerticalBorder", type: "boolean", default: "true", description: "Bordes verticales entre columnas." },
+          { name: "verticalBorderClassname", type: "string", description: "Clases custom de los bordes verticales." },
+          { name: "onRowClick", type: "(row: T, event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>) => void", description: "Activa fila/card. MouseEvent en puntero, KeyboardEvent en Enter/Space. No se dispara mientras carga y se ignora en hijos interactivos." },
+          { name: "layout", type: '"auto" | "fixed"', default: '"auto"', description: "fixed respeta width de columna y elimina min-w, evitando scroll horizontal." },
+          { name: "density", type: '"compact" | "normal" | "comfortable"', default: '"normal"', description: "Padding / alto de fila (independiente de size, que solo cambia font-size)." },
+          { name: "autoCardBreakpoint", type: "number", default: "0", description: "Ancho de contenedor (px) bajo el cual cae a la vista cards. 0 desactiva." },
+          { name: "virtualized", type: "boolean", default: "false", description: "Vista tabla: renderiza solo la ventana visible con spacer rows. Cards nunca virtualiza." },
+          { name: "virtualizedMaxHeight", type: "number", default: "400", description: "Alto máx (px) del contenedor con scroll virtual." },
+          { name: "rowHeight", type: "number", default: "getRowHeight(size, density)", description: "Alto de fila asumido (px). Size-aware: baseline size=\"md\" = 33/45/53 según densidad; size lo desplaza por el line box (sm 16 / md 20 / lg 28 px)." },
+          { name: "overscan", type: "number", default: "5", description: "Filas extra renderizadas arriba/abajo del viewport." },
+          { name: "stickyHeader", type: "boolean", default: "false", description: "Header sticky mientras scrollea el cuerpo virtualizado." },
+        ],
+        notes: [
+          "onRowClick funciona en ambas vistas (tabla y cards).",
+          "Interacciones que inician en botones, links o inputs no disparan onRowClick.",
+          "Column acepta width (number=px | string CSS), minWidth (px), align (left/center/right) y truncate (ellipsis + title nativo).",
+          "Anti scroll horizontal: layout=\"fixed\" + width por columna + truncate + density.",
+          "Virtualización: solo vista tabla; rinde con page size grande; filas de alto uniforme; el scroll no se reinicia al cambiar filtros.",
+          "La virtualización server-side hace ventana sobre la PÁGINA ACTUAL (data.length), no sobre total: usar un defaultItemsPerPage grande (p. ej. 200) con itemsPerPageOptions que lo incluya, o el efecto es invisible.",
+          "Virtualización exige alto de fila uniforme. El default es size-aware (getRowHeight(size, density)): con size=\"md\" el baseline es compact 33 / normal 45 / comfortable 53 (padding de celda + line box text-sm de 20px + 1px del divide-y); size lo desplaza por el line box (sm 16 / md 20 / lg 28 px, es decir −4 / 0 / +8 px). Una celda de dos líneas (avatar + texto) mide ~50px real y desalinea los spacers: usar celdas de una sola línea o pasar un rowHeight explícito.",
+          "autoCardBreakpoint fuerza la vista cards bajo el ancho dado, y la virtualización se desactiva en silencio al pasar a cards: no combinar virtualized + autoCardBreakpoint.",
+          "El toggle interno Table/Cards también desactiva la virtualización; las cards nunca se virtualizan.",
+          "debounceMs={0} evita el retardo de refetch en demos.",
+          "variant=\"minimal\" se acepta por tipo pero no tiene estilos (igual que default). ITSearchTable no soporta layout/density/autoCardBreakpoint/virtualized/width.",
+        ],
+      }}
       gallery={
         <div className="space-y-6">
           <div>
@@ -565,6 +841,27 @@ export const DataTableShowcase = () => {
                 size="sm"
                 defaultItemsPerPage={3}
                 defaultView="cards"
+              />
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Server-side virtualization — 240 rows {dtVirtualized ? "(page 200)" : "(page 10)"}</h4>
+            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+              <ITDataTable
+                key={dtVirtualized ? "dt-virt-on" : "dt-virt-off"}
+                columns={virtualUserColumns}
+                fetchData={virtualFetchData}
+                title="Virtualized users"
+                defaultItemsPerPage={dtVirtualized ? 200 : 10}
+                itemsPerPageOptions={dtVirtualized ? [50, 100, 200] : [5, 10, 20]}
+                size={dtSize}
+                virtualized={dtVirtualized}
+                virtualizedMaxHeight={360}
+                stickyHeader={dtStickyHeader}
+                layout={dtLayout}
+                density={dtDensity}
+                debounceMs={0}
               />
             </div>
           </div>

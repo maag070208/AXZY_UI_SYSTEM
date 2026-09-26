@@ -58,7 +58,13 @@ export default function ITLayout({
       >
         {/* DESKTOP SIDEBAR */}
         <div className="hidden lg:block relative z-40 h-full">
-          <div className="w-[88px] h-full flex-shrink-0" />
+          {/* Reserves the sidebar's at-rest width. When the sidebar is collapsed
+              (default), this is the 88px rail and hover expands over the content.
+              When controlled-expanded (`sidebar.isCollapsed === false`), it
+              reserves the full 280px so the sidebar never overlays content. */}
+          <div
+            className={`${desktopCollapsed ? "w-[88px]" : "w-[280px]"} h-full flex-shrink-0`}
+          />
           <div className="absolute top-0 left-0 h-full">
             <ITSidebar
               {...sidebar}

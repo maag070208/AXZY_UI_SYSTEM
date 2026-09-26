@@ -19,6 +19,7 @@ Vertical navigation sidebar with collapsible submenus, tooltips when collapsed, 
 | `onSubItemClick` | `(subitem: ITNavigationSubItem) => void` | — | Callback when a sub-navigation item is clicked. |
 | `subitemConnector` | `"dot" \| "\|" \| "none"` | `"dot"` | Visual connector style for sub-items. |
 | `className` | `string` | — | Additional CSS classes on the sidebar `<aside>`. |
+| `header` | `ReactNode` | — | Optional content rendered above the navigation list (e.g. a wordmark). Hidden while the sidebar is collapsed, and independent of the collapse toggle button, which is always visible in both states. |
 
 ### ITNavigationItem
 
@@ -71,6 +72,9 @@ const items = [
 
 ## Notes
 
+- The button lives above the scrollable `<nav>` (never inside it), so it stays in the tab order and visible in both states; it is centered in the 88px rail when collapsed and right-aligned when expanded.
+- The toggle is a real `<button type="button">` with `aria-expanded`, `aria-controls` pointing at the `<nav>` it controls, and a state-dependent `aria-label`/`title` ("Expandir/Colapsar barra lateral"). Its chevron rotates 180° when the sidebar is expanded, so one icon signals both directions.
+- There is no collapse toggle button: the collapsed rail expands and collapses automatically on pointer hover.
 - Collapsed mode shrinks to icon-only; tooltips show labels on hover with glassmorphism style.
 - Submenus expand/collapse with smooth transitions when a parent item is clicked.
 - Active item highlighting uses a colored left-border accent and subtle background tint.
@@ -78,6 +82,7 @@ const items = [
 - `subitemConnector` styles the visual link between parent and sub-items: `dot` (default), `|` (vertical bar), or `none`.
 - `visibleOnMobile` forces sidebar visibility on smaller screens for responsive layouts.
 - Themed via CSS variables for consistent colors, shadows, and glassmorphism effects across light and dark modes.
+- Accessible by default: the `<nav>` is labelled and carries the `id` referenced by the toggle's `aria-controls`, the toggle exposes `aria-expanded` plus a visible `focus-visible` ring, group toggles expose `aria-expanded`/`aria-controls` and respond to Enter/Space, submenus are labelled `role="group"`, and the active sub-item carries `aria-current="page"`.
 
 ## Stories
 
