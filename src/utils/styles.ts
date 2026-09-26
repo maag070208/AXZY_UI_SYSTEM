@@ -86,11 +86,13 @@ export const tableSortButtonInactive = "hover:bg-secondary-200 text-secondary-40
 
 export const tableBody = "divide-y divide-secondary-100";
 
-export const tableRow = "hover:bg-secondary-50/50 transition-colors duration-150 group";
+export const tableRow = "hover:bg-[var(--color-table-rowHover,var(--color-secondary-50))] transition-colors duration-150 group";
 
 export const tableRowClickable = "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-inset";
 
 export const tableCardClickable = "cursor-pointer rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500";
+
+export const tableCardHover = "hover:bg-[var(--color-table-rowHover,var(--color-secondary-50))] transition-colors duration-150";
 
 export function tableCell(className?: string, density: TableDensity = "normal") {
   return clsx(densityStyles[density].cell, "align-middle", className);

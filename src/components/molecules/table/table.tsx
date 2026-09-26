@@ -21,6 +21,7 @@ import {
   tableActionsCell,
   tableBody,
   tableCardClickable,
+  tableCardHover,
   tableCell,
   tableCellText,
   tableContainer,
@@ -441,7 +442,7 @@ export default function ITTable<T extends Record<string, unknown>>({
               currentData.map((row, i) => (
                 <div
                   key={i}
-                  className={clsx(onRowClick && tableCardClickable)}
+                  className={clsx(tableCardHover, onRowClick && tableCardClickable)}
                   role={onRowClick ? "button" : undefined}
                   tabIndex={onRowClick ? 0 : undefined}
                   onClick={onRowClick ? handleRowClick(row) : undefined}

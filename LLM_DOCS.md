@@ -189,6 +189,7 @@ Todas las variables se inyectan dinámicamente por `ITThemeProvider` en un tag `
 --color-table-headerText: del palette
 --color-table-rowBg:      del palette
 --color-table-rowText:    del palette
+--color-table-rowHover:   del palette
 ```
 
 ### Escalas de color (generadas dinámicamente)

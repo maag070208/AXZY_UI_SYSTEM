@@ -36,6 +36,8 @@ export interface ITThemePalette {
     rowBg: string;
     /** Text color of table body rows. @default "#1e293b" */
     rowText: string;
+    /** Background color applied to a table body row while the pointer is over it (hex). @default "#f1f5f9" */
+    rowHover: string;
   };
 }
 

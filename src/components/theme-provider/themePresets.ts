@@ -21,6 +21,7 @@ export const DEFAULT_PALETTE: ITThemePalette = {
     headerText: "#334155", // Slate-700
     rowBg: "#ffffff", // White
     rowText: "#1e293b", // Slate-800
+    rowHover: "#f1f5f9", // Slate-100
   },
 };
 
@@ -48,6 +49,7 @@ export const PRESETS: { name: string; colors: ITThemePalette }[] = [
         headerText: "#334155",
         rowBg: "#ffffff",
         rowText: "#0f172a",
+        rowHover: "#1e293b",
       },
     },
   },
@@ -73,6 +75,7 @@ export const PRESETS: { name: string; colors: ITThemePalette }[] = [
         headerText: "#881337",
         rowBg: "#ffffff",
         rowText: "#1c1212",
+        rowHover: "#fff1f2",
       },
     },
   },
@@ -98,6 +101,7 @@ export const PRESETS: { name: string; colors: ITThemePalette }[] = [
         headerText: "#115e59",
         rowBg: "#ffffff",
         rowText: "#042f2e",
+        rowHover: "#f0fdfa",
       },
     },
   },
@@ -123,6 +127,7 @@ export const PRESETS: { name: string; colors: ITThemePalette }[] = [
         headerText: "#713f12",
         rowBg: "#ffffff",
         rowText: "#292524",
+        rowHover: "#fefce8",
       },
     },
   },
@@ -148,6 +153,7 @@ export const PRESETS: { name: string; colors: ITThemePalette }[] = [
         headerText: "#166534",
         rowBg: "#ffffff",
         rowText: "#052e16",
+        rowHover: "#f0fdf4",
       },
     },
   },

@@ -17,6 +17,7 @@ import {
   tableActionsCell,
   tableBody,
   tableCardClickable,
+  tableCardHover,
   tableCell,
   tableCellText,
   tableContainer,
@@ -551,7 +552,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                 data.map((row, i) => (
                   <div
                     key={i}
-                    className={clsx(onRowClick && !isLoading && tableCardClickable)}
+                    className={clsx(tableCardHover, onRowClick && !isLoading && tableCardClickable)}
                     role={onRowClick && !isLoading ? "button" : undefined}
                     tabIndex={onRowClick && !isLoading ? 0 : undefined}
                     onClick={onRowClick && !isLoading ? handleRowClick(row) : undefined}

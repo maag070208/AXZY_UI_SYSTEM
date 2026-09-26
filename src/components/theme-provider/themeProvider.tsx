@@ -364,6 +364,7 @@ export default function ITThemeProvider({
     let tableRowText = palette.table.rowText;
     let tableHeaderBg = palette.table.headerBg;
     let tableHeaderText = palette.table.headerText;
+    let tableRowHover = palette.table.rowHover;
     let navbarBg = palette.layout.navbarBg;
     let navbarText = palette.layout.navbarText;
     let sidebarBg = palette.layout.sidebarBg;
@@ -381,6 +382,9 @@ export default function ITThemeProvider({
       }
       if (!isLightColor(tableHeaderText)) {
         tableHeaderText = `color-mix(in srgb, ${palette.table.headerText} 20%, #f9fafb)`;
+      }
+      if (isLightColor(tableRowHover)) {
+        tableRowHover = `color-mix(in srgb, ${palette.table.rowHover} 12%, #1f2937)`;
       }
       if (isLightColor(navbarBg)) {
         navbarBg = `color-mix(in srgb, ${palette.layout.navbarBg} 8%, #111827)`;
@@ -419,9 +423,14 @@ export default function ITThemeProvider({
         tableHeaderText = `color-mix(in srgb, ${palette.table.headerText} 30%, #334155)`;
       } else if (
         !isLightColor(tableHeaderText) &&
-        isVeryDarkColor(palette.table.headerText)
+        isVeryDarkColor(tableHeaderText)
       ) {
         // Dark header text is fine for light mode
+      }
+      if (!isLightColor(tableRowHover)) {
+        tableRowHover = isVeryDarkColor(palette.table.rowHover)
+          ? "#f1f5f9"
+          : `color-mix(in srgb, ${palette.table.rowHover} 12%, #f8fafc)`;
       }
       if (!isLightColor(navbarBg)) {
         navbarBg = isVeryDarkColor(palette.layout.navbarBg)
@@ -637,6 +646,7 @@ export default function ITThemeProvider({
         --color-table-headerText: ${tableHeaderText} !important;
         --color-table-rowBg: ${tableRowBg} !important;
         --color-table-rowText: ${tableRowText} !important;
+        --color-table-rowHover: ${tableRowHover} !important;
 
         /* Native library variables integration */
         --it-sidebar-bg: var(--color-sidebarBg);
@@ -980,7 +990,7 @@ export default function ITThemeProvider({
         color: var(--color-table-rowText) !important;
       }
       tbody tr:hover {
-        background-color: color-mix(in srgb, var(--color-primary) 8%, var(--color-table-rowBg)) !important;
+        background-color: var(--color-table-rowHover) !important;
       }
 
       /* Animation for Saved Indicator */
@@ -1781,6 +1791,7 @@ export default function ITThemeProvider({
                           "table.headerText",
                           "table.rowBg",
                           "table.rowText",
+                          "table.rowHover",
                         ].map((key) => (
                           <ColorRow key={key} colorKey={key} />
                         ))}
