@@ -9,6 +9,8 @@ import { MdOutlineSwapVert } from "react-icons/md";
 import ITInput from "@/components/atoms/input/input";
 import ITPagination from "@/components/molecules/pagination/pagination";
 import ITSelect from "@/components/molecules/select/select";
+import ITSearchSelect from "@/components/molecules/search-select/search-select";
+import ITDatePicker from "@/components/molecules/date-picker/datePicker";
 import { Column } from "@/components/molecules/table/table.props";
 import { formatCurrencyMX, isInteractiveTarget } from "@/utils/table.utils";
 import { ITDataTableProps } from "./dataTable.props";
@@ -248,6 +250,76 @@ export default function ITDataTable<T extends Record<string, unknown>>({
           }}
           onBlur={() => {}}
           className="w-full text-xs"
+          disabled={isLoading}
+        />
+      );
+    }
+
+    if (col.filter === "search" && col.catalogOptions) {
+      if (col.catalogOptions.loading) {
+        return <FaSpinner className="animate-spin" aria-label="Cargando opciones" title="Cargando opciones" />;
+      }
+      if (col.catalogOptions.error) {
+        return <ITText as="span" className="text-danger-500 text-xs">Error cargando</ITText>;
+      }
+      const searchValue = filters[col.key];
+      return (
+        <ITSearchSelect
+          name={`filter-${col.key}`}
+          options={col.catalogOptions.data.map((item) => ({
+            value: item.id,
+            label: item.name,
+          }))}
+          value={
+            typeof searchValue === "string" || typeof searchValue === "number"
+              ? searchValue
+              : ""
+          }
+          onChange={(value) => handleFilterChange(col.key, value === "" ? undefined : value)}
+          onSearch={col.catalogOptions.onSearch}
+          isLoading={col.catalogOptions.loading}
+          size="sm"
+          placeholder="Buscar..."
+          clearable
+          className="w-full"
+          onBlur={() => {}}
+          disabled={isLoading}
+        />
+      );
+    }
+
+    if (col.filter === "date") {
+      const dateValue = filters[col.key];
+      return (
+        <ITDatePicker
+          name={`filter-${col.key}`}
+          value={dateValue instanceof Date ? dateValue : undefined}
+          onChange={(e) => handleFilterChange(col.key, e.target.value as Date)}
+          minDate={col.dateFilterOptions?.minDate}
+          maxDate={col.dateFilterOptions?.maxDate}
+          size="sm"
+          placeholder="dd/mm/aaaa"
+          className="w-full"
+          disabled={isLoading}
+        />
+      );
+    }
+
+    if (col.filter === "date-range") {
+      const rangeValue = filters[col.key];
+      return (
+        <ITDatePicker
+          name={`filter-${col.key}`}
+          range
+          value={Array.isArray(rangeValue) ? rangeValue : undefined}
+          onChange={(e) =>
+            handleFilterChange(col.key, e.target.value as [Date | null, Date | null])
+          }
+          minDate={col.dateFilterOptions?.minDate}
+          maxDate={col.dateFilterOptions?.maxDate}
+          size="sm"
+          placeholder="dd/mm/aaaa - dd/mm/aaaa"
+          className="w-full"
           disabled={isLoading}
         />
       );

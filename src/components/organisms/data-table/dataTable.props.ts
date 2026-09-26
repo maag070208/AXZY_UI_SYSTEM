@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Column } from "@/components/molecules/table/table.props";
-import { TableDensity } from "@/types/table.types";
+import { ColumnFilters, TableDensity } from "@/types/table.types";
 
 /** Parameters passed to `fetchData` every time pagination, filters, or sorting change. */
 export interface ITDataTableFetchParams {
@@ -8,8 +8,12 @@ export interface ITDataTableFetchParams {
   page: number;
   /** Number of rows requested per page. */
   limit: number;
-  /** Active per-column filter values (from `Column.filter`), keyed by column `key`. */
-  filters: Record<string, string | number | boolean | Date>;
+  /**
+   * Active per-column filter values (from `Column.filter`), keyed by column
+   * `key`. Scalars for text/number/boolean/date filters, a `Date` for
+   * `filter: "date"`, and a `[start, end]` tuple for `filter: "date-range"`.
+   */
+  filters: ColumnFilters;
   /** Active sort, present only when the user has clicked a sortable column header. */
   sort?: {
     /** Column `key` currently sorted by. */
@@ -50,7 +54,7 @@ export interface ITDataTableProps<T extends Record<string, unknown>> {
    * Filters managed outside of the ITDataTable (e.g. a date range picker).
    * These will be merged with the internal column filters before calling fetchData.
    */
-  externalFilters?: Record<string, string | number | boolean | Date>;
+  externalFilters?: ColumnFilters;
 
   /**
    * Custom element to display instead of the default spinner while `isLoading` is true.

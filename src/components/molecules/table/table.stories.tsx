@@ -325,3 +325,33 @@ export const VirtualizedLargeDataset: Story = {
     itemsPerPageOptions: [50, 100, 250],
   } as any,
 };
+
+// --- COLUMN FILTER MODES ---
+
+const filterModeColumns: Column<User>[] = [
+  { key: "name", label: "Name", type: "string", filter: true },
+  {
+    key: "roleId",
+    label: "Role (ITSearchSelect)",
+    type: "catalog",
+    filter: "search",
+    catalogOptions: { data: mockRoles },
+  },
+  {
+    key: "lastLogin",
+    label: "Last login (ITDatePicker range)",
+    type: "date",
+    filter: "date-range",
+    dateFilterOptions: { maxDate: new Date() },
+    render: (row) => new Date(row.lastLogin).toLocaleDateString("es-MX"),
+  },
+];
+
+export const WithSearchAndDateFilters: Story = {
+  args: {
+    columns: filterModeColumns,
+    data: generateMockData(25),
+    title: "Filtros: ITSearchSelect + ITDatePicker (rango)",
+    defaultItemsPerPage: 8,
+  } as any,
+};

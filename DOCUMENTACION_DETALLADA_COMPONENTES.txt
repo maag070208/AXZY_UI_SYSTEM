@@ -1127,6 +1127,21 @@ Componente base para desplegar información tabular estructurada con columnas re
 ```typescript
 export type ColumnType = 'string' | 'date' | 'number' | 'boolean' | 'actions' | 'catalog';
 
+// Modo de filtro por columna (Column.filter):
+// true          -> input de texto/número (o toggle si type: 'boolean')
+// 'catalog'     -> ITSelect poblado desde catalogOptions.data
+// 'search'      -> ITSearchSelect typeahead desde catalogOptions.data
+// 'date'        -> ITDatePicker (fecha única)
+// 'date-range'  -> ITDatePicker en modo rango ([start, end])
+export type ColumnFilterMode = boolean | 'catalog' | 'search' | 'date' | 'date-range';
+
+// Valor guardado por filtro de columna:
+// - string | number | boolean para texto/número/booleano y ids de catálogo
+// - Date para filter: 'date'
+// - [Date | null, Date | null] para filter: 'date-range'
+export type ColumnFilterValue = string | number | boolean | Date | [Date | null, Date | null];
+export type ColumnFilters = Record<string, ColumnFilterValue>;
+
 export interface CatalogOption {
   id: string | number;
   name: string;
@@ -1138,7 +1153,7 @@ export interface Column<T = any> {
   className?: string;
   currencyMX?: boolean;                     // solo type: "number"; default false
   actions?: (row: T) => React.ReactNode;    // solo type: "actions"
-  filter?: boolean | 'catalog';             // default false
+  filter?: ColumnFilterMode;                // default false
   type: ColumnType;
   sortable?: boolean;                       // default false; ignorado en type: "actions"
   render?: (row: T) => React.ReactNode;
@@ -1151,6 +1166,11 @@ export interface Column<T = any> {
     data: CatalogOption[];
     loading?: boolean;                      // default false
     error?: boolean;                        // default false
+    onSearch?: (query: string) => void;     // solo filter: "search"; búsqueda server-side (debounced)
+  };
+  dateFilterOptions?: {                     // solo filter: "date" | "date-range"
+    minDate?: Date;
+    maxDate?: Date;
   };
   width?: number | string;                  // number = px; string = longitud CSS ("20%", "12rem")
   minWidth?: number;                        // px; aplica a th/td
@@ -1223,6 +1243,27 @@ export interface ITTableProps<T> {
 />
 ```
 Pasos: (1) `layout="fixed"`, (2) `width` en cada columna (number = px; string = cualquier longitud CSS, ej. `"20%"`, `"12rem"`), (3) `truncate` en columnas de texto largo (agrega ellipsis y `title` nativo con el valor string/number), (4) `density` para compactar. El `<colgroup>` solo se emite si al menos una columna define `width`.
+
+### Filtros de columna
+
+`Column.filter` selecciona el control renderizado en el header de la columna:
+
+| filter           | Control          | Fuente / valor guardado                                      |
+|------------------|------------------|--------------------------------------------------------------|
+| `true`           | `ITInput`        | texto/número (o toggle si `type: "boolean"`)                 |
+| `"catalog"`      | `ITSelect`       | `catalogOptions.data`; guarda el `id` seleccionado           |
+| `"search"`       | `ITSearchSelect` | `catalogOptions.data`; guarda el `value` (id) exacto         |
+| `"date"`         | `ITDatePicker`   | `Date` único                                                 |
+| `"date-range"`   | `ITDatePicker`   | tupla `[Date \| null, Date \| null]`                         |
+
+Notas:
+
+- `"search"` usa búsqueda local sobre `catalogOptions.data`. Para búsqueda en servidor, define `catalogOptions.onSearch(query)`; el `ITSearchSelect` delega el filtrado a ese callback (debounced) y el padre debe actualizar `data`.
+- `"date"` y `"date-range"` aceptan `dateFilterOptions: { minDate?, maxDate? }`, reenviado al `ITDatePicker` como límites de selección.
+- Un rango con ambos extremos `null` se considera "sin filtro" y se elimina del mapa de filtros.
+- En `ITTable` el filtrado es local: `"date"` compara por día (`isSameDay`) y `"date-range"` incluye el día completo de `start` y `end` (`startOfDay` / `endOfDay`).
+- En `ITDataTable` el filtro viaja en `fetchData(params)`: `params.filters[key]` es `Date` para `"date"`, `[start, end]` para `"date-range"`, o el escalar/id para el resto.
+- Los tipos `ColumnFilterMode`, `ColumnFilterValue` y `ColumnFilters` se exportan desde `@axzydev/axzy_ui_system`.
 
 ### Virtualización: cuándo usarla y límites
 
@@ -1299,7 +1340,7 @@ Tabla con integración inteligente para consumo remoto de APIs, ordenamiento, fi
 export interface ITDataTableFetchParams {
   page: number;                       // 1-indexado
   limit: number;                      // filas por página
-  filters: Record<string, string | number | boolean | Date>;
+  filters: ColumnFilters;             // escalar para texto/número/booleano; Date para filter: "date"; [start, end] para filter: "date-range"
   sort?: { key: string; direction: 'asc' | 'desc' };
 }
 
@@ -1312,7 +1353,7 @@ export interface ITDataTableProps<T extends Record<string, unknown>> {
   columns: Column<T>[];
   fetchData: (params: ITDataTableFetchParams) => Promise<ITDataTableResponse<T>>;
   debounceMs?: number;                          // default 500
-  externalFilters?: Record<string, string | number | boolean | Date>;
+  externalFilters?: ColumnFilters;
   loadingIndicator?: React.ReactNode;
   fetchOnMount?: boolean;                       // default true
   reloadTrigger?: number | string | boolean;

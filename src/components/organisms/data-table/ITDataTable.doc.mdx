@@ -14,7 +14,7 @@ Advanced server-side data table with automatic pagination, column sorting, and f
 | `columns` | `Column<T>[]` | — | Column definitions with key, label, type, sortable, filter, render, plus layout fields: `width` (`number` px or CSS `string`), `minWidth` (px), `align` (`"left" \| "center" \| "right"`), and `truncate` (ellipsis + native `title`). |
 | `fetchData` | `(params: ITDataTableFetchParams) => Promise<ITDataTableResponse<T>>` | — | Async callback triggered on pagination, filter, or sort change. Must return `{ data, total }`. |
 | `debounceMs` | `number` | `500` | Delay in ms before firing fetch after filter state changes. |
-| `externalFilters` | `Record<string, string \| number \| boolean \| Date>` | `{}` | Filters managed outside the table (e.g., date pickers) merged with internal column filters. |
+| `externalFilters` | `ColumnFilters` | `{}` | Filters managed outside the table (e.g., date pickers) merged with internal column filters. Values may be scalars, a `Date`, or a `[start, end]` tuple. |
 | `loadingIndicator` | `ReactNode` | `<FaSpinner />` | Custom element shown while loading. |
 | `fetchOnMount` | `boolean` | `true` | Whether to fetch data on initial mount. |
 | `reloadTrigger` | `number \| string \| boolean` | — | Changing this value forces a re-fetch. Use after mutations. |
@@ -56,6 +56,15 @@ import { ITDataTable } from '@axzydev/axzy_ui_system';
   variant="bordered"
 />
 
+// Search + date filters (values arrive in params.filters)
+<ITDataTable
+  columns={[
+    { key: 'role', label: 'Role', type: 'string', filter: 'search', catalogOptions: { data: roles, onSearch: (q) => api.searchRoles(q) } },
+    { key: 'hiredAt', label: 'Hired', type: 'date', filter: 'date-range', dateFilterOptions: { maxDate: new Date() } },
+  ]}
+  fetchData={async (params) => api.fetchItems(params)}
+/>
+
 // No horizontal scroll: fixed layout + per-column widths + truncation
 <ITDataTable
   columns={[
@@ -71,7 +80,7 @@ import { ITDataTable } from '@axzydev/axzy_ui_system';
 
 ## Notes
 
-- Column filters support `"catalog"` (dropdown), `true` (text input), and `boolean` (tri-state toggle).
+- Column filters support `true` (text/number input, or boolean tri-state toggle for `type: "boolean"`), `"catalog"` (`ITSelect`), `"search"` (`ITSearchSelect` typeahead; add `catalogOptions.onSearch` for server-side search), and `"date"` / `"date-range"` (`ITDatePicker`, bounded by `dateFilterOptions`). In `fetchData(params)`, `params.filters[key]` is a `Date` for `"date"`, a `[start, end]` tuple for `"date-range"`, and the scalar/id otherwise.
 - The `externalFilters` prop allows integrating external filter controls like date pickers without building filter UI into the table itself.
 - Debounce prevents excessive API calls while the user types in filter inputs.
 - A loading skeleton overlay covers the table body while fetching, keeping the header visible.

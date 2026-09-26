@@ -15,6 +15,9 @@ import { MdOutlineSwapVert } from "react-icons/md";
 import ITInput from "@/components/atoms/input/input";
 import ITPagination from "@/components/molecules/pagination/pagination";
 import ITSelect from "@/components/molecules/select/select";
+import ITSearchSelect from "@/components/molecules/search-select/search-select";
+import ITDatePicker from "@/components/molecules/date-picker/datePicker";
+import { isSameDay, startOfDay, endOfDay } from "date-fns";
 import { Column, ITTableProps } from "./table.props";
 import ITText from "@/components/atoms/text/text";
 import {
@@ -146,21 +149,39 @@ export default function ITTable<T extends Record<string, unknown>>({
 
   const filteredData = sortedData.filter((row) =>
     columns.every((col) => {
-      if (
-        !col.filter ||
-        filters[col.key] === undefined ||
-        filters[col.key] === ""
-      )
+      const rawFilter = filters[col.key];
+      if (!col.filter || rawFilter === undefined || rawFilter === "") return true;
+      // A date range with both ends empty means "no filter".
+      if (Array.isArray(rawFilter) && rawFilter[0] == null && rawFilter[1] == null) {
         return true;
+      }
 
       const value = getNestedValue(row, col.key);
-      const filterValue = String(filters[col.key]).toLowerCase();
+
+      if (col.filter === "date" || col.filter === "date-range") {
+        const rowDate = value instanceof Date ? value : new Date(String(value));
+        if (isNaN(rowDate.getTime())) return false;
+        if (col.filter === "date") {
+          return isSameDay(rowDate, rawFilter as Date);
+        }
+        const [start, end] = rawFilter as [Date | null, Date | null];
+        if (start && rowDate.getTime() < startOfDay(start).getTime()) return false;
+        if (end && rowDate.getTime() > endOfDay(end).getTime()) return false;
+        return true;
+      }
+
+      if (col.filter === "search") {
+        // The search-select stores the exact option value (id).
+        return String(value) === String(rawFilter);
+      }
+
+      const filterValue = String(rawFilter).toLowerCase();
 
       switch (col.type) {
         case "number":
           return String(value).includes(filterValue);
         case "boolean":
-          return value === filters[col.key];
+          return value === rawFilter;
         case "catalog": {
           if (!col.catalogOptions) return true;
           const catalogItem = col.catalogOptions.data.find(
@@ -279,6 +300,81 @@ export default function ITTable<T extends Record<string, unknown>>({
           }}
           onBlur={() => { }}
           className="w-full text-xs"
+        />
+      );
+    }
+
+    if (col.filter === "search" && col.catalogOptions) {
+      if (col.catalogOptions.loading) {
+        return (
+          <FaSpinner
+            className="animate-spin"
+            aria-label="Cargando opciones"
+            title="Cargando opciones"
+          />
+        );
+      }
+
+      if (col.catalogOptions.error) {
+        return <ITText as="span" className="text-danger-500 text-xs">Error cargando</ITText>;
+      }
+
+      const searchValue = filters[col.key];
+      return (
+        <ITSearchSelect
+          name={`filter-${col.key}`}
+          options={col.catalogOptions.data.map((item) => ({
+            value: item.id,
+            label: item.name,
+          }))}
+          value={
+            typeof searchValue === "string" || typeof searchValue === "number"
+              ? searchValue
+              : ""
+          }
+          onChange={(value) => handleFilterChange(col.key, value === "" ? undefined : value)}
+          onSearch={col.catalogOptions.onSearch}
+          isLoading={col.catalogOptions.loading}
+          size="sm"
+          placeholder="Buscar..."
+          clearable
+          className="w-full"
+          onBlur={() => { }}
+        />
+      );
+    }
+
+    if (col.filter === "date") {
+      const dateValue = filters[col.key];
+      return (
+        <ITDatePicker
+          name={`filter-${col.key}`}
+          value={dateValue instanceof Date ? dateValue : undefined}
+          onChange={(e) => handleFilterChange(col.key, e.target.value as Date)}
+          minDate={col.dateFilterOptions?.minDate}
+          maxDate={col.dateFilterOptions?.maxDate}
+          size="sm"
+          placeholder="dd/mm/aaaa"
+          className="w-full"
+        />
+      );
+    }
+
+    if (col.filter === "date-range") {
+      const rangeValue = filters[col.key];
+      return (
+        <ITDatePicker
+          name={`filter-${col.key}`}
+          range
+          value={Array.isArray(rangeValue) ? rangeValue : undefined}
+          onChange={(e) =>
+            handleFilterChange(col.key, e.target.value as [Date | null, Date | null])
+          }
+          minDate={col.dateFilterOptions?.minDate}
+          maxDate={col.dateFilterOptions?.maxDate}
+          size="sm"
+          placeholder="dd/mm/aaaa - dd/mm/aaaa"
+          className="w-full"
         />
       );
     }

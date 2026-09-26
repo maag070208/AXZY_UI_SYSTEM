@@ -42,6 +42,7 @@ Basic data table with column definitions, sorting, and configurable visual varia
 | `minWidth` | `number` | — | Minimum column width in px, applied to header and body cells via inline style. |
 | `align` | `"left" \| "center" \| "right"` | `"left"` | Horizontal alignment of the column's header and cells. |
 | `truncate` | `boolean` | `false` | Truncates overflowing cell content with an ellipsis and exposes the raw string/number via the native `title` attribute. |
+| `filter` | `true \| "catalog" \| "search" \| "date" \| "date-range"` | `false` | Filter control rendered in the header. `true` = text/number input (or boolean toggle when `type: "boolean"`); `"catalog"` = `ITSelect` fed by `catalogOptions.data`; `"search"` = `ITSearchSelect` typeahead fed by `catalogOptions.data` (optional `catalogOptions.onSearch` for server-side search); `"date"` / `"date-range"` = `ITDatePicker` single/range, bounded by `dateFilterOptions`. |
 
 ## Usage
 
@@ -67,6 +68,15 @@ const data = [
   onRowClick={(row, event) => console.log(row, event.type)}
 />
 
+// Filter modes: ITSearchSelect typeahead + ITDatePicker single / range
+const filterColumns = [
+  { key: 'role', label: 'Role', type: 'string', filter: 'search', catalogOptions: { data: roles } },
+  { key: 'lastLogin', label: 'Last login', type: 'date', filter: 'date', dateFilterOptions: { maxDate: new Date() } },
+  { key: 'hiredAt', label: 'Hired', type: 'date', filter: 'date-range', dateFilterOptions: { maxDate: new Date() } },
+];
+
+<ITTable columns={filterColumns} data={data} />
+
 // No horizontal scroll: fixed layout + per-column widths + truncation
 const fixedColumns = [
   { key: 'name',  label: 'Name',  type: 'string', width: '30%', truncate: true },
@@ -81,6 +91,7 @@ const fixedColumns = [
 
 - `columns[].render` provides custom cell rendering via render function
 - `columns[].sortable` enables column header sort toggles
+- `columns[].filter` supports `true` (text/number input, or boolean toggle for `type: "boolean"`), `"catalog"` (`ITSelect`), `"search"` (`ITSearchSelect` typeahead; add `catalogOptions.onSearch` for server-side search), and `"date"` / `"date-range"` (`ITDatePicker`; bound with `dateFilterOptions: { minDate, maxDate }`). Filtering is client-side: `"date"` matches the whole day, `"date-range"` includes both ends (`startOfDay` / `endOfDay`).
 - `onRowClick` fires in **both** the table and cards views. The event is a `MouseEvent` for pointer interaction and a `KeyboardEvent` for Enter/Space activation.
 - Clicks/keys that start inside an interactive child (`button`, `a`, `input`, `select`, `textarea`, `[role="button"]`, `[role="link"]`, `[data-row-click-ignore]`) do **not** trigger `onRowClick`.
 - When `onRowClick` is omitted no `cursor-pointer`, focus ring, `tabIndex`, or `role` is added.

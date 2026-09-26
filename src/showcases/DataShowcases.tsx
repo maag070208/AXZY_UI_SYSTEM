@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback } from "react";
+import { startOfDay, endOfDay } from "date-fns";
 import {
   ITTable,
   ITDataTable,
@@ -45,6 +46,74 @@ const virtualUserColumns: any = [
   { key: "email", label: "Email", type: "string", width: "28%", truncate: true },
   { key: "role", label: "Role", type: "string", width: "16%" },
   { key: "active", label: "Active", type: "boolean", width: "12%" },
+];
+
+// Demo data for the new column filter modes: adds a `hiredAt` date so the
+// same table can showcase both single-date and date-range filters.
+const filterDemoData = TABLE_DATA.map((row, i) => ({
+  ...row,
+  hiredAt: new Date(2024, (i * 5) % 12, ((i * 7) % 27) + 1).toISOString(),
+}));
+
+// Columns exercising every new filter mode: ITSearchSelect (`"search"`) and
+// ITDatePicker in single (`"date"`) and range (`"date-range"`) modes.
+const filterDemoColumns: any = [
+  {
+    key: "name",
+    label: "Name",
+    type: "string",
+    sortable: true,
+    filter: true,
+    render: (row: Record<string, unknown>) => (
+      <span className="font-semibold text-slate-800 dark:text-white">{row.name as string}</span>
+    ),
+  },
+  {
+    key: "role",
+    label: "Role",
+    type: "string",
+    sortable: true,
+    filter: "search",
+    catalogOptions: {
+      data: [
+        { id: "Admin", name: "Admin" },
+        { id: "Editor", name: "Editor" },
+        { id: "Viewer", name: "Viewer" },
+      ],
+    },
+    render: (row: Record<string, unknown>) => (
+      <span className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md ${roleColor(row.role as string)}`}>
+        {row.role as string}
+      </span>
+    ),
+  },
+  {
+    key: "lastLogin",
+    label: "Last login",
+    type: "date",
+    sortable: true,
+    filter: "date",
+    render: (row: Record<string, unknown>) =>
+      new Date(row.lastLogin as string).toLocaleDateString("es-MX", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
+  },
+  {
+    key: "hiredAt",
+    label: "Hired",
+    type: "date",
+    sortable: true,
+    filter: "date-range",
+    dateFilterOptions: { maxDate: new Date() },
+    render: (row: Record<string, unknown>) =>
+      new Date(row.hiredAt as string).toLocaleDateString("es-MX", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
+  },
 ];
 
 const nameColumn = {
@@ -276,6 +345,9 @@ export const TableShowcase = () => {
           '<ITTable columns={columns} data={data} defaultView="cards" onRowClick={(row) => open(row)} />',
           '<ITTable columns={fixedColumns} data={data} layout="fixed" density="compact" />',
           '<ITTable columns={cols} data={rows} virtualized stickyHeader layout="fixed" density="compact" defaultItemsPerPage={300} itemsPerPageOptions={[50, 100, 300]} />',
+          '// ITSearchSelect typeahead (server-side search opcional vía catalogOptions.onSearch)\n{ key: "role", label: "Role", type: "string", filter: "search", catalogOptions: { data: roles } }',
+          '// ITDatePicker fecha única\n{ key: "lastLogin", label: "Last login", type: "date", filter: "date", dateFilterOptions: { maxDate: new Date() } }',
+          '// ITDatePicker rango\n{ key: "hiredAt", label: "Hired", type: "date", filter: "date-range", dateFilterOptions: { maxDate: new Date() } }',
         ],
         props: [
           { name: "columns", type: "Column<T>[]", description: "Definiciones de columna: key, label, type, sortable, filter, render, actions." },
@@ -309,6 +381,7 @@ export const TableShowcase = () => {
           "Virtualización: solo vista tabla; rinde con page size grande; filas de alto uniforme; el scroll no se reinicia al cambiar filtros.",
           "Virtualización exige alto de fila uniforme. El default es size-aware (getRowHeight(size, density)): con size=\"md\" el baseline es compact 33 / normal 45 / comfortable 53 (padding de celda + line box text-sm de 20px + 1px del divide-y); size lo desplaza por el line box (sm 16 / md 20 / lg 28 px, es decir −4 / 0 / +8 px). Una celda de dos líneas (avatar + texto) mide ~50px real, distinto de ese alto asumido, así que los spacers se desalinean: usar celdas de una sola línea o pasar un rowHeight explícito.",
           "ITSearchTable no soporta layout/density/autoCardBreakpoint/virtualized/width — no asumir paridad.",
+          "Nuevos modos de filtro por columna: filter: \"search\" renderiza ITSearchSelect (usa catalogOptions.data; opcional catalogOptions.onSearch para búsqueda en servidor), y filter: \"date\" / \"date-range\" renderizan ITDatePicker (bounds vía dateFilterOptions). El rango se guarda como [start, end] y se considera vacío cuando ambos extremos son null.",
         ],
       }}
       gallery={
@@ -440,6 +513,22 @@ export const TableShowcase = () => {
               />
             </div>
           </div>
+
+          <div>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Column filters: ITSearchSelect + ITDatePicker (single &amp; range)</h4>
+            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+              <ITTable
+                columns={filterDemoColumns}
+                data={filterDemoData}
+                title="Filter demo"
+                size="sm"
+                defaultItemsPerPage={8}
+              />
+            </div>
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              Role uses <code>filter: "search"</code> (ITSearchSelect). Last login uses <code>filter: "date"</code> and Hired uses <code>filter: "date-range"</code> (ITDatePicker), with <code>dateFilterOptions</code> bounds.
+            </p>
+          </div>
         </div>
       }
     />
@@ -475,8 +564,15 @@ export const DataTableShowcase = () => {
       key: "role",
       label: "Role",
       type: "string" as const,
-      filter: true,
+      filter: "search" as const,
       sortable: true,
+      catalogOptions: {
+        data: [
+          { id: "Admin", name: "Admin" },
+          { id: "Editor", name: "Editor" },
+          { id: "Viewer", name: "Viewer" },
+        ],
+      },
       render: (row: any) => (
         <span className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md ${
           row.role === "Admin" ? "bg-primary-100 text-primary-700 dark:bg-primary-950/40 dark:text-primary-300" :
@@ -485,23 +581,42 @@ export const DataTableShowcase = () => {
         }`}>{row.role}</span>
       )
     },
+    {
+      key: "hiredAt",
+      label: "Hired",
+      type: "date" as const,
+      filter: "date-range" as const,
+      sortable: true,
+      dateFilterOptions: { maxDate: new Date() },
+      render: (row: any) =>
+        new Date(row.hiredAt as string).toLocaleDateString("es-MX", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }),
+    },
     { key: "active", label: "Active", type: "boolean" as const, filter: true }
   ], []);
 
-  const MOCK_USERS = useMemo(() => [
-    { id: 1, name: "Sofía Castillo", role: "Admin", active: true },
-    { id: 2, name: "Daniela Klein", role: "Editor", active: true },
-    { id: 3, name: "Mariana Reyes", role: "Viewer", active: false },
-    { id: 4, name: "Camila Torres", role: "Admin", active: true },
-    { id: 5, name: "Valentina Méndez", role: "Editor", active: true },
-    { id: 6, name: "Luciana Rivas", role: "Viewer", active: false },
-    { id: 7, name: "Isabella Cruz", role: "Editor", active: true },
-    { id: 8, name: "Gabriela Vargas", role: "Admin", active: true },
-    { id: 9, name: "Ana López", role: "Editor", active: false },
-    { id: 10, name: "Carla Jiménez", role: "Viewer", active: true },
-    { id: 11, name: "Luisa Fernández", role: "Admin", active: true },
-    { id: 12, name: "Renata Morales", role: "Viewer", active: false },
-  ], []);
+  const MOCK_USERS = useMemo(() =>
+    [
+      { id: 1, name: "Sofía Castillo", role: "Admin", active: true },
+      { id: 2, name: "Daniela Klein", role: "Editor", active: true },
+      { id: 3, name: "Mariana Reyes", role: "Viewer", active: false },
+      { id: 4, name: "Camila Torres", role: "Admin", active: true },
+      { id: 5, name: "Valentina Méndez", role: "Editor", active: true },
+      { id: 6, name: "Luciana Rivas", role: "Viewer", active: false },
+      { id: 7, name: "Isabella Cruz", role: "Editor", active: true },
+      { id: 8, name: "Gabriela Vargas", role: "Admin", active: true },
+      { id: 9, name: "Ana López", role: "Editor", active: false },
+      { id: 10, name: "Carla Jiménez", role: "Viewer", active: true },
+      { id: 11, name: "Luisa Fernández", role: "Admin", active: true },
+      { id: 12, name: "Renata Morales", role: "Viewer", active: false },
+    ].map((row, i) => ({
+      ...row,
+      hiredAt: new Date(2023, (i * 5) % 12, ((i * 7) % 27) + 1).toISOString(),
+    })),
+  []);
 
   const fetchData = useCallback(async (params: ITDataTableFetchParams): Promise<ITDataTableResponse<any>> => {
     const delay = apiState === "loading" ? 8000 : 400;
@@ -517,14 +632,31 @@ export const DataTableShowcase = () => {
 
     let mockData = [...MOCK_USERS];
 
+    const matchesFilter = (itemValue: unknown, filterVal: unknown): boolean => {
+      // Single date (filter: "date")
+      if (filterVal instanceof Date) {
+        const d = new Date(String(itemValue));
+        return !isNaN(d.getTime()) && d.toDateString() === filterVal.toDateString();
+      }
+      // Date range (filter: "date-range") — [start, end]
+      if (Array.isArray(filterVal)) {
+        const [start, end] = filterVal as [Date | null, Date | null];
+        if (!start && !end) return true;
+        const d = new Date(String(itemValue));
+        if (isNaN(d.getTime())) return false;
+        if (start && d.getTime() < startOfDay(start).getTime()) return false;
+        if (end && d.getTime() > endOfDay(end).getTime()) return false;
+        return true;
+      }
+      // Scalar filters (text/number/boolean/catalog/search id)
+      return String(itemValue).toLowerCase().includes(String(filterVal).toLowerCase());
+    };
+
     if (params.filters) {
       Object.keys(params.filters).forEach(key => {
         const filterVal = params.filters[key];
-        if (filterVal) {
-          mockData = mockData.filter(item =>
-            String((item as any)[key]).toLowerCase().includes(String(filterVal).toLowerCase())
-          );
-        }
+        if (filterVal === undefined || filterVal === "") return;
+        mockData = mockData.filter(item => matchesFilter((item as any)[key], filterVal));
       });
     }
 
@@ -745,12 +877,14 @@ export const DataTableShowcase = () => {
           '<ITDataTable columns={fixedColumns} fetchData={api.fetchUsers} layout="fixed" density="compact" />',
           '<ITDataTable columns={cols} fetchData={api.page} virtualized stickyHeader defaultItemsPerPage={200} itemsPerPageOptions={[50, 100, 200]} debounceMs={0} />',
           '<ITDataTable columns={cols} fetchData={api.page} layout="fixed" density="compact" autoCardBreakpoint={640} />',
+          '// Filtro de columna tipo ITSearchSelect (typeahead)\n{ key: "role", label: "Role", type: "string", filter: "search", catalogOptions: { data: roles, onSearch: (q) => api.searchRoles(q) } }',
+          '// Filtro de columna tipo ITDatePicker (rango) — params.filters[key] llega como [start, end]\n{ key: "hiredAt", label: "Hired", type: "date", filter: "date-range", dateFilterOptions: { maxDate: new Date() } }',
         ],
         props: [
           { name: "columns", type: "Column<T>[]", description: "Definiciones de columna." },
           { name: "fetchData", type: "(params: ITDataTableFetchParams) => Promise<ITDataTableResponse<T>>", required: true, description: "Callback asíncrono disparado al cambiar página, filtros u orden. Retorna { data, total }." },
           { name: "debounceMs", type: "number", default: "500", description: "Espera antes de refetch tras cambiar filtros." },
-          { name: "externalFilters", type: "Record<string, string | number | boolean | Date>", default: "{}", description: "Filtros externos fusionados con los internos." },
+          { name: "externalFilters", type: "ColumnFilters", default: "{}", description: "Filtros externos fusionados con los internos. Los valores de fecha pueden ser Date o [start, end]." },
           { name: "loadingIndicator", type: "ReactNode", description: "Elemento custom mostrado mientras carga." },
           { name: "fetchOnMount", type: "boolean", default: "true", description: "Dispara fetch al montar." },
           { name: "reloadTrigger", type: "number | string | boolean", description: "Cambiar su valor fuerza un refetch." },
@@ -787,6 +921,7 @@ export const DataTableShowcase = () => {
           "El toggle interno Table/Cards también desactiva la virtualización; las cards nunca se virtualizan.",
           "debounceMs={0} evita el retardo de refetch en demos.",
           "variant=\"minimal\" se acepta por tipo pero no tiene estilos (igual que default). ITSearchTable no soporta layout/density/autoCardBreakpoint/virtualized/width.",
+          "Modos de filtro por columna: filter: \"search\" renderiza ITSearchSelect (usa catalogOptions.data; catalogOptions.onSearch habilita búsqueda server-side debounced), y filter: \"date\" / \"date-range\" renderizan ITDatePicker con dateFilterOptions { minDate, maxDate }. En fetchData, params.filters[key] llega como Date (date) o [start, end] (date-range).",
         ],
       }}
       gallery={

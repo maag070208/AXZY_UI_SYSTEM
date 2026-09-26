@@ -107,7 +107,7 @@ import type { ITSlideToggleProps } from "./components/atoms/slide/slide.props";
 import type { ITSliderProps } from "./components/atoms/slider/slider.props";
 import type { ITStackProps } from "./components/atoms/stack/stack.props";
 import type { ITStatCardProps } from "./components/molecules/stat-card/stat-card.props";
-import type { ITTableProps, Column } from "./components/molecules/table/table.props";
+import type { ITTableProps, Column, ColumnFilterMode } from "./components/molecules/table/table.props";
 import type { ITTextProps } from "./components/atoms/text/text.props";
 import type { ITTextareaProps } from "./components/atoms/textarea/textarea.props";
 import type { ITTabsProps, ITTabItem } from "./components/molecules/tabs/tabs.props";
@@ -115,7 +115,7 @@ import type { ITTripleFilterProps, ITTripleFilterOption } from "./components/org
 import type { ITToastProps } from "./components/organisms/toast/toast.props";
 import type { ITWysiwygProps } from "./components/molecules/wysiwyg/wysiwyg.props";
 import type { FieldConfig, FieldConfigV2 } from "./types/field.types";
-import type { TableDensity } from "./types/table.types";
+import type { ColumnFilters, ColumnFilterValue, TableDensity } from "./types/table.types";
 
 // UTILS
 import ITDropfile, { UploadStatus, FileTypeEnum } from "./components/organisms/dropfile/dropfile";
@@ -157,7 +157,7 @@ export {
 };
 
   export type {
-    Column, FieldConfig,
+    Column, ColumnFilters, ColumnFilterMode, ColumnFilterValue, FieldConfig,
     FieldConfigV2,
     ITAccordionItem, ITAccordionProps,
     ITAlertProps, ITAvatarProps, ITBadgetProps,

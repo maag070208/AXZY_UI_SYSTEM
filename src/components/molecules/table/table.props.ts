@@ -3,6 +3,18 @@ import { TableDensity, TableSize, TableVariants } from "@/types/table.types";
 /** Data type of a table column, controls default rendering, filter UI, and sort comparison. */
 export type ColumnType = "string" | "date" | "number" | "boolean" | "actions" | "catalog";
 
+/**
+ * Per-column filter mode, set through `Column.filter`.
+ *
+ * - `true` — text/number input (or boolean toggle when `type: "boolean"`).
+ * - `"catalog"` — `ITSelect` dropdown populated from `catalogOptions`.
+ * - `"search"` — `ITSearchSelect` typeahead populated from `catalogOptions`
+ *   (respects `catalogOptions.onSearch` for server-side search).
+ * - `"date"` — `ITDatePicker` single-date filter.
+ * - `"date-range"` — `ITDatePicker` in range mode.
+ */
+export type ColumnFilterMode = boolean | "catalog" | "search" | "date" | "date-range";
+
 /** A single selectable entry for a `"catalog"`-type column's filter/value lookup. */
 export interface CatalogOption {
   /** Unique identifier matched against the row's field value. */
@@ -23,8 +35,8 @@ export interface Column<T = any> {
   currencyMX?: boolean;
   /** Custom action buttons/content rendered for a `"actions"`-type column. Receives the full row object. */
   actions?: (row: T) => React.ReactNode;
-  /** Enables per-column filtering. Pass `true` for a text/number/boolean filter matching `type`, or `"catalog"` to filter against `catalogOptions`. @default false */
-  filter?: boolean | "catalog";
+  /** Enables per-column filtering. Pass `true` for a text/number/boolean filter matching `type`, `"catalog"` for an `ITSelect` fed by `catalogOptions`, `"search"` for an `ITSearchSelect` typeahead, or `"date"` / `"date-range"` for an `ITDatePicker`. @default false */
+  filter?: ColumnFilterMode;
   /** Column data type. Drives default cell rendering, filter UI, and sort comparison. */
   type: ColumnType;
   /** Whether clicking the header sorts by this column. Ignored for `type: "actions"`. @default false */
@@ -45,6 +57,22 @@ export interface Column<T = any> {
     loading?: boolean;
     /** Shows an error state in the filter UI when the catalog failed to load. @default false */
     error?: boolean;
+    /**
+     * Server-side search handler for a `filter: "search"` column. When provided,
+     * `ITSearchSelect` delegates filtering to this callback (debounced) instead
+     * of filtering `data` locally; the parent is expected to update `data`.
+     */
+    onSearch?: (query: string) => void;
+  };
+  /**
+   * Date bounds applied by the `"date"` and `"date-range"` filters, forwarded to
+   * the underlying `ITDatePicker`. Ignored by every other filter mode.
+   */
+  dateFilterOptions?: {
+    /** Earliest selectable date. */
+    minDate?: Date;
+    /** Latest selectable date. */
+    maxDate?: Date;
   };
   /**
    * Fixed column width. A `number` is treated as pixels (`width: 120` → `120px`);

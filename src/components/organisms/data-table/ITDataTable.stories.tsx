@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
+import { startOfDay, endOfDay } from 'date-fns';
 import ITDataTable from './dataTable';
 import { ITDataTableFetchParams, ITDataTableResponse } from './dataTable.props';
 import ITCard from '@/components/molecules/card/card';
@@ -240,6 +241,78 @@ export const WithRowClick: Story = {
     fetchData: mockFetchItems,
     defaultItemsPerPage: 10,
     onRowClick: (row: any) => console.log('Row clicked:', row),
+  },
+};
+
+export const WithSearchAndDateFilters: Story = {
+  render: () => {
+    const searchDateFetch = useCallback(
+      async (params: ITDataTableFetchParams): Promise<ITDataTableResponse<any>> => {
+        await new Promise((r) => setTimeout(r, 400));
+        let filtered = [...MOCK_DATA];
+
+        Object.entries(params.filters).forEach(([key, value]) => {
+          if (value === undefined || value === '') return;
+
+          if (key === 'role') {
+            filtered = filtered.filter((item) => item.role === value);
+          } else if (key === 'createdAt') {
+            if (Array.isArray(value)) {
+              const [rangeStart, rangeEnd] = value as [Date | null, Date | null];
+              if (!rangeStart && !rangeEnd) return;
+              filtered = filtered.filter((item) => {
+                const time = new Date(item.createdAt).getTime();
+                if (rangeStart && time < startOfDay(rangeStart).getTime()) return false;
+                if (rangeEnd && time > endOfDay(rangeEnd).getTime()) return false;
+                return true;
+              });
+            } else if (value instanceof Date) {
+              filtered = filtered.filter(
+                (item) => new Date(item.createdAt).toDateString() === value.toDateString()
+              );
+            }
+          }
+        });
+
+        const start = (params.page - 1) * params.limit;
+        return { data: filtered.slice(start, start + params.limit), total: filtered.length };
+      },
+      []
+    );
+
+    const filterColumns = useMemo(
+      () => [
+        { key: 'username', label: 'Usuario', type: 'string' as const, filter: true, sortable: true },
+        {
+          key: 'role',
+          label: 'Rol (ITSearchSelect)',
+          type: 'string' as const,
+          filter: 'search' as const,
+          sortable: true,
+          catalogOptions: { data: ROLES.map((role) => ({ id: role, name: role })) },
+          render: (row: any) => <ITBadget label={row.role} />,
+        },
+        {
+          key: 'createdAt',
+          label: 'Alta (ITDatePicker range)',
+          type: 'date' as const,
+          filter: 'date-range' as const,
+          sortable: true,
+          dateFilterOptions: { maxDate: new Date() },
+          render: (row: any) => new Date(row.createdAt).toLocaleDateString('es-MX'),
+        },
+      ],
+      []
+    );
+
+    return (
+      <ITDataTable
+        title="Filtros: ITSearchSelect + ITDatePicker (rango)"
+        columns={filterColumns as any}
+        fetchData={searchDateFetch}
+        defaultItemsPerPage={8}
+      />
+    );
   },
 };
 

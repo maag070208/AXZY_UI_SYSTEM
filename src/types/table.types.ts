@@ -1,5 +1,22 @@
 export type TableVariants = "default" | "striped" | "bordered";
 
+/**
+ * Value stored for a single column filter.
+ *
+ * - `string | number | boolean` — text/number/boolean filters and catalog ids.
+ * - `Date` — a single-date filter (`Column.filter: "date"`).
+ * - `[Date | null, Date | null]` — a date-range filter (`Column.filter: "date-range"`).
+ */
+export type ColumnFilterValue =
+  | string
+  | number
+  | boolean
+  | Date
+  | [Date | null, Date | null];
+
+/** Map of column `key` to its active filter value. */
+export type ColumnFilters = Record<string, ColumnFilterValue>;
+
 export type TableSize = "sm" | "md" | "lg";
 
 export const variantStyles: Record<TableVariants, string> = {

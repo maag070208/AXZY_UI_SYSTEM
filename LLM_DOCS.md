@@ -483,6 +483,8 @@ Ambas tablas comparten estas props (todas opt-in, backwards-compatible):
 
 `Column<T>` extra: `width` (`number`=px | `string`=CSS), `minWidth` (px), `align` (`"left" | "center" | "right"`, default `"left"`), `truncate` (ellipsis + `title` nativo; default `false`). `<colgroup>` solo si alguna columna define `width`.
 
+**Filtros de columna (`Column.filter`)**: `true` → `ITInput` (texto/número; toggle si `type: "boolean"`); `"catalog"` → `ITSelect` desde `catalogOptions.data`; `"search"` → `ITSearchSelect` typeahead desde `catalogOptions.data` (con `catalogOptions.onSearch(query)` opcional para búsqueda server-side debounced); `"date"` → `ITDatePicker` fecha única; `"date-range"` → `ITDatePicker` rango. `dateFilterOptions: { minDate?, maxDate? }` aplica solo a los dos últimos. El valor guardado es escalar/id, `Date` o `[Date | null, Date | null]` (un rango con ambos `null` se descarta). En ITTable el filtrado es local (día completo con `startOfDay`/`endOfDay`); en ITDataTable viaja en `fetchData(params).filters[key]`. Tipos exportados: `ColumnFilterMode`, `ColumnFilterValue`, `ColumnFilters`.
+
 **Anti scroll horizontal**: `layout="fixed"` + `width` en cada columna + `truncate` en texto largo + `density="compact"`.
 
 **Virtualización**: rinde solo con page size grande (`defaultItemsPerPage` + `itemsPerPageOptions` altos; defaults 10/[5,10,20] no bastan). En ITDataTable (server-side) la ventana se calcula sobre la PÁGINA ACTUAL (`data.length`), NO sobre `total`. Filas de alto uniforme; usar `truncate` + `layout="fixed"`. Scroll se reinicia al cambiar página/items-per-page, NO al cambiar filtros. `aria-rowcount` refleja la página actual, no el dataset. Hooks `useVirtualRows` y `useElementSize` son INTERNOS (no exportados); `getRowHeight` y `sizeLineHeights` también son internos; `TableDensity` SÍ se exporta.
@@ -509,7 +511,7 @@ Drift conocido (no tocar sin decisión): `ITTableProps.className` no se aplica; 
 | `ITChip` | Etiqueta/pill (soft, filled, outlined, removable, selected) |
 | `ITChipInput` | Entrada de etiquetas (tags) con delimitadores y validación |
 | `ITConfirmDialog` | Diálogo de confirmación |
-| `ITDataTable` | DataTable server-side (con fetch params) · onRowClick (fila/card) · layout/density/autoCardBreakpoint (fixed, compacto, fallback a cards) · virtualized (scroll virtual + stickyHeader) |
+| `ITDataTable` | DataTable server-side (con fetch params) · filtros de columna text/catalog/search(ITSearchSelect)/date/date-range(ITDatePicker) · onRowClick (fila/card) · layout/density/autoCardBreakpoint (fixed, compacto, fallback a cards) · virtualized (scroll virtual + stickyHeader) |
 | `ITDatePicker` | Selector de fecha |
 | `ITDialog` | Modal/Dialog |
 | `ITDivider` | Divisor horizontal/vertical |
@@ -546,7 +548,7 @@ Drift conocido (no tocar sin decisión): `ITTableProps.className` no se aplica; 
 | `ITStack` | Stack layout |
 | `ITStatCard` | Tarjeta de estadística |
 | `ITStepper` | Stepper de pasos |
-| `ITTable` | Tabla con filtros, ordenamiento, paginación · onRowClick (fila/card) · layout/density/autoCardBreakpoint (fixed, compacto, fallback a cards) · virtualized (scroll virtual + stickyHeader) |
+| `ITTable` | Tabla con filtros de columna text/catalog/search(ITSearchSelect)/date/date-range(ITDatePicker), ordenamiento, paginación · onRowClick (fila/card) · layout/density/autoCardBreakpoint (fixed, compacto, fallback a cards) · virtualized (scroll virtual + stickyHeader) |
 | `ITTabs` | Tabs de navegación |
 | `ITText` | Wrapper tipográfico universal |
 | `ITTextarea` | Textarea estilizado |
