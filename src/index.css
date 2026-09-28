@@ -160,4 +160,14 @@
   .it-stepper-slide-in-left {
     animation: it-slide-in-left 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
+
+  /* Pinned (frozen) table columns: 1px edge separator on the frozen side.
+     Background + hover live in the component as Tailwind arbitrary utilities so
+     the cell matches --color-table-rowBg / --color-table-rowHover. */
+  :where(.it-table-pinned-left) {
+    box-shadow: inset -1px 0 0 0 var(--color-secondary-200);
+  }
+  :where(.it-table-pinned-right) {
+    box-shadow: inset 1px 0 0 0 var(--color-secondary-200);
+  }
 }

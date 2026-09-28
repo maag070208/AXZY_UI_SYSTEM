@@ -30,7 +30,7 @@ Vertical navigation sidebar with collapsible submenus, tooltips when collapsed, 
 | `icon` | `ReactNode` | Icon rendered left of the label. |
 | `action` | `() => void` | Click handler for top-level items without submenus. |
 | `isActive` | `boolean` | Whether this item is active/highlighted. |
-| `subitems` | `ITNavigationSubItem[]` | Nested sub-navigation items. |
+| `subitems` | `ITNavigationSubItemEntry[]` | Plain sub-items or titled groups. |
 | `badge` | `string` | Badge text (e.g. notification count). |
 
 ### ITNavigationSubItem
@@ -41,6 +41,18 @@ Vertical navigation sidebar with collapsible submenus, tooltips when collapsed, 
 | `label` | `string` | Display label. |
 | `action` | `() => void` | Click handler. |
 | `isActive` | `boolean` | Whether this sub-item is active/highlighted. |
+
+### ITNavigationSubItemGroup
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `id` | `string` | Unique identifier for the group (used for the React key and the heading id). |
+| `label` | `string` | Heading text rendered above the group's items. |
+| `items` | `ITNavigationSubItem[]` | Sub-items belonging to this group. Nesting a group inside a group is not supported. |
+
+### ITNavigationSubItemEntry
+
+A submenu entry is either a plain `ITNavigationSubItem` or a titled `ITNavigationSubItemGroup`; narrow it with `"items" in entry`.
 
 ## Usage
 
@@ -70,6 +82,28 @@ const items = [
 />
 ```
 
+To group sub-items under a heading, replace a plain sub-item with a group object (`label` + `items`):
+
+```tsx
+const items = [
+  {
+    id: 'sales',
+    label: 'Sales',
+    subitems: [
+      { id: 'summary', label: 'Summary', action: () => {} },
+      {
+        id: 'gestion',
+        label: 'Management',
+        items: [
+          { id: 'orders', label: 'Orders', action: () => {} },
+          { id: 'invoices', label: 'Invoices', action: () => {} },
+        ],
+      },
+    ],
+  },
+];
+```
+
 ## Notes
 
 - The button lives above the scrollable `<nav>` (never inside it), so it stays in the tab order and visible in both states; it is centered in the 88px rail when collapsed and right-aligned when expanded.
@@ -83,6 +117,10 @@ const items = [
 - `visibleOnMobile` forces sidebar visibility on smaller screens for responsive layouts.
 - Themed via CSS variables for consistent colors, shadows, and glassmorphism effects across light and dark modes.
 - Accessible by default: the `<nav>` is labelled and carries the `id` referenced by the toggle's `aria-controls`, the toggle exposes `aria-expanded` plus a visible `focus-visible` ring, group toggles expose `aria-expanded`/`aria-controls` and respond to Enter/Space, submenus are labelled `role="group"`, and the active sub-item carries `aria-current="page"`.
+- `subitems` accepts plain sub-items or titled groups (`label` + `items`); the group heading is rendered as a plain `<span>` inside a non-focusable `<div>`, so it is non-interactive and stays out of the tab order.
+- Each group's inner `<ul>` keeps list semantics and is named by its heading through `aria-labelledby`, so it is reachable as a named list.
+- Groups are purely visual: they add no third nesting level (the sidebar supports exactly one level of nesting).
+- Consumers that introspect `navigationItems[].subitems` must narrow each entry first, e.g. `"items" in entry ? entry.items : [entry]`, because entries are typed as `ITNavigationSubItemEntry`.
 
 ## Stories
 

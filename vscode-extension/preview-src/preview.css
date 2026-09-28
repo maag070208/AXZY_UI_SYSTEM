@@ -1,0 +1,8 @@
+/*
+ * Tailwind entry for the preview webview. Imports the library theme, then adds
+ * the preview sources to the scan so every utility used by the previews exists.
+ */
+@import "../../src/index.css";
+
+@source "./**/*.{ts,tsx}";
+@source "../../src/**/*.{ts,tsx}";

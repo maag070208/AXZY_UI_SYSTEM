@@ -11,7 +11,7 @@ Basic data table with column definitions, sorting, and configurable visual varia
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `columns` | `Column<T>[]` | — | Column definitions: key, label, type, sortable, filter, render, actions, plus layout fields `width` (`number` px or CSS `string`), `minWidth` (px), `align` (`"left" \| "center" \| "right"`), and `truncate` (ellipsis + native `title`). |
+| `columns` | `Column<T>[]` | — | Column definitions: key, label, type, sortable, filter, render, actions, plus layout fields `width` (`number` px or CSS `string`), `minWidth` (px), `align` (`"left" \| "center" \| "right"`), `truncate` (ellipsis + native `title`), and `pinned` (`"left" \| "right"`). |
 | `data` | `T[]` | `[]` | Row data array. |
 | `variant` | `"default" \| "striped" \| "bordered"` | `"default"` | Visual style variant. |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Font-size preset (does not change padding). |
@@ -42,6 +42,7 @@ Basic data table with column definitions, sorting, and configurable visual varia
 | `minWidth` | `number` | — | Minimum column width in px, applied to header and body cells via inline style. |
 | `align` | `"left" \| "center" \| "right"` | `"left"` | Horizontal alignment of the column's header and cells. |
 | `truncate` | `boolean` | `false` | Truncates overflowing cell content with an ellipsis and exposes the raw string/number via the native `title` attribute. |
+| `pinned` | `"left" \| "right"` | `undefined` | Freezes the column to the given horizontal edge while the table scrolls sideways. `"left"` keeps it flush to the left edge, `"right"` to the right edge. Omit to leave the column unpinned (identical to the previous behavior). Offsets accumulate from each preceding pinned column's pixel `width` / `minWidth`, so give every pinned column of a side a pixel `width`. The pinned cell gets an opaque background (row background + row hover) and a 1px separator shadow on its frozen edge. One pinned column per side is the supported contract. |
 | `filter` | `true \| "catalog" \| "search" \| "date" \| "date-range"` | `false` | Filter control rendered in the header. `true` = text/number input (or boolean toggle when `type: "boolean"`); `"catalog"` = `ITSelect` fed by `catalogOptions.data`; `"search"` = `ITSearchSelect` typeahead fed by `catalogOptions.data` (optional `catalogOptions.onSearch` for server-side search); `"date"` / `"date-range"` = `ITDatePicker` single/range, bounded by `dateFilterOptions`. |
 
 ## Usage
@@ -85,6 +86,15 @@ const fixedColumns = [
 ];
 
 <ITTable columns={fixedColumns} data={data} layout="fixed" density="compact" />
+
+// Pinned columns: freeze the first column left and the last one right
+const pinnedColumns = [
+  { key: 'id',      label: 'ID',      type: 'number',  width: 72,  pinned: 'left' },
+  { key: 'name',    label: 'Name',    type: 'string',  width: 240, truncate: true },
+  { key: 'actions', label: 'Actions', type: 'actions', width: 104, pinned: 'right' },
+];
+
+<ITTable columns={pinnedColumns} data={data} layout="fixed" density="compact" />
 ```
 
 ## Notes
@@ -97,6 +107,7 @@ const fixedColumns = [
 - When `onRowClick` is omitted no `cursor-pointer`, focus ring, `tabIndex`, or `role` is added.
 - `density` controls padding/row height (`compact` 33px / `normal` 45px / `comfortable` 53px at `size="md"`); `size` changes font-size and shifts the row height by the line box (sm 16px / md 20px / lg 28px).
 - **Anti horizontal scroll recipe:** `layout="fixed"` + a `width` on every column + `truncate` on long text + `density="compact"`. `width` accepts a `number` (px) or any CSS length string (`"20%"`, `"12rem"`). A `<colgroup>` is only emitted when at least one column defines a `width`.
+- **Pinned columns:** set `columns[].pinned: "left" | "right"` to freeze a column to that edge during horizontal scroll (`position: sticky`; the wrapper needs no `relative`). Omitting `pinned` renders exactly as before. Sticky offsets accumulate from each preceding pinned column's pixel `width` / `minWidth`; a non-px width contributes `minWidth ?? 0`, so give every pinned column of a side a pixel `width`. The pinned cell gets an opaque background (`--color-table-rowBg`, row hover `--color-table-rowHover`) and a 1px separator shadow on its frozen edge. Z-layering: pinned body cell `z-[1]` < sticky header `z-10` < pinned header `z-[15]`; it composes with `stickyHeader` and `virtualized`. One pinned column per side is the supported contract. Known limitation: with `variant="striped"` the opaque pinned background covers that column's stripe tint.
 - With the default `layout="auto"`, `min-w-max` stays active so column widths can still reflow as different cell content enters the window during vertical scroll. Use `layout="fixed"` + column `width` for stable widths.
 - `autoCardBreakpoint` swaps to the cards view when the container (not the viewport) is narrower than the given px value; the Table toggle is disabled while forced, the Cards toggle stays enabled.
 - **Virtualization** applies to the **table view only** — the cards view is never virtualized. It only pays off with a large page size: raise `defaultItemsPerPage` and `itemsPerPageOptions` (defaults are `10` and `[5, 10, 20]`). Rows are assumed to have a uniform `rowHeight`; use `truncate` + `layout="fixed"` for predictable heights.

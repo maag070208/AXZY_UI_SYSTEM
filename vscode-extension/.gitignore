@@ -1,0 +1,8 @@
+# Build output
+out/
+media/preview.js
+media/axzy.css
+*.vsix
+
+# deps
+node_modules/

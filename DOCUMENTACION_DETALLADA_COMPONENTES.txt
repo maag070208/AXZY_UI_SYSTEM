@@ -260,7 +260,7 @@ export default function AdminNavbar() {
 ================================================================================
 4. ITSidebar
 ================================================================================
-Barra lateral reactiva. Soporta colapso automático y varios estilos de líneas conectoras para subítems. Acepta un slot `header` opcional (p. ej. un wordmark) que se renderiza arriba de la navegación y se oculta mientras está colapsada. El riel colapsado se expande automáticamente al pasar el cursor por encima: no hay botón de colapso. Incluye roles/aria para accesibilidad: `nav` etiquetado, toggles con `role="button"` + `aria-expanded`/`aria-controls` + Enter/Space, submenús `role="group"` etiquetados y subítem activo con `aria-current="page"`.
+Barra lateral reactiva. Soporta colapso automático y varios estilos de líneas conectoras para subítems. Los `subitems` de un item padre aceptan entradas planas o grupos con título (`label` + `items`) que agrupan subítems bajo un encabezado; el título del grupo es solo visual (no es foco, no es clicable y no crea un tercer nivel). Acepta un slot `header` opcional (p. ej. un wordmark) que se renderiza arriba de la navegación y se oculta mientras está colapsada. El riel colapsado se expande automáticamente al pasar el cursor por encima: no hay botón de colapso. Incluye roles/aria para accesibilidad: `nav` etiquetado, toggles con `role="button"` + `aria-expanded`/`aria-controls` + Enter/Space, submenús `role="group"` etiquetados, cada grupo de subítems con su `<ul aria-labelledby>` y subítem activo con `aria-current="page"`.
 
 ### Props (ITSidebarProps)
 ```typescript
@@ -271,13 +271,23 @@ export interface ITNavigationSubItem {
   isActive?: boolean;
 }
 
+export interface ITNavigationSubItemGroup {
+  id: string;                    // clave React + id del encabezado
+  label: string;                 // título visible del grupo
+  items: ITNavigationSubItem[];  // entradas del grupo (no se anidan grupos)
+}
+
+export type ITNavigationSubItemEntry =
+  | ITNavigationSubItem
+  | ITNavigationSubItemGroup;
+
 export interface ITNavigationItem {
   id: string;
   label: string;
   icon?: React.ReactNode;
   action?: () => void;
   isActive?: boolean;
-  subitems?: ITNavigationSubItem[];
+  subitems?: ITNavigationSubItemEntry[];
   badge?: string;
 }
 
@@ -338,6 +348,48 @@ export default function CustomSidebar() {
       className="h-screen"
     />
   );
+}
+```
+
+### Ejemplo Real (subítems agrupados)
+```tsx
+import React, { useState } from 'react';
+import { ITSidebar } from 'axzy-ui-system';
+import { FaShoppingCart } from 'react-icons/fa';
+
+export default function GroupedSidebar() {
+  const [activeId, setActiveId] = useState('orders');
+
+  const items = [
+    {
+      id: 'sales',
+      label: 'Ventas',
+      icon: <FaShoppingCart />,
+      isActive: ['orders', 'invoices', 'quotes'].includes(activeId),
+      subitems: [
+        // Entrada plana (sin título)
+        { id: 'summary', label: 'Resumen', isActive: activeId === 'summary', action: () => setActiveId('summary') },
+        // Grupo con título: `label` + `items`. El título no es foco ni un tercer nivel.
+        {
+          id: 'gestion',
+          label: 'Gestión',
+          items: [
+            { id: 'orders', label: 'Órdenes', isActive: activeId === 'orders', action: () => setActiveId('orders') },
+            { id: 'invoices', label: 'Facturas', isActive: activeId === 'invoices', action: () => setActiveId('invoices') }
+          ]
+        },
+        {
+          id: 'catalogo',
+          label: 'Catálogo',
+          items: [
+            { id: 'quotes', label: 'Cotizaciones', isActive: activeId === 'quotes', action: () => setActiveId('quotes') }
+          ]
+        }
+      ]
+    }
+  ];
+
+  return <ITSidebar navigationItems={items} subitemConnector="dot" className="h-screen" />;
 }
 ```
 
@@ -1176,6 +1228,7 @@ export interface Column<T = any> {
   minWidth?: number;                        // px; aplica a th/td
   align?: 'left' | 'center' | 'right';      // default 'left'
   truncate?: boolean;                       // default false; ellipsis + title nativo
+  pinned?: 'left' | 'right';                // opt-in; congela la columna al borde izquierdo/derecho (sticky)
 }
 
 export interface ITTableProps<T> {
@@ -1243,6 +1296,32 @@ export interface ITTableProps<T> {
 />
 ```
 Pasos: (1) `layout="fixed"`, (2) `width` en cada columna (number = px; string = cualquier longitud CSS, ej. `"20%"`, `"12rem"`), (3) `truncate` en columnas de texto largo (agrega ellipsis y `title` nativo con el valor string/number), (4) `density` para compactar. El `<colgroup>` solo se emite si al menos una columna define `width`.
+
+### Columnas fijas (pinned)
+
+`Column.pinned: 'left' | 'right'` (opt-in; omitirlo produce un render idéntico al anterior) congela una columna al borde indicado mientras la tabla hace scroll horizontal. Se implementa con `position: sticky`, así que la celda permanece visible aunque el wrapper use `overflow-x-auto`; no hace falta marcar el contenedor como `relative`.
+
+```tsx
+<ITTable
+  columns={[
+    { key: 'name',   label: 'Nombre', type: 'string',  width: 200, pinned: 'left'  },
+    { key: 'email',  label: 'Email',  type: 'string',  width: 280, truncate: true  },
+    { key: 'role',   label: 'Rol',    type: 'string',  width: 180, truncate: true  },
+    { key: 'status', label: 'Estado', type: 'boolean', width: 120, pinned: 'right' },
+  ]}
+  data={data}
+  layout="fixed"
+  density="compact"
+/>
+```
+
+- Los offsets sticky se acumulan en px desde el `width` de cada columna pinneada previa del MISMO lado (izquierda en orden de render; derecha en orden inverso). Una columna cuyo `width` no sea px (p. ej. `"20%"`, `"12rem"`) aporta `minWidth ?? 0`, así que declara `width` en px en todas las columnas pinneadas de un mismo lado para evitar solapamiento.
+- Contrato soportado/probado: UNA columna pinneada por lado. Los offsets múltiples se calculan (ver arriba) pero varias columnas por lado no están cubiertas por las pruebas.
+- La celda pinneada pinta fondo opaco (`--color-table-rowBg`; `--color-table-rowHover` en hover, sincronizado con el hover de la fila) y un separador de 1px hacia el contenido desplazable (`.it-table-pinned-left` / `.it-table-pinned-right`).
+- Z-index: header pinneado `z-[15]`, header sticky normal `z-10`, celda de cuerpo pinneada `z-[1]`. El overlay de carga de ITDataTable (`z-20`) queda por encima de todos.
+- Compone con `stickyHeader` y `virtualized`: el header pinneado hereda el fondo del header (`--color-table-headerBg`) y el z-index descrito arriba.
+- `layout="fixed"` + `width` en px es la combinación recomendada para que una columna pinneada de `type: 'actions'` no se encoja.
+- Limitación conocida: en la variante `striped`, el tinte de la franja de fila par queda cubierto por el fondo opaco de la celda pinneada de esa columna.
 
 ### Filtros de columna
 
@@ -1389,9 +1468,9 @@ export interface ITDataTableProps<T extends Record<string, unknown>> {
 ```
 ### Guía de layout, densidad y virtualización
 
-ITDataTable comparte exactamente las mismas props de configuración que ITTable (ver §16 para el detalle completo): `layout` (`'auto'` default | `'fixed'`), `density` (`'compact' | 'normal' | 'comfortable'`, default `'normal'`), `autoCardBreakpoint` (px, default `0`), `virtualized` (default `false`), `virtualizedMaxHeight` (default `400`), `rowHeight` (default `getRowHeight(size, density)`, size-aware), `overscan` (default `5`) y `stickyHeader` (default `false`). `Column<T>` también acepta `width` / `minWidth` / `align` / `truncate`.
+ITDataTable comparte exactamente las mismas props de configuración que ITTable (ver §16 para el detalle completo): `layout` (`'auto'` default | `'fixed'`), `density` (`'compact' | 'normal' | 'comfortable'`, default `'normal'`), `autoCardBreakpoint` (px, default `0`), `virtualized` (default `false`), `virtualizedMaxHeight` (default `400`), `rowHeight` (default `getRowHeight(size, density)`, size-aware), `overscan` (default `5`) y `stickyHeader` (default `false`). `Column<T>` también acepta `width` / `minWidth` / `align` / `truncate` / `pinned` (`'left' | 'right'`, default sin congelar).
 
-Receta anti-scroll-horizontal: `layout="fixed"` + `width` por columna + `truncate` en texto largo + `density` para compactar. `width` number = px, string = longitud CSS. El `<colgroup>` solo se emite si alguna columna define `width`.
+Receta anti-scroll-horizontal: `layout="fixed"` + `width` por columna + `truncate` en texto largo + `density` para compactar. `width` number = px, string = longitud CSS. El `<colgroup>` solo se emite si alguna columna define `width`. Para congelar columnas al borde durante el scroll horizontal usa `Column.pinned: 'left' | 'right'` (ver §16, "Columnas fijas (pinned)").
 
 Virtualización (solo vista tabla; cards nunca virtualiza): rinde solo con un page size grande (`defaultItemsPerPage` + `itemsPerPageOptions` altos; los defaults 10/[5,10,20] no bastan). En ITDataTable (server-side) la ventana se calcula sobre la PÁGINA ACTUAL (`data.length`), NO sobre `total`: con un page size chico el efecto es invisible porque la página entera cabe en el viewport. Filas de alto uniforme (`rowHeight`, default `getRowHeight(size, density)` size-aware: sm 29/41/49 · md 33/45/53 · lg 41/53/61; exacto solo para celdas de una línea); usar `truncate` + `layout="fixed"`. El scroll se reinicia al cambiar página o items-per-page, NO al cambiar filtros. `aria-rowcount` refleja la página actual (+1), no el dataset. `useVirtualRows` / `useElementSize` son hooks internos NO exportados; `getRowHeight` / `sizeLineHeights` también son internos; `TableDensity` sí se exporta.
 

@@ -272,6 +272,51 @@ export const FixedLayoutWithWidths: Story = {
   } as any,
 };
 
+// Pixel widths force the total past the 520px wrapper, so the ID (left) and
+// Actions (right) columns stay frozen while the middle scrolls sideways.
+const pinnedColumns: Column<User>[] = [
+  { key: "id", label: "ID", type: "number", width: 72, minWidth: 56, align: "center", pinned: "left" },
+  { key: "name", label: "Name", type: "string", width: 240, truncate: true },
+  { key: "email", label: "Email", type: "string", width: 280, truncate: true },
+  { key: "balance", label: "Balance", type: "number", width: 160, currencyMX: true },
+  { key: "lastLogin", label: "Last login", type: "string", width: 160, truncate: true },
+  {
+    key: "isActive",
+    label: "Status",
+    type: "boolean",
+    width: 104,
+    align: "center",
+  },
+  {
+    key: "actions",
+    label: "Actions",
+    type: "actions",
+    width: 104,
+    pinned: "right",
+    actions: () => (
+      <ITButton size="sm" variant="text" color="danger" ariaLabel="Delete">
+        <FaTrash />
+      </ITButton>
+    ),
+  },
+];
+
+export const PinnedColumns: Story = {
+  render: (args: any) => (
+    <div style={{ width: 520 }} className="rounded-lg border border-dashed border-slate-300">
+      <ITTable {...args} />
+    </div>
+  ),
+  args: {
+    columns: pinnedColumns,
+    data: mockData.slice(0, 6),
+    title: "Pinned left (ID) & right (Actions)",
+    layout: "fixed",
+    density: "compact",
+    defaultItemsPerPage: 6,
+  } as any,
+};
+
 export const AutoCardsNarrowContainer: Story = {
   render: (args: any) => (
     <div style={{ width: 420 }} className="rounded-lg border border-dashed border-slate-300">

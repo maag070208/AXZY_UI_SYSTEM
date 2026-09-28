@@ -90,6 +90,23 @@ export interface Column<T = any> {
    * @default false
    */
   truncate?: boolean;
+  /**
+   * Pins this column to a horizontal edge so it stays visible while the table
+   * scrolls sideways.
+   *
+   * - `"left"` — freezes the column flush to the left edge.
+   * - `"right"` — freezes the column flush to the right edge.
+   *
+   * Omit to leave the column unpinned. When more than one column shares a side,
+   * sticky offsets accumulate from each preceding pinned column's `width` /
+   * `minWidth`; a column without a pixel width resolves to `0px`, so declare a
+   * pixel `width` on every pinned column of that side to avoid overlap. The
+   * pinned cell renders an opaque background (row background + row hover) and a
+   * 1px separator shadow on its frozen edge.
+   *
+   * @default undefined (column not pinned)
+   */
+  pinned?: "left" | "right";
 }
 
 export interface ITTableProps<T> {

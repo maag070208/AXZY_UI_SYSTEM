@@ -161,6 +161,31 @@ export const FixedLayoutCompact: Story = {
   },
 };
 
+// Pixel widths push the total past the 520px wrapper: the first column stays
+// frozen left and the last one frozen right while the middle scrolls sideways.
+const pinnedColumns = columns.map((col, i) => ({
+  ...col,
+  width: [72, 240, 280, 160, 120][i],
+  pinned: i === 0 ? 'left' : i === columns.length - 1 ? 'right' : undefined,
+  truncate: col.type === 'string' || col.type === 'catalog',
+})) as any;
+
+export const PinnedColumns: Story = {
+  render: (args) => (
+    <div style={{ width: 520 }}>
+      <ITDataTable {...args} />
+    </div>
+  ),
+  args: {
+    title: 'Pinned left & right columns',
+    columns: pinnedColumns,
+    fetchData: mockFetchItems,
+    defaultItemsPerPage: 10,
+    layout: 'fixed',
+    density: 'compact',
+  },
+};
+
 export const VirtualizedLargeDataset: Story = {
   args: {
     title: 'Virtualized · 100 rows',

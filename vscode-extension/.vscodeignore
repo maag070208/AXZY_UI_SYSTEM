@@ -1,0 +1,12 @@
+.vscode/**
+.vscode-test/**
+src/**
+preview-src/**
+scripts/**
+node_modules/**
+out/**/*.map
+**/*.ts
+**/tsconfig.json
+esbuild.mjs
+.gitignore
+axzy-ui-system.vsix

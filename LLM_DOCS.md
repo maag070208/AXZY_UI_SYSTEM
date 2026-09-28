@@ -280,7 +280,7 @@ import { ITLayout } from "@axzydev/axzy_ui_system";
 
 ### ITSidebar
 
-Sidebar con glassmorphism. Usa `--it-sidebar-*` CSS variables. El slot `header` (opcional) se renderiza arriba de la navegación y se oculta al colapsar (solo visible al pasar el cursor). El nav usa `aria-label`, los toggles `role="button"` + `aria-expanded`/`aria-controls` + Enter/Space, los submenús `role="group"` y el subítem activo `aria-current="page"`.
+Sidebar con glassmorphism. Usa `--it-sidebar-*` CSS variables. El slot `header` (opcional) se renderiza arriba de la navegación y se oculta al colapsar (solo visible al pasar el cursor). `subitems` acepta entradas planas o grupos con título (`label` + `items`); el título del grupo es solo visual (no es foco, no es clicable y no añade un tercer nivel), y cada `<ul>` de grupo se nombra con `aria-labelledby`. El nav usa `aria-label`, los toggles `role="button"` + `aria-expanded`/`aria-controls` + Enter/Space, los submenús `role="group"` y el subítem activo `aria-current="page"`.
 
 ```tsx
 <ITSidebar
@@ -291,7 +291,12 @@ Sidebar con glassmorphism. Usa `--it-sidebar-*` CSS variables. El slot `header` 
     isActive: true,
     action: () => navigate("/dashboard"),
     badge: "3",
-    subitems: [{ id: "analytics", label: "Analytics", isActive: false, action: () => {} }],
+    subitems: [
+      { id: "analytics", label: "Analytics", isActive: false, action: () => {} },
+      { id: "gestion", label: "Gestión", items: [
+        { id: "orders", label: "Órdenes", action: () => {} },
+      ]},
+    ],
   }]}
   isCollapsed={true}
   onToggleCollapse={() => {}}
@@ -481,11 +486,11 @@ Ambas tablas comparten estas props (todas opt-in, backwards-compatible):
 | `overscan` | `number` | `5` | Filas extra arriba/abajo. |
 | `stickyHeader` | `boolean` | `false` | Solo efectivo con `virtualized`. |
 
-`Column<T>` extra: `width` (`number`=px | `string`=CSS), `minWidth` (px), `align` (`"left" | "center" | "right"`, default `"left"`), `truncate` (ellipsis + `title` nativo; default `false`). `<colgroup>` solo si alguna columna define `width`.
+`Column<T>` extra: `width` (`number`=px | `string`=CSS), `minWidth` (px), `align` (`"left" | "center" | "right"`, default `"left"`), `truncate` (ellipsis + `title` nativo; default `false`), `pinned` (`"left" | "right"`; congela la columna al borde durante el scroll horizontal, sin cambiar el render si se omite). `<colgroup>` solo si alguna columna define `width`.
 
 **Filtros de columna (`Column.filter`)**: `true` → `ITInput` (texto/número; toggle si `type: "boolean"`); `"catalog"` → `ITSelect` desde `catalogOptions.data`; `"search"` → `ITSearchSelect` typeahead desde `catalogOptions.data` (con `catalogOptions.onSearch(query)` opcional para búsqueda server-side debounced); `"date"` → `ITDatePicker` fecha única; `"date-range"` → `ITDatePicker` rango. `dateFilterOptions: { minDate?, maxDate? }` aplica solo a los dos últimos. El valor guardado es escalar/id, `Date` o `[Date | null, Date | null]` (un rango con ambos `null` se descarta). En ITTable el filtrado es local (día completo con `startOfDay`/`endOfDay`); en ITDataTable viaja en `fetchData(params).filters[key]`. Tipos exportados: `ColumnFilterMode`, `ColumnFilterValue`, `ColumnFilters`.
 
-**Anti scroll horizontal**: `layout="fixed"` + `width` en cada columna + `truncate` en texto largo + `density="compact"`.
+**Anti scroll horizontal**: `layout="fixed"` + `width` en cada columna + `truncate` en texto largo + `density="compact"`. Para congelar columnas al borde durante el scroll horizontal: `Column.pinned: "left" | "right"` (offsets acumulan el `width` en px de las columnas pinneadas previas del mismo lado; celda pinneada con fondo opaco + separador de 1px). Contrato probado: una columna pinneada por lado (varias se calculan pero no están cubiertas). Z-index: celda de cuerpo pinneada `z-[1]` < header sticky `z-10` < header pinneado `z-[15]` < overlay de carga de ITDataTable `z-20`. Compone con `stickyHeader` y `virtualized`. Limitación conocida: en `variant="striped"` el fondo opaco de la celda pinneada tapa el tinte de la franja.
 
 **Virtualización**: rinde solo con page size grande (`defaultItemsPerPage` + `itemsPerPageOptions` altos; defaults 10/[5,10,20] no bastan). En ITDataTable (server-side) la ventana se calcula sobre la PÁGINA ACTUAL (`data.length`), NO sobre `total`. Filas de alto uniforme; usar `truncate` + `layout="fixed"`. Scroll se reinicia al cambiar página/items-per-page, NO al cambiar filtros. `aria-rowcount` refleja la página actual, no el dataset. Hooks `useVirtualRows` y `useElementSize` son INTERNOS (no exportados); `getRowHeight` y `sizeLineHeights` también son internos; `TableDensity` SÍ se exporta.
 

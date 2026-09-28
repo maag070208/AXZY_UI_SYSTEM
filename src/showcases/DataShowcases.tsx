@@ -248,6 +248,15 @@ export const TableShowcase = () => {
     truncate: col.key === "email" || col.key === "name",
   }));
 
+  // Pixel widths force horizontal overflow inside the 520px demo wrapper, so
+  // the first (Name) and last (Actions) columns can stay pinned while the
+  // middle ones scroll sideways.
+  const pinnedColumns: any = fixedColumns.map((col: any, i: number) => ({
+    ...col,
+    width: [200, 240, 180, 160, 180, 96][i],
+    pinned: i === 0 ? "left" : i === fixedColumns.length - 1 ? "right" : undefined,
+  }));
+
   // Single-line columns for virtualization: no avatar, no actions, no custom
   // render, so every row is a deterministic one-line box.
   const virtualColumns: any = [
@@ -344,6 +353,7 @@ export const TableShowcase = () => {
           '<ITTable columns={columns} data={data} title="Users" />',
           '<ITTable columns={columns} data={data} defaultView="cards" onRowClick={(row) => open(row)} />',
           '<ITTable columns={fixedColumns} data={data} layout="fixed" density="compact" />',
+          '// Columna fija: pinned "left" | "right" (los offsets acumulan width en px)\n{ key: "name", label: "Name", type: "string", width: 200, pinned: "left" },\n{ key: "actions", label: "", type: "actions", width: 96, pinned: "right" }',
           '<ITTable columns={cols} data={rows} virtualized stickyHeader layout="fixed" density="compact" defaultItemsPerPage={300} itemsPerPageOptions={[50, 100, 300]} />',
           '// ITSearchSelect typeahead (server-side search opcional vía catalogOptions.onSearch)\n{ key: "role", label: "Role", type: "string", filter: "search", catalogOptions: { data: roles } }',
           '// ITDatePicker fecha única\n{ key: "lastLogin", label: "Last login", type: "date", filter: "date", dateFilterOptions: { maxDate: new Date() } }',
@@ -377,6 +387,7 @@ export const TableShowcase = () => {
           "onRowClick funciona en ambas vistas (tabla y cards).",
           "Cuando se omite no se agrega cursor-pointer, foco, tabIndex ni role.",
           "Column acepta width (number=px | string CSS), minWidth (px), align (left/center/right) y truncate (ellipsis + title nativo).",
+          "Columna fija: Column acepta pinned: \"left\" | \"right\" (opt-in; omitir = sin cambios). Los offsets sticky acumulan el width en px de cada columna pinneada previa del mismo lado; una columna sin width en px aporta 0px, así que declara width en px en todas las columnas pinneadas de un lado. La celda pinneada pinta fondo opaco (rowBg + rowHover) y un separador de 1px en el borde congelado. Una columna pinneada por lado es el contrato probado. Limitación: con variant=\"striped\" el fondo opaco tapa el tinte de la franja de esa columna.",
           "Anti scroll horizontal: layout=\"fixed\" + width por columna + truncate + density.",
           "Virtualización: solo vista tabla; rinde con page size grande; filas de alto uniforme; el scroll no se reinicia al cambiar filtros.",
           "Virtualización exige alto de fila uniforme. El default es size-aware (getRowHeight(size, density)): con size=\"md\" el baseline es compact 33 / normal 45 / comfortable 53 (padding de celda + line box text-sm de 20px + 1px del divide-y); size lo desplaza por el line box (sm 16 / md 20 / lg 28 px, es decir −4 / 0 / +8 px). Una celda de dos líneas (avatar + texto) mide ~50px real, distinto de ese alto asumido, así que los spacers se desalinean: usar celdas de una sola línea o pasar un rowHeight explícito.",
@@ -481,6 +492,23 @@ export const TableShowcase = () => {
                 defaultItemsPerPage={5}
               />
             </div>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Pinned columns — left (Name) &amp; right (Actions)</h4>
+            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden" style={{ maxWidth: 520 }}>
+              <ITTable
+                columns={pinnedColumns}
+                data={TABLE_DATA}
+                title="Pinned columns"
+                layout="fixed"
+                density="compact"
+                defaultItemsPerPage={5}
+              />
+            </div>
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              Scroll the table sideways: <code>pinned: "left"</code> freezes the Name column, <code>pinned: "right"</code> freezes the Actions column. Offsets accumulate from each preceding pinned column's pixel <code>width</code>.
+            </p>
           </div>
 
           <div>
@@ -597,6 +625,19 @@ export const DataTableShowcase = () => {
     },
     { key: "active", label: "Active", type: "boolean" as const, filter: true }
   ], []);
+
+  // Pixel widths force horizontal overflow inside the 520px demo wrapper, so
+  // the first (ID) and last (Active) columns stay pinned while the middle
+  // ones scroll sideways.
+  const pinnedColumns = useMemo(
+    () =>
+      userColumns.map((col: any, i: number) => ({
+        ...col,
+        width: [72, 220, 180, 180, 120][i],
+        pinned: i === 0 ? "left" : i === userColumns.length - 1 ? "right" : undefined,
+      })),
+    [userColumns]
+  );
 
   const MOCK_USERS = useMemo(() =>
     [
@@ -875,6 +916,7 @@ export const DataTableShowcase = () => {
           '<ITDataTable columns={columns} fetchData={api.fetchUsers} />',
           '<ITDataTable columns={columns} fetchData={api.fetchUsers} onRowClick={(row) => open(row)} />',
           '<ITDataTable columns={fixedColumns} fetchData={api.fetchUsers} layout="fixed" density="compact" />',
+          '// Columna fija: pinned "left" | "right" (los offsets acumulan width en px)\n{ key: "id", label: "ID", type: "number", width: 72, pinned: "left" },\n{ key: "active", label: "Active", type: "boolean", width: 120, pinned: "right" }',
           '<ITDataTable columns={cols} fetchData={api.page} virtualized stickyHeader defaultItemsPerPage={200} itemsPerPageOptions={[50, 100, 200]} debounceMs={0} />',
           '<ITDataTable columns={cols} fetchData={api.page} layout="fixed" density="compact" autoCardBreakpoint={640} />',
           '// Filtro de columna tipo ITSearchSelect (typeahead)\n{ key: "role", label: "Role", type: "string", filter: "search", catalogOptions: { data: roles, onSearch: (q) => api.searchRoles(q) } }',
@@ -913,6 +955,7 @@ export const DataTableShowcase = () => {
           "onRowClick funciona en ambas vistas (tabla y cards).",
           "Interacciones que inician en botones, links o inputs no disparan onRowClick.",
           "Column acepta width (number=px | string CSS), minWidth (px), align (left/center/right) y truncate (ellipsis + title nativo).",
+          "Columna fija: Column acepta pinned: \"left\" | \"right\" (opt-in; omitir = sin cambios). Los offsets sticky acumulan el width en px de cada columna pinneada previa del mismo lado; una columna sin width en px aporta 0px, así que declara width en px en todas las columnas pinneadas de un lado. La celda pinneada pinta fondo opaco (rowBg + rowHover) y un separador de 1px en el borde congelado. Una columna pinneada por lado es el contrato probado. Limitación: con variant=\"striped\" el fondo opaco tapa el tinte de la franja de esa columna.",
           "Anti scroll horizontal: layout=\"fixed\" + width por columna + truncate + density.",
           "Virtualización: solo vista tabla; rinde con page size grande; filas de alto uniforme; el scroll no se reinicia al cambiar filtros.",
           "La virtualización server-side hace ventana sobre la PÁGINA ACTUAL (data.length), no sobre total: usar un defaultItemsPerPage grande (p. ej. 200) con itemsPerPageOptions que lo incluya, o el efecto es invisible.",
@@ -978,6 +1021,24 @@ export const DataTableShowcase = () => {
                 defaultView="cards"
               />
             </div>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Pinned columns — left (ID) &amp; right (Active)</h4>
+            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden" style={{ maxWidth: 520 }}>
+              <ITDataTable
+                columns={pinnedColumns}
+                fetchData={fetchData}
+                title="Pinned columns"
+                layout="fixed"
+                density="compact"
+                defaultItemsPerPage={4}
+                debounceMs={0}
+              />
+            </div>
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              Scroll the table sideways: <code>pinned: "left"</code> freezes the ID column, <code>pinned: "right"</code> freezes the Active column.
+            </p>
           </div>
 
           <div>

@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "ext: build",
+      "type": "shell",
+      "command": "node esbuild.mjs",
+      "problemMatcher": []
+    },
+    {
+      "label": "ext: catalog",
+      "type": "shell",
+      "command": "node scripts/generate-catalog.mjs",
+      "problemMatcher": []
+    }
+  ]
+}

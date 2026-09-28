@@ -939,10 +939,23 @@ export const LayoutShowcase = () => {
         id: "sales",
         label: "Ventas",
         icon: <FaShoppingCart />,
-        isActive: activeId === "sales" || activeId === "orders",
+        isActive: activeId === "sales" || activeId === "orders" || activeId === "quotes",
         subitems: [
-          { id: "orders", label: "Órdenes", action: () => setActiveId("orders") },
-          { id: "invoices", label: "Facturas", action: () => setActiveId("invoices") },
+          {
+            id: "sales-gestion",
+            label: "Gestión",
+            items: [
+              { id: "orders", label: "Órdenes", action: () => setActiveId("orders") },
+              { id: "invoices", label: "Facturas", action: () => setActiveId("invoices") },
+            ],
+          },
+          {
+            id: "sales-catalogo",
+            label: "Catálogo",
+            items: [
+              { id: "quotes", label: "Cotizaciones", action: () => setActiveId("quotes") },
+            ],
+          },
         ],
       },
       { id: "products", label: "Productos", icon: <FaBoxOpen />, isActive: activeId === "products", action: () => setActiveId("products"), badge: "3" },
@@ -968,7 +981,21 @@ export const LayoutShowcase = () => {
     userMenu: { userName, userEmail, menuItems }
   }}
   sidebar={{
-    navigationItems: [...],
+    navigationItems: [
+      { id: "dashboard", label: "Dashboard", icon: <FaChartLine />, isActive: true },
+      {
+        id: "sales", label: "Ventas", icon: <FaShoppingCart />,
+        subitems: [
+          { id: "sales-gestion", label: "Gestión", items: [
+            { id: "orders", label: "Órdenes" },
+            { id: "invoices", label: "Facturas" },
+          ]},
+          { id: "sales-catalogo", label: "Catálogo", items: [
+            { id: "quotes", label: "Cotizaciones" },
+          ]},
+        ]
+      },
+    ],
     isCollapsed: ${collapsed},
     // Slot opcional sobre la navegación (oculto al colapsar)
     header: <span>AXZY v1.3</span>
@@ -1114,13 +1141,14 @@ export const LayoutShowcase = () => {
         ],
         props: [
           { name: "topBar", type: "ITTopBarProps", required: true, description: "Configuración de la barra superior." },
-          { name: "sidebar", type: "ITSidebarProps", required: true, description: "Configuración del sidebar (navigationItems, isCollapsed, header…)." },
+          { name: "sidebar", type: "ITSidebarProps", required: true, description: "Configuración del sidebar (navigationItems con subítems planos o agrupados, isCollapsed, header…)." },
           { name: "children", type: "React.ReactNode", required: true, description: "Contenido principal." },
           { name: "className", type: "string", description: "Clases del wrapper externo." },
           { name: "contentClassName", type: "string", description: "Clases del contenedor de contenido." },
           { name: "sidebar.header", type: "React.ReactNode", description: "Slot opcional sobre la navegación (ej. wordmark o filtro). Oculto al colapsar." },
         ],
         notes: [
+          "`subitems` acepta entradas planas o grupos con `label`+`items`; el título del grupo no es foco ni un tercer nivel.",
           "El sidebar hereda aria-current/aria-expanded y acepta un slot header opcional.",
           "Con `sidebar.isCollapsed` omitido el contenido reserva 88px (hover expande sobre el contenido). Si lo controlas a `false`, reserva 280px y no tapa el contenido.",
           "El riel colapsado se expande automáticamente al pasar el cursor por encima; no hay botón de colapso.",

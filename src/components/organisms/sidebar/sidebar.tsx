@@ -1,7 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
-import { ITNavigationItem, ITSidebarProps } from "./sidebar.props";
+import {
+  ITNavigationItem,
+  ITNavigationSubItem,
+  ITNavigationSubItemEntry,
+  ITNavigationSubItemGroup,
+  ITSidebarProps,
+} from "./sidebar.props";
 import ITText from "@/components/atoms/text/text";
+
+/** Narrows a submenu entry to a titled group. */
+function isSubItemGroup(
+  entry: ITNavigationSubItemEntry,
+): entry is ITNavigationSubItemGroup {
+  return "items" in entry;
+}
+
+/** Flattens a parent's entries (plain items + groups) into a single list. */
+function flattenSubItems(
+  entries: ITNavigationSubItemEntry[],
+): ITNavigationSubItem[] {
+  return entries.flatMap((entry) =>
+    isSubItemGroup(entry) ? entry.items : [entry],
+  );
+}
 
 /**
  * Vertical navigation sidebar with submenu expand/collapse, hover tooltips in collapsed mode,
@@ -76,7 +98,7 @@ export default function ITSidebar({
   useEffect(() => {
     const activeParents = new Set<string>();
     navigationItems.forEach(item => {
-      if (item.subitems && item.subitems.some(sub => sub.isActive)) {
+      if (item.subitems && flattenSubItems(item.subitems).some(sub => sub.isActive)) {
         activeParents.add(item.id);
       }
     });
@@ -114,6 +136,86 @@ export default function ITSidebar({
 
   const isSidebarCollapsed = visibleOnMobile ? false : (!isHovering && isCollapsed);
   const sidebarWidth = isSidebarCollapsed ? "w-[88px]" : "w-[280px]";
+
+  const renderSubItem = (subitem: ITNavigationSubItem) => (
+    <li key={subitem.id} className="relative">
+      <button
+        aria-current={subitem.isActive ? "page" : undefined}
+        onClick={() => {
+          if (subitem.action) subitem.action();
+          if (onSubItemClick) onSubItemClick(subitem);
+        }}
+        className={`flex items-center gap-2 w-full text-left px-3 py-1.5 rounded-xl transition-all duration-300`}
+        style={{
+          color: subitem.isActive ? "var(--it-sidebar-active-color, var(--color-secondary-900))" : "var(--it-sidebar-label-color, var(--color-secondary-600))",
+          backgroundColor: subitem.isActive ? "var(--it-sidebar-active-bg, var(--color-secondary-50))" : 'transparent',
+          fontSize: '0.78rem',
+          fontWeight: subitem.isActive ? 600 : 500,
+          letterSpacing: '0.01em',
+          marginLeft: subitemConnector === '|' ? '-1px' : '0',
+        }}
+        onMouseEnter={(e) => {
+          if (!subitem.isActive) {
+            e.currentTarget.style.backgroundColor = "var(--it-sidebar-hover-bg, var(--color-secondary-100))";
+            e.currentTarget.style.transform = 'translateX(3px)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!subitem.isActive) {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.transform = 'translateX(0)';
+          }
+        }}
+      >
+        {subitem.isActive && subitemConnector === '|' && (
+          <div
+            className="absolute left-0 top-1/3 bottom-1/3 w-[2.5px] rounded-r-full transition-all"
+            style={{
+              backgroundColor: "var(--it-sidebar-active-icon, var(--color-primary-500))",
+              boxShadow: "0 0 6px color-mix(in srgb, var(--it-sidebar-active-icon, var(--color-primary-500)) 25%, transparent)",
+            }}
+          />
+        )}
+        {subitemConnector === 'dot' && (
+          <span
+            className={`w-1.5 h-1.5 rounded-full flex-shrink-0 transition-all duration-300 ${subitem.isActive ? 'scale-125' : ''}`}
+            style={{
+              backgroundColor: subitem.isActive
+                ? "var(--it-sidebar-active-icon, var(--color-primary-500))"
+                : "var(--it-sidebar-icon-color, var(--color-secondary-400))"
+            }}
+          />
+        )}
+        <ITText as="span" className="truncate">{subitem.label}</ITText>
+      </button>
+    </li>
+  );
+
+  const renderSubItemGroup = (group: ITNavigationSubItemGroup, itemId: string) => {
+    const headingId = `it-sidebar-subgroup-${itemId}-${group.id}`;
+    return (
+      <li key={group.id} className="relative">
+        <div id={headingId} className="px-3 pt-2.5 pb-1 mt-1">
+          <ITText
+            as="span"
+            className="block"
+            style={{
+              color: "var(--it-sidebar-icon-color, var(--color-secondary-400))",
+              fontSize: "0.68rem",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+            }}
+          >
+            {group.label}
+          </ITText>
+        </div>
+        <ul aria-labelledby={headingId} className="flex flex-col gap-0">
+          {group.items.map(renderSubItem)}
+        </ul>
+      </li>
+    );
+  };
 
   return (
     <aside
@@ -256,7 +358,7 @@ export default function ITSidebar({
 
                   {item.subitems && item.subitems.length > 0 ? (
                     <div className="py-2">
-                      {item.subitems.map((subitem) => (
+                      {flattenSubItems(item.subitems).map((subitem) => (
                         <div
                           key={subitem.id}
                           className={`px-5 py-2.5 text-sm flex items-center gap-3 transition-colors relative`}
@@ -283,7 +385,7 @@ export default function ITSidebar({
 
               {/* Submenu - smooth height/opacity when not collapsed */}
               {!isSidebarCollapsed && item.subitems && item.subitems.length > 0 && (
-                <div id={submenuId} role="group" aria-label={item.label} className={`overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] ${expandedItems.has(item.id) ? "max-h-[500px] opacity-100 mt-1" : "max-h-0 opacity-0"}`}>
+                <div id={submenuId} role="group" aria-label={item.label} className={`overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] ${expandedItems.has(item.id) ? "max-h-[1000px] opacity-100 mt-1" : "max-h-0 opacity-0"}`}>
                   <ul
                     className="ml-4 flex flex-col gap-0 py-0.5"
                     style={{
@@ -292,59 +394,11 @@ export default function ITSidebar({
                         : 'none'
                     }}
                   >
-                    {item.subitems.map((subitem) => (
-                      <li key={subitem.id} className="relative">
-                        <button
-                          aria-current={subitem.isActive ? "page" : undefined}
-                          onClick={() => {
-                            if (subitem.action) subitem.action();
-                            if (onSubItemClick) onSubItemClick(subitem);
-                          }}
-                          className={`flex items-center gap-2 w-full text-left px-3 py-1.5 rounded-xl transition-all duration-300`}
-                          style={{
-                            color: subitem.isActive ? "var(--it-sidebar-active-color, var(--color-secondary-900))" : "var(--it-sidebar-label-color, var(--color-secondary-600))",
-                            backgroundColor: subitem.isActive ? "var(--it-sidebar-active-bg, var(--color-secondary-50))" : 'transparent',
-                            fontSize: '0.78rem',
-                            fontWeight: subitem.isActive ? 600 : 500,
-                            letterSpacing: '0.01em',
-                            marginLeft: subitemConnector === '|' ? '-1px' : '0',
-                          }}
-                          onMouseEnter={(e) => {
-                            if (!subitem.isActive) {
-                              e.currentTarget.style.backgroundColor = "var(--it-sidebar-hover-bg, var(--color-secondary-100))";
-                              e.currentTarget.style.transform = 'translateX(3px)';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (!subitem.isActive) {
-                              e.currentTarget.style.backgroundColor = 'transparent';
-                              e.currentTarget.style.transform = 'translateX(0)';
-                            }
-                          }}
-                        >
-                          {subitem.isActive && subitemConnector === '|' && (
-                            <div
-                              className="absolute left-0 top-1/3 bottom-1/3 w-[2.5px] rounded-r-full transition-all"
-                              style={{
-                                backgroundColor: "var(--it-sidebar-active-icon, var(--color-primary-500))",
-                                boxShadow: "0 0 6px color-mix(in srgb, var(--it-sidebar-active-icon, var(--color-primary-500)) 25%, transparent)",
-                              }}
-                            />
-                          )}
-                          {subitemConnector === 'dot' && (
-                            <span
-                              className={`w-1.5 h-1.5 rounded-full flex-shrink-0 transition-all duration-300 ${subitem.isActive ? 'scale-125' : ''}`}
-                              style={{
-                                backgroundColor: subitem.isActive
-                                  ? "var(--it-sidebar-active-icon, var(--color-primary-500))"
-                                  : "var(--it-sidebar-icon-color, var(--color-secondary-400))"
-                              }}
-                            />
-                          )}
-                          <ITText as="span" className="truncate">{subitem.label}</ITText>
-                        </button>
-                      </li>
-                    ))}
+                    {item.subitems.map((entry) =>
+                      isSubItemGroup(entry)
+                        ? renderSubItemGroup(entry, item.id)
+                        : renderSubItem(entry),
+                    )}
                   </ul>
                 </div>
               )}

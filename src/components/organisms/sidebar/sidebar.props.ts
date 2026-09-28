@@ -10,6 +10,28 @@ export interface ITNavigationSubItem {
   isActive?: boolean;
 }
 
+/**
+ * A titled group of sub-navigation items rendered under a parent menu.
+ * Groups only add a visual heading: they are never clickable and never open
+ * a third level (the sidebar supports exactly one level of nesting).
+ */
+export interface ITNavigationSubItemGroup {
+  /** Unique identifier for the group. Used for the React key and the heading id. */
+  id: string;
+  /** Heading text rendered above the group's items. */
+  label: string;
+  /** Sub-items belonging to this group. Nesting a group inside a group is not supported. */
+  items: ITNavigationSubItem[];
+}
+
+/**
+ * A submenu entry: either a plain {@link ITNavigationSubItem} or a titled
+ * {@link ITNavigationSubItemGroup}. Discriminate with `"items" in entry`.
+ */
+export type ITNavigationSubItemEntry =
+  | ITNavigationSubItem
+  | ITNavigationSubItemGroup;
+
 /** A top-level navigation item, optionally with sub-items. */
 export interface ITNavigationItem {
   /** Unique identifier. */
@@ -22,8 +44,12 @@ export interface ITNavigationItem {
   action?: () => void;
   /** Whether this item is currently active/highlighted. */
   isActive?: boolean;
-  /** Nested sub-navigation items (renders as expandable submenu). */
-  subitems?: ITNavigationSubItem[];
+  /**
+   * Nested sub-navigation entries (renders as an expandable submenu).
+   * Each entry is either a plain sub-item or a titled group of sub-items.
+   * The field `items` is reserved for {@link ITNavigationSubItemGroup}.
+   */
+  subitems?: ITNavigationSubItemEntry[];
   /** Badge text displayed on the item (e.g. notification count). */
   badge?: string;
 }

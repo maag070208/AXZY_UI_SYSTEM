@@ -1,0 +1,150 @@
+{
+  "name": "axzy-ui-system",
+  "displayName": "AXZY UI System",
+  "description": "Component explorer, prop IntelliSense and live preview for the @axzydev/axzy_ui_system React component library.",
+  "version": "0.1.0",
+  "publisher": "axzydev",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maag070208/AXZY_UI_SYSTEM.git",
+    "directory": "vscode-extension"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Snippets"
+  ],
+  "keywords": [
+    "axzy",
+    "react",
+    "component library",
+    "design system"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onView:axzy.componentExplorer",
+    "onLanguage:typescriptreact",
+    "onLanguage:typescript",
+    "onCommand:axzy.openDocs",
+    "onCommand:axzy.previewComponent"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "axzy",
+          "title": "AXZY UI System",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "axzy": [
+        {
+          "id": "axzy.componentExplorer",
+          "name": "Components",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "axzy.openDocs",
+        "title": "AXZY: Open component docs",
+        "category": "AXZY",
+        "icon": "$(book)"
+      },
+      {
+        "command": "axzy.previewComponent",
+        "title": "AXZY: Preview component",
+        "category": "AXZY"
+      },
+      {
+        "command": "axzy.copyExample",
+        "title": "AXZY: Copy usage example",
+        "category": "AXZY"
+      },
+      {
+        "command": "axzy.openSource",
+        "title": "AXZY: Open component source",
+        "category": "AXZY"
+      },
+      {
+        "command": "axzy.refreshCatalog",
+        "title": "AXZY: Refresh component catalog",
+        "category": "AXZY",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "axzy.refreshCatalog",
+          "when": "view == axzy.componentExplorer",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "axzy.openDocs",
+          "when": "view == axzy.componentExplorer && viewItem == axzy.component",
+          "group": "inline"
+        },
+        {
+          "command": "axzy.previewComponent",
+          "when": "view == axzy.componentExplorer && viewItem == axzy.component",
+          "group": "1_actions@1"
+        },
+        {
+          "command": "axzy.copyExample",
+          "when": "view == axzy.componentExplorer && viewItem == axzy.component",
+          "group": "1_actions@2"
+        },
+        {
+          "command": "axzy.openSource",
+          "when": "view == axzy.componentExplorer && viewItem == axzy.component",
+          "group": "1_actions@3"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "AXZY UI System",
+      "properties": {
+        "axzy.explorer.showHooks": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the exported hooks group in the component explorer."
+        },
+        "axzy.preview.theme": {
+          "type": "string",
+          "enum": [
+            "light",
+            "dark"
+          ],
+          "default": "light",
+          "description": "Color theme used by the component preview webview."
+        },
+        "axzy.packageName": {
+          "type": "string",
+          "default": "@axzydev/axzy_ui_system",
+          "description": "Package name used to resolve the installed library when opening component sources."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "catalog": "node scripts/generate-catalog.mjs",
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "vscode:prepublish": "node esbuild.mjs",
+    "package": "node esbuild.mjs && npx --yes @vscode/vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/vscode": "1.85.0",
+    "esbuild": "^0.25.0"
+  }
+}

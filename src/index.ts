@@ -101,7 +101,7 @@ import type { ITSearchSelectProps } from "./components/molecules/search-select/s
 import type { ITSelectProps } from "./components/molecules/select/select.props";
 import type { ITSearchTableProps } from "./components/organisms/searchTable/searchTable.props";
 import type { ITSegmentedControlProps } from "./components/atoms/segmented-control/segmented-control.props";
-import type { ITSidebarProps, ITNavigationItem, ITNavigationSubItem } from "./components/organisms/sidebar/sidebar.props";
+import type { ITSidebarProps, ITNavigationItem, ITNavigationSubItem, ITNavigationSubItemEntry, ITNavigationSubItemGroup } from "./components/organisms/sidebar/sidebar.props";
 import type { ITSkeletonProps } from "./components/atoms/skeleton/skeleton.props";
 import type { ITSlideToggleProps } from "./components/atoms/slide/slide.props";
 import type { ITSliderProps } from "./components/atoms/slider/slider.props";
@@ -173,6 +173,7 @@ export {
     ITLayoutProps, ITLoaderProps, ITNavbarProps,
     ITPageProps, ITPageHeaderProps,
     ITNavigationItem, ITNavigationSubItem,
+    ITNavigationSubItemEntry, ITNavigationSubItemGroup,
     ITPaginationProps, ITPopoverProps, ITProgressProps,
     ITRadioGroupProps, ITRadioOption, ITSelectProps, ITSearchSelectProps,
     ITSearchTableProps,

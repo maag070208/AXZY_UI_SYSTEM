@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import ITSidebar from '@/components/organisms/sidebar/sidebar';
-import { FaHome, FaUsers, FaCog, FaChartBar, FaShieldAlt } from 'react-icons/fa';
+import { FaHome, FaUsers, FaCog, FaChartBar, FaShieldAlt, FaShoppingCart } from 'react-icons/fa';
+import { expect, fn, userEvent, waitFor } from 'storybook/test';
 
 const meta: Meta<typeof ITSidebar> = {
   title: 'Components/Layout & Navigation/ITSidebar',
@@ -113,4 +114,63 @@ export const WithActiveSubmenu: Story = {
       <div className="flex-1 p-8 text-zinc-500 font-medium">El menú de usuarios está expandido y activo, mostrando el conector visual sutil.</div>
     </div>
   ),
+};
+
+const groupedSubItemActionSpy = fn();
+
+export const Grouped: Story = {
+  args: {
+    navigationItems: [
+      { id: 'dashboard', label: 'Dashboard', icon: <FaHome />, isActive: false },
+      {
+        id: 'ventas',
+        label: 'Ventas',
+        icon: <FaShoppingCart />,
+        subitems: [
+          { id: 'ventas-resumen', label: 'Resumen', action: fn() },
+          {
+            id: 'gestion',
+            label: 'Gestión',
+            items: [
+              { id: 'ordenes', label: 'Órdenes', action: groupedSubItemActionSpy },
+              { id: 'facturas', label: 'Facturas', action: fn() },
+            ],
+          },
+          {
+            id: 'catalogo',
+            label: 'Catálogo',
+            items: [
+              { id: 'productos', label: 'Productos', action: fn() },
+              { id: 'cotizaciones', label: 'Cotizaciones', action: fn() },
+            ],
+          },
+        ],
+      },
+      { id: 'settings', label: 'Configuración', icon: <FaCog />, action: fn() },
+    ],
+    isCollapsed: false,
+    visibleOnMobile: true,
+  },
+  render: (args) => (
+    <div className="h-screen bg-gray-50 flex">
+      <ITSidebar {...args} />
+      <div className="flex-1 p-8 text-zinc-500 font-medium">Los subítems de Ventas se agrupan bajo los títulos “Gestión” y “Catálogo”; los títulos no son interactivos.</div>
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    await userEvent.click(canvas.getByRole('button', { name: 'Ventas' }));
+
+    const heading = canvas.getByText('Gestión');
+    // Wait out the 400ms expand transition before asserting visibility.
+    await waitFor(() => expect(heading).toBeVisible());
+
+    // The group <ul> is named by its heading via aria-labelledby.
+    await expect(canvas.getByRole('list', { name: 'Gestión' })).toBeInTheDocument();
+
+    // The heading is not focusable and is not inside anything with a tabindex.
+    await expect(heading.closest('[tabindex]')).toBeNull();
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Órdenes' }));
+    await expect(groupedSubItemActionSpy).toHaveBeenCalled();
+  },
 };

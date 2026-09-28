@@ -16,6 +16,15 @@
 - `pnpm build` — **alias of `pnpm bundle`** (tsup + CSS). Trust `package.json`.
 - `pnpm build:app` — build the sandbox into `dist-app/`
 - No `test` script. Tests are Storybook interaction tests run through Vitest + Playwright Chromium (`pnpm exec vitest run`; config in `vite.config.ts` under `test.projects`).
+- `pnpm ext:catalog` / `pnpm ext:typecheck` / `pnpm ext:build` / `pnpm ext:package` — VS Code extension in `vscode-extension/` (see below).
+
+## VS Code extension (`vscode-extension/`)
+
+- Self-contained subproject: component explorer (TreeView), docs webview, prop IntelliSense (completion + hover) and live preview webview for this library.
+- **Not published to npm**: root `package.json#files` only includes `dist`, `src`, `snippets`. Excluded from root ESLint via `eslint.config.js` `ignores`.
+- Data comes from `vscode-extension/src/generated/catalog.json`, generated with the TypeScript compiler API by `vscode-extension/scripts/generate-catalog.mjs` (`pnpm ext:catalog`). Regenerate it after changing component props, then `pnpm ext:build`.
+- `pnpm ext:build` runs `vscode-extension/esbuild.mjs`: esbuild for the extension host and the preview webview, plus a Tailwind (vite) build for `media/axzy.css`. The preview imports the built library from `dist/index.js`, so run `pnpm bundle` first.
+- DevDeps `@types/vscode` (pinned to `1.85.0` to match `engines.vscode`) and `esbuild` live in the root `package.json` so the subfolder resolves them from the ancestor `node_modules`.
 
 ## Architecture and boundaries
 

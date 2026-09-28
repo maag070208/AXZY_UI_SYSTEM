@@ -38,7 +38,11 @@
     "bundle": "tsup src/index.ts && node scripts/build-css.mjs",
     "watch": "tsup src/index.ts --watch",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "ext:catalog": "node vscode-extension/scripts/generate-catalog.mjs",
+    "ext:build": "node vscode-extension/esbuild.mjs",
+    "ext:typecheck": "tsc --noEmit -p vscode-extension/tsconfig.json",
+    "ext:package": "node vscode-extension/esbuild.mjs && cd vscode-extension && npx --yes @vscode/vsce package --no-dependencies"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -81,6 +85,8 @@
     "vitest": "^4.0.18",
     "playwright": "^1.58.0",
     "@vitest/browser-playwright": "^4.0.18",
-    "@vitest/coverage-v8": "^4.0.18"
+    "@vitest/coverage-v8": "^4.0.18",
+    "@types/vscode": "1.85.0",
+    "esbuild": "^0.25.0"
   }
 }

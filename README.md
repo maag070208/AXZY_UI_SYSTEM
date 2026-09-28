@@ -225,7 +225,7 @@ estas variables en cualquier contenedor estila solo ese subárbol.
 - **ITSlideToggle** – Switch toggle
 - **ITDropfile** – Área de arrastrar y soltar archivos
 - **ITFormBuilder** – Generador dinámico de formularios desde JSON
-- **ITTable** / **ITDataTable** – Tablas con filtros, ordenamiento y paginación
+- **ITTable** / **ITDataTable** – Tablas con filtros, ordenamiento, paginación y columnas fijas (`pinned`)
 - **ITCard** / **ITStatCard** – Tarjetas de contenido y métricas
 - **ITLayout** / **ITNavbar** – Sistema de layout con sidebar colapsable
 - **ITFlex** / **ITStack** / **ITGrid** – Layout helpers

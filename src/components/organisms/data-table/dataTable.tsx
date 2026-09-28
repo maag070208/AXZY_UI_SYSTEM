@@ -12,7 +12,7 @@ import ITSelect from "@/components/molecules/select/select";
 import ITSearchSelect from "@/components/molecules/search-select/search-select";
 import ITDatePicker from "@/components/molecules/date-picker/datePicker";
 import { Column } from "@/components/molecules/table/table.props";
-import { formatCurrencyMX, isInteractiveTarget } from "@/utils/table.utils";
+import { formatCurrencyMX, getPinnedColumnMeta, isInteractiveTarget } from "@/utils/table.utils";
 import { ITDataTableProps } from "./dataTable.props";
 import ITText from "@/components/atoms/text/text";
 import {
@@ -105,6 +105,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
   const isStickyHeader = stickyHeader && isTableVirtual;
   const resolvedRowHeight = rowHeight ?? getRowHeight(size, density);
   const columnCount = columns.length;
+  const pinnedMeta = React.useMemo(() => getPinnedColumnMeta(columns), [columns]);
   const scrollOuterClass = isTableVirtual
     ? "relative min-h-[200px]"
     : "overflow-x-auto relative min-h-[200px]";
@@ -441,21 +442,32 @@ export default function ITDataTable<T extends Record<string, unknown>>({
           className={clsx(tableHeaderRow, "dark:text-slate-200")}
           aria-rowindex={isTableVirtual ? 1 : undefined}
         >
-          {columns.map((col) => (
+          {columns.map((col) => {
+            const pin = pinnedMeta[col.key];
+            const isPinned = pin != null;
+            return (
             <th
               key={col.key}
               scope="col"
               className={clsx(
                 tableHeaderCell(col.className, density),
                 col.align && tableAlignClasses[col.align],
-                isStickyHeader && "sticky top-0 z-10 bg-secondary-50"
+                isPinned && "sticky",
+                isStickyHeader && "sticky top-0 bg-secondary-50",
+                isPinned ? "z-[15]" : isStickyHeader && "z-10",
+                isPinned && (col.pinned === "left" ? "it-table-pinned-left" : "it-table-pinned-right")
               )}
               style={
-                col.minWidth != null || isStickyHeader
+                col.minWidth != null || isStickyHeader || isPinned
                   ? {
                       ...(col.minWidth != null ? { minWidth: `${col.minWidth}px` } : {}),
-                      ...(isStickyHeader
+                      ...(isStickyHeader || isPinned
                         ? { backgroundColor: "var(--color-table-headerBg, #f8fafc)" }
+                        : {}),
+                      ...(isPinned
+                        ? pin.side === "left"
+                          ? { left: pin.offset }
+                          : { right: pin.offset }
                         : {}),
                     }
                   : undefined
@@ -483,7 +495,8 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                 <div className="w-full">{col.filter ? renderFilterInput(col) : null}</div>
               </div>
             </th>
-          ))}
+            );
+          })}
         </tr>
       </thead>
       <tbody className={clsx(tableBody, "dark:divide-slate-700/30")}>
@@ -516,14 +529,30 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                       (typeof rawValue === "string" || typeof rawValue === "number")
                         ? String(rawValue)
                         : undefined;
+                    const pin = pinnedMeta[col.key];
+                    const isPinned = pin != null;
                     return (
                       <td
                         key={`${absoluteIndex}-${col.key}`}
                         className={clsx(
                           tableCell(col.className, density),
-                          col.align && tableAlignClasses[col.align]
+                          col.align && tableAlignClasses[col.align],
+                          isPinned && "sticky bg-[var(--color-table-rowBg,white)] group-hover:bg-[var(--color-table-rowHover,var(--color-secondary-50))]",
+                          isPinned && (col.pinned === "left" ? "it-table-pinned-left" : "it-table-pinned-right"),
+                          isPinned && "z-[1]"
                         )}
-                        style={col.minWidth != null ? { minWidth: `${col.minWidth}px` } : undefined}
+                        style={
+                          col.minWidth != null || isPinned
+                            ? {
+                                ...(col.minWidth != null ? { minWidth: `${col.minWidth}px` } : {}),
+                                ...(isPinned
+                                  ? pin.side === "left"
+                                    ? { left: pin.offset }
+                                    : { right: pin.offset }
+                                  : {}),
+                              }
+                            : undefined
+                        }
                         title={truncateTitle}
                       >
                         {col.type === "actions" ? (
