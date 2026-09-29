@@ -56,6 +56,7 @@ mediante variables CSS a través de ITThemeProvider.
 42. ITMultiSelect (Selector Múltiple con Búsqueda)
 43. ITChipInput (Entrada de Etiquetas)
 44. ITMaskedInput (Input con Máscara de Formato)
+45. ITInputNumber (Campo Numérico con Formato de Moneda)
 
 ================================================================================
 1. ITThemeProvider
@@ -260,7 +261,7 @@ export default function AdminNavbar() {
 ================================================================================
 4. ITSidebar
 ================================================================================
-Barra lateral reactiva. Soporta colapso automático y varios estilos de líneas conectoras para subítems. Los `subitems` de un item padre aceptan entradas planas o grupos con título (`label` + `items`) que agrupan subítems bajo un encabezado; el título del grupo es solo visual (no es foco, no es clicable y no crea un tercer nivel). Acepta un slot `header` opcional (p. ej. un wordmark) que se renderiza arriba de la navegación y se oculta mientras está colapsada. El riel colapsado se expande automáticamente al pasar el cursor por encima: no hay botón de colapso. Incluye roles/aria para accesibilidad: `nav` etiquetado, toggles con `role="button"` + `aria-expanded`/`aria-controls` + Enter/Space, submenús `role="group"` etiquetados, cada grupo de subítems con su `<ul aria-labelledby>` y subítem activo con `aria-current="page"`.
+Barra lateral reactiva. Soporta colapso automático y varios estilos de líneas conectoras para subítems. Los `subitems` de un item padre aceptan entradas planas o grupos con título (`label` + `items`) que agrupan subítems bajo un encabezado; el título del grupo es solo visual (no es foco, no es clicable y no crea un tercer nivel). Acepta un slot `header` opcional (p. ej. un wordmark) que se renderiza arriba de la navegación y se oculta mientras está colapsada. El riel colapsado se expande automáticamente al pasar el cursor por encima: no hay botón de colapso; su flyout flotante aplana los grupos en una sola lista plana y no dibuja encabezados. Incluye roles/aria para accesibilidad: `nav` etiquetado, toggles con `role="button"` + `aria-expanded`/`aria-controls` + Enter/Space, submenús `role="group"` etiquetados, cada grupo de subítems con su `<ul aria-labelledby>` y subítem activo con `aria-current="page"`.
 
 ### Props (ITSidebarProps)
 ```typescript
@@ -294,8 +295,9 @@ export interface ITNavigationItem {
 export interface ITSidebarProps {
   navigationItems: ITNavigationItem[];
   isCollapsed?: boolean;
+  /** Reservado por compatibilidad: el componente no tiene botón de colapso (el riel se expande por hover), así que ITSidebar nunca lo invoca. ITLayout lo pasa igualmente. */
   onToggleCollapse?: () => void;
-  /** Expande el riel colapsado al hacer hover. `false` deja el botón como único toggle. Default: true. */
+  /** Si es true, el sidebar queda siempre expandido (desactiva el riel colapsado de 88px) y visible en cualquier breakpoint. Default: false. */
   visibleOnMobile?: boolean;
   onItemClick?: (item: ITNavigationItem) => void;
   onSubItemClick?: (subitem: ITNavigationSubItem) => void;
@@ -340,8 +342,8 @@ export default function CustomSidebar() {
     <ITSidebar
       navigationItems={items}
       isCollapsed={collapsed}
-      onToggleCollapse={() => setCollapsed(!collapsed)}
-      // Con el hover-expand activo (default) el clic se deshace al pasar el cursor.
+      // ITSidebar no renderiza botón de colapso ni invoca onToggleCollapse:
+      // el riel colapsado se expande solo al pasar el cursor por encima.
       subitemConnector="dot" // Prueba con 'dot', '|', o 'none'
       // Slot opcional arriba de la navegación; se oculta al colapsar.
       header={<span className="text-xs font-bold tracking-wide">AXZY v1.3</span>}
@@ -2956,3 +2958,88 @@ export default function PhoneField() {
 - El cursor se conserva al editar en medio de la máscara (incluye borrado de separadores).
 - `pattern` valida contra el raw completo; mensaje genérico "Formato inválido" salvo que se pase `error` como string.
 - `onComplete` es útil para tarjetas, CVV u OTP.
+
+================================================================================
+45. ITInputNumber
+================================================================================
+Campo numérico especializado: es un `ITInput` (misma label, validación, tamaños
+e iconos) que SIEMPRE aplica formato de moneda (separador de miles + decimales
+fijos) y emite un `number` real en `onChange`/`onBlur` en lugar de un string.
+
+### Props (ITInputNumberProps)
+```typescript
+export interface ITInputNumberProps {
+  name: string;                                          // requerido
+  value?: number | null;                                 // valor numérico
+  onChange: (value: number | undefined, event: React.ChangeEvent<HTMLInputElement>) => void; // requerido
+  onBlur?: (value: number | undefined, event: React.FocusEvent<HTMLInputElement>) => void;
+  decimals?: number;                                     // Default: 2 (0 = enteros)
+  prefix?: string;                                       // ej. "$" (se ignora si hay iconLeft)
+  label?: string;
+  placeholder?: string;
+  min?: number;                                          // clamp al salir del campo
+  max?: number;                                          // clamp al salir del campo
+  size?: 'sm' | 'md' | 'lg';                             // Default: 'md'
+  disabled?: boolean;                                    // Default: false
+  readOnly?: boolean;                                    // Default: false
+  required?: boolean;                                    // Default: false
+  touched?: boolean;
+  error?: string | boolean;                              // true = mensaje genérico
+  iconLeft?: React.ReactNode;
+  iconRight?: React.ReactNode;
+  containerClassName?: string;
+  labelClassName?: string;
+  className?: string;
+  autoFocus?: boolean;                                   // Default: false
+  focusContent?: boolean;                                // Default: false
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+}
+```
+
+### Valores literales
+- `decimals`: cualquier entero >= 0. `0` = solo enteros, `2` = centavos (default).
+- `size`: `'sm'` | `'md'` | `'lg'`.
+- `error`: `true` (mensaje genérico "Este campo es requerido") o `string` (mensaje propio).
+
+### Ejemplo Real
+```tsx
+import { useState } from 'react';
+import { ITInputNumber } from 'axzy-ui-system';
+
+export default function AmountField() {
+  const [amount, setAmount] = useState<number | null>(null);
+  const [qty, setQty] = useState<number | null>(1);
+
+  return (
+    <>
+      <ITInputNumber
+        name="amount"
+        label="Monto"
+        placeholder="0.00"
+        prefix="$"
+        value={amount}
+        onChange={(value) => setAmount(value)}   // value: number | undefined
+        min={0}
+        max={100000}
+      />
+
+      <ITInputNumber
+        name="qty"
+        label="Cantidad (enteros)"
+        decimals={0}
+        min={1}
+        max={99}
+        value={qty}
+        onChange={(value) => setQty(value)}
+      />
+    </>
+  );
+}
+```
+
+### Notas
+- `onChange` entrega un `number` ya parseado (o `undefined` si el campo está vacío); no hace falta `parseFloat`.
+- Formatea al perder el foco (miles + decimales) y muestra el número crudo mientras se escribe.
+- `min`/`max` se aplican al salir del campo (clamp) y también bloquean dígitos que excedan el máximo al teclear.
+- Internamente usa `ITInput` con `currencyFormat` + `formatNumber`, por lo que hereda el tema y los estados de error.
+- `prefix` es un atajo de `iconLeft`; para cualquier nodo personalizado usa `iconLeft` directamente.

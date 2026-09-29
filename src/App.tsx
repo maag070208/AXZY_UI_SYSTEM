@@ -35,6 +35,7 @@ import {
 import {
   ButtonShowcase,
   InputShowcase,
+  InputNumberShowcase,
   SelectShowcase,
   SearchSelectShowcase,
   DatePickerShowcase,
@@ -48,6 +49,7 @@ import {
   MaskedInputShowcase,
   MultiSelectShowcase,
   ChipInputShowcase,
+  SegmentedControlShowcase,
 } from "./showcases/FormShowcases";
 import {
   TableShowcase,
@@ -261,6 +263,8 @@ function App() {
         return <ButtonShowcase />;
       case "input":
         return <InputShowcase />;
+      case "inputnumber":
+        return <InputNumberShowcase />;
       case "select":
         return <SelectShowcase />;
       case "searchselect":
@@ -281,6 +285,8 @@ function App() {
         return <CalendarShowcase />;
       case "slidetoggle":
         return <SlideToggleShowcase />;
+      case "segmentedcontrol":
+        return <SegmentedControlShowcase />;
       case "dropfile":
         return <DropfileShowcase />;
       case "wysiwyg":

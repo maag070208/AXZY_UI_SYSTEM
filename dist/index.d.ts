@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import * as React$1 from 'react';
-import React__default, { RefObject, CSSProperties, ReactNode, ElementType, FocusEvent, HTMLAttributes } from 'react';
+import React__default, { RefObject, CSSProperties, ReactNode, ElementType, ChangeEvent, FocusEvent, KeyboardEvent, HTMLAttributes } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 
 declare const useClickOutside: (ref: React.RefObject<HTMLElement>, callback: () => void) => void;
@@ -2214,6 +2214,11 @@ interface ITInputProps {
     label?: string;
     /** Enable currency formatting for number inputs (MX locale) */
     currencyFormat?: boolean;
+    /**
+     * Decimal places allowed for number inputs. `0` restricts to integers.
+     * @default currencyFormat ? 2 : 0
+     */
+    decimals?: number;
     /** Placeholder text */
     placeholder?: string;
     /** Current input value */
@@ -2301,7 +2306,106 @@ interface ITInputProps {
  *   maxLength={10}
  * />
  */
-declare function ITInput({ name, type, label, placeholder, value, onChange, onBlur, disabled, className, containerClassName, labelClassName, touched, error, formatNumber, required, autoFocus, onClick, onKeyDown, iconLeft, iconRight, maxLength, minLength, checked, showHintLength, currencyFormat, rows, min, max, readOnly, focusContent, size }: ITInputProps): react_jsx_runtime.JSX.Element;
+declare function ITInput({ name, type, label, placeholder, value, onChange, onBlur, disabled, className, containerClassName, labelClassName, touched, error, formatNumber, required, autoFocus, onClick, onKeyDown, iconLeft, iconRight, maxLength, minLength, checked, showHintLength, currencyFormat, rows, min, max, readOnly, focusContent, size, decimals }: ITInputProps): react_jsx_runtime.JSX.Element;
+
+/**
+ * Props for the ITInputNumber component.
+ *
+ * Same surface as `ITInput` for numeric entry, but the value is always
+ * formatted as currency (thousand separators + decimals) and emitted as a
+ * real `number` instead of a string.
+ */
+interface ITInputNumberProps {
+    /** Field name used for form identification. */
+    name: string;
+    /** Current numeric value. Pass `null`/`undefined` for "empty". */
+    value?: number | null;
+    /**
+     * Called with the parsed value on every change.
+     * Receives `undefined` when the field is empty, plus the original input event.
+     */
+    onChange: (value: number | undefined, event: ChangeEvent<HTMLInputElement>) => void;
+    /**
+     * Called on blur with the parsed (and min/max clamped) value, plus the
+     * original focus event.
+     */
+    onBlur?: (value: number | undefined, event: FocusEvent<HTMLInputElement>) => void;
+    /** Number of decimal places allowed. `0` restricts to integers. @default 2 */
+    decimals?: number;
+    /** Text prefix rendered inside the field, e.g. `"$"`. Ignored when `iconLeft` is set. */
+    prefix?: string;
+    /** Label displayed above the input. */
+    label?: string;
+    /** Placeholder text. */
+    placeholder?: string;
+    /** Minimum numeric value. Values below are clamped on blur. */
+    min?: number;
+    /** Maximum numeric value. Values above are clamped on blur. */
+    max?: number;
+    /** Size preset: "sm" | "md" | "lg". @default "md" */
+    size?: SizesTypes;
+    /** Disable the input. @default false */
+    disabled?: boolean;
+    /** Render the input in read-only mode. @default false */
+    readOnly?: boolean;
+    /** Mark the field as required. @default false */
+    required?: boolean;
+    /** Whether the field has been touched by the user. */
+    touched?: boolean;
+    /** Validation error. Pass `true` for a generic message, or a string for a custom one. */
+    error?: string | boolean;
+    /** Icon element rendered on the left side of the input. Takes precedence over `prefix`. */
+    iconLeft?: ReactNode;
+    /** Icon element rendered on the right side of the input. */
+    iconRight?: ReactNode;
+    /** Additional CSS classes for the outer container. */
+    containerClassName?: string;
+    /** Additional CSS classes for the label. */
+    labelClassName?: string;
+    /** Additional CSS classes for the input element. */
+    className?: string;
+    /** Auto-focus the input on mount. @default false */
+    autoFocus?: boolean;
+    /** Select all content on click. @default false */
+    focusContent?: boolean;
+    /** Keydown handler for the underlying input. */
+    onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
+}
+
+/**
+ * Numeric field that always renders currency-style formatting (thousand
+ * separators + fixed decimals) and emits a real `number`.
+ *
+ * Built on top of `ITInput`: it is the same field, but `onChange`/`onBlur`
+ * already receive the parsed value, so consumers can do math directly instead
+ * of converting strings first.
+ *
+ * @example
+ * ```tsx
+ * <ITInputNumber
+ *   name="amount"
+ *   label="Monto"
+ *   value={amount}
+ *   prefix="$"
+ *   onChange={(value) => setAmount(value)}
+ * />
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Enteros (sin decimales) con límites
+ * <ITInputNumber
+ *   name="qty"
+ *   label="Cantidad"
+ *   decimals={0}
+ *   min={1}
+ *   max={99}
+ *   value={qty}
+ *   onChange={(value) => setQty(value)}
+ * />
+ * ```
+ */
+declare function ITInputNumber({ value, onChange, onBlur, decimals, prefix, iconLeft, ...rest }: ITInputNumberProps): react_jsx_runtime.JSX.Element;
 
 /** Represents a navigation item in the sidebar. */
 interface ITNavigationItem$1 {
@@ -4056,4 +4160,4 @@ declare const resolveCssColor: (colorStr: string, palette?: ITThemePalette$1, is
  */
 declare const getContrastTextColor: (bgColor: string, palette?: ITThemePalette$1, isDarkMode?: boolean) => "text-white" | "text-slate-800";
 
-export { type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, type LoaderProps as ITLoaderProps, ITMaskedInput, type ITMaskedInputProps, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeConfig, type ITThemePalette$1 as ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type TableDensity, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITTheme, useITThemeSafe, useTableState };
+export { type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, type LoaderProps as ITLoaderProps, ITMaskedInput, type ITMaskedInputProps, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeConfig, type ITThemePalette$1 as ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type TableDensity, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITTheme, useITThemeSafe, useTableState };

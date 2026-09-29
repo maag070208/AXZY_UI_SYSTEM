@@ -66,11 +66,14 @@ export default function ITInput({
   max,
   readOnly = false,
   focusContent,
-  size = "md"
+  size = "md",
+  decimals
 }: ITInputProps) {
   const isCheckboxOrRadio = type === "checkbox" || type === "radio";
   const isNumberType = type === "number";
   const isTextArea = type === "textarea";
+  // Currency inputs default to 2 decimals; plain numbers to integers.
+  const decimalPlaces = decimals ?? (currencyFormat ? 2 : 0);
 
   const [displayValue, setDisplayValue] = useState<string>("");
   const [isFocused, setIsFocused] = useState(false);
@@ -146,14 +149,18 @@ export default function ITInput({
 
       if (currencyFormat) {
         return num.toLocaleString("es-MX", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
+          minimumFractionDigits: decimalPlaces,
+          maximumFractionDigits: decimalPlaces,
         });
+      }
+
+      if (decimalPlaces > 0) {
+        return num.toFixed(decimalPlaces);
       }
 
       return num.toString();
     },
-    [currencyFormat]
+    [currencyFormat, decimalPlaces]
   );
 
   const unformatValue = useCallback(
@@ -204,13 +211,13 @@ useEffect(() => {
       return;
     }
 
-    if (!currencyFormat && (key === "." || key === ",")) {
+    if (decimalPlaces === 0 && (key === "." || key === ",")) {
       e.preventDefault();
       return;
     }
 
     if (
-      currencyFormat &&
+      decimalPlaces > 0 &&
       (key === "." || key === ",") &&
       currentValue.includes(".")
     ) {
@@ -223,7 +230,7 @@ useEffect(() => {
       }
     }
 
-    const allowedCharsRegex = currencyFormat ? /^[0-9.,]$/ : /^[0-9]$/;
+    const allowedCharsRegex = decimalPlaces > 0 ? /^[0-9.,]$/ : /^[0-9]$/;
     // If it's a mobile key event like Unidentified, we bypass the regex check safely
     if (key !== "Unidentified" && !allowedCharsRegex.test(key)) {
       e.preventDefault();
@@ -256,7 +263,7 @@ const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   let rawValue = e.target.value;
   let cleanedValue = "";
 
-  if (currencyFormat) {
+  if (decimalPlaces > 0) {
     if (rawValue.includes(",") && rawValue.includes(".")) {
       rawValue = rawValue.replace(/,/g, ""); 
     } else if (rawValue.includes(",")) {
@@ -266,9 +273,9 @@ const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     cleanedValue = rawValue.replace(/[^0-9.]/g, "");
     const parts = cleanedValue.split(".");
     if (parts.length > 1) {
-      // Keep only first dot, and restrict decimals to 2 digits
-      const decimals = parts.slice(1).join("").substring(0, 2);
-      cleanedValue = parts[0] + "." + decimals;
+      // Keep only the first dot and restrict decimals to the allowed digits
+      const decimalPart = parts.slice(1).join("").substring(0, decimalPlaces);
+      cleanedValue = parts[0] + "." + decimalPart;
     }
   } else {
     cleanedValue = rawValue.replace(/[^0-9]/g, "");
@@ -282,7 +289,7 @@ const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!formatNumber) {
       valueToSend = cleanedValue; 
     } else if (cleanedValue !== "") {
-      if (currencyFormat) {
+      if (decimalPlaces > 0) {
         const numericValue = parseFloat(cleanedValue);
         if (!isNaN(numericValue)) {
           // ALWAYS send string representation to avoid dropping trailing decimals
@@ -374,7 +381,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     let valueToSend: number | string | undefined = undefined;
 
     let cleanedValue = "";
-    if (currencyFormat) {
+    if (decimalPlaces > 0) {
       cleanedValue = currentValue.replace(/[^0-9.]/g, "");
       const parts = cleanedValue.split(".");
       if (parts.length > 2) {
@@ -385,7 +392,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       cleanedValue = currentValue.replace(/[^0-9]/g, "");
     }
 
-    const parsed = currencyFormat
+    const parsed = decimalPlaces > 0
       ? parseFloat(cleanedValue)
       : parseInt(cleanedValue, 10);
 
@@ -430,7 +437,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
 };
 
   const currentLength = isNumberType
-    ? (currencyFormat ? displayValue.replace(/[.,]/g, "") : displayValue).length
+    ? (decimalPlaces > 0 ? displayValue.replace(/[.,]/g, "") : displayValue).length
     : typeof value === "string"
     ? value.length
     : String(value ?? "").length;
@@ -541,7 +548,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                       }
                       inputMode={
                         isNumberType
-                          ? currencyFormat
+                          ? decimalPlaces > 0
                             ? "decimal"
                             : "numeric"
                           : undefined
@@ -562,7 +569,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                       }
                       onKeyDown={isNumberType ? handleKeyDown : onKeyDown}
                       readOnly={readOnly}
-                      maxLength={isNumberType && !currencyFormat ? maxLength : undefined}
+                      maxLength={isNumberType && decimalPlaces === 0 ? maxLength : undefined}
                       minLength={minLength}
                       min={min}
                       max={max}

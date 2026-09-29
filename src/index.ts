@@ -36,6 +36,7 @@ import ITFormHeader from "./components/molecules/form-header/form-header";
 import ITGrid from "./components/atoms/grid/grid";
 import ITImage from "./components/atoms/image/image";
 import ITInput from "./components/atoms/input/input";
+import ITInputNumber from "./components/atoms/input-number/input-number";
 import ITNavbar from "./components/organisms/navbar/navbar";
 import ITPage from "./components/templates/page/page";
 import ITPageHeader from "./components/organisms/page-header/page-header";
@@ -90,6 +91,7 @@ import type { ITFormHeaderProps } from "./components/molecules/form-header/form-
 import type { ITGridProps } from "./components/atoms/grid/grid.props";
 import type { ITImageProps } from "./components/atoms/image/image.props";
 import type { ITInputProps } from "./components/atoms/input/input.props";
+import type { ITInputNumberProps } from "./components/atoms/input-number/input-number.props";
 import type { ITNavbarProps } from "./components/organisms/navbar/navbar.props";
 import type { ITPageProps } from "./components/templates/page/page.props";
 import type { ITPageHeaderProps } from "./components/organisms/page-header/page-header.props";
@@ -145,7 +147,7 @@ export {
   ITCard, ITCheckbox, ITChip, ITChipInput, ITConfirmDialog, ITDataTable, ITDatePicker,
   ITDropdownMenu, ITField, ITMaskedInput, ITMultiSelect,
   ITDialog, ITDivider, ITDrawer,
-  ITDropfile, ITEmptyState, ITFlex, ITFormBuilder, ITFormHeader, ITGrid, ITImage, ITInput, ITLayout,
+  ITDropfile, ITEmptyState, ITFlex, ITFormBuilder, ITFormHeader, ITGrid, ITImage, ITInput, ITInputNumber, ITLayout,
   ITLoader,   ITNavbar, ITPage, ITPageHeader, ITPagination, ITPopover, ITProgress,
   ITRadioGroup, ITSelect, ITSearchSelect,
   ITSearchTable,
@@ -169,7 +171,7 @@ export {
     ITDialogProps, ITDividerProps, ITDrawerProps,
     ITEmptyStateProps, ITFlexProps,
     ITFormBuilderProps, ITFormHeaderProps,
-    ITGridProps, ITImageProps, ITInputProps,
+    ITGridProps, ITImageProps, ITInputProps, ITInputNumberProps,
     ITLayoutProps, ITLoaderProps, ITNavbarProps,
     ITPageProps, ITPageHeaderProps,
     ITNavigationItem, ITNavigationSubItem,

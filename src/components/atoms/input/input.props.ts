@@ -18,6 +18,11 @@ export interface ITInputProps {
   label?: string;
   /** Enable currency formatting for number inputs (MX locale) */
   currencyFormat?: boolean;
+  /**
+   * Decimal places allowed for number inputs. `0` restricts to integers.
+   * @default currencyFormat ? 2 : 0
+   */
+  decimals?: number;
   /** Placeholder text */
   placeholder?: string;
   /** Current input value */

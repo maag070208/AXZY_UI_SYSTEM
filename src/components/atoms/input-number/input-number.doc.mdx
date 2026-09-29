@@ -1,0 +1,74 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as StoriesData from './input-number.stories';
+
+<Meta of={StoriesData} />
+
+# ITInputNumber
+
+Numeric field that always renders currency-style formatting (thousand separators + fixed decimals) and emits a real `number` through `onChange` / `onBlur`. Built on top of `ITInput`, so it inherits label, validation, sizes, icons and theming.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `name` | `string` | required | Field name used for form identification. |
+| `value` | `number \| null` | `undefined` | Current numeric value. |
+| `onChange` | `(value: number \| undefined, event) => void` | required | Called with the parsed value on every change. |
+| `onBlur` | `(value: number \| undefined, event) => void` | `undefined` | Called on blur with the parsed (and clamped) value. |
+| `decimals` | `number` | `2` | Decimal places allowed. `0` restricts to integers. |
+| `prefix` | `string` | `undefined` | Text prefix rendered inside the field (e.g. `"$"`). Ignored when `iconLeft` is set. |
+| `label` | `string` | `undefined` | Label displayed above the input. |
+| `placeholder` | `string` | `undefined` | Placeholder text. |
+| `min` | `number` | `undefined` | Minimum value; lower values are clamped on blur. |
+| `max` | `number` | `undefined` | Maximum value; higher values are clamped on blur. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Size preset. |
+| `disabled` | `boolean` | `false` | Disable the input. |
+| `readOnly` | `boolean` | `false` | Render the input in read-only mode. |
+| `required` | `boolean` | `false` | Mark the field as required. |
+| `touched` | `boolean` | `undefined` | Whether the field has been touched by the user. |
+| `error` | `string \| boolean` | `undefined` | Validation error (`true` = generic message). |
+| `iconLeft` / `iconRight` | `ReactNode` | `undefined` | Icons rendered inside the field. |
+| `containerClassName` | `string` | `undefined` | Additional classes for the outer container. |
+| `labelClassName` | `string` | `undefined` | Additional classes for the label. |
+| `className` | `string` | `undefined` | Additional classes for the input element. |
+| `autoFocus` | `boolean` | `false` | Auto-focus on mount. |
+| `focusContent` | `boolean` | `false` | Select all content on click. |
+| `onKeyDown` | `(event) => void` | `undefined` | Keydown handler for the underlying input. |
+
+## Usage
+
+```tsx
+import { ITInputNumber } from '@axzydev/axzy_ui_system';
+
+<ITInputNumber
+  name="amount"
+  label="Monto"
+  value={amount}
+  prefix="$"
+  onChange={(value) => setAmount(value)}
+/>
+
+<ITInputNumber
+  name="qty"
+  label="Cantidad"
+  decimals={0}
+  min={1}
+  max={99}
+  value={qty}
+  onChange={(value) => setQty(value)}
+/>
+```
+
+## Notes
+
+- The emitted value is a `number` (or `undefined` when the field is empty) — no `parseFloat` needed by the consumer.
+- Formatting is always on: thousand separators while blurred, raw digits while typing.
+- Use `decimals={0}` for integers only.
+- Values are clamped to `min`/`max` on blur.
+- `prefix` is a convenience over `iconLeft`; pass `iconLeft` directly for any custom node.
+
+## Stories
+
+<Primary />
+<Controls />
+<Stories />

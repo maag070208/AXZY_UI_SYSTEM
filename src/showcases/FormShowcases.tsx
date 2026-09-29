@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { FaSync, FaSave, FaTrash, FaEdit, FaCode, FaCheck } from "react-icons/fa";
+import { FaSync, FaSave, FaTrash, FaEdit, FaCode, FaCheck, FaCalendar } from "react-icons/fa";
 import {
   ITButton,
   ITInput,
+  ITInputNumber,
   ITSelect,
   ITSearchSelect,
   ITDatePicker,
@@ -17,6 +18,7 @@ import {
   ITMultiSelect,
   ITChipInput,
   ITBadget,
+  ITSegmentedControl,
   UploadStatus
 } from "../index";
 import { ShowcaseLayout, CodeViewer } from "./ShowcaseLayout";
@@ -2086,6 +2088,290 @@ export const MaskedInputShowcase = () => {
           "Los tokens A guardan letras en mayúsculas automáticamente.",
           "Borrar un separador lo vuelve a insertar; el cursor se conserva en la posición correcta.",
           "El cursor se preserva también al editar en medio de la máscara.",
+        ],
+      }}
+    />
+  );
+};
+
+// 17. ITSegmentedControl Showcase
+export const SegmentedControlShowcase = () => {
+  const [view, setView] = useState("day");
+  const [size, setSize] = useState<any>("md");
+  const [disabled, setDisabled] = useState(false);
+  const [withIcons, setWithIcons] = useState(false);
+
+  const options = withIcons
+    ? [
+        { value: "day", label: "Día", icon: <FaCheck size={10} /> },
+        { value: "week", label: "Semana", icon: <FaCalendar size={10} /> },
+        { value: "month", label: "Mes", icon: <FaSave size={10} /> },
+      ]
+    : [
+        { value: "day", label: "Día" },
+        { value: "week", label: "Semana" },
+        { value: "month", label: "Mes" },
+      ];
+
+  const code = `<ITSegmentedControl\n  options={[\n    { value: "day", label: "Día" },\n    { value: "week", label: "Semana" },\n    { value: "month", label: "Mes" },\n  ]}\n  value="${view}"\n  onChange={(value) => setView(value)}\n  size="${size}"\n  disabled={${disabled}}\n/>`;
+
+  return (
+    <ShowcaseLayout
+      title="ITSegmentedControl"
+      description="Grupo de botones mutuamente excluyentes estilo iOS para alternar vistas o filtros."
+      code={code}
+      demo={
+        <div className="flex flex-col items-center gap-3">
+          <ITSegmentedControl
+            options={options}
+            value={view}
+            onChange={setView}
+            size={size}
+            disabled={disabled}
+          />
+          <span className="text-xs font-mono text-slate-500">Seleccionado: "{view}"</span>
+        </div>
+      }
+      controls={
+        <>
+          <ITSelect
+            name="seg_size_ctrl"
+            label="Tamaño"
+            value={size}
+            onChange={(e: any) => setSize(e.target.value)}
+            options={[
+              { label: "Small", value: "sm" },
+              { label: "Medium", value: "md" },
+            ]}
+          />
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-gray-700">Con iconos</span>
+            <ITSlideToggle isOn={withIcons} onToggle={setWithIcons} size="sm" />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-gray-700">Deshabilitado</span>
+            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
+          </div>
+        </>
+      }
+      gallery={
+        <div className="flex flex-wrap items-center gap-6">
+          <ITSegmentedControl
+            options={[
+              { value: "list", label: "List" },
+              { value: "grid", label: "Grid" },
+            ]}
+            value="list"
+            onChange={() => {}}
+            size="sm"
+          />
+          <ITSegmentedControl
+            options={[
+              { value: "light", label: "☀️" },
+              { value: "dark", label: "🌙" },
+              { value: "system", label: "💻" },
+            ]}
+            value="dark"
+            onChange={() => {}}
+            size="sm"
+          />
+          <ITSegmentedControl
+            options={[
+              { value: "a", label: "Activo" },
+              { value: "b", label: "Inactivo" },
+            ]}
+            value="a"
+            onChange={() => {}}
+            disabled
+          />
+        </div>
+      }
+      doc={{
+        summary:
+          "Control segmentado: una sola opción activa a la vez. Útil para alternar vistas (lista/grid), rangos (día/semana/mes) o filtros.",
+        description:
+          "Componente totalmente controlado: recibe el valor activo vía value y notifica los cambios vía onChange.",
+        examples: [
+          '<ITSegmentedControl options={[{ value: "day", label: "Day" }, { value: "week", label: "Week" }]} value={view} onChange={setView} />',
+          '<ITSegmentedControl size="sm" options={[{ value: "list", label: "List", icon: <FaList /> }, { value: "grid", label: "Grid", icon: <FaTh /> }]} value={view} onChange={setView} />',
+        ],
+        props: [
+          { name: "options", type: "ISegmentedOption[]", required: true, description: "Opciones excluyentes { value, label, icon? }." },
+          { name: "value", type: "string", required: true, description: "Valor de la opción activa." },
+          { name: "onChange", type: "(value: string) => void", required: true, description: "Se dispara al elegir otra opción." },
+          { name: "size", type: '"sm" | "md"', default: '"md"', description: "Tamaño del control." },
+          { name: "className", type: "string", description: "Clases adicionales en el contenedor." },
+          { name: "disabled", type: "boolean", default: "false", description: "Deshabilita todas las opciones." },
+        ],
+        notes: [
+          "Solo una opción puede estar activa; es mutuamente excluyente por diseño.",
+          "Cada opción acepta un icon opcional junto al label.",
+          "No expone roles ARIA de radiogroup: si se usa en un formulario accesible habría que agregarlos.",
+        ],
+      }}
+    />
+  );
+};
+
+// 18. ITInputNumber Showcase
+export const InputNumberShowcase = () => {
+  const [amount, setAmount] = useState<number | null>(1234.5);
+  const [quantity, setQuantity] = useState<number | null>(3);
+  const [decimals, setDecimals] = useState<any>("2");
+  const [disabled, setDisabled] = useState(false);
+  const [required, setRequired] = useState(false);
+  const [showError, setShowError] = useState(false);
+
+  const code = `<ITInputNumber\n  name="amount"\n  label="Monto"\n  value={${amount === null ? "null" : amount}}\n  prefix="$"\n  decimals={${decimals}}\n  disabled={${disabled}}\n  required={${required}}\n  onChange={(value) => setAmount(value)}\n/>
+
+// El valor que recibes ya es un number (o undefined si está vacío):
+onChange={(value) => console.log(value + 1)} // ${amount === null ? "undefined" : amount + 1}`;
+
+  return (
+    <ShowcaseLayout
+      title="ITInputNumber"
+      description="Campo numérico con formato de moneda que emite un number real (entero o decimal) en onChange."
+      code={code}
+      demo={
+        <div className="w-full max-w-sm space-y-3">
+          <ITInputNumber
+            name="amount"
+            label="Monto"
+            placeholder="0.00"
+            prefix="$"
+            value={amount}
+            onChange={setAmount}
+            decimals={Number(decimals)}
+            disabled={disabled}
+            required={required}
+            touched={showError}
+            error={showError ? "El monto es obligatorio" : undefined}
+          />
+          <p className="text-xs font-mono text-slate-500">
+            value: {amount === null ? "null" : `${amount} (${typeof amount})`}
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            <ITInputNumber
+              name="quantity"
+              label="Cantidad (enteros)"
+              value={quantity}
+              decimals={0}
+              min={1}
+              max={99}
+              onChange={setQuantity}
+            />
+            <ITInputNumber
+              name="bounded"
+              label="Entre 10 y 500"
+              min={10}
+              max={500}
+              value={null}
+              onChange={() => {}}
+            />
+          </div>
+        </div>
+      }
+      controls={
+        <>
+          <ITSelect
+            name="in_decimals"
+            label="Decimales"
+            value={decimals}
+            onChange={(e: any) => setDecimals(e.target.value)}
+            options={[
+              { label: "0 (enteros)", value: "0" },
+              { label: "1 decimal", value: "1" },
+              { label: "2 decimales", value: "2" },
+            ]}
+          />
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-gray-700">Requerido</span>
+            <ITSlideToggle isOn={required} onToggle={setRequired} size="sm" />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-gray-700">Simular error</span>
+            <ITSlideToggle isOn={showError} onToggle={setShowError} activeColor="danger" size="sm" />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-gray-700">Deshabilitado</span>
+            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
+          </div>
+        </>
+      }
+      gallery={
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="w-full max-w-sm">
+            <ITInputNumber
+              name="g_amount"
+              label="Prefijo $"
+              prefix="$"
+              value={98765.43}
+              readOnly
+              onChange={() => {}}
+            />
+          </div>
+          <div className="w-full max-w-sm">
+            <ITInputNumber
+              name="g_price"
+              label="Precio unitario"
+              prefix="$"
+              value={null}
+              onChange={() => {}}
+            />
+          </div>
+          <div className="w-full max-w-sm">
+            <ITInputNumber
+              name="g_qty"
+              label="Cantidad (decimals=0)"
+              decimals={0}
+              value={12}
+              onChange={() => {}}
+            />
+          </div>
+          <div className="w-full max-w-sm">
+            <ITInputNumber
+              name="g_disabled"
+              label="Deshabilitado"
+              prefix="$"
+              value={1500}
+              disabled
+              onChange={() => {}}
+            />
+          </div>
+        </div>
+      }
+      doc={{
+        summary:
+          "Input numérico con formato de moneda: agrupa miles, fija decimales y entrega un number en onChange/onBlur.",
+        description:
+          "Es un ITInput especializado (misma label, validación, tamaños e iconos). La diferencia es que siempre formatea con currencyFormat y parsea el valor antes de emitirlo, así no hay que hacer parseFloat en el consumidor.",
+        examples: [
+          '<ITInputNumber name="amount" label="Monto" prefix="$" value={amount} onChange={(value) => setAmount(value)} />',
+          '<ITInputNumber name="qty" label="Cantidad" decimals={0} min={1} max={99} value={qty} onChange={setQty} />',
+          '<ITInputNumber name="total" label="Total" value={total} onChange={(value) => setTotal((value ?? 0) + 1)} />',
+        ],
+        props: [
+          { name: "name", type: "string", required: true, description: "Nombre del campo." },
+          { name: "value", type: "number | null", description: "Valor numérico actual." },
+          { name: "onChange", type: "(value, event) => void", required: true, description: "Recibe el number parseado (undefined si está vacío)." },
+          { name: "onBlur", type: "(value, event) => void", description: "Recibe el number parseado y clampeado a min/max." },
+          { name: "decimals", type: "number", default: "2", description: "Decimales permitidos; 0 = solo enteros." },
+          { name: "prefix", type: "string", description: "Prefijo dentro del campo (ej. \"$\"). Se ignora si hay iconLeft." },
+          { name: "min", type: "number", description: "Valor mínimo; se ajusta al salir del campo." },
+          { name: "max", type: "number", description: "Valor máximo; se ajusta al salir del campo." },
+          { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Tamaño del campo." },
+          { name: "disabled", type: "boolean", default: "false", description: "Deshabilita el campo." },
+          { name: "readOnly", type: "boolean", default: "false", description: "Modo solo lectura." },
+          { name: "required", type: "boolean", default: "false", description: "Marca el campo como requerido." },
+          { name: "touched", type: "boolean", description: "Indica que el campo fue tocado." },
+          { name: "error", type: "string | boolean", description: "Error de validación (true = mensaje genérico)." },
+          { name: "iconLeft / iconRight", type: "ReactNode", description: "Iconos dentro del campo." },
+        ],
+        notes: [
+          "El valor emitido ya es un number; ya no hace falta parseFloat.",
+          "Formatea en blur (miles + decimales) y muestra crudo mientras escribes.",
+          "Usa decimals={0} para forzar enteros.",
+          "min/max se aplican al salir del campo (clamp), no mientras escribes.",
         ],
       }}
     />

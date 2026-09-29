@@ -1069,7 +1069,7 @@ export const LayoutShowcase = () => {
             <ITSlideToggle isOn={collapsed} onToggle={setCollapsed} size="sm" />
           </div>
           <div className="text-xs text-slate-500">
-            En móvil (&lt;lg) el sidebar se abre como drawer con un fondo oscuro. Usa el botón ☰ del topbar. El botón ⟩ del propio sidebar también colapsa/expande.
+            En móvil (&lt;lg) el sidebar se abre como drawer con un fondo oscuro. Usa el botón ☰ del topbar. En desktop el riel colapsado se expande al pasar el cursor; no hay botón de colapso en el sidebar.
           </div>
         </ITStack>
       }
@@ -1148,7 +1148,7 @@ export const LayoutShowcase = () => {
           { name: "sidebar.header", type: "React.ReactNode", description: "Slot opcional sobre la navegación (ej. wordmark o filtro). Oculto al colapsar." },
         ],
         notes: [
-          "`subitems` acepta entradas planas o grupos con `label`+`items`; el título del grupo no es foco ni un tercer nivel.",
+          "`subitems` acepta entradas planas o grupos con `label`+`items`; el título del grupo no es foco ni un tercer nivel y cada grupo se nombra por `aria-labelledby`. En el riel colapsado el flyout aplana los grupos (sin títulos).",
           "El sidebar hereda aria-current/aria-expanded y acepta un slot header opcional.",
           "Con `sidebar.isCollapsed` omitido el contenido reserva 88px (hover expande sobre el contenido). Si lo controlas a `false`, reserva 280px y no tapa el contenido.",
           "El riel colapsado se expande automáticamente al pasar el cursor por encima; no hay botón de colapso.",

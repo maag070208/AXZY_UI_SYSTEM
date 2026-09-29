@@ -13,13 +13,13 @@ Vertical navigation sidebar with collapsible submenus, tooltips when collapsed, 
 |------|------|---------|-------------|
 | `navigationItems` | `ITNavigationItem[]` | — | Navigation structure: top-level items with optional sub-items. |
 | `isCollapsed` | `boolean` | `false` | Whether the sidebar is collapsed to icon-only mode. |
-| `onToggleCollapse` | `() => void` | — | Callback when the user toggles collapse via the toggle button. |
-| `visibleOnMobile` | `boolean` | `false` | Force sidebar visible on mobile breakpoints. |
+| `onToggleCollapse` | `() => void` | — | Accepted for API compatibility but never invoked by `ITSidebar`: the component renders no collapse toggle button (the rail expands on pointer hover). `ITLayout` still passes it through. |
+| `visibleOnMobile` | `boolean` | `false` | When `true`, the sidebar is always fully expanded (the collapsed 88px rail is disabled) and visible at every breakpoint. |
 | `onItemClick` | `(item: ITNavigationItem) => void` | — | Callback when a top-level navigation item is clicked. |
 | `onSubItemClick` | `(subitem: ITNavigationSubItem) => void` | — | Callback when a sub-navigation item is clicked. |
 | `subitemConnector` | `"dot" \| "\|" \| "none"` | `"dot"` | Visual connector style for sub-items. |
 | `className` | `string` | — | Additional CSS classes on the sidebar `<aside>`. |
-| `header` | `ReactNode` | — | Optional content rendered above the navigation list (e.g. a wordmark). Hidden while the sidebar is collapsed, and independent of the collapse toggle button, which is always visible in both states. |
+| `header` | `ReactNode` | — | Optional content rendered above the navigation list (e.g. a wordmark). Hidden while the sidebar is collapsed, so it only appears when the hover-expanded rail is shown. |
 
 ### ITNavigationItem
 
@@ -30,7 +30,7 @@ Vertical navigation sidebar with collapsible submenus, tooltips when collapsed, 
 | `icon` | `ReactNode` | Icon rendered left of the label. |
 | `action` | `() => void` | Click handler for top-level items without submenus. |
 | `isActive` | `boolean` | Whether this item is active/highlighted. |
-| `subitems` | `ITNavigationSubItemEntry[]` | Plain sub-items or titled groups. |
+| `subitems` | `ITNavigationSubItemEntry[]` | Array of entries: plain sub-items or titled groups (`ITNavigationSubItemGroup`). |
 | `badge` | `string` | Badge text (e.g. notification count). |
 
 ### ITNavigationSubItem
@@ -77,7 +77,6 @@ const items = [
 <ITSidebar
   navigationItems={items}
   isCollapsed={false}
-  onToggleCollapse={toggleCollapse}
   subitemConnector="dot"
 />
 ```
@@ -104,17 +103,18 @@ const items = [
 ];
 ```
 
+Discriminate entries with `"items" in entry`. The heading style (uppercase, `0.68rem`, weight 700, `0.08em` tracking, `var(--it-sidebar-icon-color, var(--color-secondary-400))`) is applied by the component and cannot be overridden per group.
+
 ## Notes
 
-- The button lives above the scrollable `<nav>` (never inside it), so it stays in the tab order and visible in both states; it is centered in the 88px rail when collapsed and right-aligned when expanded.
-- The toggle is a real `<button type="button">` with `aria-expanded`, `aria-controls` pointing at the `<nav>` it controls, and a state-dependent `aria-label`/`title` ("Expandir/Colapsar barra lateral"). Its chevron rotates 180° when the sidebar is expanded, so one icon signals both directions.
-- There is no collapse toggle button: the collapsed rail expands and collapses automatically on pointer hover.
-- Collapsed mode shrinks to icon-only; tooltips show labels on hover with glassmorphism style.
-- Submenus expand/collapse with smooth transitions when a parent item is clicked.
+- There is no collapse toggle button: the collapsed 88px rail expands and collapses automatically on pointer hover (300 ms leave delay).
+- Collapsed mode shrinks to icon-only; a glassmorphism panel shows the item's sub-items on hover. For an item whose `subitems` contain groups, that panel **flattens** every group into one plain list and renders **no** group headings.
+- Submenus expand/collapse with smooth transitions when a parent item is clicked; the expanded submenu is animated with a `max-h` transition (cap `1000px`).
 - Active item highlighting uses a colored left-border accent and subtle background tint.
 - Badge support renders a notification-style counter on the item.
-- `subitemConnector` styles the visual link between parent and sub-items: `dot` (default), `|` (vertical bar), or `none`.
-- `visibleOnMobile` forces sidebar visibility on smaller screens for responsive layouts.
+- `subitemConnector` styles the visual link between parent and sub-items: `dot` (default), `|` (vertical bar), or `none`. Grouping does not change it: the `|` guide is a single `border-left` on the outer submenu `<ul>` only.
+- An active sub-item inside a group still auto-expands its parent, because auto-expand flattens groups the same way the collapsed flyout does.
+- `visibleOnMobile` forces the sidebar visible at every breakpoint and disables the collapsed rail, so it stays fully expanded.
 - Themed via CSS variables for consistent colors, shadows, and glassmorphism effects across light and dark modes.
 - Accessible by default: the `<nav>` is labelled and carries the `id` referenced by the toggle's `aria-controls`, the toggle exposes `aria-expanded` plus a visible `focus-visible` ring, group toggles expose `aria-expanded`/`aria-controls` and respond to Enter/Space, submenus are labelled `role="group"`, and the active sub-item carries `aria-current="page"`.
 - `subitems` accepts plain sub-items or titled groups (`label` + `items`); the group heading is rendered as a plain `<span>` inside a non-focusable `<div>`, so it is non-interactive and stays out of the tab order.

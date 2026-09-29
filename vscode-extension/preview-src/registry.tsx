@@ -20,6 +20,7 @@ import {
   ITFormHeader,
   ITImage,
   ITInput,
+  ITInputNumber,
   ITLoader,
   ITMaskedInput,
   ITMultiSelect,
@@ -111,6 +112,7 @@ export const registry: Record<string, DemoComponent> = {
     <ITImage src="https://picsum.photos/seed/axzy/240/140" alt="Placeholder" className="rounded-lg" />
   ),
   ITInput: () => <InputDemo />,
+  ITInputNumber: () => <InputNumberDemo />,
   ITLoader: () => (
     <Row>
       <ITLoader size="sm" />
@@ -294,6 +296,30 @@ const InputDemo: React.FC = () => {
     <div className="w-72 space-y-3">
       <ITInput name="demo" label="Name" value={value} onChange={(e: any) => setValue(e.target.value)} />
       <ITInput name="demo2" label="Email" placeholder="you@axzy.dev" onChange={() => {}} />
+    </div>
+  );
+};
+
+const InputNumberDemo: React.FC = () => {
+  const [amount, setAmount] = useState<number | null>(1234.5);
+  return (
+    <div className="w-72 space-y-3">
+      <ITInputNumber
+        name="amount"
+        label="Amount"
+        prefix="$"
+        value={amount}
+        onChange={(value) => setAmount(value ?? null)}
+      />
+      <ITInputNumber
+        name="qty"
+        label="Quantity (integers)"
+        decimals={0}
+        min={1}
+        max={99}
+        value={12}
+        onChange={() => {}}
+      />
     </div>
   );
 };

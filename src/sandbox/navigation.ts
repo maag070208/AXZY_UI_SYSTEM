@@ -56,6 +56,7 @@ export const SANDBOX_GROUPS: SandboxGroup[] = [
     subitems: [
       { id: "button", label: "ITButton" },
       { id: "input", label: "ITInput" },
+      { id: "inputnumber", label: "ITInputNumber" },
       { id: "select", label: "ITSelect" },
       { id: "searchselect", label: "ITSearchSelect" },
       { id: "multiselect", label: "ITMultiSelect" },
@@ -66,6 +67,7 @@ export const SANDBOX_GROUPS: SandboxGroup[] = [
       { id: "maskedinput", label: "ITMaskedInput" },
       { id: "calendar", label: "ITCalendar" },
       { id: "slidetoggle", label: "ITSlideToggle" },
+      { id: "segmentedcontrol", label: "ITSegmentedControl" },
       { id: "dropfile", label: "ITDropfile" },
       { id: "wysiwyg", label: "ITWysiwyg" },
       { id: "formbuilder", label: "ITFormBuilder" },

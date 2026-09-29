@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-26T16:20:38.415Z",
-  "libraryVersion": "1.3.3",
+  "generatedAt": "2026-09-29T00:35:54.368Z",
+  "libraryVersion": "1.3.4",
   "layers": {
     "atoms": "Atoms",
     "molecules": "Molecules",
@@ -686,6 +686,13 @@
           "description": "Enable currency formatting for number inputs (MX locale)"
         },
         {
+          "name": "decimals",
+          "type": "number",
+          "required": false,
+          "default": "currencyFormat ? 2 : 0",
+          "description": "Decimal places allowed for number inputs. `0` restricts to integers."
+        },
+        {
           "name": "placeholder",
           "type": "string",
           "required": false,
@@ -880,6 +887,183 @@
           "required": false,
           "default": "",
           "description": "Render the input in read-only mode"
+        }
+      ]
+    },
+    {
+      "name": "ITInputNumber",
+      "layer": "atoms",
+      "description": "Numeric field that always renders currency-style formatting (thousand\nseparators + fixed decimals) and emits a real `number`.\n\nBuilt on top of `ITInput`: it is the same field, but `onChange`/`onBlur`\nalready receive the parsed value, so consumers can do math directly instead\nof converting strings first.",
+      "example": "```tsx\n<ITInputNumber\n  name=\"amount\"\n  label=\"Monto\"\n  value={amount}\n  prefix=\"$\"\n  onChange={(value) => setAmount(value)}\n/>\n```",
+      "source": "src/components/atoms/input-number/input-number.tsx",
+      "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "default": "",
+          "description": "Field name used for form identification."
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "required": false,
+          "default": "",
+          "description": "Current numeric value. Pass `null`/`undefined` for \"empty\"."
+        },
+        {
+          "name": "onChange",
+          "type": "(value: number | undefined, event: React.ChangeEvent<HTMLInputElement>) => void",
+          "required": true,
+          "default": "",
+          "description": "Called with the parsed value on every change.\nReceives `undefined` when the field is empty, plus the original input event."
+        },
+        {
+          "name": "onBlur",
+          "type": "(value: number | undefined, event: React.FocusEvent<HTMLInputElement>) => void",
+          "required": false,
+          "default": "",
+          "description": "Called on blur with the parsed (and min/max clamped) value, plus the\noriginal focus event."
+        },
+        {
+          "name": "decimals",
+          "type": "number",
+          "required": false,
+          "default": "2",
+          "description": "Number of decimal places allowed. `0` restricts to integers."
+        },
+        {
+          "name": "prefix",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Text prefix rendered inside the field, e.g. `\"$\"`. Ignored when `iconLeft` is set."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Label displayed above the input."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Placeholder text."
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "required": false,
+          "default": "",
+          "description": "Minimum numeric value. Values below are clamped on blur."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "required": false,
+          "default": "",
+          "description": "Maximum numeric value. Values above are clamped on blur."
+        },
+        {
+          "name": "size",
+          "type": "SizesTypes",
+          "required": false,
+          "default": "\"md\"",
+          "description": "Size preset: \"sm\" | \"md\" | \"lg\"."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disable the input."
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Render the input in read-only mode."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Mark the field as required."
+        },
+        {
+          "name": "touched",
+          "type": "boolean",
+          "required": false,
+          "default": "",
+          "description": "Whether the field has been touched by the user."
+        },
+        {
+          "name": "error",
+          "type": "string | boolean",
+          "required": false,
+          "default": "",
+          "description": "Validation error. Pass `true` for a generic message, or a string for a custom one."
+        },
+        {
+          "name": "iconLeft",
+          "type": "React.ReactNode",
+          "required": false,
+          "default": "",
+          "description": "Icon element rendered on the left side of the input. Takes precedence over `prefix`."
+        },
+        {
+          "name": "iconRight",
+          "type": "React.ReactNode",
+          "required": false,
+          "default": "",
+          "description": "Icon element rendered on the right side of the input."
+        },
+        {
+          "name": "containerClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Additional CSS classes for the outer container."
+        },
+        {
+          "name": "labelClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Additional CSS classes for the label."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Additional CSS classes for the input element."
+        },
+        {
+          "name": "autoFocus",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Auto-focus the input on mount."
+        },
+        {
+          "name": "focusContent",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Select all content on click."
+        },
+        {
+          "name": "onKeyDown",
+          "type": "(event: React.KeyboardEvent<HTMLInputElement>) => void",
+          "required": false,
+          "default": "",
+          "description": "Keydown handler for the underlying input."
         }
       ]
     },
@@ -5087,6 +5271,7 @@
     "ITFormHeaderProps",
     "ITGridProps",
     "ITImageProps",
+    "ITInputNumberProps",
     "ITInputProps",
     "ITLayoutProps",
     "ITLoaderProps",
@@ -5096,6 +5281,8 @@
     "ITNavbarProps",
     "ITNavigationItem",
     "ITNavigationSubItem",
+    "ITNavigationSubItemEntry",
+    "ITNavigationSubItemGroup",
     "ITPageHeaderProps",
     "ITPageProps",
     "ITPaginationProps",
