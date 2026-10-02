@@ -292,8 +292,8 @@ export const HomeShowcase = () => {
   ];
 
   const STATS = [
-    { label: "Experiencia", value: "4+", hint: "años como fullstack", icon: <FaCode /> },
-    { label: "Tecnologías", value: `${TECH_STACK.length}`, hint: "en el stack diario", icon: <FaLayerGroup /> },
+    { label: "Experiencia", value: "5+", hint: "años como fullstack", icon: <FaCode /> },
+    { label: "Tecnologías", value: `${TECH_STACK.length}`, hint: "en el stack", icon: <FaLayerGroup /> },
     { label: "Productos", value: `${PRODUCTOS.length}`, hint: "propios y en uso", icon: <FaBoxOpen /> },
     { label: "Modalidad", value: "Remoto", hint: "disponible ya", icon: <FaMapMarkerAlt /> },
   ];
