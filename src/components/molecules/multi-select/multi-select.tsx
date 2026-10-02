@@ -323,6 +323,7 @@ export default function ITMultiSelect({
           createPortal(
             <div
               ref={panelRef}
+              data-it-floating="true"
               role="listbox"
               aria-multiselectable="true"
               style={panelStyle}

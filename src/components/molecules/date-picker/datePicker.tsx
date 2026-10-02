@@ -292,6 +292,7 @@ export default function ITDatePicker({
         createPortal(
           <div
             ref={panelRef}
+            data-it-floating="true"
             className={clsx(
               calendarClassName,
               range ? "w-[320px]" : "w-[280px]"

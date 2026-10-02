@@ -283,6 +283,7 @@ export default function ITSearchSelect({
           createPortal(
             <div
               ref={panelRef}
+              data-it-floating="true"
               style={panelStyle}
               className="bg-white dark:bg-slate-900 border border-secondary-200 dark:border-slate-800 rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200 origin-top"
             >

@@ -217,6 +217,7 @@ export default function ITTimePicker({
       {isOpen && !disabled && createPortal(
         <div 
           ref={dropdownRef}
+          data-it-floating="true"
           className="bg-white border border-secondary-100 shadow-xl rounded-xl w-64 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 origin-top it-timepicker-dropdown"
           style={panelStyle}
         >

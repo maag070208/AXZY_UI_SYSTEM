@@ -57,7 +57,10 @@ export function useFloatingPanel(
     const flipAbove = spaceBelow < panelHeight + offset && spaceAbove > spaceBelow;
 
     const width = matchWidth ? rect.width : undefined;
-    const panelWidth = panelRef.current?.offsetWidth ?? width ?? 0;
+    // With matchWidth the final width is the anchor's. Measuring the panel
+    // here would read its pre-style width (a full-width block on first
+    // paint) and clamp `left` to the viewport edge until the next update.
+    const panelWidth = width ?? panelRef.current?.offsetWidth ?? 0;
     let left =
       align === "end" && panelWidth
         ? rect.right - panelWidth

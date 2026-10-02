@@ -172,6 +172,7 @@ export default function ITDropdownMenu({
         createPortal(
           <div
             ref={panelRef}
+            data-it-floating="true"
             role="menu"
             aria-label={triggerLabel}
             style={panelStyle}

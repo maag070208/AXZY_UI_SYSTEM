@@ -1,6 +1,8 @@
 import type { Meta } from '@storybook/react';
 import ITDialog from '@/components/organisms/dialog/dialog';
+import ITSearchSelect from '@/components/molecules/search-select/search-select';
 import { useState } from 'react';
+import { expect, userEvent, within } from 'storybook/test';
 import ITButton from '@/components/atoms/button/button';
 
 const meta = {
@@ -76,3 +78,49 @@ export const LongContent: any = {
     className: 'w-[600px]',
   } as any,
 };
+
+// Dialog opened on mount but controlled, so an unexpected close is observable.
+const DialogWithSearchSelect = () => {
+  const [fruit, setFruit] = useState('');
+  const [isOpen, setIsOpen] = useState(true);
+
+  return (
+    <ITDialog isOpen={isOpen} onClose={() => setIsOpen(false)} title="Fruta favorita">
+      <ITSearchSelect
+        label="Fruta"
+        placeholder="Busca una fruta..."
+        options={[
+          { value: 'apple', label: 'Apple' },
+          { value: 'banana', label: 'Banana' },
+        ]}
+        value={fruit}
+        onChange={(next) => setFruit(String(next))}
+      />
+    </ITDialog>
+  );
+};
+
+/**
+ * Regression test: floating panels (selects, pickers, menus) are portaled to
+ * `<body>`, so they live outside the dialog DOM. Picking an option there must
+ * not count as a click outside the dialog.
+ *
+ * Note the whole dialog and its dropdown are portaled, so they are queried
+ * from `document.body` instead of the story canvas.
+ */
+export const FloatingPanelInsideDialog: any = {
+  render: () => <DialogWithSearchSelect />,
+  play: async () => {
+    const view = within(document.body);
+
+    const input = await view.findByPlaceholderText('Busca una fruta...');
+    await userEvent.click(input);
+
+    await userEvent.click(await view.findByText('Banana'));
+
+    // The dialog must still be mounted after picking an option.
+    await expect(view.getByText('Fruta favorita')).toBeVisible();
+    await expect((input as HTMLInputElement).value).toBe('Banana');
+  },
+};
+

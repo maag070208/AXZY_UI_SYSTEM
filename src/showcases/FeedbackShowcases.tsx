@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   ITDialog,
   ITButton,
+  ITSearchSelect,
   ITSlideToggle,
   ITToast,
   ITInput,
@@ -18,8 +19,9 @@ import { ShowcaseLayout } from "./ShowcaseLayout";
 export const DialogShowcase = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [useFormHeader, setUseFormHeader] = useState(true);
+  const [auditor, setAuditor] = useState("");
 
-  const code = `<ITDialog\n  isOpen={${isOpen}}\n  onClose={() => setIsOpen(false)}\n  title="Confirmación de Auditoría"\n  useFormHeader={${useFormHeader}}\n>\n  <p>¿Estás seguro de registrar esta auditoría?</p>\n</ITDialog>`;
+  const code = `<ITDialog\n  isOpen={${isOpen}}\n  onClose={() => setIsOpen(false)}\n  title="Confirmación de Auditoría"\n  useFormHeader={${useFormHeader}}\n>\n  <p>¿Estás seguro de registrar esta auditoría?</p>\n  <ITSearchSelect placeholder="Selecciona un auditor" ... />\n</ITDialog>`;
 
   return (
     <ShowcaseLayout
@@ -39,6 +41,19 @@ export const DialogShowcase = () => {
               <p className="text-sm text-slate-600 dark:text-slate-300">
                 Se guardará un registro inmutable en los logs de la blockchain corporativa. Esta acción es irreversible.
               </p>
+              {/* Los paneles flotantes (selects, pickers, menús) se renderizan en
+                  un portal fuera del diálogo: elegir una opción no debe cerrarlo. */}
+              <ITSearchSelect
+                label="Auditor responsable"
+                placeholder="Busca un auditor..."
+                options={[
+                  { value: "ana", label: "Ana Torres" },
+                  { value: "luis", label: "Luis Paredes" },
+                  { value: "marta", label: "Marta Ruiz" },
+                ]}
+                value={auditor}
+                onChange={(next) => setAuditor(String(next))}
+              />
               <div className="flex justify-end gap-3 pt-4 border-t">
                 <ITButton label="Cancelar" variant="ghost" onClick={() => setIsOpen(false)} />
                 <ITButton label="Autorizar" color="success" onClick={() => { alert("Transacción firmada!"); setIsOpen(false); }} />
