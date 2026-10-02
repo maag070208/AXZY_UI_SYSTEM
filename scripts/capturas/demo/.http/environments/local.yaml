@@ -1,0 +1,5 @@
+# Variables del ambiente local.
+baseUrl: http://127.0.0.1:8899
+email: admin@axzy.dev
+password: demo1234
+token: ""

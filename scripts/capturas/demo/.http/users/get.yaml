@@ -1,0 +1,8 @@
+name: Ver usuario
+method: GET
+url: "{{baseUrl}}/users/{{id}}"
+vars:
+  id: 42
+script:
+  - assert status == 200
+  - assert $.data.email contains "axzy.dev"

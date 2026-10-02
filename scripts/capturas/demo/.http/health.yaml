@@ -1,0 +1,6 @@
+name: Health
+method: GET
+url: "{{baseUrl}}/health"
+script:
+  - assert status == 200
+  - assert $.status == "ok"

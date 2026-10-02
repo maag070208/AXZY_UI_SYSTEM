@@ -1,0 +1,17 @@
+name: Crear usuario
+method: POST
+url: "{{baseUrl}}/users"
+headers:
+  Content-Type: application/json
+body: |
+  {
+    "name": "Nuevo Usuario",
+    "email": "nuevo@axzy.dev",
+    "role": "editor"
+  }
+capture:
+  nuevoId: $.data.id
+script:
+  - assert status == 201
+  - assert $.data.id exists
+  - assert $.data.role == "editor"

@@ -1,0 +1,11 @@
+name: Listar usuarios
+method: GET
+url: "{{baseUrl}}/users"
+auth:
+  type: bearer
+  token: "{{token}}"
+script:
+  - assert status == 200
+  - assert time < 500
+  - assert $.total == 3
+  - assert $.data[0].role == "admin"

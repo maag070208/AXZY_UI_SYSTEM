@@ -1,0 +1,6 @@
+# Estado local de axzy: no se versiona.
+config.yaml
+.history.jsonl
+.cookies/
+# environments/: versionalos sólo sin tokens en texto plano — para los
+# valores sensibles usá `axzy set secret <var>` (quedan en el keychain).

@@ -1,0 +1,14 @@
+name: Login
+method: POST
+url: "{{baseUrl}}/auth/login"
+headers:
+  Content-Type: application/json
+body: |
+  {
+    "email": "{{email}}",
+    "password": "{{password}}"
+  }
+capture:
+  token: $.data.token
+script:
+  - assert status == 200

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaArrowRight, FaCheck, FaCloud, FaCode, FaDatabase, FaDownload, FaExternalLinkAlt, FaGithub, FaLayerGroup, FaLinkedin, FaMapMarkerAlt, FaMobileAlt, FaSearch, FaServer, FaMedium } from "react-icons/fa";
+import { FaArrowRight, FaCheck, FaCloud, FaCode, FaDatabase, FaDesktop, FaDownload, FaExternalLinkAlt, FaGithub, FaLayerGroup, FaLinkedin, FaMapMarkerAlt, FaMobileAlt, FaSearch, FaServer, FaTerminal, FaMedium } from "react-icons/fa";
 import { SiReact, SiNodedotjs } from "react-icons/si";
 import ITBadget from "../components/atoms/badget/badget";
 import ITButton from "../components/atoms/button/button";
@@ -10,6 +10,8 @@ import ITGrid from "../components/atoms/grid/grid";
 import ITStack from "../components/atoms/stack/stack";
 import ITText from "../components/atoms/text/text";
 import { techIcon, type TechIconEntry } from "./techIcons";
+import { PRODUCTOS, type Producto } from "./productos";
+import ProductoDetalle from "./ProductoDetalle";
 
 /**
  * Renders a local tech icon, inverting monochrome marks (GitHub, Express) in
@@ -23,9 +25,114 @@ const TechIconImg = ({ icon, alt }: { icon: TechIconEntry; alt: string }) => (
   />
 );
 
+/**
+ * Tarjeta de producto con galería: captura grande de la app real, miniaturas
+ * para cambiar de pantalla, y la ficha (qué hace, stack y enlace público si
+ * existe). El botón «Ver detalle» abre la pantalla de detalle.
+ */
+const TarjetaProducto = ({
+  producto,
+  onVerDetalle,
+}: {
+  producto: Producto;
+  onVerDetalle: (producto: Producto) => void;
+}) => {
+  const [activa, setActiva] = useState(producto.capturas[0]);
+
+  return (
+    <div className="group flex h-full flex-col gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-5 hover:border-primary-400/40 hover:shadow-lg transition-all duration-200">
+      {/* Captura grande */}
+      <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60">
+        <img
+          src={activa.src}
+          alt={`${producto.nombre}: ${activa.titulo}`}
+          className="block w-full"
+          loading="lazy"
+        />
+      </div>
+
+      {/* Miniaturas */}
+      <div className="flex items-center gap-2">
+        {producto.capturas.map((captura) => (
+          <button
+            key={captura.src}
+            type="button"
+            title={captura.titulo}
+            aria-label={captura.titulo}
+            onClick={() => setActiva(captura)}
+            className={`h-11 w-16 shrink-0 overflow-hidden rounded-lg border-2 bg-slate-100 dark:bg-slate-950 transition-all ${
+              activa.src === captura.src
+                ? "border-primary-500 opacity-100"
+                : "border-transparent opacity-55 hover:opacity-100"
+            }`}
+          >
+            <img src={captura.src} alt="" className="h-full w-full object-cover object-top" />
+          </button>
+        ))}
+        <ITText as="span" muted className="!text-[11px] !leading-snug">
+          {activa.titulo}
+        </ITText>
+      </div>
+
+      <ITStack spacing={3} className="flex-1">
+        <ITFlex align="center" justify="between" gap={3}>
+          <ITFlex align="center" gap={3}>
+            <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${producto.gradiente} text-white flex items-center justify-center shadow-md shrink-0`}>
+              {producto.icono === "desktop" ? <FaDesktop size={18} /> : <FaTerminal size={18} />}
+            </div>
+            <ITText as="h3" className="!text-base !font-bold">
+              {producto.nombre}
+            </ITText>
+          </ITFlex>
+          <ITBadget label={producto.tipo} color="primary" variant="outlined" />
+        </ITFlex>
+
+        <ITText as="p" muted className="!text-sm !leading-relaxed">
+          {producto.descripcion}
+        </ITText>
+
+        <ITStack spacing={2}>
+          {producto.caracteristicas.map((caracteristica) => (
+            <ITFlex key={caracteristica} align="start" gap={2}>
+              <FaCheck size={11} className="mt-1 shrink-0 text-emerald-500" />
+              <ITText as="span" muted className="!text-xs !leading-relaxed">
+                {caracteristica}
+              </ITText>
+            </ITFlex>
+          ))}
+        </ITStack>
+
+        <ITFlex gap={2} wrap="wrap">
+          {producto.stack.map((tecnologia) => (
+            <ITBadget key={tecnologia} label={tecnologia} color="gray" variant="outlined" />
+          ))}
+        </ITFlex>
+      </ITStack>
+
+      <ITFlex align="center" justify="between" gap={3} wrap="wrap" className="mt-auto">
+        <ITButton variant="filled" color="primary" size="sm" onClick={() => onVerDetalle(producto)}>
+          Ver detalle
+        </ITButton>
+        {producto.enlace && (
+          <a
+            href={producto.enlace}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="!text-xs !font-semibold !text-primary-600 dark:!text-primary-400 inline-flex items-center gap-1.5"
+          >
+            <FaExternalLinkAlt size={11} />
+            {producto.enlaceTexto ?? "Ver el repositorio"}
+          </a>
+        )}
+      </ITFlex>
+    </div>
+  );
+};
+
 export const HomeShowcase = () => {
   const [techSearch, setTechSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [detalle, setDetalle] = useState<Producto | null>(null);
 
   const LANGUAGES = [
     { name: "TypeScript", icon: techIcon("typescript") },
@@ -399,7 +506,28 @@ export const HomeShowcase = () => {
             </a>
           </ITGrid>
         </ITGrid>
+
+        {/* ─── Apps propias, con capturas de la aplicación real ─── */}
+        <ITDivider className="!my-8" />
+
+        <ITText as="h3" className="!text-lg !font-bold">
+          Apps de escritorio y herramientas
+        </ITText>
+        <ITText as="p" muted className="!text-sm !mt-1 !mb-5">
+          Capturas tomadas de las aplicaciones en ejecución, no son mockups.
+        </ITText>
+
+        <ITGrid container spacing={5}>
+          {PRODUCTOS.map((producto) => (
+            <ITGrid item xs={12} lg={6} key={producto.id}>
+              <TarjetaProducto producto={producto} onVerDetalle={setDetalle} />
+            </ITGrid>
+          ))}
+        </ITGrid>
       </ITCard>
+
+      {/* Pantalla de detalle del producto elegido */}
+      {detalle && <ProductoDetalle producto={detalle} onClose={() => setDetalle(null)} />}
     </ITStack>
   );
 };
