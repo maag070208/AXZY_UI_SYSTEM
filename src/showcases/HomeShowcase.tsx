@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { FaArrowRight, FaCheck, FaCloud, FaCode, FaDatabase, FaDesktop, FaDownload, FaExternalLinkAlt, FaGithub, FaLayerGroup, FaLinkedin, FaMapMarkerAlt, FaMobileAlt, FaSearch, FaServer, FaTerminal, FaMedium } from "react-icons/fa";
-import { SiReact, SiNodedotjs } from "react-icons/si";
+import { FaCloud, FaCode, FaDatabase, FaDownload, FaExternalLinkAlt, FaGithub, FaLayerGroup, FaLinkedin, FaMapMarkerAlt, FaMobileAlt, FaSearch, FaServer, FaMedium } from "react-icons/fa";
 import ITBadget from "../components/atoms/badget/badget";
 import ITButton from "../components/atoms/button/button";
 import ITCard from "../components/molecules/card/card";
@@ -12,23 +11,33 @@ import ITText from "../components/atoms/text/text";
 import { techIcon, type TechIconEntry } from "./techIcons";
 import { PRODUCTOS, type Producto } from "./productos";
 import ProductoDetalle from "./ProductoDetalle";
+import ProductoIcono from "./ProductoIcono";
 
 /**
  * Renders a local tech icon, inverting monochrome marks (GitHub, Express) in
  * dark mode so they stay visible on the dark card.
  */
-const TechIconImg = ({ icon, alt }: { icon: TechIconEntry; alt: string }) => (
+const TechIconImg = ({
+  icon,
+  alt,
+  size = "w-7 h-7",
+}: {
+  icon: TechIconEntry;
+  alt: string;
+  /** Clases de tamaño (ancho/alto). @default "w-7 h-7" */
+  size?: string;
+}) => (
   <img
     src={icon.src}
     alt={alt}
-    className={`w-7 h-7 object-contain ${icon.mono ? "dark:invert" : ""}`}
+    className={`${size} object-contain ${icon.mono ? "dark:invert" : ""}`}
   />
 );
 
 /**
- * Tarjeta de producto con galería: captura grande de la app real, miniaturas
- * para cambiar de pantalla, y la ficha (qué hace, stack y enlace público si
- * existe). El botón «Ver detalle» abre la pantalla de detalle.
+ * Tarjeta de producto, compacta: portada (captura de la app real o degradado),
+ * nombre, descripción corta, stack y el acceso al detalle. Todo lo largo vive
+ * en la pantalla de detalle.
  */
 const TarjetaProducto = ({
   producto,
@@ -37,90 +46,81 @@ const TarjetaProducto = ({
   producto: Producto;
   onVerDetalle: (producto: Producto) => void;
 }) => {
-  const [activa, setActiva] = useState(producto.capturas[0]);
+  const capturas = producto.capturas ?? [];
+  const portada = capturas[0];
+  const tieneDetalle = capturas.length > 0;
+  const enlaceInterno = producto.enlace?.startsWith("#");
 
   return (
-    <div className="group flex h-full flex-col gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-5 hover:border-primary-400/40 hover:shadow-lg transition-all duration-200">
-      {/* Captura grande */}
-      <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60">
-        <img
-          src={activa.src}
-          alt={`${producto.nombre}: ${activa.titulo}`}
-          className="block w-full"
-          loading="lazy"
-        />
-      </div>
+    <div className="group flex h-full flex-col gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-4 hover:border-primary-400/40 hover:shadow-lg transition-all duration-200">
+      {/* Portada */}
+      <button
+        type="button"
+        disabled={!tieneDetalle}
+        onClick={() => onVerDetalle(producto)}
+        aria-label={tieneDetalle ? `Ver detalle de ${producto.nombre}` : producto.nombre}
+        className="relative block aspect-[16/10] w-full overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60"
+      >
+        {portada ? (
+          <img
+            src={portada.src}
+            alt={`${producto.nombre}: ${portada.titulo}`}
+            className="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]"
+            loading="lazy"
+          />
+        ) : (
+          <div className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${producto.gradiente} text-white`}>
+            <ProductoIcono icono={producto.icono} size={44} />
+          </div>
+        )}
 
-      {/* Miniaturas */}
-      <div className="flex items-center gap-2">
-        {producto.capturas.map((captura) => (
-          <button
-            key={captura.src}
-            type="button"
-            title={captura.titulo}
-            aria-label={captura.titulo}
-            onClick={() => setActiva(captura)}
-            className={`h-11 w-16 shrink-0 overflow-hidden rounded-lg border-2 bg-slate-100 dark:bg-slate-950 transition-all ${
-              activa.src === captura.src
-                ? "border-primary-500 opacity-100"
-                : "border-transparent opacity-55 hover:opacity-100"
-            }`}
-          >
-            <img src={captura.src} alt="" className="h-full w-full object-cover object-top" />
-          </button>
+        {capturas.length > 1 && (
+          <span className="absolute bottom-2 right-2 rounded-full bg-slate-900/70 px-2.5 py-1 text-[10px] font-semibold text-white backdrop-blur-sm">
+            {capturas.length} capturas
+          </span>
+        )}
+      </button>
+
+      {/* Encabezado */}
+      <ITFlex align="center" justify="between" gap={3}>
+        <ITFlex align="center" gap={2.5}>
+          <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${producto.gradiente} text-white shadow-sm`}>
+            <ProductoIcono icono={producto.icono} size={16} />
+          </div>
+          <ITText as="h3" className="!text-base !font-bold">
+            {producto.nombre}
+          </ITText>
+        </ITFlex>
+        <ITBadget label={producto.tipo} color="primary" variant="outlined" />
+      </ITFlex>
+
+      <ITText as="p" muted className="!text-sm !leading-relaxed">
+        {producto.descripcion}
+      </ITText>
+
+      <ITFlex gap={2} wrap="wrap">
+        {producto.stack.map((tecnologia) => (
+          <ITBadget key={tecnologia} label={tecnologia} color="gray" variant="outlined" />
         ))}
-        <ITText as="span" muted className="!text-[11px] !leading-snug">
-          {activa.titulo}
-        </ITText>
-      </div>
+      </ITFlex>
 
-      <ITStack spacing={3} className="flex-1">
-        <ITFlex align="center" justify="between" gap={3}>
-          <ITFlex align="center" gap={3}>
-            <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${producto.gradiente} text-white flex items-center justify-center shadow-md shrink-0`}>
-              {producto.icono === "desktop" ? <FaDesktop size={18} /> : <FaTerminal size={18} />}
-            </div>
-            <ITText as="h3" className="!text-base !font-bold">
-              {producto.nombre}
-            </ITText>
-          </ITFlex>
-          <ITBadget label={producto.tipo} color="primary" variant="outlined" />
-        </ITFlex>
+      {/* Acciones */}
+      <ITFlex align="center" justify="between" gap={3} wrap="wrap" className="mt-auto pt-2">
+        {tieneDetalle ? (
+          <ITButton variant="filled" color="primary" size="sm" onClick={() => onVerDetalle(producto)}>
+            Ver detalle
+          </ITButton>
+        ) : (
+          <ITText as="span" />
+        )}
 
-        <ITText as="p" muted className="!text-sm !leading-relaxed">
-          {producto.descripcion}
-        </ITText>
-
-        <ITStack spacing={2}>
-          {producto.caracteristicas.map((caracteristica) => (
-            <ITFlex key={caracteristica} align="start" gap={2}>
-              <FaCheck size={11} className="mt-1 shrink-0 text-emerald-500" />
-              <ITText as="span" muted className="!text-xs !leading-relaxed">
-                {caracteristica}
-              </ITText>
-            </ITFlex>
-          ))}
-        </ITStack>
-
-        <ITFlex gap={2} wrap="wrap">
-          {producto.stack.map((tecnologia) => (
-            <ITBadget key={tecnologia} label={tecnologia} color="gray" variant="outlined" />
-          ))}
-        </ITFlex>
-      </ITStack>
-
-      <ITFlex align="center" justify="between" gap={3} wrap="wrap" className="mt-auto">
-        <ITButton variant="filled" color="primary" size="sm" onClick={() => onVerDetalle(producto)}>
-          Ver detalle
-        </ITButton>
         {producto.enlace && (
           <a
             href={producto.enlace}
-            target="_blank"
-            rel="noopener noreferrer"
+            {...(enlaceInterno ? {} : { target: "_blank", rel: "noopener noreferrer" })}
             className="!text-xs !font-semibold !text-primary-600 dark:!text-primary-400 inline-flex items-center gap-1.5"
           >
-            <FaExternalLinkAlt size={11} />
+            {!enlaceInterno && <FaExternalLinkAlt size={11} />}
             {producto.enlaceTexto ?? "Ver el repositorio"}
           </a>
         )}
@@ -200,7 +200,7 @@ export const HomeShowcase = () => {
   });
 
   return (
-    <ITStack spacing={10}>
+    <ITStack spacing={10} className="overflow-x-clip">
       {/* ─── HERO ─── */}
       <ITCard className="overflow-hidden border-0 bg-gradient-to-br from-slate-50 via-white to-primary-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-primary-950/10 shadow-sm">
         <div className="relative">
@@ -391,12 +391,12 @@ export const HomeShowcase = () => {
           {filteredTech.length > 0 ? (
             <ITGrid container spacing={2}>
               {filteredTech.map((tech, index) => (
-                <ITGrid item xs={3} sm={2} md={2} lg={1} key={`${tech.name}-${index}`}>
-                  <div className="group flex flex-col items-center gap-2 p-3 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800/50 hover:border-primary-400/30 hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer">
-                    <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/60 group-hover:scale-110 group-hover:rotate-3 transition-all duration-200">
-                      <TechIconImg icon={tech.icon} alt={tech.name} />
+                <ITGrid item xs={4} sm={3} md={2} lg={2} key={`${tech.name}-${index}`}>
+                  <div className="group flex h-full flex-col items-center justify-center gap-2 p-3 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800/50 hover:border-primary-400/30 hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer">
+                    <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/60 group-hover:scale-110 group-hover:rotate-3 transition-all duration-200">
+                      <TechIconImg icon={tech.icon} alt={tech.name} size="w-8 h-8" />
                     </div>
-                    <ITText as="span" className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 text-center truncate w-full group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">
+                    <ITText as="span" className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 text-center truncate w-full group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">
                       {tech.name}
                     </ITText>
                   </div>
@@ -422,104 +422,14 @@ export const HomeShowcase = () => {
         title="Mis Productos"
         className="border-slate-200/60 dark:border-slate-800/60 shadow-sm"
       >
-        <ITText as="p" muted className="!text-sm !mb-4">
-          Productos destacados que he construido.
-        </ITText>
-        <ITGrid container spacing={5}>
-          {/* AXZY UI System */}
-          <ITGrid item xs={12} md={6}>
-            <a
-              href="#ui-system"
-              className="group block h-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-6 hover:border-primary-400/40 hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
-            >
-              <ITStack spacing={4} className="h-full" justifyContent="between">
-                <ITStack spacing={3}>
-                  <ITFlex align="center" justify="between">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-purple-500 text-white flex items-center justify-center shadow-md">
-                      <FaLayerGroup size={20} />
-                    </div>
-                    <ITBadget label="Propio" color="primary" variant="filled" />
-                  </ITFlex>
-                  <div>
-                    <ITText as="h3" className="!text-lg !font-bold flex items-center gap-2">
-                      AXZY UI System
-                      <FaArrowRight size={14} className="text-primary-500 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
-                    </ITText>
-                    <ITText as="p" muted className="!text-sm !leading-relaxed mt-1.5">
-                      Librería de componentes React con Tailwind CSS v4. Más de 50
-                      componentes enterprise con theming en runtime, TypeScript nativo y
-                      accesibilidad.
-                    </ITText>
-                  </div>
-                  <ITFlex gap={2} wrap="wrap">
-                    <ITBadget label="React" color="gray" variant="outlined" />
-                    <ITBadget label="TypeScript" color="gray" variant="outlined" />
-                    <ITBadget label="Tailwind" color="gray" variant="outlined" />
-                    <ITBadget label="npm" color="gray" variant="outlined" />
-                  </ITFlex>
-                </ITStack>
-                <ITText as="span" className="!text-xs !font-semibold !text-primary-600 dark:!text-primary-400 inline-flex items-center gap-1.5">
-                  <SiReact size={12} />
-                  Ver proyecto
-                </ITText>
-              </ITStack>
-            </a>
-          </ITGrid>
-
-          {/* CheckApp */}
-          <ITGrid item xs={12} md={6}>
-            <a
-              href="https://checkapp.axzy.dev/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group block h-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-6 hover:border-emerald-400/40 hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
-            >
-              <ITStack spacing={4} className="h-full" justifyContent="between">
-                <ITStack spacing={3}>
-                  <ITFlex align="center" justify="between">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 text-white flex items-center justify-center shadow-md">
-                      <FaCheck size={20} />
-                    </div>
-                    <ITBadget label="En vivo" color="gray" variant="outlined" />
-                  </ITFlex>
-                  <div>
-                    <ITText as="h3" className="!text-lg !font-bold flex items-center gap-2">
-                      CheckApp
-                      <FaExternalLinkAlt size={12} className="text-slate-400 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
-                    </ITText>
-                    <ITText as="p" muted className="!text-sm !leading-relaxed mt-1.5">
-                      Aplicación web para consultar información de manera rápida y
-                      sencilla. Desplegada y disponible en línea.
-                    </ITText>
-                  </div>
-                  <ITFlex gap={2} wrap="wrap">
-                    <ITBadget label="Node.js" color="gray" variant="outlined" />
-                    <ITBadget label="React" color="gray" variant="outlined" />
-                    <ITBadget label="Deploy" color="gray" variant="outlined" />
-                  </ITFlex>
-                </ITStack>
-                <ITText as="span" className="!text-xs !font-semibold !text-emerald-600 dark:!text-emerald-400 inline-flex items-center gap-1.5">
-                  <SiNodedotjs size={12} />
-                  Abrir CheckApp
-                </ITText>
-              </ITStack>
-            </a>
-          </ITGrid>
-        </ITGrid>
-
-        {/* ─── Apps propias, con capturas de la aplicación real ─── */}
-        <ITDivider className="!my-8" />
-
-        <ITText as="h3" className="!text-lg !font-bold">
-          Apps de escritorio y herramientas
-        </ITText>
-        <ITText as="p" muted className="!text-sm !mt-1 !mb-5">
-          Capturas tomadas de las aplicaciones en ejecución, no son mockups.
+        <ITText as="p" muted className="!text-sm !mb-5">
+          Productos que he construido. Los que tienen capturas se abren en su
+          pantalla de detalle.
         </ITText>
 
         <ITGrid container spacing={5}>
           {PRODUCTOS.map((producto) => (
-            <ITGrid item xs={12} lg={6} key={producto.id}>
+            <ITGrid item xs={12} md={6} key={producto.id}>
               <TarjetaProducto producto={producto} onVerDetalle={setDetalle} />
             </ITGrid>
           ))}

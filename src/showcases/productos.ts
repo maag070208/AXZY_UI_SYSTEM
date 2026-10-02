@@ -1,18 +1,18 @@
 /**
- * Productos propios que se muestran en la sección «Mis Productos» del
- * portafolio (`HomeShowcase`), con su pantalla de detalle (`ProductoDetalle`).
+ * Productos propios que se muestran en «Mis Productos» del portafolio
+ * (`HomeShowcase`), con su pantalla de detalle (`ProductoDetalle`).
  *
- * Las capturas viven en `public/productos/` y se tomaron de las apps reales:
- * el Agente Puerto Nuevo (Electron, vía CDP) y la TUI/CLI de axzy (salida real
- * capturada en un pty y renderizada en un marco de terminal). El procedimiento
- * para rehacerlas está en `scripts/capturas/README.md`.
+ * La tarjeta muestra solo lo esencial (portada, nombre, una descripción corta y
+ * el stack); lo demás vive en el detalle. Los productos con `capturas` abren
+ * esa pantalla y las imágenes salen de `public/productos/`, tomadas de las apps
+ * reales (ver `scripts/capturas/README.md`).
  */
 
 /** Una pantalla del producto, con el texto que la describe. */
 export interface CapturaProducto {
   /** Ruta pública de la imagen. */
   src: string;
-  /** Qué muestra esa pantalla (se usa como pie y como `title` de la miniatura). */
+  /** Qué muestra esa pantalla (se usa como pie en la pantalla de detalle). */
   titulo: string;
 }
 
@@ -24,45 +24,69 @@ export interface DatoTecnico {
   valor: string;
 }
 
-/** Producto mostrado como tarjeta con galería y pantalla de detalle. */
+/** Producto del portafolio. */
 export interface Producto {
   /** Identificador estable (clave de React y ancla). */
   id: string;
   /** Nombre del producto. */
   nombre: string;
-  /** Etiqueta corta: tipo de aplicación. */
+  /** Etiqueta corta: tipo de producto. */
   tipo: string;
-  /** Descripción de una o dos frases, para la tarjeta. */
+  /** Descripción corta, para la tarjeta. */
   descripcion: string;
   /** Descripción larga, para la pantalla de detalle. */
-  detalle: string;
-  /** Qué resuelve, en puntos. */
-  caracteristicas: string[];
-  /** Tecnologías principales. */
+  detalle?: string;
+  /** Qué resuelve, en puntos (solo en el detalle). */
+  caracteristicas?: string[];
+  /** Tecnologías principales (se muestran en la tarjeta). */
   stack: string[];
-  /** Datos técnicos que se listan en el detalle. */
-  ficha: DatoTecnico[];
+  /** Datos técnicos, solo en el detalle. */
+  ficha?: DatoTecnico[];
   /** Enlace público. Se omite en productos cuyo repositorio no es público. */
   enlace?: string;
   /** Texto del enlace. */
   enlaceTexto?: string;
   /** Nota al pie del detalle (p. ej. de dónde salen las capturas). */
   nota?: string;
-  /** Clases Tailwind del degradado del ícono (literales, para que Tailwind las vea). */
+  /** Clases Tailwind del degradado (literales, para que Tailwind las vea). */
   gradiente: string;
-  /** Ícono del encabezado. */
-  icono: "desktop" | "terminal";
-  /** Capturas de la app real. */
-  capturas: CapturaProducto[];
+  /** Ícono del producto. */
+  icono: "desktop" | "terminal" | "layers" | "check";
+  /** Capturas de la app real. Sin capturas no hay pantalla de detalle. */
+  capturas?: CapturaProducto[];
 }
 
 export const PRODUCTOS: Producto[] = [
+  {
+    id: "axzy-ui-system",
+    nombre: "AXZY UI System",
+    tipo: "Librería",
+    descripcion:
+      "Librería de componentes React con Tailwind CSS v4. Más de 50 componentes enterprise con theming en runtime, TypeScript nativo y accesibilidad.",
+    stack: ["React", "TypeScript", "Tailwind CSS v4", "npm"],
+    enlace: "#ui-system",
+    enlaceTexto: "Ver proyecto",
+    gradiente: "from-primary-500 to-purple-500",
+    icono: "layers",
+  },
+  {
+    id: "checkapp",
+    nombre: "CheckApp",
+    tipo: "App web",
+    descripcion:
+      "Aplicación web para consultar información de manera rápida y sencilla. Desplegada y disponible en línea.",
+    stack: ["Node.js", "React", "Deploy"],
+    enlace: "https://checkapp.axzy.dev/",
+    enlaceTexto: "Abrir CheckApp",
+    gradiente: "from-emerald-500 to-cyan-500",
+    icono: "check",
+  },
   {
     id: "agente-puerto-nuevo",
     nombre: "Agente Puerto Nuevo",
     tipo: "App de escritorio",
     descripcion:
-      "Aplicación de escritorio que instala, actualiza y respalda Puerto Nuevo con clics, sin tocar la terminal. Revisa que estén Git y Docker, descarga el repositorio, arma el .env, corre las migraciones y vigila el sistema desde la bandeja.",
+      "App de escritorio que instala, actualiza y respalda Puerto Nuevo con clics: revisa Git y Docker, arma el .env y vigila el sistema desde la bandeja.",
     detalle:
       "Acompaña al sistema Puerto Nuevo en la computadora del cliente. En la primera ejecución revisa que estén Git, Docker, Docker Compose y curl (y WSL en Windows), avisa qué descargar si falta algo, baja el repositorio, genera el .env con las claves y corre la instalación mostrando el avance paso a paso. Después queda en la bandeja del sistema: si el API deja de responder avisa, y si el equipo arrancó con la sesión lo reinicia solo. Está pensada para gente que no usa la terminal.",
     caracteristicas: [
@@ -97,7 +121,7 @@ export const PRODUCTOS: Producto[] = [
     nombre: "axzy",
     tipo: "CLI + TUI",
     descripcion:
-      "Cliente HTTP para la terminal: una alternativa a Postman que guarda los requests como archivos YAML versionables. Un solo binario en Rust con TUI interactiva y comandos listos para CI.",
+      "Cliente HTTP para la terminal: una alternativa a Postman que guarda los requests como YAML versionable. Un binario en Rust con TUI y comandos para CI.",
     detalle:
       "Pensado para vivir en la terminal, al lado del código. Cada request es un archivo YAML dentro de .http/, así que se versiona en git y se revisa como cualquier otro archivo; la TUI de tres paneles sirve para explorar, editar y ejecutar, y los mismos comandos funcionan en CI: si un assert falla, el proceso termina con exit code 1. Es un único binario en Rust, sin runtime ni dependencias extra.",
     caracteristicas: [
