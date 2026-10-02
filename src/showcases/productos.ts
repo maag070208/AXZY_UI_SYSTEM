@@ -74,12 +74,35 @@ export const PRODUCTOS: Producto[] = [
     nombre: "CheckApp",
     tipo: "App web",
     descripcion:
-      "Aplicación web para consultar información de manera rápida y sencilla. Desplegada y disponible en línea.",
+      "Panel administrativo para la operación de seguridad: clientes, guardias, puntos de control con QR, rondas, incidencias y mantenimiento, con analítica de desempeño.",
+    detalle:
+      "Cubre la operación diaria de una empresa de seguridad: alta de clientes con sus ubicaciones, puntos de control con QR —se imprimen en lote por cliente y zona—, asignación de guardias, rutas programadas y supervisión de las rondas. Cada recorrido queda registrado con su cronología, y sobre esos datos se calcula la analítica de desempeño por rango de fechas: eventos e incidencias, puntos escaneados, rondas incompletas y puntos omitidos. Suma kardex, mantenimiento, incidencias y la configuración del sistema.",
+    caracteristicas: [
+      "Directorio de clientes con sus ubicaciones, contactos y estados (activos e inactivos).",
+      "Puntos de control con QR: impresión masiva filtrando por cliente y zona.",
+      "Supervisión de rondas: filtros por cliente, guardia y fecha, con la cronología de cada recorrido y su estado.",
+      "Analítica de seguridad: eventos/incidencias, puntos escaneados, rondas incompletas y puntos omitidos.",
+      "Módulos de guardias, rutas programadas, incidencias, kardex, mantenimiento, usuarios y configuración.",
+    ],
     stack: ["Node.js", "React", "Deploy"],
+    ficha: [
+      { etiqueta: "Módulos", valor: "Inicio, clientes, guardias, ubicaciones, rutas, rondas, incidencias, kardex, mantenimiento, programación, usuarios y sistema" },
+      { etiqueta: "Puntos de control", valor: "Cada ubicación tiene su QR, con impresión masiva por cliente y zona" },
+      { etiqueta: "Supervisión", valor: "Historial de rondas con cronología por guardia y estado (activas / historial)" },
+      { etiqueta: "Analítica", valor: "Eventos, puntos escaneados, rondas incompletas y puntos omitidos por rango de fechas" },
+      { etiqueta: "Acceso", valor: "Login con sesión y usuario administrador" },
+      { etiqueta: "Estado", valor: "En línea en checkapp.axzy.dev" },
+    ],
+    nota: "Capturas del panel en línea: analítica de seguridad, historial de rondas e impresión de QRs.",
     enlace: "https://checkapp.axzy.dev/",
     enlaceTexto: "Abrir CheckApp",
     gradiente: "from-emerald-500 to-cyan-500",
     icono: "check",
+    capturas: [
+      { src: "/productos/checkapp-analitica.webp", titulo: "Analítica de seguridad: indicadores y gráficas por rango de fechas" },
+      { src: "/productos/checkapp-rondas.webp", titulo: "Historial de rondas: cronología, estado y control por guardia" },
+      { src: "/productos/checkapp-qrs.webp", titulo: "Impresión masiva de QRs de los puntos de control" },
+    ],
   },
   {
     id: "agente-puerto-nuevo",
