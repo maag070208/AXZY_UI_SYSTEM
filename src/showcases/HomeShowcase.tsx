@@ -9,59 +9,72 @@ import ITFlex from "../components/atoms/flex/flex";
 import ITGrid from "../components/atoms/grid/grid";
 import ITStack from "../components/atoms/stack/stack";
 import ITText from "../components/atoms/text/text";
+import { techIcon, type TechIconEntry } from "./techIcons";
+
+/**
+ * Renders a local tech icon, inverting monochrome marks (GitHub, Express) in
+ * dark mode so they stay visible on the dark card.
+ */
+const TechIconImg = ({ icon, alt }: { icon: TechIconEntry; alt: string }) => (
+  <img
+    src={icon.src}
+    alt={alt}
+    className={`w-7 h-7 object-contain ${icon.mono ? "dark:invert" : ""}`}
+  />
+);
 
 export const HomeShowcase = () => {
   const [techSearch, setTechSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const LANGUAGES = [
-    { name: "TypeScript", icon: "https://icongr.am/devicon/typescript-original.svg?size=128&color=currentColor" },
-    { name: "JavaScript", icon: "https://icongr.am/devicon/javascript-original.svg?size=128&color=currentColor" },
-    { name: "C#", icon: "https://icongr.am/devicon/csharp-original.svg?size=128&color=currentColor" },
-    { name: "Python", icon: "https://icongr.am/devicon/python-original.svg?size=128&color=currentColor" },
-    { name: "Kotlin", icon: "https://devicons.railway.app/i/kotlin.svg" },
-    { name: "Dart", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dart/dart-original.svg" },
+    { name: "TypeScript", icon: techIcon("typescript") },
+    { name: "JavaScript", icon: techIcon("javascript") },
+    { name: "C#", icon: techIcon("csharp") },
+    { name: "Python", icon: techIcon("python") },
+    { name: "Kotlin", icon: techIcon("kotlin") },
+    { name: "Dart", icon: techIcon("dart") },
   ];
 
   const FRAMEWORKS = [
-    { name: "Angular", icon: "https://icongr.am/devicon/angularjs-original.svg?size=128&color=currentColor" },
-    { name: "React", icon: "https://icongr.am/devicon/react-original.svg?size=128&color=currentColor" },
-    { name: "Ionic", icon: "https://icongr.am/devicon/ionic-original.svg?size=128&color=currentColor" },
-    { name: ".NET", icon: "https://icongr.am/devicon/dot-net-original.svg?size=128&color=currentColor" },
-    { name: "Node.js", icon: "https://icongr.am/devicon/nodejs-original.svg?size=128&color=currentColor" },
-    { name: "Flutter", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg" },
-    { name: "Express", icon: "https://icongr.am/devicon/express-original-wordmark.svg?size=128&color=currentColor" },
-    { name: "Electron", icon: "https://icongr.am/devicon/electron-original.svg?size=128&color=currentColor" },
+    { name: "Angular", icon: techIcon("angular") },
+    { name: "React", icon: techIcon("react") },
+    { name: "Ionic", icon: techIcon("ionic") },
+    { name: ".NET", icon: techIcon("dotnet") },
+    { name: "Node.js", icon: techIcon("nodejs") },
+    { name: "Flutter", icon: techIcon("flutter") },
+    { name: "Express", icon: techIcon("express") },
+    { name: "Electron", icon: techIcon("electron") },
   ];
 
   const TECH_STACK = [
-    { name: "TypeScript", icon: "https://icongr.am/devicon/typescript-original.svg?size=128&color=currentColor", category: "frontend" },
-    { name: "JavaScript", icon: "https://icongr.am/devicon/javascript-original.svg?size=128&color=currentColor", category: "frontend" },
-    { name: "Angular", icon: "https://icongr.am/devicon/angularjs-original.svg?size=128&color=currentColor", category: "frontend" },
-    { name: "React", icon: "https://icongr.am/devicon/react-original.svg?size=128&color=currentColor", category: "frontend" },
-    { name: "Redux", icon: "https://devicons.railway.app/i/redux.svg", category: "frontend" },
-    { name: "HTML5", icon: "https://icongr.am/devicon/html5-original.svg?size=128&color=currentColor", category: "frontend" },
-    { name: "CSS3", icon: "https://icongr.am/devicon/css3-original.svg?size=128&color=currentColor", category: "frontend" },
-    { name: "Sass", icon: "https://icongr.am/devicon/sass-original.svg?size=128&color=currentColor", category: "frontend" },
-    { name: "C#", icon: "https://icongr.am/devicon/csharp-original.svg?size=128&color=currentColor", category: "backend" },
-    { name: "Python", icon: "https://icongr.am/devicon/python-original.svg?size=128&color=currentColor", category: "backend" },
-    { name: "Node.js", icon: "https://icongr.am/devicon/nodejs-original.svg?size=128&color=currentColor", category: "backend" },
-    { name: "Express", icon: "https://icongr.am/devicon/express-original-wordmark.svg?size=128&color=currentColor", category: "backend" },
-    { name: ".NET Core", icon: "https://icongr.am/devicon/dot-net-original.svg?size=128&color=currentColor", category: "backend" },
-    { name: "MongoDB", icon: "https://icongr.am/devicon/mongodb-original.svg?size=128&color=currentColor", category: "database" },
-    { name: "MySQL", icon: "https://icongr.am/devicon/mysql-original-wordmark.svg?size=128&color=currentColor", category: "database" },
-    { name: "Flutter", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg", category: "mobile" },
-    { name: "Kotlin", icon: "https://devicons.railway.app/i/kotlin.svg", category: "mobile" },
-    { name: "Android", icon: "https://icongr.am/devicon/android-original.svg?size=128&color=currentColor", category: "mobile" },
-    { name: "Ionic", icon: "https://icongr.am/devicon/ionic-original.svg?size=128&color=currentColor", category: "mobile" },
-    { name: "Docker", icon: "https://icongr.am/devicon/docker-original.svg?size=128&color=currentColor", category: "devops" },
-    { name: "Git", icon: "https://icongr.am/devicon/git-original.svg?size=128&color=currentColor", category: "devops" },
-    { name: "GitHub", icon: "https://icongr.am/devicon/github-original.svg?size=128&color=currentColor", category: "devops" },
-    { name: "GitLab", icon: "https://icongr.am/devicon/gitlab-original.svg?size=128&color=currentColor", category: "devops" },
-    { name: "npm", icon: "https://devicons.railway.app/i/npm.svg", category: "devops" },
-    { name: "Electron", icon: "https://icongr.am/devicon/electron-original.svg?size=128&color=currentColor", category: "desktop" },
-    { name: "Visual Studio", icon: "https://icongr.am/devicon/visualstudio-plain.svg?size=128&color=currentColor", category: "tools" },
-    { name: "Jest", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jest/jest-plain.svg", category: "testing" },
+    { name: "TypeScript", icon: techIcon("typescript"), category: "frontend" },
+    { name: "JavaScript", icon: techIcon("javascript"), category: "frontend" },
+    { name: "Angular", icon: techIcon("angular"), category: "frontend" },
+    { name: "React", icon: techIcon("react"), category: "frontend" },
+    { name: "Redux", icon: techIcon("redux"), category: "frontend" },
+    { name: "HTML5", icon: techIcon("html5"), category: "frontend" },
+    { name: "CSS3", icon: techIcon("css3"), category: "frontend" },
+    { name: "Sass", icon: techIcon("sass"), category: "frontend" },
+    { name: "C#", icon: techIcon("csharp"), category: "backend" },
+    { name: "Python", icon: techIcon("python"), category: "backend" },
+    { name: "Node.js", icon: techIcon("nodejs"), category: "backend" },
+    { name: "Express", icon: techIcon("express"), category: "backend" },
+    { name: ".NET Core", icon: techIcon("dotnet"), category: "backend" },
+    { name: "MongoDB", icon: techIcon("mongodb"), category: "database" },
+    { name: "MySQL", icon: techIcon("mysql"), category: "database" },
+    { name: "Flutter", icon: techIcon("flutter"), category: "mobile" },
+    { name: "Kotlin", icon: techIcon("kotlin"), category: "mobile" },
+    { name: "Android", icon: techIcon("android"), category: "mobile" },
+    { name: "Ionic", icon: techIcon("ionic"), category: "mobile" },
+    { name: "Docker", icon: techIcon("docker"), category: "devops" },
+    { name: "Git", icon: techIcon("git"), category: "devops" },
+    { name: "GitHub", icon: techIcon("github"), category: "devops" },
+    { name: "GitLab", icon: techIcon("gitlab"), category: "devops" },
+    { name: "npm", icon: techIcon("npm"), category: "devops" },
+    { name: "Electron", icon: techIcon("electron"), category: "desktop" },
+    { name: "Visual Studio", icon: techIcon("visualstudio"), category: "tools" },
+    { name: "Jest", icon: techIcon("jest"), category: "testing" },
   ];
 
   const categoriesList = [
@@ -193,7 +206,7 @@ export const HomeShowcase = () => {
                   <ITGrid item xs={4} sm={4} key={lang.name}>
                     <div className="group flex flex-col items-center gap-2.5 p-3.5 rounded-xl bg-white/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 hover:border-primary-400/40 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
                       <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/80 group-hover:scale-110 transition-transform duration-200">
-                        <img src={lang.icon} alt={lang.name} className="w-7 h-7 object-contain" />
+                        <TechIconImg icon={lang.icon} alt={lang.name} />
                       </div>
                       <ITText as="span" className="text-[11px] font-semibold text-slate-600 dark:text-slate-300 text-center">
                         {lang.name}
@@ -214,7 +227,7 @@ export const HomeShowcase = () => {
                   <ITGrid item xs={4} sm={4} key={fw.name}>
                     <div className="group flex flex-col items-center gap-2.5 p-3.5 rounded-xl bg-white/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 hover:border-primary-400/40 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
                       <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/80 group-hover:scale-110 transition-transform duration-200">
-                        <img src={fw.icon} alt={fw.name} className="w-7 h-7 object-contain" />
+                        <TechIconImg icon={fw.icon} alt={fw.name} />
                       </div>
                       <ITText as="span" className="text-[11px] font-semibold text-slate-600 dark:text-slate-300 text-center">
                         {fw.name}
@@ -274,11 +287,7 @@ export const HomeShowcase = () => {
                 <ITGrid item xs={3} sm={2} md={2} lg={1} key={`${tech.name}-${index}`}>
                   <div className="group flex flex-col items-center gap-2 p-3 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800/50 hover:border-primary-400/30 hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer">
                     <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/60 group-hover:scale-110 group-hover:rotate-3 transition-all duration-200">
-                      <img
-                        src={tech.icon}
-                        alt={tech.name}
-                        className="w-7 h-7 object-contain"
-                      />
+                      <TechIconImg icon={tech.icon} alt={tech.name} />
                     </div>
                     <ITText as="span" className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 text-center truncate w-full group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">
                       {tech.name}
