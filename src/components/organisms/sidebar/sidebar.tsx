@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import clsx from "clsx";
 import { FaChevronDown } from "react-icons/fa";
 import {
   ITNavigationItem,
@@ -7,6 +8,7 @@ import {
   ITNavigationSubItemGroup,
   ITSidebarProps,
 } from "./sidebar.props";
+import ITBadget from "@/components/atoms/badget/badget";
 import ITText from "@/components/atoms/text/text";
 
 /** Narrows a submenu entry to a titled group. */
@@ -42,7 +44,14 @@ function flattenSubItems(
  *         { id: "billing", label: "Billing", isActive: true },
  *       ],
  *     },
+ *     { id: "inbox", label: "Inbox", icon: <FaEnvelope />, badge: 12 },
  *   ]}
+ *   notification={{
+ *     count: 5,
+ *     icon: <FaBell />,
+ *     label: "Notificaciones",
+ *     onClick: () => navigate("/notifications"),
+ *   }}
  *   isCollapsed
  * />
  * ```
@@ -56,6 +65,7 @@ export default function ITSidebar({
   onSubItemClick,
   subitemConnector = 'dot',
   header,
+  notification,
 }: ITSidebarProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [isHovering, setIsHovering] = useState(false);
@@ -217,6 +227,88 @@ export default function ITSidebar({
     );
   };
 
+  const renderNotification = () => {
+    if (!notification) return null;
+
+    const {
+      count,
+      icon,
+      label = "Notificaciones",
+      onClick,
+      badgeProps,
+    } = notification;
+    const { className: badgeClassName, ...badgeRest } = badgeProps ?? {};
+
+    const badge = (
+      <ITBadget
+        color="danger"
+        size="sm"
+        {...badgeRest}
+        className={clsx("shadow-md", badgeClassName)}
+      >
+        {String(count)}
+      </ITBadget>
+    );
+
+    if (isSidebarCollapsed) {
+      return (
+        <button
+          type="button"
+          aria-label={label}
+          title={label}
+          onClick={onClick}
+          className="relative flex items-center justify-center w-full p-2 mb-1 rounded-xl transition-all duration-300"
+          style={{ color: "var(--it-sidebar-icon-color, var(--color-secondary-500))" }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "var(--it-sidebar-hover-bg, var(--color-secondary-100))";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+          }}
+        >
+          {icon && (
+            <span className="flex items-center justify-center text-[1.05rem]">{icon}</span>
+          )}
+          <span className="absolute top-0.5 right-0.5 pointer-events-none">{badge}</span>
+        </button>
+      );
+    }
+
+    return (
+      <button
+        type="button"
+        aria-label={label}
+        title={label}
+        onClick={onClick}
+        className="flex items-center gap-2.5 w-full text-left px-3 py-2 mb-1 rounded-xl transition-all duration-300"
+        style={{ color: "var(--it-sidebar-label-color, var(--color-secondary-600))" }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = "var(--it-sidebar-hover-bg, var(--color-secondary-100))";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = "transparent";
+        }}
+      >
+        {icon && (
+          <span
+            className="flex-shrink-0 flex items-center justify-center text-[1.05rem]"
+            style={{ color: "var(--it-sidebar-icon-color, #9ca3af)" }}
+          >
+            {icon}
+          </span>
+        )}
+        <ITText
+          as="span"
+          className="truncate tracking-wide"
+          style={{ fontSize: "0.8rem", fontWeight: 500 }}
+        >
+          {label}
+        </ITText>
+        <span className="ml-auto flex-shrink-0">{badge}</span>
+      </button>
+    );
+  };
+
   return (
     <aside
       ref={sidebarRef}
@@ -240,12 +332,17 @@ export default function ITSidebar({
         <div className="px-4 pt-4 pb-1 flex-shrink-0">{header}</div>
       )}
 
+      {notification && (
+        <div className="px-4 pt-3 flex-shrink-0">{renderNotification()}</div>
+      )}
+
       {/* Navigation Items */}
       <nav aria-label="Componentes de la librería" className="flex-1 py-4 overflow-y-auto overflow-x-hidden custom-scrollbar px-4">
         <ul className="space-y-1">
           {navigationItems.map((item) => {
             const hasSubmenu = !!item.subitems && item.subitems.length > 0;
             const submenuId = `it-sidebar-submenu-${item.id}`;
+            const { className: badgeClassName, ...badgeRest } = item.badgeProps ?? {};
             return (
             <li key={item.id} className="relative group/navitem">
               <div
@@ -321,22 +418,21 @@ export default function ITSidebar({
                   </div>
                 )}
 
-                {item.badge && (
-                  <span
-                    className={`
-                      absolute flex items-center justify-center font-bold shadow-md
-                      ${isSidebarCollapsed
-                        ? "top-1 right-1 w-2.5 h-2.5 rounded-full ring-2 ring-white"
-                        : "right-3 top-1/2 transform -translate-y-1/2 px-1.5 py-0 text-[9px] rounded-full backdrop-blur-sm"}
-                    `}
-                    style={{
-                      backgroundColor: "var(--it-sidebar-badge-bg, var(--color-primary-500))",
-                      color: "var(--it-sidebar-badge-color, #ffffff)",
-                      boxShadow: isSidebarCollapsed ? "0 0 0 2px var(--it-sidebar-bg, var(--color-secondary-900))" : 'none'
-                    }}
+                {item.badge != null && item.badge !== "" && (
+                  <ITBadget
+                    color="primary"
+                    size="sm"
+                    {...badgeRest}
+                    className={clsx(
+                      "absolute shadow-md",
+                      isSidebarCollapsed
+                        ? "top-0.5 right-0.5"
+                        : "right-3 top-1/2 -translate-y-1/2",
+                      badgeClassName,
+                    )}
                   >
-                    {isSidebarCollapsed ? "" : item.badge}
-                  </span>
+                    {String(item.badge)}
+                  </ITBadget>
                 )}
               </div>
 

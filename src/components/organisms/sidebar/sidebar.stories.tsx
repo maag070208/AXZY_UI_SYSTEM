@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import ITSidebar from '@/components/organisms/sidebar/sidebar';
-import { FaHome, FaUsers, FaCog, FaChartBar, FaShieldAlt, FaShoppingCart } from 'react-icons/fa';
+import { FaHome, FaUsers, FaCog, FaChartBar, FaShieldAlt, FaShoppingCart, FaRegBell } from 'react-icons/fa';
 import { expect, fn, userEvent, waitFor } from 'storybook/test';
 
 const meta: Meta<typeof ITSidebar> = {
@@ -173,4 +173,62 @@ export const Grouped: Story = {
     await userEvent.click(canvas.getByRole('button', { name: 'Órdenes' }));
     await expect(groupedSubItemActionSpy).toHaveBeenCalled();
   },
+};
+
+export const WithNotificationBadges: Story = {
+  args: {
+    navigationItems: [
+      { id: 'dashboard', label: 'Dashboard', icon: <FaHome />, isActive: true },
+      { id: 'inbox', label: 'Bandeja', icon: <FaUsers />, badge: 12 },
+      {
+        id: 'alerts',
+        label: 'Alertas',
+        icon: <FaShieldAlt />,
+        badge: 3,
+        badgeProps: { color: 'warning', variant: 'outlined' },
+      },
+      { id: 'settings', label: 'Configuración', icon: <FaCog />, action: fn() },
+    ],
+    notification: {
+      count: 5,
+      icon: <FaRegBell />,
+      label: 'Notificaciones',
+      onClick: fn(),
+    },
+    isCollapsed: false,
+    visibleOnMobile: true,
+  },
+  render: (args) => (
+    <div className="h-screen bg-gray-50 flex">
+      <ITSidebar {...args} />
+      <div className="flex-1 p-8 text-zinc-500 font-medium">
+        Cada ítem puede llevar un ITBadget con número (`badge` + `badgeProps`) y el sidebar admite una fila de notificación con contador (`notification`).
+      </div>
+    </div>
+  ),
+};
+
+export const CollapsedNotifications: Story = {
+  args: {
+    navigationItems: [
+      { id: 'dashboard', label: 'Dashboard', icon: <FaHome />, isActive: true },
+      { id: 'inbox', label: 'Bandeja', icon: <FaUsers />, badge: 12 },
+      { id: 'settings', label: 'Configuración', icon: <FaCog /> },
+    ],
+    notification: {
+      count: 9,
+      icon: <FaRegBell />,
+      label: 'Notificaciones',
+    },
+    isCollapsed: true,
+    visibleOnMobile: true,
+  },
+  render: (args) => (
+    <div className="h-screen bg-gray-50 flex">
+      <ITSidebar {...args} />
+      <div className="flex-1 p-8 text-zinc-500 font-medium">
+        Al colapsar, la fila de notificación queda como icono + contador, y los badges de cada ítem siguen visibles como píldoras con número.
+      </div>
+    </div>
+  ),
 };

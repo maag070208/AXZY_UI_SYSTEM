@@ -261,7 +261,7 @@ export default function AdminNavbar() {
 ================================================================================
 4. ITSidebar
 ================================================================================
-Barra lateral reactiva. Soporta colapso automático y varios estilos de líneas conectoras para subítems. Los `subitems` de un item padre aceptan entradas planas o grupos con título (`label` + `items`) que agrupan subítems bajo un encabezado; el título del grupo es solo visual (no es foco, no es clicable y no crea un tercer nivel). Acepta un slot `header` opcional (p. ej. un wordmark) que se renderiza arriba de la navegación y se oculta mientras está colapsada. El riel colapsado se expande automáticamente al pasar el cursor por encima: no hay botón de colapso; su flyout flotante aplana los grupos en una sola lista plana y no dibuja encabezados. Incluye roles/aria para accesibilidad: `nav` etiquetado, toggles con `role="button"` + `aria-expanded`/`aria-controls` + Enter/Space, submenús `role="group"` etiquetados, cada grupo de subítems con su `<ul aria-labelledby>` y subítem activo con `aria-current="page"`.
+Barra lateral reactiva. Soporta colapso automático y varios estilos de líneas conectoras para subítems. Los `subitems` de un item padre aceptan entradas planas o grupos con título (`label` + `items`) que agrupan subítems bajo un encabezado; el título del grupo es solo visual (no es foco, no es clicable y no crea un tercer nivel). Acepta un slot `header` opcional (p. ej. un wordmark) que se renderiza arriba de la navegación y se oculta mientras está colapsada. Cada item acepta `badge` (`number | string`) + `badgeProps` (`ITBadgetProps`) que se renderizan con el átomo `ITBadget`, y el sidebar acepta además `notification` (`ITSidebarNotification`: icono + label + contador `ITBadget`) fijo arriba de la navegación; a diferencia de `header`, la fila de notificación sigue visible al colapsar mostrando solo icono + contador. El riel colapsado se expande automáticamente al pasar el cursor por encima: no hay botón de colapso; su flyout flotante aplana los grupos en una sola lista plana y no dibuja encabezados. Incluye roles/aria para accesibilidad: `nav` etiquetado, toggles con `role="button"` + `aria-expanded`/`aria-controls` + Enter/Space, submenús `role="group"` etiquetados, cada grupo de subítems con su `<ul aria-labelledby>` y subítem activo con `aria-current="page"`.
 
 ### Props (ITSidebarProps)
 ```typescript
@@ -289,7 +289,16 @@ export interface ITNavigationItem {
   action?: () => void;
   isActive?: boolean;
   subitems?: ITNavigationSubItemEntry[];
-  badge?: string;
+  badge?: number | string;        // contenido del ITBadget (ej. contador de notificaciones)
+  badgeProps?: ITBadgetProps;     // color/size/variant/className (className para padding)
+}
+
+export interface ITSidebarNotification {
+  count: number;                  // número dentro del ITBadget
+  icon?: React.ReactNode;         // icono a la izquierda (ej. campanita)
+  label?: string;                 // aria-label + tooltip (default "Notificaciones")
+  onClick?: () => void;
+  badgeProps?: ITBadgetProps;     // default { color: "danger", size: "sm" }
 }
 
 export interface ITSidebarProps {
@@ -305,6 +314,8 @@ export interface ITSidebarProps {
   className?: string;
   /** Contenido opcional renderizado arriba de la lista de navegación (ej. un wordmark). Se oculta al colapsar. */
   header?: React.ReactNode;
+  /** Fila de notificación (icono + label + ITBadget) fija arriba de la navegación. Visible también al colapsar (solo icono + contador). */
+  notification?: ITSidebarNotification;
 }
 ```
 

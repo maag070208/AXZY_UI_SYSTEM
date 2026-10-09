@@ -20,6 +20,7 @@ Vertical navigation sidebar with collapsible submenus, tooltips when collapsed, 
 | `subitemConnector` | `"dot" \| "\|" \| "none"` | `"dot"` | Visual connector style for sub-items. |
 | `className` | `string` | — | Additional CSS classes on the sidebar `<aside>`. |
 | `header` | `ReactNode` | — | Optional content rendered above the navigation list (e.g. a wordmark). Hidden while the sidebar is collapsed, so it only appears when the hover-expanded rail is shown. |
+| `notification` | `ITSidebarNotification` | — | Optional notification entry (icon + label + `ITBadget` counter) pinned above the navigation. Unlike `header`, it stays visible while collapsed, showing only the icon and counter. |
 
 ### ITNavigationItem
 
@@ -31,7 +32,18 @@ Vertical navigation sidebar with collapsible submenus, tooltips when collapsed, 
 | `action` | `() => void` | Click handler for top-level items without submenus. |
 | `isActive` | `boolean` | Whether this item is active/highlighted. |
 | `subitems` | `ITNavigationSubItemEntry[]` | Array of entries: plain sub-items or titled groups (`ITNavigationSubItemGroup`). |
-| `badge` | `string` | Badge text (e.g. notification count). |
+| `badge` | `number \| string` | Notification content rendered with `ITBadget` (e.g. an unread count). |
+| `badgeProps` | `ITBadgetProps` | Styling forwarded to the item badge (`color`, `size`, `variant`, `className` for padding). |
+
+### ITSidebarNotification
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `count` | `number` | — | Count displayed inside the notification `ITBadget`. |
+| `icon` | `ReactNode` | — | Icon rendered left of the label (e.g. a bell). Omit for a count-only pill. |
+| `label` | `string` | `"Notificaciones"` | Accessible label and tooltip for the notification button. |
+| `onClick` | `() => void` | — | Click handler for the notification button. |
+| `badgeProps` | `ITBadgetProps` | `{ color: "danger", size: "sm" }` | Styling forwarded to the internal `ITBadget`; use `className` for padding. |
 
 ### ITNavigationSubItem
 
@@ -105,13 +117,46 @@ const items = [
 
 Discriminate entries with `"items" in entry`. The heading style (uppercase, `0.68rem`, weight 700, `0.08em` tracking, `var(--it-sidebar-icon-color, var(--color-secondary-400))`) is applied by the component and cannot be overridden per group.
 
+## Notifications and badges
+
+Item badges and the notification row both render the `ITBadget` atom. Use `badge` for a per-item counter and `notification` for a top-level entry (e.g. a bell):
+
+```tsx
+import { ITSidebar } from '@axzydev/axzy_ui_system';
+import { FaBell } from 'react-icons/fa';
+
+const items = [
+  { id: 'dashboard', label: 'Dashboard', isActive: true, action: () => {} },
+  { id: 'inbox', label: 'Inbox', badge: 12, action: () => {} },
+  {
+    id: 'alerts',
+    label: 'Alerts',
+    badge: 3,
+    badgeProps: { color: 'warning', variant: 'outlined' },
+    action: () => {},
+  },
+];
+
+<ITSidebar
+  navigationItems={items}
+  notification={{
+    count: 5,
+    icon: <FaBell />,
+    label: 'Notifications',
+    onClick: () => {},
+    // Tweak the ITBadget, incl. padding via className.
+    badgeProps: { color: 'danger', className: 'px-2' },
+  }}
+/>
+```
+
 ## Notes
 
 - There is no collapse toggle button: the collapsed 88px rail expands and collapses automatically on pointer hover (300 ms leave delay).
 - Collapsed mode shrinks to icon-only; a glassmorphism panel shows the item's sub-items on hover. For an item whose `subitems` contain groups, that panel **flattens** every group into one plain list and renders **no** group headings.
 - Submenus expand/collapse with smooth transitions when a parent item is clicked; the expanded submenu is animated with a `max-h` transition (cap `1000px`).
 - Active item highlighting uses a colored left-border accent and subtle background tint.
-- Badge support renders a notification-style counter on the item.
+- Badge support renders a notification-style counter on the item using the `ITBadget` atom; customize it with `badgeProps` (`color`, `size`, `variant`, `className`). The sidebar also accepts a `notification` entry (icon + label + `ITBadget` counter) pinned above the navigation, which stays visible while collapsed as icon + counter.
 - `subitemConnector` styles the visual link between parent and sub-items: `dot` (default), `|` (vertical bar), or `none`. Grouping does not change it: the `|` guide is a single `border-left` on the outer submenu `<ul>` only.
 - An active sub-item inside a group still auto-expands its parent, because auto-expand flattens groups the same way the collapsed flyout does.
 - `visibleOnMobile` forces the sidebar visible at every breakpoint and disables the collapsed rail, so it stays fully expanded.

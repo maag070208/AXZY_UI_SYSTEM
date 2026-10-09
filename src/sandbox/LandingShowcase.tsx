@@ -72,7 +72,7 @@ const GROUP_ACCENTS = [
   "from-primary-500 to-purple-500",
 ];
 
-const GITHUB_URL = "https://github.com/axzydev/axzy_ui_system";
+const GITHUB_URL = "https://github.com/maag070208/AXZY_UI_SYSTEM";
 const INSTALL_CMD = "pnpm add @axzydev/axzy_ui_system";
 
 /**

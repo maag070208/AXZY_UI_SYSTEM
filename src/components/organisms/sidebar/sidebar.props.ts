@@ -1,3 +1,5 @@
+import type { ITBadgetProps } from "@/components/atoms/badget/badget.props";
+
 /** A sub-navigation item nested under a parent menu. */
 export interface ITNavigationSubItem {
   /** Unique identifier for the sub-item. */
@@ -50,8 +52,38 @@ export interface ITNavigationItem {
    * The field `items` is reserved for {@link ITNavigationSubItemGroup}.
    */
   subitems?: ITNavigationSubItemEntry[];
-  /** Badge text displayed on the item (e.g. notification count). */
-  badge?: string;
+  /**
+   * Notification badge content rendered with the {@link ITBadget} atom
+   * (e.g. an unread count). Omit it to render no badge.
+   */
+  badge?: number | string;
+  /**
+   * Styling forwarded to the `ITBadget` rendered for {@link ITNavigationItem.badge}.
+   * `color`, `size`, `variant` and `className` are supported; use `className`
+   * to tweak the badge padding/positioning.
+   */
+  badgeProps?: ITBadgetProps;
+}
+
+/**
+ * Notification row pinned above the navigation in {@link ITSidebarProps}. It
+ * renders an optional icon, a label and an `ITBadget` counter — e.g. a bell with
+ * a number. When the rail is collapsed only the icon + counter are shown.
+ */
+export interface ITSidebarNotification {
+  /** Count displayed inside the notification `ITBadget`. */
+  count: number;
+  /** Icon rendered left of the label (e.g. a bell). Omit for a count-only pill. */
+  icon?: React.ReactNode;
+  /** Accessible label and tooltip for the notification button. @default "Notificaciones" */
+  label?: string;
+  /** Click handler for the notification button. */
+  onClick?: () => void;
+  /**
+   * Styling forwarded to the internal `ITBadget`. Defaults to `color: "danger"`
+   * and `size: "sm"`; override `color`/`variant`/`size` or use `className` for padding.
+   */
+  badgeProps?: ITBadgetProps;
 }
 
 /** Props for the ITSidebar vertical navigation component. */
@@ -77,5 +109,11 @@ export interface ITSidebarProps {
    * Hidden while the sidebar is collapsed, so it only shows on hover.
    */
   header?: React.ReactNode;
+  /**
+   * Optional notification entry pinned above the navigation (icon + label +
+   * `ITBadget` counter). Unlike {@link ITSidebarProps.header} it stays visible
+   * while collapsed, showing just the icon and the counter.
+   */
+  notification?: ITSidebarNotification;
 }
 

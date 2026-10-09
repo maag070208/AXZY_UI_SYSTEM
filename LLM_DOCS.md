@@ -279,7 +279,7 @@ import { ITLayout } from "@axzydev/axzy_ui_system";
 
 ### ITSidebar
 
-Sidebar con glassmorphism. Usa `--it-sidebar-*` CSS variables. El slot `header` (opcional) se renderiza arriba de la navegación y se oculta al colapsar (solo visible al pasar el cursor). `subitems` acepta entradas planas o grupos con título (`label` + `items`); el título del grupo es solo visual (no es foco, no es clicable y no añade un tercer nivel), y cada `<ul>` de grupo se nombra con `aria-labelledby`. En el riel colapsado (88px) el flyout flotante aplana todos los grupos en una lista plana y no dibuja encabezados, y un subítem activo dentro de un grupo igual auto-expande a su padre. `visibleOnMobile` fuerza el sidebar visible en todos los breakpoints y desactiva el riel colapsado (queda siempre expandido). `onToggleCollapse` se acepta pero ITSidebar no lo invoca: no hay botón de colapso, el riel se expande por hover. El nav usa `aria-label`, los toggles `role="button"` + `aria-expanded`/`aria-controls` + Enter/Space, los submenús `role="group"` y el subítem activo `aria-current="page"`.
+Sidebar con glassmorphism. Usa `--it-sidebar-*` CSS variables. El slot `header` (opcional) se renderiza arriba de la navegación y se oculta al colapsar (solo visible al pasar el cursor). `subitems` acepta entradas planas o grupos con título (`label` + `items`); el título del grupo es solo visual (no es foco, no es clicable y no añade un tercer nivel), y cada `<ul>` de grupo se nombra con `aria-labelledby`. En el riel colapsado (88px) el flyout flotante aplana todos los grupos en una lista plana y no dibuja encabezados, y un subítem activo dentro de un grupo igual auto-expande a su padre. `visibleOnMobile` fuerza el sidebar visible en todos los breakpoints y desactiva el riel colapsado (queda siempre expandido). `onToggleCollapse` se acepta pero ITSidebar no lo invoca: no hay botón de colapso, el riel se expande por hover. El nav usa `aria-label`, los toggles `role="button"` + `aria-expanded`/`aria-controls` + Enter/Space, los submenús `role="group"` y el subítem activo `aria-current="page"`. **Badges/notificaciones**: cada `ITNavigationItem` acepta `badge` (`number | string`, ej. un contador) + `badgeProps` (`ITBadgetProps`: `color`/`size`/`variant`/`className` para padding), que renderizan el átomo `ITBadget`. Además, `ITSidebarProps.notification` (`{ count, icon?, label?, onClick?, badgeProps? }`) pinta una fila de notificación fija arriba de la navegación (por defecto `color: "danger"`, `size: "sm"`); a diferencia de `header`, la fila de notificación sigue visible al colapsar mostrando solo icono + contador.
 
 ```tsx
 <ITSidebar
@@ -289,7 +289,8 @@ Sidebar con glassmorphism. Usa `--it-sidebar-*` CSS variables. El slot `header` 
     icon: <FaHome />,
     isActive: true,
     action: () => navigate("/dashboard"),
-    badge: "3",
+    badge: 3,                         // number | string -> ITBadget
+    badgeProps: { color: "primary" }, // opcional
     subitems: [
       { id: "analytics", label: "Analytics", isActive: false, action: () => {} },
       { id: "gestion", label: "Gestión", items: [
@@ -300,6 +301,13 @@ Sidebar con glassmorphism. Usa `--it-sidebar-*` CSS variables. El slot `header` 
   isCollapsed={true}
   subitemConnector="dot"  // "dot" | "|" | "none"
   header={<span>AXZY v1.3</span>}  // opcional; oculto al colapsar
+  notification={{                   // opcional; visible también al colapsar
+    count: 5,
+    icon: <FaBell />,
+    label: "Notificaciones",
+    onClick: () => navigate("/notifications"),
+    badgeProps: { color: "danger", className: "px-2" }, // className = padding
+  }}
 />
 ```
 

@@ -3052,8 +3052,37 @@ interface ITNavigationItem {
      * The field `items` is reserved for {@link ITNavigationSubItemGroup}.
      */
     subitems?: ITNavigationSubItemEntry[];
-    /** Badge text displayed on the item (e.g. notification count). */
-    badge?: string;
+    /**
+     * Notification badge content rendered with the {@link ITBadget} atom
+     * (e.g. an unread count). Omit it to render no badge.
+     */
+    badge?: number | string;
+    /**
+     * Styling forwarded to the `ITBadget` rendered for {@link ITNavigationItem.badge}.
+     * `color`, `size`, `variant` and `className` are supported; use `className`
+     * to tweak the badge padding/positioning.
+     */
+    badgeProps?: ITBadgetProps;
+}
+/**
+ * Notification row pinned above the navigation in {@link ITSidebarProps}. It
+ * renders an optional icon, a label and an `ITBadget` counter — e.g. a bell with
+ * a number. When the rail is collapsed only the icon + counter are shown.
+ */
+interface ITSidebarNotification {
+    /** Count displayed inside the notification `ITBadget`. */
+    count: number;
+    /** Icon rendered left of the label (e.g. a bell). Omit for a count-only pill. */
+    icon?: React.ReactNode;
+    /** Accessible label and tooltip for the notification button. @default "Notificaciones" */
+    label?: string;
+    /** Click handler for the notification button. */
+    onClick?: () => void;
+    /**
+     * Styling forwarded to the internal `ITBadget`. Defaults to `color: "danger"`
+     * and `size: "sm"`; override `color`/`variant`/`size` or use `className` for padding.
+     */
+    badgeProps?: ITBadgetProps;
 }
 /** Props for the ITSidebar vertical navigation component. */
 interface ITSidebarProps {
@@ -3078,6 +3107,12 @@ interface ITSidebarProps {
      * Hidden while the sidebar is collapsed, so it only shows on hover.
      */
     header?: React.ReactNode;
+    /**
+     * Optional notification entry pinned above the navigation (icon + label +
+     * `ITBadget` counter). Unlike {@link ITSidebarProps.header} it stays visible
+     * while collapsed, showing just the icon and the counter.
+     */
+    notification?: ITSidebarNotification;
 }
 
 /**
@@ -3097,12 +3132,19 @@ interface ITSidebarProps {
  *         { id: "billing", label: "Billing", isActive: true },
  *       ],
  *     },
+ *     { id: "inbox", label: "Inbox", icon: <FaEnvelope />, badge: 12 },
  *   ]}
+ *   notification={{
+ *     count: 5,
+ *     icon: <FaBell />,
+ *     label: "Notificaciones",
+ *     onClick: () => navigate("/notifications"),
+ *   }}
  *   isCollapsed
  * />
  * ```
  */
-declare function ITSidebar({ navigationItems, isCollapsed, className, visibleOnMobile, onItemClick, onSubItemClick, subitemConnector, header, }: ITSidebarProps): react_jsx_runtime.JSX.Element;
+declare function ITSidebar({ navigationItems, isCollapsed, className, visibleOnMobile, onItemClick, onSubItemClick, subitemConnector, header, notification, }: ITSidebarProps): react_jsx_runtime.JSX.Element;
 
 /** Skeleton shape variant: "text" (line) | "circular" (avatar/icon) | "rectangular" (card/image). */
 type SkeletonVariant = "text" | "circular" | "rectangular";
@@ -4160,4 +4202,4 @@ declare const resolveCssColor: (colorStr: string, palette?: ITThemePalette$1, is
  */
 declare const getContrastTextColor: (bgColor: string, palette?: ITThemePalette$1, isDarkMode?: boolean) => "text-white" | "text-slate-800";
 
-export { type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, type LoaderProps as ITLoaderProps, ITMaskedInput, type ITMaskedInputProps, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeConfig, type ITThemePalette$1 as ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type TableDensity, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITTheme, useITThemeSafe, useTableState };
+export { type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, type LoaderProps as ITLoaderProps, ITMaskedInput, type ITMaskedInputProps, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeConfig, type ITThemePalette$1 as ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type TableDensity, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITTheme, useITThemeSafe, useTableState };

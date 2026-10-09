@@ -22,6 +22,7 @@ import {
   ITText,
   ITNavbar,
   ITLayout,
+  ITSidebar,
   ITStack,
   ITStatCard,
   ITGrid,
@@ -32,6 +33,7 @@ import {
   ITSelect,
   ITAccordion,
 } from "../index";
+import type { ITSidebarProps } from "../index";
 import { ShowcaseLayout, CodeViewer } from "./ShowcaseLayout";
 
 // ─────────────────────────────────────────
@@ -931,10 +933,10 @@ export const LayoutShowcase = () => {
     },
   };
 
-  const sidebar = {
+  const sidebar: ITSidebarProps = {
     navigationItems: [
       { id: "dashboard", label: "Dashboard", icon: <FaChartLine />, isActive: activeId === "dashboard", action: () => setActiveId("dashboard") },
-      { id: "users", label: "Usuarios", icon: <FaUsers />, isActive: activeId === "users", action: () => setActiveId("users") },
+      { id: "users", label: "Usuarios", icon: <FaUsers />, isActive: activeId === "users", action: () => setActiveId("users"), badge: 4 },
       {
         id: "sales",
         label: "Ventas",
@@ -958,8 +960,8 @@ export const LayoutShowcase = () => {
           },
         ],
       },
-      { id: "products", label: "Productos", icon: <FaBoxOpen />, isActive: activeId === "products", action: () => setActiveId("products"), badge: "3" },
-      { id: "settings", label: "Configuración", icon: <FaCog />, isActive: activeId === "settings", action: () => setActiveId("settings") },
+      { id: "products", label: "Productos", icon: <FaBoxOpen />, isActive: activeId === "products", action: () => setActiveId("products"), badge: 12 },
+      { id: "settings", label: "Configuración", icon: <FaCog />, isActive: activeId === "settings", action: () => setActiveId("settings"), badge: 3, badgeProps: { color: "warning", variant: "outlined" } },
     ],
     isCollapsed: collapsed,
     header: (
@@ -970,6 +972,14 @@ export const LayoutShowcase = () => {
         AXZY v1.3
       </ITText>
     ),
+    // Fila de notificación (icono + ITBadget con número). Sigue visible al colapsar.
+    notification: {
+      count: 5,
+      icon: <FaBell />,
+      label: "Notificaciones",
+      onClick: () => setActiveId("notifications"),
+      badgeProps: { color: "danger" },
+    },
   };
 
   const code = `<ITLayout
@@ -995,10 +1005,22 @@ export const LayoutShowcase = () => {
           ]},
         ]
       },
+      // badge: number | string -> se dibuja con ITBadget; badgeProps lo estiliza
+      { id: "products", label: "Productos", icon: <FaBoxOpen />, badge: 12 },
+      { id: "settings", label: "Configuración", icon: <FaCog />, badge: 3,
+        badgeProps: { color: "warning", variant: "outlined" } },
     ],
     isCollapsed: ${collapsed},
     // Slot opcional sobre la navegación (oculto al colapsar)
-    header: <span>AXZY v1.3</span>
+    header: <span>AXZY v1.3</span>,
+    // Fila de notificación (icono + label + ITBadget). Visible también al colapsar.
+    notification: {
+      count: 5,
+      icon: <FaBell />,
+      label: "Notificaciones",
+      onClick: () => {},
+      badgeProps: { color: "danger" }, // className para padding
+    }
   }}
 >
   {/* Tu contenido */}
@@ -1130,6 +1152,32 @@ export const LayoutShowcase = () => {
               </ITNavbar>
             </div>
           </div>
+
+          <div>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">ITSidebar — badges + notificación</h4>
+            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden h-[420px] flex">
+              <ITSidebar
+                visibleOnMobile
+                className="h-full"
+                subitemConnector="dot"
+                navigationItems={[
+                  { id: "home", label: "Inicio", icon: <FaHome />, isActive: true, action: () => {} },
+                  { id: "inbox", label: "Bandeja", icon: <FaUsers />, badge: 12, action: () => {} },
+                  { id: "alerts", label: "Alertas", icon: <FaBell />, badge: 3, badgeProps: { color: "warning", variant: "outlined" }, action: () => {} },
+                  { id: "settings", label: "Configuración", icon: <FaCog />, action: () => {} },
+                ]}
+                notification={{
+                  count: 5,
+                  icon: <FaBell />,
+                  label: "Notificaciones",
+                  onClick: () => {},
+                }}
+              />
+              <div className="flex-1 p-6 text-sm text-slate-500">
+                Cada ítem puede llevar un contador con <code className="font-mono text-xs">badge</code> + <code className="font-mono text-xs">badgeProps</code>, y el sidebar admite una fila <code className="font-mono text-xs">notification</code> con icono + ITBadget.
+              </div>
+            </div>
+          </div>
         </ITStack>
       }
       doc={{
@@ -1138,6 +1186,7 @@ export const LayoutShowcase = () => {
           '<ITLayout topBar={{ centerContent: <SearchBox /> }} sidebar={{ navigationItems }}>',
           "  <Dashboard />",
           "</ITLayout>",
+          '<ITSidebar navigationItems={[{ id: "inbox", label: "Bandeja", badge: 12, badgeProps: { color: "primary" } }]} notification={{ count: 5, icon: <FaBell /> }} />',
         ],
         props: [
           { name: "topBar", type: "ITTopBarProps", required: true, description: "Configuración de la barra superior." },
@@ -1146,10 +1195,14 @@ export const LayoutShowcase = () => {
           { name: "className", type: "string", description: "Clases del wrapper externo." },
           { name: "contentClassName", type: "string", description: "Clases del contenedor de contenido." },
           { name: "sidebar.header", type: "React.ReactNode", description: "Slot opcional sobre la navegación (ej. wordmark o filtro). Oculto al colapsar." },
+          { name: "sidebar.notification", type: "ITSidebarNotification", description: "Fila de notificación (icono + label + ITBadget) sobre la navegación: { count, icon?, label?, onClick?, badgeProps? }. Visible también al colapsar." },
+          { name: "sidebar.navigationItems[].badge", type: "number | string", description: "Contador que se renderiza con ITBadget en el ítem." },
+          { name: "sidebar.navigationItems[].badgeProps", type: "ITBadgetProps", description: "Estilo del badge del ítem (color, size, variant, className para padding)." },
         ],
         notes: [
           "`subitems` acepta entradas planas o grupos con `label`+`items`; el título del grupo no es foco ni un tercer nivel y cada grupo se nombra por `aria-labelledby`. En el riel colapsado el flyout aplana los grupos (sin títulos).",
           "El sidebar hereda aria-current/aria-expanded y acepta un slot header opcional.",
+          "Los badges por ítem (`badge` + `badgeProps`) y la fila `notification` se dibujan con el átomo `ITBadget`; el padding se ajusta con `badgeProps.className`.",
           "Con `sidebar.isCollapsed` omitido el contenido reserva 88px (hover expande sobre el contenido). Si lo controlas a `false`, reserva 280px y no tapa el contenido.",
           "El riel colapsado se expande automáticamente al pasar el cursor por encima; no hay botón de colapso.",
         ],

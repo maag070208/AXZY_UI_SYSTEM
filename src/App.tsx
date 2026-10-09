@@ -14,6 +14,7 @@ import "./index.css";
 // Import Showcases
 import { HomeShowcase } from "./showcases/HomeShowcase";
 import { GettingStartedShowcase } from "./showcases/GettingStartedShowcase";
+import { HelpShowcase } from "./showcases/HelpShowcase";
 import { SizesShowcase } from "./showcases/SizesShowcase";
 import {
   CardShowcase,
@@ -233,6 +234,8 @@ function App() {
     switch (itemId) {
       case "getting-started":
         return <GettingStartedShowcase />;
+      case "help":
+        return <HelpShowcase />;
       // Structure
       case "layout":
         return <LayoutShowcase />;

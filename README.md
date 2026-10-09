@@ -103,8 +103,8 @@ export default function App() {
 ### 1. Clonar e instalar
 
 ```bash
-git clone https://github.com/axzydev/axzy_ui_system.git
-cd axzy_ui_system
+git clone https://github.com/maag070208/AXZY_UI_SYSTEM.git
+cd AXZY_UI_SYSTEM
 pnpm install
 ```
 

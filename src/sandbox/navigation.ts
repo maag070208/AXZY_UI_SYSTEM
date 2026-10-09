@@ -30,6 +30,7 @@ export const SANDBOX_GROUPS: SandboxGroup[] = [
     label: "General",
     subitems: [
       { id: "getting-started", label: "Getting Started" },
+      { id: "help", label: "Ayuda · Solución de Bugs" },
       { id: "sizes", label: "Medidas · sm / md / lg" },
     ],
   },
