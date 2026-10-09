@@ -69,6 +69,7 @@ export default function ITTopBar({
   navItems,
   onNavItemClick,
   hideBrandOnDesktop = false,
+  showDesktopMenuButton = false,
 }: ITTopBarProps) {
   // Flat appearance: plain bar (no shadow/blur), initials avatar, name before it.
   const flat = useITFlatAppearance();
@@ -100,7 +101,9 @@ export default function ITTopBar({
           {/* Mobile Sidebar Toggle */}
           {showMobileMenuButton && (
             <button
-              className="lg:hidden p-2.5 rounded-xl transition-colors duration-200"
+              type="button"
+              aria-label="Menú"
+              className={`${showDesktopMenuButton ? "" : "lg:hidden"} p-2.5 -ml-2.5 rounded-xl transition-colors duration-200`}
               style={{
                  color: "var(--it-topbar-icon, #64748b)",
               }}

@@ -68,6 +68,8 @@ export default function ITSidebar({
   header,
   notification,
   brand,
+  onToggleCollapse,
+  expandOnHover = true,
 }: ITSidebarProps) {
   // Flat appearance: plain surface, no glow/accent bar, narrower panel.
   const flat = useITFlatAppearance();
@@ -132,6 +134,13 @@ export default function ITSidebar({
     }
   }, [navigationItems]);
 
+  const isSidebarCollapsed = visibleOnMobile ? false : isCollapsed && !(expandOnHover && isHovering);
+  const sidebarWidth = isSidebarCollapsed
+    ? flat ? "w-[72px]" : "w-[88px]"
+    : flat ? "w-[248px]" : "w-[280px]";
+  // Icon-only rail that never expands on hover: names show in a tooltip.
+  const fixedRail = isSidebarCollapsed && !expandOnHover;
+
   const toggleExpanded = (itemId: string) => {
     const newExpanded = new Set(expandedItems);
     if (newExpanded.has(itemId)) newExpanded.delete(itemId);
@@ -141,15 +150,20 @@ export default function ITSidebar({
 
   const handleItemClick = (item: ITNavigationItem) => {
     if (item.subitems && item.subitems.length > 0) {
-      toggleExpanded(item.id);
+      if (isSidebarCollapsed && !expandOnHover) {
+        // Icon-only rail: there is no room for the submenu, so open the
+        // sidebar with this group expanded.
+        setExpandedItems((prev) => new Set(prev).add(item.id));
+        onToggleCollapse?.();
+      } else {
+        toggleExpanded(item.id);
+      }
     } else {
       if (item.action) item.action();
       if (onItemClick) onItemClick(item);
     }
   };
 
-  const isSidebarCollapsed = visibleOnMobile ? false : (!isHovering && isCollapsed);
-  const sidebarWidth = isSidebarCollapsed ? "w-[88px]" : flat ? "w-[248px]" : "w-[280px]";
 
   const renderSubItem = (subitem: ITNavigationSubItem) => (
     <li key={subitem.id} className="relative">
@@ -163,7 +177,7 @@ export default function ITSidebar({
         style={{
           color: subitem.isActive ? "var(--it-sidebar-active-color, var(--color-secondary-900))" : "var(--it-sidebar-label-color, var(--color-secondary-600))",
           backgroundColor: subitem.isActive ? "var(--it-sidebar-active-bg, var(--color-secondary-50))" : 'transparent',
-          fontSize: '0.78rem',
+          fontSize: flat ? '0.84rem' : '0.78rem',
           fontWeight: subitem.isActive ? 600 : 500,
           letterSpacing: '0.01em',
           marginLeft: subitemConnector === '|' ? '-1px' : '0',
@@ -181,7 +195,7 @@ export default function ITSidebar({
           }
         }}
       >
-        {subitem.isActive && subitemConnector === '|' && (
+        {subitem.isActive && subitemConnector === '|' && !flat && (
           <div
             className="absolute left-0 top-1/3 bottom-1/3 w-[2.5px] rounded-r-full transition-all"
             style={{
@@ -357,12 +371,15 @@ export default function ITSidebar({
       )}
 
       {/* Navigation Items */}
-      <nav aria-label="Componentes de la librería" className="flex-1 py-4 overflow-y-auto overflow-x-hidden custom-scrollbar px-4">
+      <nav aria-label="Componentes de la librería" className={`flex-1 py-4 custom-scrollbar ${fixedRail ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"} ${flat && isSidebarCollapsed ? "px-3" : "px-4"}`}>
         <ul className="space-y-1">
           {navigationItems.map((item) => {
             const hasSubmenu = !!item.subitems && item.subitems.length > 0;
             const submenuId = `it-sidebar-submenu-${item.id}`;
             const { className: badgeClassName, ...badgeRest } = item.badgeProps ?? {};
+            // Flat + expanded: a parent whose subitem is active stays plain; the
+            // subitem carries the highlight. Collapsed, the parent icon shows it.
+            const active = !!item.isActive && !(flat && hasSubmenu && !isSidebarCollapsed);
             return (
             <li key={item.id} className="relative group/navitem">
               <div
@@ -374,18 +391,18 @@ export default function ITSidebar({
                 className={`flex items-center cursor-pointer 
                   transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)]
                   rounded-xl relative overflow-visible
-                  ${isSidebarCollapsed ? "justify-center p-2 mb-1" : "justify-between px-3 py-2 mb-0.5"}
+                  ${isSidebarCollapsed ? (flat ? "justify-center h-10 mb-1" : "justify-center p-2 mb-1") : "justify-between px-3 py-2 mb-0.5"}
                 `}
                 style={{
-                  backgroundColor: item.isActive ? "var(--it-sidebar-active-bg, var(--color-secondary-50))" : 'transparent',
-                  boxShadow: item.isActive && !flat ? 'var(--shadow-xs)' : 'none',
-                  border: item.isActive && !flat ? "1px solid var(--it-sidebar-border, var(--color-secondary-200))" : '1px solid transparent'
+                  backgroundColor: active ? "var(--it-sidebar-active-bg, var(--color-secondary-50))" : 'transparent',
+                  boxShadow: active && !flat ? 'var(--shadow-xs)' : 'none',
+                  border: active && !flat ? "1px solid var(--it-sidebar-border, var(--color-secondary-200))" : '1px solid transparent'
                 }}
                 onMouseEnter={(e) => {
-                  if (!item.isActive) e.currentTarget.style.backgroundColor = "var(--it-sidebar-hover-bg, var(--color-secondary-100))";
+                  if (!active) e.currentTarget.style.backgroundColor = "var(--it-sidebar-hover-bg, var(--color-secondary-100))";
                 }}
                 onMouseLeave={(e) => {
-                  if (!item.isActive) e.currentTarget.style.backgroundColor = 'transparent';
+                  if (!active) e.currentTarget.style.backgroundColor = 'transparent';
                 }}
                 onClick={() => handleItemClick(item)}
                 onKeyDown={(e) => {
@@ -395,7 +412,7 @@ export default function ITSidebar({
                   }
                 }}
               >
-                {item.isActive && !isSidebarCollapsed && !flat && (
+                {active && !isSidebarCollapsed && !flat && (
                   <div
                     className="absolute left-0 top-1/4 bottom-1/4 w-[3px] rounded-r-full transition-all"
                     style={{ backgroundColor: "var(--it-sidebar-active-icon, var(--color-primary-500))", boxShadow: "0 0 10px var(--it-sidebar-active-icon, var(--color-primary-500))" }}
@@ -407,10 +424,10 @@ export default function ITSidebar({
                     <div
                       className={`transition-all duration-300 flex-shrink-0 flex items-center justify-center`}
                       style={{
-                        color: item.isActive ? "var(--it-sidebar-active-icon, var(--color-primary-500))" : "var(--it-sidebar-icon-color, #9ca3af)",
-                        opacity: item.isActive ? 1 : 0.8,
-                        fontSize: flat ? '1rem' : item.isActive ? '1.12rem' : '1.05rem',
-                        filter: item.isActive && !flat ? 'drop-shadow(0 0 8px rgba(255,255,255,0.2))' : 'none'
+                        color: active ? "var(--it-sidebar-active-icon, var(--color-primary-500))" : "var(--it-sidebar-icon-color, #9ca3af)",
+                        opacity: active ? 1 : 0.8,
+                        fontSize: flat ? '1rem' : active ? '1.12rem' : '1.05rem',
+                        filter: active && !flat ? 'drop-shadow(0 0 8px rgba(255,255,255,0.2))' : 'none'
                       }}
                     >
                       {item.icon}
@@ -421,9 +438,9 @@ export default function ITSidebar({
                     <ITText as="span"
                       className={`transition-all duration-300 truncate tracking-wide`}
                       style={{
-                        color: item.isActive ? "var(--it-sidebar-active-color, #ffffff)" : "var(--it-sidebar-label-color, var(--color-secondary-300))",
+                        color: active ? "var(--it-sidebar-active-color, #ffffff)" : "var(--it-sidebar-label-color, var(--color-secondary-300))",
                         fontSize: flat ? '0.875rem' : '0.8rem',
-                        fontWeight: item.isActive ? '600' : '500'
+                        fontWeight: active ? '600' : '500'
                       }}
                     >
                       {item.label}
@@ -433,7 +450,7 @@ export default function ITSidebar({
 
                 {!isSidebarCollapsed && item.subitems && item.subitems.length > 0 && (
                   <div className={`flex-shrink-0 transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${expandedItems.has(item.id) ? "rotate-180" : ""}`}
-                    style={{ color: item.isActive ? "var(--it-sidebar-active-color, var(--color-secondary-900))" : "var(--it-sidebar-icon-color, var(--color-secondary-500))", opacity: 0.7 }}>
+                    style={{ color: active ? "var(--it-sidebar-active-color, var(--color-secondary-900))" : "var(--it-sidebar-icon-color, var(--color-secondary-500))", opacity: 0.7 }}>
                     <FaChevronDown className="w-3 h-3" />
                   </div>
                 )}
@@ -457,7 +474,21 @@ export default function ITSidebar({
               </div>
 
               {/* Glassmorphism Collapsed Tooltip / Submenu */}
-              {isSidebarCollapsed && (
+              {isSidebarCollapsed && flat && (
+                <div
+                  role="tooltip"
+                  className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1.5 rounded-lg whitespace-nowrap opacity-0 invisible group-hover/navitem:opacity-100 group-hover/navitem:visible transition-opacity duration-150 pointer-events-none z-[70]"
+                  style={{
+                    backgroundColor: "var(--it-sidebar-tooltip-bg, var(--color-secondary-900))",
+                    color: "var(--it-sidebar-tooltip-color, #ffffff)",
+                    fontSize: "0.78rem",
+                    fontWeight: 500,
+                  }}
+                >
+                  {item.label}
+                </div>
+              )}
+              {isSidebarCollapsed && !flat && (
                 <div
                   className="absolute left-full top-0 ml-4 rounded-2xl opacity-0 invisible group-hover/navitem:opacity-100 group-hover/navitem:visible transition-all duration-300 pointer-events-none z-[70] min-w-[220px] overflow-hidden -translate-x-2 group-hover/navitem:translate-x-0 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)]"
                   style={{
@@ -503,7 +534,7 @@ export default function ITSidebar({
               {!isSidebarCollapsed && item.subitems && item.subitems.length > 0 && (
                 <div id={submenuId} role="group" aria-label={item.label} className={`overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] ${expandedItems.has(item.id) ? "max-h-[1000px] opacity-100 mt-1" : "max-h-0 opacity-0"}`}>
                   <ul
-                    className="ml-4 flex flex-col gap-0 py-0.5"
+                    className={`${flat && subitemConnector === '|' ? "ml-[21px] pl-2" : "ml-4"} flex flex-col gap-0 py-0.5`}
                     style={{
                       borderLeft: subitemConnector === '|'
                         ? "1px solid var(--it-sidebar-border, var(--color-secondary-200))"

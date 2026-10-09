@@ -103,8 +103,19 @@ export interface ITSidebarProps {
   navigationItems: ITNavigationItem[];
   /** Whether the sidebar is collapsed to icon-only mode. */
   isCollapsed?: boolean;
-  /** Callback when the user toggles collapse via the toggle button. */
+  /**
+   * Callback that flips `isCollapsed`. `ITLayout` calls it from the top bar's
+   * menu button when `expandOnHover` is `false`; the sidebar itself calls it
+   * when a collapsed parent item is clicked, so its submenu can be shown.
+   */
   onToggleCollapse?: () => void;
+  /**
+   * How the collapsed rail opens. `true`: it expands over the content while
+   * the pointer is on it (no button). `false`: it stays an icon-only rail —
+   * the item name shows in a tooltip on hover — and it only opens through
+   * `onToggleCollapse` (the top bar's menu button in `ITLayout`). @default true
+   */
+  expandOnHover?: boolean;
   /** Force sidebar visible on mobile breakpoints. */
   visibleOnMobile?: boolean; 
   /** Callback when a top-level navigation item is clicked. Receives the item. */

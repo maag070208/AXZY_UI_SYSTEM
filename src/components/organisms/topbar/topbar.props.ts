@@ -50,6 +50,12 @@ export interface ITTopBarProps {
   /** Callback fired when the mobile menu toggle button is clicked. */
   onToggleMobileMenu?: () => void;
   /**
+   * Keeps the menu toggle button visible from the `lg` breakpoint up as well
+   * (it is mobile-only by default). `ITLayout` turns it on when the sidebar
+   * collapses by button instead of hover (`sidebar.expandOnHover === false`). @default false
+   */
+  showDesktopMenuButton?: boolean;
+  /**
    * Hides the logo and `logoText` from the `lg` breakpoint up and left-aligns
    * `centerContent`. Use it when the brand already lives somewhere else (e.g.
    * at the top of a full-height sidebar); `ITLayout` sets it for you when

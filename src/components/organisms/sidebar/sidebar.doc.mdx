@@ -22,6 +22,7 @@ Vertical navigation sidebar with collapsible submenus, tooltips when collapsed, 
 | `header` | `ReactNode` | — | Optional content rendered above the navigation list (e.g. a wordmark). Hidden while the sidebar is collapsed, so it only appears when the hover-expanded rail is shown. |
 | `notification` | `ITSidebarNotification` | — | Optional notification entry (icon + label + `ITBadget` counter) pinned above the navigation. Unlike `header`, it stays visible while collapsed, showing only the icon and counter. |
 | `brand` | `ITSidebarBrand` | — | Brand (`logo` + `text`) pinned in a 64px row at the very top. The logo stays visible while collapsed; the text does not. `ITLayout` fills it from `topBar.logo` / `topBar.logoText` when `sidebarFullHeight` is set. |
+| `expandOnHover` | `boolean` | `true` | `true`: the collapsed rail expands over the content on hover. `false`: it stays an icon-only rail (item name in a tooltip) and only opens through `onToggleCollapse` — the top bar menu button in `ITLayout`. Clicking a collapsed parent item opens the sidebar with that group expanded. |
 
 ### ITNavigationItem
 

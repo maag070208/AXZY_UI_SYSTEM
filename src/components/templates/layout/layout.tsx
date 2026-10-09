@@ -56,8 +56,17 @@ export default function ITLayout({
   const handleToggleCollapse = isControlled ? (sidebar.onToggleCollapse ?? (() => {})) : () => setInternalCollapsed(v => !v);
 
   const layoutTokens = theme.layout;
-  // Must match ITSidebar's own at-rest width (88px rail / 280px, 248px when flat).
-  const reservedWidth = desktopCollapsed ? "w-[88px]" : flat ? "w-[248px]" : "w-[280px]";
+  // Must match ITSidebar's own at-rest width (88px rail / 280px; 72px / 248px when flat).
+  const reservedWidth = desktopCollapsed
+    ? flat ? "w-[72px]" : "w-[88px]"
+    : flat ? "w-[248px]" : "w-[280px]";
+  // The sidebar collapses by button instead of hover: the top bar's menu
+  // button toggles the rail on desktop and still opens the drawer on mobile.
+  const toggleByButton = sidebar.expandOnHover === false;
+  const handleMenuButton = () => {
+    if (toggleByButton && window.matchMedia("(min-width: 1024px)").matches) handleToggleCollapse();
+    else setMobileSidebarOpen(v => !v);
+  };
   // With a full-height sidebar the brand moves from the top bar to the sidebar.
   const brand = sidebarFullHeight
     ? (sidebar.brand ?? { logo: topBar.logo, text: topBar.logoText })
@@ -68,7 +77,8 @@ export default function ITLayout({
       {...topBar}
       hideBrandOnDesktop={sidebarFullHeight || topBar.hideBrandOnDesktop}
       showMobileMenuButton
-      onToggleMobileMenu={() => setMobileSidebarOpen(v => !v)}
+      showDesktopMenuButton={toggleByButton || topBar.showDesktopMenuButton}
+      onToggleMobileMenu={handleMenuButton}
     />
   );
 

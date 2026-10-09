@@ -79,6 +79,8 @@ Es el componente raíz que envuelve la app. Inyecta un tag `<style>` en `<head>`
 - También pone `data-it-appearance="soft|flat"` en `<html>` para que el CSS de la app lo siga (`:root[data-it-appearance="flat"] { --it-layout-bg: #f5f6fa; }`).
 - Componentes propios leen el aspecto con `useITFlatAppearance()` (devuelve `false` fuera del provider).
 - Para la barra lateral de alto completo con la marca arriba usa `<ITLayout sidebarFullHeight …>` (independiente del aspecto).
+- Colapso por botón en vez de hover: `sidebar={{ isCollapsed, onToggleCollapse, expandOnHover: false }}`. El topbar muestra el botón de menú también en desktop; colapsado queda un riel de solo iconos (72px en flat, 88px en soft) con el nombre en tooltip, y un clic en un padre con subitems abre el sidebar con ese grupo. Sin `isCollapsed`, `ITLayout` lleva el estado él solo.
+- En flat y expandido, un padre con subitem activo queda sin resaltar: el resaltado lo lleva el subitem (con `subitemConnector="|"` va la línea vertical sin barra de acento).
 
 ### Context API
 
