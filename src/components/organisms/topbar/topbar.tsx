@@ -3,6 +3,7 @@ import useClickOutside from "@/hooks/useClickOutside";
 import { useRef, useState } from "react";
 import { ITTopBarProps } from "./topbar.props";
 import ITText from "@/components/atoms/text/text";
+import { useITFlatAppearance } from "@/theme/theme-context";
 
 /**
  * ITTopBar — sticky top navigation bar with logo, nav items, and user avatar dropdown.
@@ -67,7 +68,16 @@ export default function ITTopBar({
   onToggleMobileMenu,
   navItems,
   onNavItemClick,
+  hideBrandOnDesktop = false,
 }: ITTopBarProps) {
+  // Flat appearance: plain bar (no shadow/blur), initials avatar, name before it.
+  const flat = useITFlatAppearance();
+  const initials = (userMenu?.userName ?? "")
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((word) => word.charAt(0).toUpperCase())
+    .join("");
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -75,14 +85,14 @@ export default function ITTopBar({
 
   return (
     <header 
-      className="sticky top-0 z-40 backdrop-blur-md transition-all duration-300"
+      className={`sticky top-0 z-40 transition-all duration-300 ${flat ? "" : "backdrop-blur-md"}`}
       style={{
         backgroundColor: "var(--it-topbar-bg, rgba(255, 255, 255, 0.9))",
         borderBottom: "1px solid var(--it-topbar-border, rgba(15, 23, 42, 0.06))",
-        boxShadow: "var(--shadow-xs)",
+        boxShadow: flat ? "none" : "var(--shadow-xs)",
       }}
     >
-      <div className="flex items-center justify-between h-[72px] px-6 lg:px-8">
+      <div className={`flex items-center justify-between px-6 lg:px-8 ${flat ? "h-[64px]" : "h-[72px]"}`}>
 
         {/* LEFT AREA: Logo & Mobile Toggle */}
         <div className="flex items-center gap-5">
@@ -103,7 +113,7 @@ export default function ITTopBar({
           )}
 
           {/* Logo */}
-          <div className="flex items-center gap-3">
+          <div className={`items-center gap-3 ${hideBrandOnDesktop ? "flex lg:hidden" : "flex"}`}>
             {logo && (
               <div className="flex-shrink-0 drop-shadow-sm">
                  {logo}
@@ -153,7 +163,7 @@ export default function ITTopBar({
             `justify-between` has nothing left to distribute: the logo/nav and
             the user menu stay flush with the row edges. */}
         {centerContent && (
-          <div className="hidden lg:flex flex-1 min-w-0 items-center justify-center px-4">
+          <div className={`hidden lg:flex flex-1 min-w-0 items-center ${hideBrandOnDesktop ? "justify-start pr-4" : "justify-center px-4"}`}>
             <div className="w-full max-w-[420px]">{centerContent}</div>
           </div>
         )}
@@ -169,7 +179,7 @@ export default function ITTopBar({
               <div className="relative">
                 <button
                   type="button"
-                  className="flex items-center gap-3 rounded-full pl-2 pr-4 py-1.5 transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] border border-transparent hover:border-secondary-200"
+                  className={`flex items-center gap-3 rounded-full py-1.5 transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] border border-transparent hover:border-secondary-200 ${flat ? "flex-row-reverse pl-4 pr-2" : "pl-2 pr-4"}`}
                   style={{
                     backgroundColor: isUserMenuOpen ? "var(--it-topbar-user-hover, #f1f5f9)" : "transparent",
                   }}
@@ -189,17 +199,30 @@ export default function ITTopBar({
                         src={userMenu.userImage}
                         alt="Current user"
                       />
+                    ) : flat && initials ? (
+                      <div
+                        aria-hidden="true"
+                        className="w-9 h-9 rounded-full flex items-center justify-center text-[0.8rem] font-semibold"
+                        style={{
+                          backgroundColor: "color-mix(in srgb, var(--color-primary, #3b82f6) 14%, transparent)",
+                          color: "var(--color-primary, #2563eb)",
+                        }}
+                      >
+                        {initials}
+                      </div>
                     ) : (
                       <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center ring-2 ring-white shadow-sm">
                          <FaUserCircle className="w-6 h-6" style={{ color: "var(--it-topbar-icon, #94a3b8)" }} />
                       </div>
                     )}
                     {/* Active dot indicator */}
-                    <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
+                    {!flat && (
+                      <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
+                    )}
                   </div>
 
                   {/* Name Details */}
-                  <div className="hidden sm:flex flex-col text-left py-0.5">
+                  <div className={`hidden sm:flex flex-col py-0.5 ${flat ? "text-right" : "text-left"}`}>
                     <ITText as="span" 
                       className="font-semibold text-[0.85rem] leading-tight"
                       style={{ color: "var(--it-topbar-user-text, #0f172a)" }}

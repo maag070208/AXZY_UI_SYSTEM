@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { ITThemePalette } from "./theme.types";
+import type { ITThemeAppearance, ITThemePalette } from "./theme.types";
 
 /**
  * Contexto de theming compartido por ITThemeProvider y componentes que lo
@@ -16,6 +16,8 @@ export interface ITThemeContextType {
   resolvedTheme: "light" | "dark";
   darkModeMode: "light" | "dark" | "system";
   setDarkModeMode: (mode: "light" | "dark" | "system") => void;
+  /** Visual language chosen on the provider (`"soft"` unless `appearance` says otherwise). */
+  appearance: ITThemeAppearance;
 }
 
 export const ITThemeContext = createContext<ITThemeContextType | undefined>(undefined);
@@ -34,4 +36,12 @@ export const useITTheme = () => {
  */
 export const useITThemeSafe = (): ITThemeContextType | undefined => {
   return useContext(ITThemeContext);
+};
+
+/**
+ * `true` cuando el provider pide el lenguaje visual plano (`appearance="flat"`).
+ * Fuera de un ITThemeProvider devuelve `false` (aspecto por defecto).
+ */
+export const useITFlatAppearance = (): boolean => {
+  return useContext(ITThemeContext)?.appearance === "flat";
 };

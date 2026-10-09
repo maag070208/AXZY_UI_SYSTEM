@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { ITCardProps } from "./card.props";
 import { useState } from "react";
 import ITText from "@/components/atoms/text/text";
+import { useITFlatAppearance } from "@/theme/theme-context";
 
 /**
  * Versatile card container with optional image, title, body content, and action footer. Supports interactive hover states.
@@ -30,21 +31,33 @@ export default function ITCard({
   onClick,
 }: ITCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const flat = useITFlatAppearance();
 
   const containerStyle: React.CSSProperties = {
     backgroundColor: "var(--it-card-bg, #ffffff)",
-    borderColor: "var(--it-card-border, rgba(15, 23, 42, 0.06))",
+    borderColor: flat
+      ? "var(--it-card-flat-border, var(--color-secondary-200))"
+      : "var(--it-card-border, rgba(15, 23, 42, 0.06))",
     borderWidth: "1px",
-    borderRadius: "var(--it-card-radius, var(--radius-2xl))",
+    borderStyle: "solid",
+    borderRadius: flat
+      ? "var(--it-card-radius, var(--radius-lg))"
+      : "var(--it-card-radius, var(--radius-2xl))",
     // Soft depth: every card floats a little at rest; interactive cards
     // gain visual weight on hover instead of appearing flat until clicked.
-    boxShadow: onClick
-      ? isHovered
-        ? "var(--shadow-lg)"
-        : "var(--shadow-sm)"
-      : "var(--shadow-sm)",
+    // Flat appearance: the hairline border carries the surface, so a card
+    // only gets a shadow as hover feedback when it is clickable.
+    boxShadow: flat
+      ? onClick && isHovered
+        ? "var(--shadow-sm)"
+        : "none"
+      : onClick
+        ? isHovered
+          ? "var(--shadow-lg)"
+          : "var(--shadow-sm)"
+        : "var(--shadow-sm)",
     transition: onClick ? "box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out" : "none",
-    transform: onClick && isHovered ? "translateY(-2px)" : "translateY(0)",
+    transform: onClick && isHovered && !flat ? "translateY(-2px)" : "translateY(0)",
     cursor: onClick ? "pointer" : "default",
   };
 
@@ -72,7 +85,7 @@ export default function ITCard({
         {title && (
           <ITText
             as="h3"
-            className={clsx("text-xl font-semibold mb-2", titleClassName)}
+            className={clsx(flat ? "text-base font-semibold mb-3" : "text-xl font-semibold mb-2", titleClassName)}
           >
             {title}
           </ITText>

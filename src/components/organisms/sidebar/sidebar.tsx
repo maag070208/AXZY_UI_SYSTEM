@@ -10,6 +10,7 @@ import {
 } from "./sidebar.props";
 import ITBadget from "@/components/atoms/badget/badget";
 import ITText from "@/components/atoms/text/text";
+import { useITFlatAppearance } from "@/theme/theme-context";
 
 /** Narrows a submenu entry to a titled group. */
 function isSubItemGroup(
@@ -66,7 +67,10 @@ export default function ITSidebar({
   subitemConnector = 'dot',
   header,
   notification,
+  brand,
 }: ITSidebarProps) {
+  // Flat appearance: plain surface, no glow/accent bar, narrower panel.
+  const flat = useITFlatAppearance();
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [isHovering, setIsHovering] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -145,7 +149,7 @@ export default function ITSidebar({
   };
 
   const isSidebarCollapsed = visibleOnMobile ? false : (!isHovering && isCollapsed);
-  const sidebarWidth = isSidebarCollapsed ? "w-[88px]" : "w-[280px]";
+  const sidebarWidth = isSidebarCollapsed ? "w-[88px]" : flat ? "w-[248px]" : "w-[280px]";
 
   const renderSubItem = (subitem: ITNavigationSubItem) => (
     <li key={subitem.id} className="relative">
@@ -318,16 +322,32 @@ export default function ITSidebar({
         ${sidebarWidth}
         ${className}
         ${!visibleOnMobile ? "hidden lg:flex" : "flex"}
-        shadow-[4px_0_32px_rgba(15,23,42,0.04)]
+        ${flat ? "" : "shadow-[4px_0_32px_rgba(15,23,42,0.04)]"}
       `}
       style={{
         zIndex: 50,
         backgroundColor: "var(--it-sidebar-bg, rgba(255, 255, 255, 0.90))",
         borderRight: "1px solid var(--it-sidebar-border, var(--color-secondary-200))",
-        WebkitBackdropFilter: 'blur(12px)',
-        backdropFilter: 'blur(12px)',
+        ...(flat ? {} : { WebkitBackdropFilter: 'blur(12px)', backdropFilter: 'blur(12px)' }),
       }}
     >
+      {brand && (brand.logo || brand.text) && (
+        <div
+          className={`flex items-center flex-shrink-0 h-[64px] ${isSidebarCollapsed ? "justify-center px-2" : "gap-2.5 px-7"}`}
+        >
+          {brand.logo && <div className="flex-shrink-0 flex items-center">{brand.logo}</div>}
+          {brand.text && !isSidebarCollapsed && (
+            <ITText
+              as="span"
+              className="text-[1.05rem] font-bold tracking-tight truncate"
+              style={{ color: "var(--it-sidebar-brand-color, var(--it-sidebar-label-color, var(--color-secondary-900)))" }}
+            >
+              {brand.text}
+            </ITText>
+          )}
+        </div>
+      )}
+
       {header && !isSidebarCollapsed && (
         <div className="px-4 pt-4 pb-1 flex-shrink-0">{header}</div>
       )}
@@ -358,8 +378,8 @@ export default function ITSidebar({
                 `}
                 style={{
                   backgroundColor: item.isActive ? "var(--it-sidebar-active-bg, var(--color-secondary-50))" : 'transparent',
-                  boxShadow: item.isActive ? 'var(--shadow-xs)' : 'none',
-                  border: item.isActive ? "1px solid var(--it-sidebar-border, var(--color-secondary-200))" : '1px solid transparent'
+                  boxShadow: item.isActive && !flat ? 'var(--shadow-xs)' : 'none',
+                  border: item.isActive && !flat ? "1px solid var(--it-sidebar-border, var(--color-secondary-200))" : '1px solid transparent'
                 }}
                 onMouseEnter={(e) => {
                   if (!item.isActive) e.currentTarget.style.backgroundColor = "var(--it-sidebar-hover-bg, var(--color-secondary-100))";
@@ -375,7 +395,7 @@ export default function ITSidebar({
                   }
                 }}
               >
-                {item.isActive && !isSidebarCollapsed && (
+                {item.isActive && !isSidebarCollapsed && !flat && (
                   <div
                     className="absolute left-0 top-1/4 bottom-1/4 w-[3px] rounded-r-full transition-all"
                     style={{ backgroundColor: "var(--it-sidebar-active-icon, var(--color-primary-500))", boxShadow: "0 0 10px var(--it-sidebar-active-icon, var(--color-primary-500))" }}
@@ -389,8 +409,8 @@ export default function ITSidebar({
                       style={{
                         color: item.isActive ? "var(--it-sidebar-active-icon, var(--color-primary-500))" : "var(--it-sidebar-icon-color, #9ca3af)",
                         opacity: item.isActive ? 1 : 0.8,
-                        fontSize: item.isActive ? '1.12rem' : '1.05rem',
-                        filter: item.isActive ? 'drop-shadow(0 0 8px rgba(255,255,255,0.2))' : 'none'
+                        fontSize: flat ? '1rem' : item.isActive ? '1.12rem' : '1.05rem',
+                        filter: item.isActive && !flat ? 'drop-shadow(0 0 8px rgba(255,255,255,0.2))' : 'none'
                       }}
                     >
                       {item.icon}
@@ -402,7 +422,7 @@ export default function ITSidebar({
                       className={`transition-all duration-300 truncate tracking-wide`}
                       style={{
                         color: item.isActive ? "var(--it-sidebar-active-color, #ffffff)" : "var(--it-sidebar-label-color, var(--color-secondary-300))",
-                        fontSize: '0.8rem',
+                        fontSize: flat ? '0.875rem' : '0.8rem',
                         fontWeight: item.isActive ? '600' : '500'
                       }}
                     >

@@ -3084,6 +3084,16 @@ interface ITSidebarNotification {
      */
     badgeProps?: ITBadgetProps;
 }
+/**
+ * Brand block pinned at the top of {@link ITSidebarProps}. The logo stays
+ * visible while the rail is collapsed; the text only shows when expanded.
+ */
+interface ITSidebarBrand {
+    /** Logo element (e.g. an `<img>` or an SVG mark). Always visible. */
+    logo?: React.ReactNode;
+    /** Wordmark rendered next to the logo. Hidden while the sidebar is collapsed. */
+    text?: string;
+}
 /** Props for the ITSidebar vertical navigation component. */
 interface ITSidebarProps {
     /** Navigation structure: top-level items with optional sub-items. */
@@ -3113,6 +3123,13 @@ interface ITSidebarProps {
      * while collapsed, showing just the icon and the counter.
      */
     notification?: ITSidebarNotification;
+    /**
+     * Brand (logo + wordmark) pinned at the very top of the sidebar, in a 64px
+     * row that lines up with the top bar. Unlike {@link ITSidebarProps.header}
+     * the logo stays visible while collapsed. `ITLayout` fills it from
+     * `topBar.logo` / `topBar.logoText` when `sidebarFullHeight` is set.
+     */
+    brand?: ITSidebarBrand;
 }
 
 /**
@@ -3144,7 +3161,7 @@ interface ITSidebarProps {
  * />
  * ```
  */
-declare function ITSidebar({ navigationItems, isCollapsed, className, visibleOnMobile, onItemClick, onSubItemClick, subitemConnector, header, notification, }: ITSidebarProps): react_jsx_runtime.JSX.Element;
+declare function ITSidebar({ navigationItems, isCollapsed, className, visibleOnMobile, onItemClick, onSubItemClick, subitemConnector, header, notification, brand, }: ITSidebarProps): react_jsx_runtime.JSX.Element;
 
 /** Skeleton shape variant: "text" (line) | "circular" (avatar/icon) | "rectangular" (card/image). */
 type SkeletonVariant = "text" | "circular" | "rectangular";
@@ -3765,6 +3782,13 @@ interface ITTopBarProps {
     showMobileMenuButton?: boolean;
     /** Callback fired when the mobile menu toggle button is clicked. */
     onToggleMobileMenu?: () => void;
+    /**
+     * Hides the logo and `logoText` from the `lg` breakpoint up and left-aligns
+     * `centerContent`. Use it when the brand already lives somewhere else (e.g.
+     * at the top of a full-height sidebar); `ITLayout` sets it for you when
+     * `sidebarFullHeight` is on. Below `lg` the logo is still shown. @default false
+     */
+    hideBrandOnDesktop?: boolean;
 }
 
 interface ITLayoutProps {
@@ -3778,6 +3802,14 @@ interface ITLayoutProps {
     className?: string;
     /** Additional CSS classes for the content container */
     contentClassName?: string;
+    /**
+     * App-shell arrangement. `false` (default): the top bar spans the full width
+     * and the sidebar sits below it. `true`: the sidebar spans the full viewport
+     * height and shows the brand (`topBar.logo` + `topBar.logoText`) at its top,
+     * while the top bar covers only the content column and drops the logo from
+     * the `lg` breakpoint up. Mobile is unchanged. @default false
+     */
+    sidebarFullHeight?: boolean;
 }
 
 /**
@@ -3802,8 +3834,18 @@ interface ITLayoutProps {
  * >
  *   <SettingsPage />
  * </ITLayout>
+ *
+ * @example
+ * // Full-height sidebar with the brand on top; the top bar covers only the content.
+ * <ITLayout
+ *   sidebarFullHeight
+ *   topBar={{ logo: <Logo />, logoText: "Acme", centerContent: <SearchBox /> }}
+ *   sidebar={{ navigationItems, isCollapsed: false }}
+ * >
+ *   <Dashboard />
+ * </ITLayout>
  */
-declare function ITLayout({ topBar, sidebar, children, className, contentClassName, }: ITLayoutProps): react_jsx_runtime.JSX.Element;
+declare function ITLayout({ topBar, sidebar, children, className, contentClassName, sidebarFullHeight, }: ITLayoutProps): react_jsx_runtime.JSX.Element;
 
 type LoaderSize = "sm" | "md" | "lg" | "xl";
 type LoaderVariant = "spinner" | "dots" | "bar" | "pulse";
@@ -3896,63 +3938,6 @@ interface ITStepperProps {
  */
 declare function ITStepper({ steps, currentStep, onFinish, onStepChange, allowClickToJump, useIcons, disableNext, containerClassName, stepClassName, scrollableContent, maxContentHeight, color, }: ITStepperProps): react_jsx_runtime.JSX.Element;
 
-interface ITThemePalette$1 {
-    /** Main brand accent color (hex). Drives primary buttons, active nav items, focus rings, links, and the `--color-primary` CSS variable. @default "#06b6d4" */
-    primary: string;
-    /** Secondary/neutral accent color (hex). Used for less prominent actions and secondary badges/buttons. @default "#6b7280" */
-    secondary: string;
-    /** Tertiary accent color (hex), used for a third level of emphasis (e.g. alternate badges, chart accents). @default "#8b5cf6" */
-    ternary: string;
-    /** Semantic color for destructive/error states (hex): delete buttons, error badges, invalid form fields. @default "#ef4444" */
-    danger: string;
-    /** Semantic color for success/confirmation states (hex): success badges, completed steps, positive stats. @default "#22c55e" */
-    success: string;
-    /** Semantic color for informational states (hex): info banners/badges, neutral notices. @default "#3b82f6" */
-    info: string;
-    /** Semantic color for alert/caution states (hex), distinct from `warning`. Used by components that need a stronger visual cue than warning. @default "#f97316" */
-    alert: string;
-    /** Semantic color for warning states (hex): warning badges/banners, pending states. @default "#eab308" */
-    warning: string;
-    /** Colors for the app shell's sidebar and top navbar (ITSidebar, ITNavbar, ITTopbar, ITLayout). */
-    layout: {
-        /** Background color of the sidebar (hex). @default "#ffffff" */
-        sidebarBg: string;
-        /** Text/icon color used on the sidebar. @default "#334155" */
-        sidebarText: string;
-        /** Background color of the top navigation bar (hex). @default "#ffffff" */
-        navbarBg: string;
-        /** Text/icon color used on the top navigation bar. @default "#1e293b" */
-        navbarText: string;
-    };
-    /** Colors for ITTable/ITDataTable/ITSearchTable header and rows. */
-    table: {
-        /** Background color of the table header row (hex). @default "#f8fafc" */
-        headerBg: string;
-        /** Text color of the table header row. @default "#334155" */
-        headerText: string;
-        /** Background color of table body rows (hex). @default "#ffffff" */
-        rowBg: string;
-        /** Text color of table body rows. @default "#1e293b" */
-        rowText: string;
-        /** Background color applied to a table body row while the pointer is over it (hex). @default "#f1f5f9" */
-        rowHover: string;
-    };
-}
-interface ITThemeProviderProps {
-    /** Partial palette overrides merged (deep merge) with the default theme. Supports primary, secondary, ternary, danger, success, info, alert, warning, layout, and table colors. Persisted to `localStorage` under `"it-theme-palette"` once the user edits it via the FAB/drawer. */
-    theme?: Partial<ITThemePalette$1>;
-    /** The subtree that receives the theme context and CSS variables. Must wrap your entire app (or the portion that uses AXZY UI System components) once, near the root. */
-    children: React.ReactNode;
-    /** Whether to render the floating action button (bottom-right) that opens the live theme-designer drawer, letting end users tweak colors and persist their choice. Set to `false` to hide the FAB in production and only theme via the `theme` prop. @default true */
-    showFab?: boolean;
-    /** Global density/compactness factor. Values below 1 shrink the UI's base sizes, above 1 grow them (e.g. `0.8` = 80%: smaller fonts, paddings, gaps, spacing). Applied by scaling the root font-size so every `rem`-based token in Tailwind components compacts together, keeping the layout fluid (no empty margins, unlike CSS zoom). Clamped to `0.5`–`1.5`. @default 1 */
-    density?: number;
-    /** Global border radius in pixels applied to the entire rounding scale (`rounded-sm/md/lg/xl/2xl/…`). `radius={2}` ⇒ 2px corners (near-square), `8` ⇒ 8px, `0` ⇒ completely square. Every `rounded-*` utility resolves to a `--radius-*` variable, so this reshapes inputs, buttons, cards, dialogs and tables system-wide with no per-component changes. @default 0 (no override, Tailwind defaults) */
-    radius?: number;
-    /** Global shadow strength level. `0` ⇒ no shadows, `1` ⇒ subtle, `2` ⇒ default current look, `3` ⇒ pronounced. Shadows are injected as `--shadow-*`/`.shadow-*` overrides so cards, dropdowns and dialogs follow the level. @default 2 (keeps current default when omitted) */
-    shadow?: number;
-}
-
 type ColorScale = {
     50: string;
     100: string;
@@ -3966,7 +3951,13 @@ type ColorScale = {
     900: string;
     950?: string;
 };
-interface ITThemePalette {
+/**
+ * Visual language of the whole system.
+ * - `"soft"`: soft depth — floating cards, tinted shadows, glass sidebar and top bar (default).
+ * - `"flat"`: flat surfaces — hairline borders instead of shadows, plain sidebar and top bar, compact page headers.
+ */
+type ITThemeAppearance = "soft" | "flat";
+interface ITThemePalette$1 {
     /** Main brand accent color (hex). Drives primary buttons, active nav items, focus rings, links, and the `--color-primary` CSS variable. @default "#06b6d4" */
     primary: string;
     /** Secondary/neutral accent color (hex). Used for less prominent actions and secondary badges/buttons. @default "#6b7280" */
@@ -4090,21 +4081,82 @@ interface ITThemeConfig {
     };
 }
 
+interface ITThemePalette {
+    /** Main brand accent color (hex). Drives primary buttons, active nav items, focus rings, links, and the `--color-primary` CSS variable. @default "#06b6d4" */
+    primary: string;
+    /** Secondary/neutral accent color (hex). Used for less prominent actions and secondary badges/buttons. @default "#6b7280" */
+    secondary: string;
+    /** Tertiary accent color (hex), used for a third level of emphasis (e.g. alternate badges, chart accents). @default "#8b5cf6" */
+    ternary: string;
+    /** Semantic color for destructive/error states (hex): delete buttons, error badges, invalid form fields. @default "#ef4444" */
+    danger: string;
+    /** Semantic color for success/confirmation states (hex): success badges, completed steps, positive stats. @default "#22c55e" */
+    success: string;
+    /** Semantic color for informational states (hex): info banners/badges, neutral notices. @default "#3b82f6" */
+    info: string;
+    /** Semantic color for alert/caution states (hex), distinct from `warning`. Used by components that need a stronger visual cue than warning. @default "#f97316" */
+    alert: string;
+    /** Semantic color for warning states (hex): warning badges/banners, pending states. @default "#eab308" */
+    warning: string;
+    /** Colors for the app shell's sidebar and top navbar (ITSidebar, ITNavbar, ITTopbar, ITLayout). */
+    layout: {
+        /** Background color of the sidebar (hex). @default "#ffffff" */
+        sidebarBg: string;
+        /** Text/icon color used on the sidebar. @default "#334155" */
+        sidebarText: string;
+        /** Background color of the top navigation bar (hex). @default "#ffffff" */
+        navbarBg: string;
+        /** Text/icon color used on the top navigation bar. @default "#1e293b" */
+        navbarText: string;
+    };
+    /** Colors for ITTable/ITDataTable/ITSearchTable header and rows. */
+    table: {
+        /** Background color of the table header row (hex). @default "#f8fafc" */
+        headerBg: string;
+        /** Text color of the table header row. @default "#334155" */
+        headerText: string;
+        /** Background color of table body rows (hex). @default "#ffffff" */
+        rowBg: string;
+        /** Text color of table body rows. @default "#1e293b" */
+        rowText: string;
+        /** Background color applied to a table body row while the pointer is over it (hex). @default "#f1f5f9" */
+        rowHover: string;
+    };
+}
+interface ITThemeProviderProps {
+    /** Partial palette overrides merged (deep merge) with the default theme. Supports primary, secondary, ternary, danger, success, info, alert, warning, layout, and table colors. Persisted to `localStorage` under `"it-theme-palette"` once the user edits it via the FAB/drawer. */
+    theme?: Partial<ITThemePalette>;
+    /** The subtree that receives the theme context and CSS variables. Must wrap your entire app (or the portion that uses AXZY UI System components) once, near the root. */
+    children: React.ReactNode;
+    /** Whether to render the floating action button (bottom-right) that opens the live theme-designer drawer, letting end users tweak colors and persist their choice. Set to `false` to hide the FAB in production and only theme via the `theme` prop. @default true */
+    showFab?: boolean;
+    /** Global density/compactness factor. Values below 1 shrink the UI's base sizes, above 1 grow them (e.g. `0.8` = 80%: smaller fonts, paddings, gaps, spacing). Applied by scaling the root font-size so every `rem`-based token in Tailwind components compacts together, keeping the layout fluid (no empty margins, unlike CSS zoom). Clamped to `0.5`–`1.5`. @default 1 */
+    density?: number;
+    /** Global border radius in pixels applied to the entire rounding scale (`rounded-sm/md/lg/xl/2xl/…`). `radius={2}` ⇒ 2px corners (near-square), `8` ⇒ 8px, `0` ⇒ completely square. Every `rounded-*` utility resolves to a `--radius-*` variable, so this reshapes inputs, buttons, cards, dialogs and tables system-wide with no per-component changes. @default 0 (no override, Tailwind defaults) */
+    radius?: number;
+    /** Global shadow strength level. `0` ⇒ no shadows, `1` ⇒ subtle, `2` ⇒ default current look, `3` ⇒ pronounced. Shadows are injected as `--shadow-*`/`.shadow-*` overrides so cards, dropdowns and dialogs follow the level. @default 2 (keeps current default when omitted) */
+    shadow?: number;
+    /** Visual language of the whole system. `"soft"` keeps the current look (floating cards, tinted shadows, glass sidebar/top bar). `"flat"` switches the app shell and surfaces to flat ones: hairline borders instead of shadows on `ITCard`, a plain `ITSidebar` (no glow, no accent bar, narrower), a plain `ITTopBar` (no shadow, initials avatar) and a compact `ITPageHeader` without the icon tile. It also sets `data-it-appearance` on `<html>` so app CSS can follow it. Combine it with `shadow` and `radius` to finish the look. @default "soft" */
+    appearance?: ITThemeAppearance;
+}
+
 /**
  * Contexto de theming compartido por ITThemeProvider y componentes que lo
  * consumen (p.ej. ITFormHeader). Vive en @/theme para que ninguna capa
  * atómica dependa de otra a través del provider.
  */
 interface ITThemeContextType {
-    palette: ITThemePalette;
-    colors: ITThemePalette;
-    setPalette: (newPalette: ITThemePalette) => void;
+    palette: ITThemePalette$1;
+    colors: ITThemePalette$1;
+    setPalette: (newPalette: ITThemePalette$1) => void;
     updateColor: (key: string, value: string) => void;
     resetTheme: () => void;
-    applyPreset: (colors: ITThemePalette) => void;
+    applyPreset: (colors: ITThemePalette$1) => void;
     resolvedTheme: "light" | "dark";
     darkModeMode: "light" | "dark" | "system";
     setDarkModeMode: (mode: "light" | "dark" | "system") => void;
+    /** Visual language chosen on the provider (`"soft"` unless `appearance` says otherwise). */
+    appearance: ITThemeAppearance;
 }
 declare const useITTheme: () => ITThemeContextType;
 /**
@@ -4112,6 +4164,11 @@ declare const useITTheme: () => ITThemeContextType;
  * si se usa fuera de ITThemeProvider (no lanza error).
  */
 declare const useITThemeSafe: () => ITThemeContextType | undefined;
+/**
+ * `true` cuando el provider pide el lenguaje visual plano (`appearance="flat"`).
+ * Fuera de un ITThemeProvider devuelve `false` (aspecto por defecto).
+ */
+declare const useITFlatAppearance: () => boolean;
 
 /**
  * Root theme context provider that injects CSS custom properties for all components,
@@ -4127,7 +4184,7 @@ declare const useITThemeSafe: () => ITThemeContextType | undefined;
  *   <Dashboard />
  * </ITThemeProvider>
  */
-declare function ITThemeProvider({ children, theme, showFab, density, radius, shadow, }: ITThemeProviderProps): react_jsx_runtime.JSX.Element;
+declare function ITThemeProvider({ children, theme, showFab, density, radius, shadow, appearance, }: ITThemeProviderProps): react_jsx_runtime.JSX.Element;
 
 interface ITTimePickerProps {
     /** Form field name attribute and key for the change event. */
@@ -4196,10 +4253,10 @@ declare const isLightColor: (hex: string) => boolean;
 /**
  * Traduce un valor de color de CSS (hexadecimal o variable var(--...)) a hexadecimal absoluto.
  */
-declare const resolveCssColor: (colorStr: string, palette?: ITThemePalette$1, isDarkMode?: boolean) => string;
+declare const resolveCssColor: (colorStr: string, palette?: ITThemePalette, isDarkMode?: boolean) => string;
 /**
  * Obtiene la clase de color de texto óptima (blanca o gris oscuro) basado en el fondo.
  */
-declare const getContrastTextColor: (bgColor: string, palette?: ITThemePalette$1, isDarkMode?: boolean) => "text-white" | "text-slate-800";
+declare const getContrastTextColor: (bgColor: string, palette?: ITThemePalette, isDarkMode?: boolean) => "text-white" | "text-slate-800";
 
-export { type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, type LoaderProps as ITLoaderProps, ITMaskedInput, type ITMaskedInputProps, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeConfig, type ITThemePalette$1 as ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type TableDensity, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITTheme, useITThemeSafe, useTableState };
+export { type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, type LoaderProps as ITLoaderProps, ITMaskedInput, type ITMaskedInputProps, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarBrand, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeAppearance, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type TableDensity, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITFlatAppearance, useITTheme, useITThemeSafe, useTableState };

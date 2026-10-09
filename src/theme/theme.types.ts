@@ -12,6 +12,13 @@ export type ColorScale = {
   950?: string;
 };
 
+/**
+ * Visual language of the whole system.
+ * - `"soft"`: soft depth — floating cards, tinted shadows, glass sidebar and top bar (default).
+ * - `"flat"`: flat surfaces — hairline borders instead of shadows, plain sidebar and top bar, compact page headers.
+ */
+export type ITThemeAppearance = "soft" | "flat";
+
 export interface ITThemePalette {
   /** Main brand accent color (hex). Drives primary buttons, active nav items, focus rings, links, and the `--color-primary` CSS variable. @default "#06b6d4" */
   primary: string;

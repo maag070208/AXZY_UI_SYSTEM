@@ -130,8 +130,13 @@ export interface ITLayoutProps {
   children: React.ReactNode;
   className?: string;
   contentClassName?: string;
+  /** `true`: el sidebar ocupa todo el alto y muestra la marca (`topBar.logo` + `topBar.logoText`)
+   *  arriba; el topbar cubre solo la columna de contenido y oculta el logo desde `lg`. Default `false`. */
+  sidebarFullHeight?: boolean;
 }
 ```
+
+> Aspecto plano: con `<ITThemeProvider appearance="flat">` el layout quita la sombra del sidebar y reserva 248px (en vez de 280px) cuando está expandido. `sidebarFullHeight` es independiente del aspecto y no cambia el layout móvil.
 
 > Nota de layout: en desktop el sidebar está posicionado de forma absoluta y el contenido reserva su ancho en reposo. Con `sidebar.isCollapsed` omitido (default no controlado) o controlado a `true`, reserva 88px y el sidebar se expande sobre el contenido al hacer hover. Si controlas `sidebar.isCollapsed={false}`, reserva 280px para que el sidebar no tape el contenido. No hay prop nueva en `ITLayoutProps`: el ancho se deriva de `sidebar.isCollapsed`.
 
@@ -316,8 +321,13 @@ export interface ITSidebarProps {
   header?: React.ReactNode;
   /** Fila de notificación (icono + label + ITBadget) fija arriba de la navegación. Visible también al colapsar (solo icono + contador). */
   notification?: ITSidebarNotification;
+  /** Marca (logo + texto) en una fila de 64px arriba del todo. El logo se mantiene al colapsar; el texto no.
+   *  `ITLayout` la llena sola con `topBar.logo`/`topBar.logoText` cuando `sidebarFullHeight` está activo. */
+  brand?: ITSidebarBrand; // { logo?: ReactNode; text?: string }
 }
 ```
+
+> Aspecto plano (`appearance="flat"` en el provider): superficie lisa sin blur ni sombra, 248px de ancho, y el item activo queda como píldora del color primario suave, sin borde, sombra ni barra de acento.
 
 ### Ejemplo Real
 ```tsx
@@ -422,6 +432,9 @@ export interface ITTopBarProps {
    *  usuario (p. ej. una campanita de notificaciones). El componente decide
    *  la posición; el caller solo aporta los controles. */
   children?: ReactNode;
+  /** Oculta logo y `logoText` desde `lg` y alinea `centerContent` a la izquierda (la marca vive en otro lado,
+   *  p. ej. en un sidebar de alto completo). `ITLayout` lo activa con `sidebarFullHeight`. Default `false`. */
+  hideBrandOnDesktop?: boolean;
   userMenu?: {
     userName: string;
     userEmail: string;

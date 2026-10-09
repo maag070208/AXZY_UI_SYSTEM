@@ -2,6 +2,7 @@ import { FaChevronLeft } from "react-icons/fa";
 import { ITPageHeaderProps } from "./page-header.props";
 import ITBreadcrumbs from "@/components/molecules/breadcrumbs/breadcrumbs";
 import ITText from "@/components/atoms/text/text";
+import { useITFlatAppearance } from "@/theme/theme-context";
 
 /**
  * Page title bar with breadcrumbs, description, back button, and action buttons.
@@ -29,6 +30,8 @@ export default function ITPageHeader({
   className,
 }: ITPageHeaderProps) {
   const showTopRow = breadcrumbs?.length || backAction;
+  // Flat appearance: compact title, no decorative icon tile.
+  const flat = useITFlatAppearance();
 
   return (
     <div className={`${className} space-y-3`}>
@@ -60,7 +63,7 @@ export default function ITPageHeader({
       {/* Fila principal: icono + título + descripción + (acciones si no hay top row) */}
       <div className="flex items-start justify-between gap-6">
         <div className="flex items-start gap-4 min-w-0">
-          {icon && (
+          {icon && !flat && (
             <div
               className="flex items-center justify-center w-12 h-12 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 flex-shrink-0 transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-500 hover:shadow-sm"
               style={iconColor ? { color: iconColor } : undefined}
@@ -71,14 +74,22 @@ export default function ITPageHeader({
           <div className="min-w-0">
             <ITText
               as="h1"
-              className="text-3xl font-bold text-slate-800 dark:text-white tracking-tight leading-tight"
+              className={
+                flat
+                  ? "text-[1.625rem] font-bold text-slate-900 dark:text-white tracking-tight leading-tight"
+                  : "text-3xl font-bold text-slate-800 dark:text-white tracking-tight leading-tight"
+              }
             >
               {title}
             </ITText>
             {description && (
               <ITText
                 as="p"
-                className="text-sm font-light text-slate-500 dark:text-slate-400 mt-1 leading-relaxed"
+                className={
+                  flat
+                    ? "text-sm font-normal text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed"
+                    : "text-sm font-light text-slate-500 dark:text-slate-400 mt-1 leading-relaxed"
+                }
               >
                 {description}
               </ITText>

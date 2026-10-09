@@ -86,6 +86,17 @@ export interface ITSidebarNotification {
   badgeProps?: ITBadgetProps;
 }
 
+/**
+ * Brand block pinned at the top of {@link ITSidebarProps}. The logo stays
+ * visible while the rail is collapsed; the text only shows when expanded.
+ */
+export interface ITSidebarBrand {
+  /** Logo element (e.g. an `<img>` or an SVG mark). Always visible. */
+  logo?: React.ReactNode;
+  /** Wordmark rendered next to the logo. Hidden while the sidebar is collapsed. */
+  text?: string;
+}
+
 /** Props for the ITSidebar vertical navigation component. */
 export interface ITSidebarProps {
   /** Navigation structure: top-level items with optional sub-items. */
@@ -115,5 +126,11 @@ export interface ITSidebarProps {
    * while collapsed, showing just the icon and the counter.
    */
   notification?: ITSidebarNotification;
+  /**
+   * Brand (logo + wordmark) pinned at the very top of the sidebar, in a 64px
+   * row that lines up with the top bar. Unlike {@link ITSidebarProps.header}
+   * the logo stays visible while collapsed. `ITLayout` fills it from
+   * `topBar.logo` / `topBar.logoText` when `sidebarFullHeight` is set.
+   */
+  brand?: ITSidebarBrand;
 }
-

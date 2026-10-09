@@ -103,7 +103,7 @@ import type { ITSearchSelectProps } from "./components/molecules/search-select/s
 import type { ITSelectProps } from "./components/molecules/select/select.props";
 import type { ITSearchTableProps } from "./components/organisms/searchTable/searchTable.props";
 import type { ITSegmentedControlProps } from "./components/atoms/segmented-control/segmented-control.props";
-import type { ITSidebarProps, ITSidebarNotification, ITNavigationItem, ITNavigationSubItem, ITNavigationSubItemEntry, ITNavigationSubItemGroup } from "./components/organisms/sidebar/sidebar.props";
+import type { ITSidebarProps, ITSidebarNotification, ITSidebarBrand, ITNavigationItem, ITNavigationSubItem, ITNavigationSubItemEntry, ITNavigationSubItemGroup } from "./components/organisms/sidebar/sidebar.props";
 import type { ITSkeletonProps } from "./components/atoms/skeleton/skeleton.props";
 import type { ITSlideToggleProps } from "./components/atoms/slide/slide.props";
 import type { ITSliderProps } from "./components/atoms/slider/slider.props";
@@ -127,8 +127,8 @@ import ITLoader from "./components/atoms/loader/loader";
 import type { LoaderProps as ITLoaderProps } from "./components/atoms/loader/loader.props";
 import ITStepper from "./components/molecules/stepper/stepper";
 import type { ITStepperProps } from "./components/molecules/stepper/stepper.props";
-import ITThemeProvider, { useITTheme, useITThemeSafe } from "./components/theme-provider/themeProvider";
-import type { ITThemeProviderProps, ITThemePalette } from "./components/theme-provider/themeProvider.props";
+import ITThemeProvider, { useITTheme, useITThemeSafe, useITFlatAppearance } from "./components/theme-provider/themeProvider";
+import type { ITThemeProviderProps, ITThemePalette, ITThemeAppearance } from "./components/theme-provider/themeProvider.props";
 import ITTimePicker from "./components/molecules/time-picker/timePicker";
 import type { ITTimePickerProps } from "./components/molecules/time-picker/timePicker.props";
 import type { ITThemeConfig } from "./theme/theme.types";
@@ -153,7 +153,7 @@ export {
   ITSearchTable,
   ITSegmentedControl, ITSidebar, ITSkeleton, ITSlideToggle, ITSlider, ITStack, ITStatCard, ITStepper,
   ITTable, ITTabs, ITText, ITTextarea, ITTripleFilter, ITThemeProvider,
-  useITTheme, useITThemeSafe, ITTimePicker, ITToast, ITWysiwyg,
+  useITTheme, useITThemeSafe, useITFlatAppearance, ITTimePicker, ITToast, ITWysiwyg,
   UploadStatus, FileTypeEnum,
   getContrastTextColor, isLightColor, resolveCssColor
 };
@@ -176,7 +176,7 @@ export {
     ITPageProps, ITPageHeaderProps,
     ITNavigationItem, ITNavigationSubItem,
     ITNavigationSubItemEntry, ITNavigationSubItemGroup,
-    ITSidebarNotification,
+    ITSidebarNotification, ITSidebarBrand,
     ITPaginationProps, ITPopoverProps, ITProgressProps,
     ITRadioGroupProps, ITRadioOption, ITSelectProps, ITSearchSelectProps,
     ITSearchTableProps,
@@ -184,7 +184,7 @@ export {
     ITStackProps, ITStatCardProps, ITStepperProps,
     ITTableProps, ITTabsProps, ITTabItem, ITTextProps, ITTextareaProps,
     TableDensity,
-    ITTripleFilterProps, ITTripleFilterOption, ITThemeConfig, ITThemeProviderProps, ITThemePalette,
+    ITTripleFilterProps, ITTripleFilterOption, ITThemeConfig, ITThemeProviderProps, ITThemePalette, ITThemeAppearance,
     ITTimePickerProps, ITToastProps,
     ITWysiwygProps,
     UseTableStateOptions, UseTableStateResult

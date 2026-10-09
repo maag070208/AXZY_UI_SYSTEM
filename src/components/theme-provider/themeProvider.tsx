@@ -73,7 +73,7 @@ import { DEFAULT_PALETTE, PRESETS } from "./themePresets";
 // Contexto y hooks (useITTheme / useITThemeSafe) viven en @/theme/theme-context.
 // Re-exportados desde aquí para mantener compatibilidad de la API pública.
 // eslint-disable-next-line react-refresh/only-export-components
-export { useITTheme, useITThemeSafe } from "@/theme/theme-context";
+export { useITTheme, useITThemeSafe, useITFlatAppearance } from "@/theme/theme-context";
 
 const getNestedValue = (obj: any, path: string) => {
   return path.split(".").reduce((acc, part) => acc && acc[part], obj);
@@ -143,6 +143,7 @@ export default function ITThemeProvider({
   density = 1,
   radius,
   shadow,
+  appearance = "soft",
 }: ITThemeProviderProps) {
   const [palette, setPaletteState] = useState<ITThemePalette>(() => {
     const basePalette = {
@@ -275,6 +276,14 @@ export default function ITThemeProvider({
       root.style.fontSize = "";
     };
   }, [density]);
+
+  // Lenguaje visual: se publica en <html> para que el CSS de la app pueda
+  // seguirlo; los componentes lo leen del contexto (useITFlatAppearance).
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute("data-it-appearance", appearance);
+    return () => root.removeAttribute("data-it-appearance");
+  }, [appearance]);
 
   // Overrides globales de radius y sombras.
   // Radius: en Tailwind v4 cada `rounded-*` resuelve a var(--radius-*), así que
@@ -1611,6 +1620,7 @@ export default function ITThemeProvider({
         resolvedTheme,
         darkModeMode,
         setDarkModeMode,
+        appearance,
       }}
     >
       {children}

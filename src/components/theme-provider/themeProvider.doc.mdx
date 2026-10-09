@@ -17,6 +17,7 @@ Root theme context that injects CSS custom properties into the entire component 
 | `density` | `number` | `1` | Global density/compactness factor: values below `1` shrink base sizes (fonts, paddings, gaps), above `1` grow them. Applies by scaling the root font-size so every `rem`-based token compacts together while the layout stays fluid. Clamped to `0.5`–`1.5`. |
 | `radius` | `number` | — | Global border radius in **px** applied to the whole rounding scale. `2` ⇒ 2px corners (near-square), `8` ⇒ 8px, `0` ⇒ square. No override when omitted (Tailwind defaults). |
 | `shadow` | `number` | `2` | Global shadow strength level: `0` ⇒ none, `1` ⇒ subtle, `2` ⇒ default current look, `3` ⇒ pronounced. No override when omitted (keeps defaults). |
+| `appearance` | `"soft" \| "flat"` | `"soft"` | Visual language. `"flat"` switches `ITCard`, `ITSidebar`, `ITTopBar` and `ITPageHeader` to flat surfaces (hairline borders, no shadows, no header icon tile) and sets `data-it-appearance` on `<html>`. Read it in your own components with `useITFlatAppearance()`. |
 
 ### ITThemePalette Shape
 

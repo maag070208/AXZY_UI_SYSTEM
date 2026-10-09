@@ -1,3 +1,7 @@
+import type { ITThemeAppearance } from "@/theme/theme.types";
+
+export type { ITThemeAppearance };
+
 export interface ITThemePalette {
   /** Main brand accent color (hex). Drives primary buttons, active nav items, focus rings, links, and the `--color-primary` CSS variable. @default "#06b6d4" */
   primary: string;
@@ -54,4 +58,6 @@ export interface ITThemeProviderProps {
   radius?: number;
   /** Global shadow strength level. `0` ⇒ no shadows, `1` ⇒ subtle, `2` ⇒ default current look, `3` ⇒ pronounced. Shadows are injected as `--shadow-*`/`.shadow-*` overrides so cards, dropdowns and dialogs follow the level. @default 2 (keeps current default when omitted) */
   shadow?: number;
+  /** Visual language of the whole system. `"soft"` keeps the current look (floating cards, tinted shadows, glass sidebar/top bar). `"flat"` switches the app shell and surfaces to flat ones: hairline borders instead of shadows on `ITCard`, a plain `ITSidebar` (no glow, no accent bar, narrower), a plain `ITTopBar` (no shadow, initials avatar) and a compact `ITPageHeader` without the icon tile. It also sets `data-it-appearance` on `<html>` so app CSS can follow it. Combine it with `shadow` and `radius` to finish the look. @default "soft" */
+  appearance?: ITThemeAppearance;
 }

@@ -12,4 +12,12 @@ export interface ITLayoutProps {
   className?: string;
   /** Additional CSS classes for the content container */
   contentClassName?: string;
+  /**
+   * App-shell arrangement. `false` (default): the top bar spans the full width
+   * and the sidebar sits below it. `true`: the sidebar spans the full viewport
+   * height and shows the brand (`topBar.logo` + `topBar.logoText`) at its top,
+   * while the top bar covers only the content column and drops the logo from
+   * the `lg` breakpoint up. Mobile is unchanged. @default false
+   */
+  sidebarFullHeight?: boolean;
 } 

@@ -49,4 +49,11 @@ export interface ITTopBarProps {
   showMobileMenuButton?: boolean;
   /** Callback fired when the mobile menu toggle button is clicked. */
   onToggleMobileMenu?: () => void;
+  /**
+   * Hides the logo and `logoText` from the `lg` breakpoint up and left-aligns
+   * `centerContent`. Use it when the brand already lives somewhere else (e.g.
+   * at the top of a full-height sidebar); `ITLayout` sets it for you when
+   * `sidebarFullHeight` is on. Below `lg` the logo is still shown. @default false
+   */
+  hideBrandOnDesktop?: boolean;
 }

@@ -63,6 +63,23 @@ Es el componente raíz que envuelve la app. Inyecta un tag `<style>` en `<head>`
 </ITThemeProvider>
 ```
 
+**Aspecto (`appearance`)** — lenguaje visual de todo el sistema, opt-in y sin romper el default:
+
+```tsx
+<ITThemeProvider theme={palette} appearance="flat" radius={10} shadow={1}>
+  <App />
+</ITThemeProvider>
+```
+
+| Valor | Qué hace |
+|---|---|
+| `"soft"` (default) | Aspecto actual: tarjetas flotantes, sombras tintadas, sidebar/topbar tipo cristal. |
+| `"flat"` | Superficies planas: `ITCard` con borde fino y sin sombra · `ITSidebar` liso (sin blur/sombra, 248px, activo como píldora primaria suave, sin barra de acento) · `ITTopBar` liso de 64px (sin sombra, avatar con iniciales, nombre antes del avatar, sin punto verde) · `ITPageHeader` compacto y **sin el recuadro del icono**. |
+
+- También pone `data-it-appearance="soft|flat"` en `<html>` para que el CSS de la app lo siga (`:root[data-it-appearance="flat"] { --it-layout-bg: #f5f6fa; }`).
+- Componentes propios leen el aspecto con `useITFlatAppearance()` (devuelve `false` fuera del provider).
+- Para la barra lateral de alto completo con la marca arriba usa `<ITLayout sidebarFullHeight …>` (independiente del aspecto).
+
 ### Context API
 
 ```tsx
