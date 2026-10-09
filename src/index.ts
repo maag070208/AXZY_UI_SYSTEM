@@ -54,6 +54,7 @@ import ITSlideToggle from "./components/atoms/slide/slide";
 import ITSlider from "./components/atoms/slider/slider";
 import ITStack from "./components/atoms/stack/stack";
 import ITStatCard from "./components/molecules/stat-card/stat-card";
+import ITLineBarChart from "./components/molecules/line-bar-chart/line-bar-chart";
 import ITTable from "./components/molecules/table/table";
 import ITText from "./components/atoms/text/text";
 import ITTextarea from "./components/atoms/textarea/textarea";
@@ -109,6 +110,7 @@ import type { ITSlideToggleProps } from "./components/atoms/slide/slide.props";
 import type { ITSliderProps } from "./components/atoms/slider/slider.props";
 import type { ITStackProps } from "./components/atoms/stack/stack.props";
 import type { ITStatCardProps } from "./components/molecules/stat-card/stat-card.props";
+import type { ITLineBarChartProps, ITLineBarDatum } from "./components/molecules/line-bar-chart/line-bar-chart.props";
 import type { ITTableProps, Column, ColumnFilterMode } from "./components/molecules/table/table.props";
 import type { ITTextProps } from "./components/atoms/text/text.props";
 import type { ITTextareaProps } from "./components/atoms/textarea/textarea.props";
@@ -151,7 +153,7 @@ export {
   ITLoader,   ITNavbar, ITPage, ITPageHeader, ITPagination, ITPopover, ITProgress,
   ITRadioGroup, ITSelect, ITSearchSelect,
   ITSearchTable,
-  ITSegmentedControl, ITSidebar, ITSkeleton, ITSlideToggle, ITSlider, ITStack, ITStatCard, ITStepper,
+  ITSegmentedControl, ITSidebar, ITSkeleton, ITSlideToggle, ITSlider, ITStack, ITStatCard, ITStepper, ITLineBarChart,
   ITTable, ITTabs, ITText, ITTextarea, ITTripleFilter, ITThemeProvider,
   useITTheme, useITThemeSafe, useITFlatAppearance, ITTimePicker, ITToast, ITWysiwyg,
   UploadStatus, FileTypeEnum,
@@ -181,7 +183,7 @@ export {
     ITRadioGroupProps, ITRadioOption, ITSelectProps, ITSearchSelectProps,
     ITSearchTableProps,
     ITSegmentedControlProps, ITSidebarProps, ITSkeletonProps, ITSlideToggleProps, ITSliderProps,
-    ITStackProps, ITStatCardProps, ITStepperProps,
+    ITStackProps, ITStatCardProps, ITStepperProps, ITLineBarChartProps, ITLineBarDatum,
     ITTableProps, ITTabsProps, ITTabItem, ITTextProps, ITTextareaProps,
     TableDensity,
     ITTripleFilterProps, ITTripleFilterOption, ITThemeConfig, ITThemeProviderProps, ITThemePalette, ITThemeAppearance,

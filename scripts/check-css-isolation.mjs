@@ -61,8 +61,53 @@ if (existsSync(DIST_CSS)) {
   }
 }
 
+
+// 4) El dist no debe exponer utilidades de Tailwind sin capa: al importarlas, un
+//    consumidor las recibe en SU capa `utilities` (la última) y pisan las suyas
+//    (un `lg:grid-cols-3` de aquí ganaba a un `xl:grid-cols-4` de la app).
+//    Debe existir `dist/layered.css` con todo envuelto en `@layer axzy-ui-system`.
+if (existsSync(DIST_CSS)) {
+  const layeredPath = resolve(ROOT, "dist/layered.css");
+  if (!existsSync(layeredPath)) {
+    errors.push("dist/layered.css missing: run `pnpm build:css` (variante en capa propia)");
+  } else {
+    const layered = readFileSync(layeredPath, "utf8").trim();
+    if (!layered.startsWith("@layer axzy-ui-system")) {
+      errors.push("dist/layered.css must wrap everything in `@layer axzy-ui-system`");
+    }
+    const dist = readFileSync(DIST_CSS, "utf8");
+    // `dist/index.css` se mantiene sin capa por compatibilidad: si algún día se
+    // envuelve, el consumidor que ya lo importa en una capa anidaría capas.
+    if (dist.trimStart().startsWith("@layer axzy-ui-system")) {
+      errors.push("dist/index.css must stay unlayered (compatibilidad); usa dist/layered.css");
+    }
+  }
+}
+
 if (errors.length) {
   console.error("✖ CSS ISOLATION VIOLATIONS:\n" + errors.join("\n"));
   process.exit(1);
 }
 console.log("✔ CSS isolation OK: no generic selectors/tokens, no duplicate classes.");
+
+// 4) El dist no debe exponer utilidades de Tailwind sin capa: al importarlas, un
+//    consumidor las recibe en SU capa `utilities` (la última) y pisan las suyas
+//    (un `lg:grid-cols-3` de aquí ganaba a un `xl:grid-cols-4` de la app).
+//    Debe existir `dist/layered.css` con todo envuelto en `@layer axzy-ui-system`.
+if (existsSync(DIST_CSS)) {
+  const layeredPath = resolve(ROOT, "dist/layered.css");
+  if (!existsSync(layeredPath)) {
+    errors.push("dist/layered.css missing: run `pnpm build:css` (variante en capa propia)");
+  } else {
+    const layered = readFileSync(layeredPath, "utf8").trim();
+    if (!layered.startsWith("@layer axzy-ui-system")) {
+      errors.push("dist/layered.css must wrap everything in `@layer axzy-ui-system`");
+    }
+    const dist = readFileSync(DIST_CSS, "utf8");
+    // `dist/index.css` se mantiene sin capa por compatibilidad: si algún día se
+    // envuelve, el consumidor que ya lo importa en una capa anidaría capas.
+    if (dist.trimStart().startsWith("@layer axzy-ui-system")) {
+      errors.push("dist/index.css must stay unlayered (compatibilidad); usa dist/layered.css");
+    }
+  }
+}

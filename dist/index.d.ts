@@ -3371,6 +3371,43 @@ interface ITStatCardProps {
  */
 declare function ITStatCard({ label, value, trend, trendDirection, icon, color, className, style, onClick, }: ITStatCardProps): react_jsx_runtime.JSX.Element;
 
+interface ITLineBarDatum {
+    /** Etiqueta del eje (p. ej. «May»). */
+    label: string;
+    /** Serie de la línea (ingresos). */
+    line: number;
+    /** Serie de las barras (gastos). */
+    bar: number;
+}
+interface ITLineBarChartProps {
+    data: ITLineBarDatum[];
+    /** Etiqueta accesible del gráfico. */
+    ariaLabel: string;
+    /** Nombre de la serie de la línea (leyenda y tooltip). */
+    lineLabel?: string;
+    /** Nombre de la serie de barras (leyenda y tooltip). */
+    barLabel?: string;
+    /** Color de la línea (por defecto el verde de la casa). */
+    lineColor?: string;
+    /** Color de las barras. */
+    barColor?: string;
+    height?: number;
+    /** Formatea los valores del tooltip; por defecto número con separadores. */
+    formatValue?: (value: number) => string;
+    /** Texto del eje Y; por defecto número compacto. */
+    formatAxis?: (value: number) => string;
+    className?: string;
+}
+
+/**
+ * Barras + línea en SVG puro (sin librería de gráficas). Pensado para comparar
+ * dos series por periodo —ingresos contra gastos, cobrado contra proyectado—:
+ * las barras van al fondo y la línea con su área encima, con tooltip al pasar
+ * el cursor. El SVG escala con `viewBox`, así que el trazo y el texto no se
+ * deforman al cambiar el ancho del contenedor.
+ */
+declare function ITLineBarChart({ data, ariaLabel, lineLabel, barLabel, lineColor, barColor, height, formatValue, formatAxis, className, }: ITLineBarChartProps): react_jsx_runtime.JSX.Element;
+
 /**
  * A feature-rich data table with per-column filtering, sortable columns,
  * pagination, boolean/catalog type support, and currency formatting.
@@ -4276,4 +4313,4 @@ declare const resolveCssColor: (colorStr: string, palette?: ITThemePalette, isDa
  */
 declare const getContrastTextColor: (bgColor: string, palette?: ITThemePalette, isDarkMode?: boolean) => "text-white" | "text-slate-800";
 
-export { type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITLayout, type ITLayoutProps, ITLoader, type LoaderProps as ITLoaderProps, ITMaskedInput, type ITMaskedInputProps, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarBrand, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeAppearance, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type TableDensity, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITFlatAppearance, useITTheme, useITThemeSafe, useTableState };
+export { type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITLayout, type ITLayoutProps, ITLineBarChart, type ITLineBarChartProps, type ITLineBarDatum, ITLoader, type LoaderProps as ITLoaderProps, ITMaskedInput, type ITMaskedInputProps, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarBrand, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeAppearance, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type TableDensity, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITFlatAppearance, useITTheme, useITThemeSafe, useTableState };
