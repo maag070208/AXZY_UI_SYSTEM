@@ -58,8 +58,15 @@ export function ITLineBarChart({
 
   const active = hover !== null ? data[hover] : null;
 
+  /** Posición del tooltip en % del ancho, para que siga al punto sin salir del gráfico. */
+  const tooltipLeft = (() => {
+    if (hover === null) return 0;
+    const center = (x(hover) / width) * 100;
+    return Math.min(Math.max(center, 12), 88);
+  })();
+
   return (
-    <div className={`flex flex-col gap-3 ${className}`.trim()}>
+    <div className={`relative flex flex-col gap-3 ${className}`.trim()}>
       <svg
         role="img"
         aria-label={ariaLabel}
@@ -136,21 +143,23 @@ export function ITLineBarChart({
           </g>
         ))}
 
-        {active && hover !== null && (
-          <g transform={`translate(${Math.min(Math.max(x(hover) - 62, 4), width - 132)}, ${padding.top + 4})`}>
-            <rect width={128} height={46} rx={6} fill="#0f172a" opacity={0.9} />
-            <text x={10} y={18} fontSize={10} fill="#e2e8f0">
-              {active.label}
-            </text>
-            <text x={10} y={32} fontSize={10} fill={lineColor}>
-              {lineLabel}: {formatValue(active.line)}
-            </text>
-            <text x={10} y={44} fontSize={10} fill="#93c5fd">
-              {barLabel}: {formatValue(active.bar)}
-            </text>
-          </g>
-        )}
       </svg>
+
+      {active && (
+        <div
+          className="pointer-events-none absolute z-10 -translate-x-1/2 rounded-lg px-2.5 py-1.5 shadow-lg"
+          style={{ left: `${tooltipLeft}%`, top: 4, background: "#0f172a", opacity: 0.94, minWidth: 132 }}
+          role="status"
+        >
+          <p className="text-[10px] font-semibold" style={{ color: "#e2e8f0" }}>{active.label}</p>
+          <p className="text-[11px] tabular-nums" style={{ color: lineColor }}>
+            {lineLabel}: {formatValue(active.line)}
+          </p>
+          <p className="text-[11px] tabular-nums" style={{ color: "#93c5fd" }}>
+            {barLabel}: {formatValue(active.bar)}
+          </p>
+        </div>
+      )}
 
       <ul className="flex flex-wrap items-center gap-4 text-[11px]" style={{ color: "#475569" }}>
         <li>
