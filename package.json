@@ -19,6 +19,7 @@
       "require": "./dist/index.cjs"
     },
     "./dist/index.css": "./dist/index.css",
+    "./layered.css": "./dist/layered.css",
     "./style": "./dist/index.css"
   },
   "files": [
