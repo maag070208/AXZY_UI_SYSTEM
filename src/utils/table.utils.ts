@@ -1,5 +1,13 @@
-export const formatCurrencyMX = (value: number) => {
-  return value.toLocaleString("es-MX", {
+/**
+ * Formatea un número como moneda MXN.
+ *
+ * @param value - Importe a formatear.
+ * @param locale - Locale BCP-47 para `Intl.NumberFormat`. Por defecto `"es-MX"`
+ *   para mantener el comportamiento histórico; los componentes pasan la locale
+ *   activa del provider (`toIntlLocale(locale)`).
+ */
+export const formatCurrencyMX = (value: number, locale: string = "es-MX") => {
+  return value.toLocaleString(locale, {
     style: "currency",
     currency: "MXN",
   });

@@ -23,8 +23,10 @@ import {
 } from "../index";
 import { ShowcaseLayout, CodeViewer } from "./ShowcaseLayout";
 import ITFlex from "../components/atoms/flex/flex";
+import { useITTranslation } from "@/i18n";
 
 const CodeExampleBlock = ({ title, desc, code, children }: { title: string; desc: string; code: string; children: React.ReactNode }) => {
+  const { t } = useITTranslation();
   const [showCode, setShowCode] = useState(false);
   return (
     <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
@@ -37,7 +39,7 @@ const CodeExampleBlock = ({ title, desc, code, children }: { title: string; desc
           <ITButton variant="outlined" color="gray" size="sm" onClick={() => setShowCode(!showCode)}>
             <ITFlex align="center" gap={1}>
               <FaCode size={9} />
-              {showCode ? "Ocultar código" : "Ver código"}
+              {showCode ? t("showcase.common.hideCode") : t("showcase.common.showCode")}
             </ITFlex>
           </ITButton>
         </ITFlex>
@@ -54,6 +56,7 @@ const CodeExampleBlock = ({ title, desc, code, children }: { title: string; desc
 
 // 1. ITButton Showcase
 export const ButtonShowcase = () => {
+  const { t } = useITTranslation();
   const [color, setColor] = useState<any>("primary");
   const [size, setSize] = useState<any>("medium");
   const [variant, setVariant] = useState<any>("filled");
@@ -66,12 +69,12 @@ export const ButtonShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITButton"
-      description="Botón premium con soporte completo de variantes, colores del tema, icono y estados."
+      description={t("showcase.forms.buttonDesc")}
       code={code}
       demo={
         <div className="flex flex-col items-center gap-3">
           <ITButton
-            label="Hacer Click"
+            label={t("showcase.forms.clickMe")}
             color={color}
             size={size}
             variant={variant}
@@ -81,7 +84,7 @@ export const ButtonShowcase = () => {
           />
           {clickCount > 0 && (
             <span className="text-xs font-mono text-slate-500 animate-pulse">
-              Clicks registrados: {clickCount}
+              {t("showcase.forms.clicksRegistered", { count: clickCount })}
             </span>
           )}
         </div>
@@ -90,7 +93,7 @@ export const ButtonShowcase = () => {
         <>
           <ITSelect
             name="color"
-            label="Color"
+            label={t("showcase.common.color")}
             value={color}
             onChange={(e: any) => setColor(e.target.value)}
             options={[
@@ -106,7 +109,7 @@ export const ButtonShowcase = () => {
           />
           <ITSelect
             name="size"
-            label="Tamaño"
+            label={t("showcase.common.size")}
             value={size}
             onChange={(e: any) => setSize(e.target.value)}
             options={[
@@ -117,7 +120,7 @@ export const ButtonShowcase = () => {
           />
           <ITSelect
             name="variant"
-            label="Variante"
+            label={t("showcase.common.variant")}
             value={variant}
             onChange={(e: any) => setVariant(e.target.value)}
             options={[
@@ -131,11 +134,11 @@ export const ButtonShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">Con Icono</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.withIcon")}</span>
             <ITSlideToggle isOn={withIcon} onToggle={setWithIcon} size="sm" />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">Deshabilitado</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
             <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
           </div>
         </>
@@ -143,16 +146,16 @@ export const ButtonShowcase = () => {
       gallery={
         <div className="space-y-6">
           <div>
-            <h4 className="text-sm font-bold text-slate-700 mb-3">Con Icono</h4>
+            <h4 className="text-sm font-bold text-slate-700 mb-3">{t("showcase.forms.galleryWithIcon")}</h4>
             <div className="flex flex-wrap gap-3">
-              <ITButton label="Guardar" icon={<FaSave />} color="success" />
-              <ITButton label="Editar" icon={<FaEdit />} color="info" />
-              <ITButton label="Eliminar" icon={<FaTrash />} color="danger" variant="outlined" />
-              <ITButton label="Sincronizar" icon={<FaSync />} variant="text" />
+              <ITButton label={t("showcase.common.save")} icon={<FaSave />} color="success" />
+              <ITButton label={t("showcase.common.edit")} icon={<FaEdit />} color="info" />
+              <ITButton label={t("showcase.common.delete")} icon={<FaTrash />} color="danger" variant="outlined" />
+              <ITButton label={t("showcase.forms.sync")} icon={<FaSync />} variant="text" />
             </div>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-700 mb-3">Variantes</h4>
+            <h4 className="text-sm font-bold text-slate-700 mb-3">{t("showcase.forms.galleryVariants")}</h4>
             <div className="flex flex-wrap gap-3">
               <ITButton label="Filled" variant="filled" />
               <ITButton label="Outlined" variant="outlined" />
@@ -163,7 +166,7 @@ export const ButtonShowcase = () => {
             </div>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-700 mb-3">Colores Semánticos</h4>
+            <h4 className="text-sm font-bold text-slate-700 mb-3">{t("showcase.forms.gallerySemanticColors")}</h4>
             <div className="flex flex-wrap gap-3">
               <ITButton label="Primary" color="primary" />
               <ITButton label="Secondary" color="secondary" />
@@ -182,6 +185,7 @@ export const ButtonShowcase = () => {
 
 // 2. ITInput Showcase
 export const InputShowcase = () => {
+  const { t } = useITTranslation();
   const [selectedInput, setSelectedInput] = useState<
     "text" | "password" | "select" | "searchselect" | "datepicker" | "timepicker" | "toggle" | "dropfile" | "form"
   >("text");
@@ -208,8 +212,8 @@ export const InputShowcase = () => {
   });
   const [submittedData, setSubmittedData] = useState<any>(null);
 
-  const [label, setLabel] = useState("Nombre de Usuario");
-  const [placeholder, setPlaceholder] = useState("Escribe tu apodo...");
+  const [label, setLabel] = useState(t("showcase.forms.inputUserLabel"));
+  const [placeholder, setPlaceholder] = useState(t("showcase.forms.inputUserPlaceholder"));
   const [variant, setVariant] = useState<any>("primary");
   const [disabled, setDisabled] = useState(false);
   const [required, setRequired] = useState(false);
@@ -220,27 +224,27 @@ export const InputShowcase = () => {
   const [showFormErrors, setShowFormErrors] = useState(false);
 
   const formErrors = showFormErrors ? {
-    name: "El nombre es obligatorio",
-    email: "Formato de correo no válido",
-    password: "La contraseña es muy corta",
-    role: "Debes elegir un rol administrativo",
-    country: "Debes elegir tu país de residencia",
-    birthday: "Fecha incorrecta",
-    meetingTime: "Hora no permitida",
-    file: "Debes adjuntar un archivo"
+    name: t("showcase.forms.errName"),
+    email: t("showcase.forms.errEmail"),
+    password: t("showcase.forms.errPassword"),
+    role: t("showcase.forms.errRole"),
+    country: t("showcase.forms.errCountry"),
+    birthday: t("showcase.forms.errBirthday"),
+    meetingTime: t("showcase.forms.errTime"),
+    file: t("showcase.forms.errFile")
   } : {} as any;
 
   useEffect(() => {
     if (selectedInput !== "form") {
       const DEFAULT_PROPS: Record<string, { label: string; placeholder: string }> = {
-        text: { label: "Nombre de Usuario", placeholder: "Escribe tu apodo..." },
-        password: { label: "Contraseña", placeholder: "Introduce tu clave..." },
-        select: { label: "Rol Administrativo", placeholder: "Selecciona un rol" },
-        searchselect: { label: "País de Origen", placeholder: "Buscar país..." },
-        datepicker: { label: "Fecha de Registro", placeholder: "Elige una fecha" },
-        timepicker: { label: "Hora de Turno", placeholder: "Elige una hora" },
-        toggle: { label: "Habilitar Notificaciones", placeholder: "" },
-        dropfile: { label: "Subir Documento", placeholder: "" }
+        text: { label: t("showcase.forms.inputUserLabel"), placeholder: t("showcase.forms.inputUserPlaceholder") },
+        password: { label: t("showcase.forms.inputPasswordLabel"), placeholder: t("showcase.forms.inputPasswordPlaceholder") },
+        select: { label: t("showcase.forms.inputSelectLabel"), placeholder: t("showcase.forms.inputSelectPlaceholder") },
+        searchselect: { label: t("showcase.forms.inputCountryLabel"), placeholder: t("showcase.forms.inputCountryPlaceholder") },
+        datepicker: { label: t("showcase.forms.inputDateLabel"), placeholder: t("showcase.forms.inputDatePlaceholder") },
+        timepicker: { label: t("showcase.forms.inputTimeLabel"), placeholder: t("showcase.forms.inputTimePlaceholder") },
+        toggle: { label: t("showcase.forms.inputToggleLabel"), placeholder: "" },
+        dropfile: { label: t("showcase.forms.inputFileLabel"), placeholder: "" }
       };
       const defaults = DEFAULT_PROPS[selectedInput];
       if (defaults) {
@@ -248,7 +252,7 @@ export const InputShowcase = () => {
         setPlaceholder(defaults.placeholder);
       }
     }
-  }, [selectedInput]);
+  }, [selectedInput, t]);
 
   const code = useMemo(() => {
     if (selectedInput === "text") {
@@ -279,15 +283,15 @@ export const InputShowcase = () => {
   }, [selectedInput, label, placeholder, variant, disabled, required, errorInput, textVal, passVal, selectVal, searchSelectVal, timeVal, toggleVal, fileVal]);
 
   const tabs = [
-    { id: "text", label: "Texto" },
-    { id: "password", label: "Contraseña" },
+    { id: "text", label: t("showcase.forms.tabText") },
+    { id: "password", label: t("showcase.forms.tabPassword") },
     { id: "select", label: "Select" },
     { id: "searchselect", label: "SearchSelect" },
     { id: "datepicker", label: "DatePicker" },
     { id: "timepicker", label: "TimePicker" },
     { id: "toggle", label: "SlideToggle" },
     { id: "dropfile", label: "Dropfile" },
-    { id: "form", label: "Formulario" }
+    { id: "form", label: t("showcase.forms.tabForm") }
   ];
 
   const renderActiveInput = () => {
@@ -403,7 +407,7 @@ export const InputShowcase = () => {
       case "toggle":
         return (
           <div className="w-full max-w-sm flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-xl">
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{label || "Toggle Switch"}</span>
+            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{label || t("showcase.forms.toggleSwitch")}</span>
             <ITSlideToggle
               isOn={toggleVal}
               onToggle={setToggleVal}
@@ -434,7 +438,7 @@ export const InputShowcase = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <ITInput
                 name="form_name"
-                label="Nombre Completo"
+                label={t("showcase.forms.fullName")}
                 placeholder="Juan Pérez"
                 value={formData.name}
                 onChange={(e: any) => setFormData(prev => ({ ...prev, name: e.target.value }))}
@@ -446,7 +450,7 @@ export const InputShowcase = () => {
               />
               <ITInput
                 name="form_email"
-                label="Correo Electrónico"
+                label={t("showcase.forms.email")}
                 placeholder="juan@ejemplo.com"
                 value={formData.email}
                 onChange={(e: any) => setFormData(prev => ({ ...prev, email: e.target.value }))}
@@ -461,7 +465,7 @@ export const InputShowcase = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <ITInput
                 name="form_password"
-                label="Contraseña"
+                label={t("showcase.forms.password")}
                 type="password"
                 placeholder="••••••••"
                 value={formData.password}
@@ -474,7 +478,7 @@ export const InputShowcase = () => {
               />
               <ITSelect
                 name="form_role"
-                label="Rol de Usuario"
+                label={t("showcase.forms.userRole")}
                 value={formData.role}
                 onChange={(e: any) => setFormData(prev => ({ ...prev, role: e.target.value }))}
                 options={[
@@ -492,7 +496,7 @@ export const InputShowcase = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <ITSearchSelect
                 name="form_country"
-                label="País de Residencia"
+                label={t("showcase.forms.countryResidence")}
                 value={formData.country}
                 onChange={(val: string) => setFormData(prev => ({ ...prev, country: val }))}
                 options={[
@@ -509,7 +513,7 @@ export const InputShowcase = () => {
               />
               <ITDatePicker
                 name="form_birthday"
-                label="Fecha de Nacimiento"
+                label={t("showcase.forms.birthDate")}
                 value={formData.birthday}
                 onChange={(e: any) => setFormData(prev => ({ ...prev, birthday: e.target.value }))}
                 variant={formVariant}
@@ -523,7 +527,7 @@ export const InputShowcase = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
               <ITTimePicker
                 name="form_time"
-                label="Hora de Entrada"
+                label={t("showcase.forms.entryTime")}
                 value={formData.meetingTime}
                 onChange={(e: any) => setFormData(prev => ({ ...prev, meetingTime: e.target.value }))}
                 variant={formVariant}
@@ -533,7 +537,7 @@ export const InputShowcase = () => {
                 touched={showFormErrors ? true : undefined}
               />
               <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-xl h-[64px]">
-                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Recibir Boletín</span>
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{t("showcase.forms.newsletter")}</span>
                 <ITSlideToggle
                   isOn={formData.newsletter}
                   onToggle={(val) => setFormData(prev => ({ ...prev, newsletter: val }))}
@@ -550,12 +554,12 @@ export const InputShowcase = () => {
             {formErrors.file && <p className="text-xs text-red-500 mt-1">{formErrors.file}</p>}
 
             <div className="flex justify-end pt-2">
-              <ITButton label="Enviar Formulario" color={formVariant} type="submit" disabled={formDisabled} />
+              <ITButton label={t("showcase.forms.submitForm")} color={formVariant} type="submit" disabled={formDisabled} />
             </div>
 
             {submittedData && (
               <div className="mt-4 p-4 bg-slate-950 text-emerald-400 font-mono text-[10px] sm:text-xs rounded-xl border border-slate-800">
-                <p className="font-bold mb-2">✓ Submit Data (JSON):</p>
+                <p className="font-bold mb-2">{t("showcase.forms.submitData")}</p>
                 <pre className="whitespace-pre-wrap">
                   {JSON.stringify(
                     {
@@ -600,8 +604,8 @@ export const InputShowcase = () => {
         title="ITInput Suite"
         description={
           selectedInput === "form"
-            ? "Formulario unificado con todos los tipos de campos de entrada (Texto, Menú, Búsqueda, Fechas, Horas, Toggles y Archivos) para validar su correcto comportamiento visual."
-            : `Sandbox interactivo para experimentar con el componente individual de tipo ${selectedInput.toUpperCase()}.`
+            ? t("showcase.forms.inputFormDesc")
+            : t("showcase.forms.inputSingleDesc", { type: selectedInput.toUpperCase() })
         }
         code={code}
         demo={renderActiveInput()}
@@ -610,7 +614,7 @@ export const InputShowcase = () => {
             <>
               <ITSelect
                 name="form_variant_ctrl"
-                label="Variante de Color de Botón"
+                label={t("showcase.forms.buttonColorVariant")}
                 value={formVariant}
                 onChange={(e: any) => setFormVariant(e.target.value)}
                 options={[
@@ -623,11 +627,11 @@ export const InputShowcase = () => {
                 ]}
               />
               <div className="flex items-center justify-between pt-2">
-                <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">Simular Errores</span>
+                <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.forms.simulateErrors")}</span>
                 <ITSlideToggle isOn={showFormErrors} onToggle={setShowFormErrors} size="sm" />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">Deshabilitar Todo</span>
+                <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.forms.disableAll")}</span>
                 <ITSlideToggle isOn={formDisabled} onToggle={setFormDisabled} activeColor="danger" size="sm" />
               </div>
             </>
@@ -635,7 +639,7 @@ export const InputShowcase = () => {
             <>
               <ITInput
                 name="label_ctrl"
-                label="Etiqueta (Label)"
+                label={t("showcase.forms.labelProp")}
                 value={label}
                 onChange={(e: any) => setLabel(e.target.value)}
                 onBlur={() => { }}
@@ -643,7 +647,7 @@ export const InputShowcase = () => {
               {["text", "password", "searchselect", "datepicker", "timepicker"].includes(selectedInput) && (
                 <ITInput
                   name="placeholder_ctrl"
-                  label="Placeholder"
+                  label={t("showcase.forms.placeholderLabel")}
                   value={placeholder}
                   onChange={(e: any) => setPlaceholder(e.target.value)}
                   onBlur={() => { }}
@@ -652,7 +656,7 @@ export const InputShowcase = () => {
               {["text", "password", "datepicker", "timepicker", "toggle"].includes(selectedInput) && (
                 <ITSelect
                   name="variant_ctrl"
-                  label="Variante de Color"
+                  label={t("showcase.forms.colorVariant")}
                   value={variant}
                   onChange={(e: any) => setVariant(e.target.value)}
                   options={[
@@ -667,18 +671,18 @@ export const InputShowcase = () => {
               )}
               <ITInput
                 name="error_ctrl"
-                label="Mensaje de Error"
+                label={t("showcase.forms.errorMessage")}
                 value={errorInput}
                 onChange={(e: any) => setErrorInput(e.target.value)}
                 onBlur={() => { }}
-                placeholder="Ej. Formato inválido"
+                placeholder={t("showcase.forms.invalidFormatPlaceholder")}
               />
               <div className="flex items-center justify-between pt-2">
-                <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">Requerido</span>
+                <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.common.required")}</span>
                 <ITSlideToggle isOn={required} onToggle={setRequired} size="sm" />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">Deshabilitado</span>
+                <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.common.disabled")}</span>
                 <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
               </div>
             </>
@@ -687,10 +691,10 @@ export const InputShowcase = () => {
         gallery={
           selectedInput === "form" ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <ITInput name="g1" label="Input Estándar" placeholder="Ingresa datos..." onChange={() => { }} onBlur={() => { }} />
-              <ITInput name="g2" label="Input Con Error" value="Email no válido" error="El formato del correo es incorrecto" onChange={() => { }} onBlur={() => { }} touched />
-              <ITInput name="g3" label="Input Deshabilitado" placeholder="Solo lectura" disabled onChange={() => { }} onBlur={() => { }} />
-              <ITInput name="g4" label="Input Contraseña" type="password" value="secreto123" onChange={() => { }} onBlur={() => { }} />
+              <ITInput name="g1" label={t("showcase.forms.inputStandard")} placeholder={t("showcase.forms.enterData")} onChange={() => { }} onBlur={() => { }} />
+              <ITInput name="g2" label={t("showcase.forms.inputWithError")} value="Email no válido" error={t("showcase.forms.emailFormatError")} onChange={() => { }} onBlur={() => { }} touched />
+              <ITInput name="g3" label={t("showcase.forms.inputDisabled")} placeholder={t("showcase.forms.readOnly")} disabled onChange={() => { }} onBlur={() => { }} />
+              <ITInput name="g4" label={t("showcase.forms.inputPassword")} type="password" value="secreto123" onChange={() => { }} onBlur={() => { }} />
             </div>
           ) : undefined
         }
@@ -701,8 +705,9 @@ export const InputShowcase = () => {
 
 // 3. ITSelect Showcase
 export const SelectShowcase = () => {
+  const { t } = useITTranslation();
   const [val, setVal] = useState("");
-  const [label, setLabel] = useState("Rol Administrativo");
+  const [label, setLabel] = useState(t("showcase.forms.inputSelectLabel"));
   const [disabled, setDisabled] = useState(false);
   const [error, setError] = useState("");
 
@@ -717,7 +722,7 @@ export const SelectShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITSelect"
-      description="Menú desplegable de selección simple optimizado con los estilos visuales AXZY."
+      description={t("showcase.forms.selectDesc")}
       code={code}
       demo={
         <div className="w-full max-w-sm">
@@ -731,24 +736,24 @@ export const SelectShowcase = () => {
             onChange={(e: any) => setVal(e.target.value)}
           />
           {val && (
-            <p className="mt-2 text-xs text-slate-500 font-mono">Selección: "{val}"</p>
+            <p className="mt-2 text-xs text-slate-500 font-mono">{t("showcase.forms.selection", { value: val })}</p>
           )}
         </div>
       }
       controls={
         <>
-          <ITInput name="label_ctrl" label="Label" value={label} onChange={(e: any) => setLabel(e.target.value)} onBlur={() => { }} />
-          <ITInput name="err_ctrl" label="Mensaje de Error" value={error} onChange={(e: any) => setError(e.target.value)} onBlur={() => { }} />
+          <ITInput name="label_ctrl" label={t("showcase.common.label")} value={label} onChange={(e: any) => setLabel(e.target.value)} onBlur={() => { }} />
+          <ITInput name="err_ctrl" label={t("showcase.forms.errorMessage")} value={error} onChange={(e: any) => setError(e.target.value)} onBlur={() => { }} />
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">Deshabilitado</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
             <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
           </div>
         </>
       }
       gallery={
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <ITSelect name="s1" label="Opción Simple" options={[{ label: "Chile", value: "cl" }]} onChange={() => { }} />
-          <ITSelect name="s2" label="Select Con Error" options={[]} error="Este campo es obligatorio" touched onChange={() => { }} />
+          <ITSelect name="s1" label={t("showcase.forms.simpleOption")} options={[{ label: "Chile", value: "cl" }]} onChange={() => { }} />
+          <ITSelect name="s2" label={t("showcase.forms.selectWithError")} options={[]} error={t("showcase.forms.requiredFieldError2")} touched onChange={() => { }} />
         </div>
       }
     />
@@ -757,6 +762,7 @@ export const SelectShowcase = () => {
 
 // 4. ITSearchSelect Showcase
 export const SearchSelectShowcase = () => {
+  const { t } = useITTranslation();
   const [val, setVal] = useState<any>("");
   const [customVal, setCustomVal] = useState<any>("MX");
   const [clearVal, setClearVal] = useState<any>("ES");
@@ -779,13 +785,13 @@ export const SearchSelectShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITSearchSelect"
-      description="Selector avanzado con barra de búsqueda para filtrar colecciones grandes o cargar opciones remotas."
+      description={t("showcase.forms.searchSelectDesc")}
       code={`${code}\n\n${customCode}`}
       demo={
         <div className="w-full max-w-sm">
           <ITSearchSelect
             name="country"
-            label="Seleccionar País"
+            label={t("showcase.forms.selectCountry")}
             value={val}
             options={options}
             isLoading={isLoading}
@@ -793,7 +799,7 @@ export const SearchSelectShowcase = () => {
             onChange={(value) => setVal(value)}
           />
           {val && (
-            <p className="mt-2 text-xs text-slate-500 font-mono">País seleccionado: "{val}"</p>
+            <p className="mt-2 text-xs text-slate-500 font-mono">{t("showcase.forms.countrySelected", { value: val })}</p>
           )}
         </div>
       }
@@ -801,11 +807,11 @@ export const SearchSelectShowcase = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="w-full max-w-sm">
             <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              Template personalizado (renderOption)
+              {t("showcase.forms.customTemplate")}
             </p>
             <ITSearchSelect
               name="country_custom"
-              label="País (template personalizado)"
+              label={t("showcase.forms.countryCustomLabel")}
               value={customVal}
               options={options}
               onChange={(value) => setCustomVal(value)}
@@ -819,24 +825,24 @@ export const SearchSelectShowcase = () => {
               )}
             />
             <p className="mt-2 text-xs text-slate-500 font-mono">
-              {customVal ? `País seleccionado: "${customVal}"` : "Sin selección"}
+              {customVal ? t("showcase.forms.countrySelected", { value: customVal }) : t("showcase.common.noSelection")}
             </p>
           </div>
 
           <div className="w-full max-w-sm">
             <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              Botón de limpiar (X)
+              {t("showcase.forms.clearButton")}
             </p>
             <ITSearchSelect
               name="country_clear"
-              label="País (clearable)"
+              label={t("showcase.forms.countryClearable")}
               value={clearVal}
               options={options}
               onChange={(value) => setClearVal(value)}
               onClear={() => setClearVal("")}
             />
             <p className="mt-2 text-xs text-slate-500 font-mono">
-              {clearVal ? `País seleccionado: "${clearVal}"` : "Sin selección"}
+              {clearVal ? t("showcase.forms.countrySelected", { value: clearVal }) : t("showcase.common.noSelection")}
             </p>
           </div>
         </div>
@@ -844,11 +850,11 @@ export const SearchSelectShowcase = () => {
       controls={
         <>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">Estado de Carga (Loading)</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.loadingState")}</span>
             <ITSlideToggle isOn={isLoading} onToggle={setIsLoading} size="sm" />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">Deshabilitado</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
             <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
           </div>
         </>
@@ -859,6 +865,7 @@ export const SearchSelectShowcase = () => {
 
 // 5. ITDatePicker Showcase
 export const DatePickerShowcase = () => {
+  const { t } = useITTranslation();
   const [val, setVal] = useState<any>(new Date());
   const [range, setRange] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -873,13 +880,13 @@ export const DatePickerShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITDatePicker"
-      description="Calendario de entrada de fechas estático y flotante con soporte para selección de rangos."
+      description={t("showcase.forms.datePickerDesc")}
       code={code}
       demo={
         <div className="w-full max-w-sm">
           <ITDatePicker
             name="showcase_datepicker"
-            label="Fecha del Evento"
+            label={t("showcase.forms.eventDate")}
             value={val}
             range={range}
             variant={variant}
@@ -888,8 +895,8 @@ export const DatePickerShowcase = () => {
           />
           {val && (
             <p className="mt-2 text-xs text-slate-500 font-mono">
-              Valor actual: {range && Array.isArray(val)
-                ? `Rango: ${val[0]?.toLocaleDateString() || "?"} - ${val[1]?.toLocaleDateString() || "?"}`
+              {t("showcase.forms.currentValue")} {range && Array.isArray(val)
+                ? t("showcase.forms.rangeValue", { from: val[0]?.toLocaleDateString() || "?", to: val[1]?.toLocaleDateString() || "?" })
                 : val instanceof Date
                   ? val.toLocaleDateString()
                   : String(val)
@@ -902,7 +909,7 @@ export const DatePickerShowcase = () => {
         <>
           <ITSelect
             name="variant_ctrl"
-            label="Tema de Color"
+            label={t("showcase.forms.colorTheme")}
             value={variant}
             onChange={(e: any) => setVariant(e.target.value)}
             options={[
@@ -915,11 +922,11 @@ export const DatePickerShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">Selección de Rango</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.rangeSelection")}</span>
             <ITSlideToggle isOn={range} onToggle={(r) => { setRange(r); setVal(r ? [new Date(), new Date()] : new Date()); }} size="sm" />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">Deshabilitado</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
             <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
           </div>
         </>
@@ -930,6 +937,7 @@ export const DatePickerShowcase = () => {
 
 // 6. ITTimePicker Showcase
 export const TimePickerShowcase = () => {
+  const { t } = useITTranslation();
   const [val, setVal] = useState("09:30");
   const [variant, setVariant] = useState<any>("primary");
   const [disabled, setDisabled] = useState(false);
@@ -939,13 +947,13 @@ export const TimePickerShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITTimePicker"
-      description="Selector de horas y minutos con panel interactivo de scroll suave."
+      description={t("showcase.forms.timePickerDesc")}
       code={code}
       demo={
         <div className="w-full max-w-sm">
           <ITTimePicker
             name="showcase_time"
-            label="Hora de Inicio"
+            label={t("showcase.forms.startTime")}
             value={val}
             variant={variant}
             disabled={disabled}
@@ -953,7 +961,7 @@ export const TimePickerShowcase = () => {
             onBlur={() => { }}
           />
           {val && (
-            <p className="mt-2 text-xs text-slate-500 font-mono">Hora elegida: "{val}"</p>
+            <p className="mt-2 text-xs text-slate-500 font-mono">{t("showcase.forms.timeChosen", { value: val })}</p>
           )}
         </div>
       }
@@ -961,7 +969,7 @@ export const TimePickerShowcase = () => {
         <>
           <ITSelect
             name="variant_ctrl"
-            label="Variante"
+            label={t("showcase.common.variant")}
             value={variant}
             onChange={(e: any) => setVariant(e.target.value)}
             options={[
@@ -975,7 +983,7 @@ export const TimePickerShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">Deshabilitado</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
             <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
           </div>
         </>
@@ -986,6 +994,7 @@ export const TimePickerShowcase = () => {
 
 // 7. ITCalendar Showcase
 export const CalendarShowcase = () => {
+  const { t } = useITTranslation();
   const [mode, setMode] = useState<'month' | 'week' | 'day'>('month');
   const [selectionMode, setSelectionMode] = useState<'single' | 'range'>('single');
   const [calendarVariant, setCalendarVariant] = useState<any>("primary");
@@ -999,7 +1008,7 @@ export const CalendarShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITCalendar"
-      description="Calendario completo con soporte para eventos y agendamiento diario/semanal."
+      description={t("showcase.forms.calendarDesc")}
       code={code}
       demo={
         <div className="w-full h-[450px]">
@@ -1008,8 +1017,8 @@ export const CalendarShowcase = () => {
             selectionMode={selectionMode}
             variant={calendarVariant}
             events={events}
-            onSlotClick={(date) => alert(`Click en horario: ${date.toLocaleString()}`)}
-            onEventClick={(evt) => alert(`Detalle del Evento: ${evt.title}`)}
+            onSlotClick={(date) => alert(t("showcase.forms.slotClick", { date: date.toLocaleString() }))}
+            onEventClick={(evt) => alert(t("showcase.forms.eventDetail", { title: evt.title }))}
           />
         </div>
       }
@@ -1017,7 +1026,7 @@ export const CalendarShowcase = () => {
         <>
           <ITSelect
             name="mode_ctrl"
-            label="Modo de Vista"
+            label={t("showcase.forms.viewMode")}
             value={mode}
             onChange={(e: any) => setMode(e.target.value)}
             options={[
@@ -1028,7 +1037,7 @@ export const CalendarShowcase = () => {
           />
           <ITSelect
             name="sel_ctrl"
-            label="Modo de Selección"
+            label={t("showcase.forms.selectionMode")}
             value={selectionMode}
             onChange={(e: any) => setSelectionMode(e.target.value)}
             options={[
@@ -1038,7 +1047,7 @@ export const CalendarShowcase = () => {
           />
           <ITSelect
             name="var_ctrl"
-            label="Variante de Color"
+            label={t("showcase.forms.colorVariant")}
             value={calendarVariant}
             onChange={(e: any) => setCalendarVariant(e.target.value)}
             options={[
@@ -1058,6 +1067,7 @@ export const CalendarShowcase = () => {
 
 // 8. ITSlideToggle Showcase
 export const SlideToggleShowcase = () => {
+  const { t } = useITTranslation();
   const [isOn, setIsOn] = useState(false);
   const [activeColor, setActiveColor] = useState<any>("success");
   const [size, setSize] = useState<any>("md");
@@ -1068,7 +1078,7 @@ export const SlideToggleShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITSlideToggle"
-      description="Interruptor de alternancia (Switch) estilizado para cambiar estados binarios."
+      description={t("showcase.forms.slideToggleDesc")}
       code={code}
       demo={
         <div className="flex flex-col items-center gap-3">
@@ -1080,7 +1090,7 @@ export const SlideToggleShowcase = () => {
             disabled={disabled}
           />
           <span className="text-xs font-mono text-slate-500">
-            Estado: {isOn ? "ENCENDIDO" : "APAGADO"}
+            {t("showcase.forms.stateLabel")} {isOn ? t("showcase.forms.stateOn") : t("showcase.forms.stateOff")}
           </span>
         </div>
       }
@@ -1088,7 +1098,7 @@ export const SlideToggleShowcase = () => {
         <>
           <ITSelect
             name="col_ctrl"
-            label="Color Activo"
+            label={t("showcase.forms.activeColor")}
             value={activeColor}
             onChange={(e: any) => setActiveColor(e.target.value)}
             options={[
@@ -1101,7 +1111,7 @@ export const SlideToggleShowcase = () => {
           />
           <ITSelect
             name="sz_ctrl"
-            label="Tamaño"
+            label={t("showcase.common.size")}
             value={size}
             onChange={(e: any) => setSize(e.target.value)}
             options={[
@@ -1111,7 +1121,7 @@ export const SlideToggleShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">Deshabilitar Switch</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.disableSwitch")}</span>
             <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
           </div>
         </>
@@ -1130,6 +1140,7 @@ export const SlideToggleShowcase = () => {
 
 // 9. ITDropfile Showcase
 export const DropfileShowcase = () => {
+  const { t } = useITTranslation();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [status, setStatus] = useState<any>("pendiente");
 
@@ -1138,7 +1149,7 @@ export const DropfileShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITDropfile"
-      description="Área interactiva para arrastrar y soltar archivos, con previsualización de imágenes y barra de progreso."
+      description={t("showcase.forms.dropfileDesc")}
       code={code}
       demo={
         <div className="w-full max-w-md">
@@ -1149,9 +1160,9 @@ export const DropfileShowcase = () => {
           />
           {selectedFile && (
             <div className="mt-4 p-3 bg-slate-50 dark:bg-slate-900 border rounded-lg text-xs font-mono">
-              <p>Nombre: {selectedFile.name}</p>
-              <p>Tamaño: {(selectedFile.size / 1024).toFixed(1)} KB</p>
-              <p>Tipo: {selectedFile.type}</p>
+              <p>{t("showcase.forms.fileName")} {selectedFile.name}</p>
+              <p>{t("showcase.forms.fileSize")} {(selectedFile.size / 1024).toFixed(1)} KB</p>
+              <p>{t("showcase.forms.fileType")} {selectedFile.type}</p>
             </div>
           )}
         </div>
@@ -1160,7 +1171,7 @@ export const DropfileShowcase = () => {
         <>
           <ITSelect
             name="status_ctrl"
-            label="Forzar Estado de Subida"
+            label={t("showcase.forms.forceUploadState")}
             value={status}
             onChange={(e: any) => setStatus(e.target.value)}
             options={[
@@ -1178,6 +1189,7 @@ export const DropfileShowcase = () => {
 
 // 10. ITWysiwyg Showcase
 export const WysiwygShowcase = () => {
+  const { t } = useITTranslation();
   const [html, setHtml] = useState(
     "<div>Edita este texto con la <strong>barra de herramientas</strong>.</div><ul><li>Negrita, <em>itálica</em> y <u>subrayado</u></li><li><mark style=\"background-color:#fde68a\">Marcador amarillo</mark></li></ul>"
   );
@@ -1189,7 +1201,7 @@ export const WysiwygShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITWysiwyg"
-      description="Editor WYSIWYG ligero sin dependencias externas: negrita, itálica, subrayado, marcador amarillo y listas. Implementado a mano sobre Selection/Range (sin execCommand)."
+      description={t("showcase.forms.wysiwygDesc")}
       code={code}
       doc={{
         summary:
@@ -1222,16 +1234,16 @@ export const WysiwygShowcase = () => {
       demo={
         <div className="w-full max-w-2xl space-y-4">
           <ITWysiwyg
-            label="Contenido del artículo"
+            label={t("showcase.forms.articleContent")}
             value={html}
             onChange={setHtml}
             size={size}
             error={error}
-            placeholder="Escribe o pega tu contenido..."
+            placeholder={t("showcase.forms.wysiwygPlaceholder")}
           />
           <div className="p-4 bg-slate-950 rounded-xl border border-slate-800">
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">
-              HTML generado
+              {t("showcase.forms.generatedHtml")}
             </p>
             <pre className="text-[11px] text-emerald-300 font-mono whitespace-pre-wrap break-words">
               {html}
@@ -1243,7 +1255,7 @@ export const WysiwygShowcase = () => {
         <>
           <ITSelect
             name="size_ctrl"
-            label="Tamaño"
+            label={t("showcase.common.size")}
             value={size}
             onChange={(e: any) => setSize(e.target.value)}
             options={[
@@ -1253,10 +1265,10 @@ export const WysiwygShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">Forzar error</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.forceError")}</span>
             <ITSlideToggle
               isOn={!!error}
-              onToggle={(v) => setError(v ? "Este campo es obligatorio." : undefined)}
+              onToggle={(v) => setError(v ? t("showcase.forms.requiredFieldError") : undefined)}
               activeColor="danger"
               size="sm"
             />
@@ -1269,6 +1281,7 @@ export const WysiwygShowcase = () => {
 
 // 11. ITFormBuilder Showcase
 export const FormBuilderShowcase = () => {
+  const { t } = useITTranslation();
   const [values, setValues] = useState({
     name: "",
     email: "",
@@ -1308,7 +1321,7 @@ export const FormBuilderShowcase = () => {
     <div className="space-y-8">
       <ShowcaseLayout
         title="ITFormBuilder"
-        description="Generador dinámico de formularios basado en un esquema estructurado JSON. Soporta V1 retrocompatible y la arquitectura V2 con motor de reglas, secciones, renderers custom y opciones asíncronas."
+        description={t("showcase.forms.formBuilderDesc")}
         doc={{
           summary:
             "Renderiza un grid responsive de inputs a partir de un arreglo de definiciones de campo. Totalmente controlado: delega el estado a Formik (o cualquier holder externo).",
@@ -1358,16 +1371,16 @@ export const FormBuilderShowcase = () => {
               />
               <div className="pt-4 flex justify-end gap-3">
                 <ITButton variant="outlined" color="gray" size="sm" onClick={() => { setValues({ name: "", email: "", country: "MX", accept: false }); setSubmitted(null); }}>
-                  Limpiar
+                  {t("showcase.forms.clear")}
                 </ITButton>
                 <ITButton variant="filled" color="primary" size="sm" type="submit">
-                  Enviar
+                  {t("showcase.forms.send")}
                 </ITButton>
               </div>
             </form>
             {submitted && (
               <div className="p-4 bg-slate-950 text-emerald-400 text-xs rounded-xl border border-slate-800 font-mono">
-                <p className="font-bold text-emerald-300 mb-2">✓ Payload Enviado:</p>
+                <p className="font-bold text-emerald-300 mb-2">{t("showcase.forms.payloadSent")}</p>
                 <pre>{JSON.stringify(submitted, null, 2)}</pre>
               </div>
             )}
@@ -1375,14 +1388,14 @@ export const FormBuilderShowcase = () => {
         }
         controls={
           <div className="p-2 bg-slate-50 dark:bg-slate-900 rounded-lg text-xs">
-            <p className="text-slate-500">El formulario se genera dinámicamente inyectando un array de campos configurados.</p>
+            <p className="text-slate-500">{t("showcase.forms.formBuilderHint")}</p>
           </div>
         }
       />
 
       <CodeExampleBlock
-        title="Formulario llenado desde API"
-        desc="Carga datos asíncronamente al montar el formulario"
+        title={t("showcase.forms.exampleFillTitle")}
+        desc={t("showcase.forms.exampleFillDesc")}
         code={`const FormFillFromApi = () => {
   const [loading, setLoading] = useState(true);
   const [values, setValues] = useState({ name: "", email: "", role: "" });
@@ -1423,8 +1436,8 @@ export const FormBuilderShowcase = () => {
       </CodeExampleBlock>
 
       <CodeExampleBlock
-        title="Select conectado a API con Cascade"
-        desc="Select asíncrono que al seleccionar actualiza otro campo"
+        title={t("showcase.forms.exampleCascadeTitle")}
+        desc={t("showcase.forms.exampleCascadeDesc")}
         code={`const config = [
   {
     name: "country", label: "País", type: "select",
@@ -1467,8 +1480,8 @@ export const FormBuilderShowcase = () => {
       </CodeExampleBlock>
 
       <CodeExampleBlock
-        title="Conversor de Moneda"
-        desc="Select de divisa que actualiza precios en MXN y USD"
+        title={t("showcase.forms.exampleCurrencyTitle")}
+        desc={t("showcase.forms.exampleCurrencyDesc")}
         code={`const CurrencyConverterExample = () => {
   const [values, setValues] = useState({ currency: "MXN", amount: 1000 });
   const TC = 20.50;
@@ -1510,6 +1523,7 @@ export const FormBuilderShowcase = () => {
 
 // ── Fill from API example ──
 const FormFillFromApi = () => {
+  const { t } = useITTranslation();
   const [loading, setLoading] = useState(true);
   const [values, setValues] = useState({ name: "", email: "", role: "" });
   const [submitted, setSubmitted] = useState<any>(null);
@@ -1544,7 +1558,7 @@ const FormFillFromApi = () => {
     return (
       <div className="flex items-center gap-3 py-8 justify-center">
         <FaSync className="animate-spin text-primary-500" />
-        <span className="text-sm text-slate-500">Cargando datos del usuario...</span>
+        <span className="text-sm text-slate-500">{t("showcase.forms.loadingUserData")}</span>
       </div>
     );
   }
@@ -1562,12 +1576,12 @@ const FormFillFromApi = () => {
           setFieldValue={(field, val) => { setValues(prev => ({ ...prev, [field]: val })); return Promise.resolve(); }}
         />
         <div className="flex justify-end">
-          <ITButton variant="filled" color="primary" size="sm" type="submit">Guardar Cambios</ITButton>
+          <ITButton variant="filled" color="primary" size="sm" type="submit">{t("showcase.forms.saveChanges")}</ITButton>
         </div>
       </form>
       {submitted && (
         <div className="p-3 bg-slate-950 text-emerald-400 text-xs rounded-lg font-mono border border-slate-800">
-          <p className="font-bold mb-1">✓ Editado:</p>
+          <p className="font-bold mb-1">{t("showcase.forms.editedPayload")}</p>
           <pre>{JSON.stringify(submitted, null, 2)}</pre>
         </div>
       )}
@@ -1577,6 +1591,7 @@ const FormFillFromApi = () => {
 
 // ── Cascading Selects Example ──
 const CascadingSelectsExample = () => {
+  const { t } = useITTranslation();
   const [values, setValues] = useState({ country: "", city: "" });
   const [submitted, setSubmitted] = useState<any>(null);
 
@@ -1636,12 +1651,12 @@ const CascadingSelectsExample = () => {
           setFieldValue={(field, val) => { setValues(prev => ({ ...prev, [field]: val })); return Promise.resolve(); }}
         />
         <div className="flex justify-end">
-          <ITButton variant="filled" color="primary" size="sm" type="submit">Enviar</ITButton>
+          <ITButton variant="filled" color="primary" size="sm" type="submit">{t("showcase.forms.send")}</ITButton>
         </div>
       </form>
       {submitted && (
         <div className="p-3 bg-slate-950 text-emerald-400 text-xs rounded-lg font-mono border border-slate-800">
-          <p className="font-bold mb-1">✓ Datos:</p>
+          <p className="font-bold mb-1">{t("showcase.forms.dataPayload")}</p>
           <pre>{JSON.stringify(submitted, null, 2)}</pre>
         </div>
       )}
@@ -1651,6 +1666,7 @@ const CascadingSelectsExample = () => {
 
 // ── Currency Converter Example ──
 const CurrencyConverterExample = () => {
+  const { t } = useITTranslation();
   const [values, setValues] = useState({ currency: "MXN", amount: 1000 });
   const TC = 20.50;
 
@@ -1699,7 +1715,7 @@ const CurrencyConverterExample = () => {
       </div>
       {values.amount > 0 && (
         <p className="text-[11px] text-slate-400 text-center">
-          TC: 1 USD = {TC.toFixed(2)} MXN
+          {t("showcase.forms.exchangeRate", { rate: TC.toFixed(2) })}
         </p>
       )}
     </div>
@@ -1708,6 +1724,7 @@ const CurrencyConverterExample = () => {
 
 // 12. ITField Showcase
 export const FieldShowcase = () => {
+  const { t } = useITTranslation();
   const [email, setEmail] = useState("");
   const [showHelp, setShowHelp] = useState(true);
   const invalid = email.length > 0 && !email.includes("@");
@@ -1717,16 +1734,16 @@ export const FieldShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITField"
-      description="Contenedor de campo de formulario que estandariza label, asterisco de requerido, texto de ayuda y mensaje de error alrededor de cualquier control."
+      description={t("showcase.forms.fieldDesc")}
       code={code}
       demo={
         <div className="w-full max-w-sm">
           <ITField
-            label="Correo"
+            label={t("showcase.forms.emailSubject")}
             htmlFor="email"
             required
-            error={invalid ? "Ingresa un correo válido." : undefined}
-            helpText={showHelp ? "Nunca compartimos tu correo." : undefined}
+            error={invalid ? t("showcase.forms.invalidEmail") : undefined}
+            helpText={showHelp ? t("showcase.forms.emailHelp") : undefined}
           >
             <ITInput name="email" value={email} onChange={(e: any) => setEmail(e.target.value)} onBlur={() => {}} />
           </ITField>
@@ -1734,7 +1751,7 @@ export const FieldShowcase = () => {
       }
       controls={
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-700">Mostrar ayuda</span>
+          <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.showHelp")}</span>
           <ITSlideToggle isOn={showHelp} onToggle={setShowHelp} size="sm" />
         </div>
       }
@@ -1761,6 +1778,7 @@ export const FieldShowcase = () => {
 
 // 13. ITMultiSelect Showcase
 export const MultiSelectShowcase = () => {
+  const { t } = useITTranslation();
   const [value, setValue] = useState<(string | number)[]>(["mx", "es"]);
 
   const options = [
@@ -1777,33 +1795,33 @@ export const MultiSelectShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITMultiSelect"
-      description="Selector de múltiples valores con dropdown buscable, chips removibles y navegación por teclado. El dropdown va en portal, así que no se recorta dentro de un ITCard."
+      description={t("showcase.forms.multiSelectDesc")}
       code={code}
       demo={
         <div className="w-full max-w-sm">
           <ITMultiSelect
-            label="Países"
+            label={t("showcase.forms.countries")}
             options={options}
             value={value}
             onChange={(values) => setValue(values)}
             maxVisibleChips={3}
           />
           <p className="mt-2 text-xs text-slate-500 font-mono">
-            {value.length} seleccionados: {JSON.stringify(value)}
+            {t("showcase.forms.selectedCount", { count: value.length, values: JSON.stringify(value) })}
           </p>
         </div>
       }
       controls={
         <div className="space-y-2">
           <p className="text-xs text-slate-500">
-            Usa las flechas para navegar, Enter para alternar y Backspace para quitar el último chip.
+            {t("showcase.forms.multiSelectHint")}
           </p>
         </div>
       }
       gallery={
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="w-full max-w-sm">
-            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Plantilla de opción (renderOption)</p>
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">{t("showcase.forms.optionTemplate")}</p>
             <ITMultiSelect
               label="Skills (template)"
               options={options}
@@ -1815,9 +1833,9 @@ export const MultiSelectShowcase = () => {
             />
           </div>
           <div className="w-full max-w-sm">
-            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Con error</p>
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">{t("showcase.forms.withError")}</p>
             <ITMultiSelect
-              label="Requerido"
+              label={t("showcase.common.required")}
               options={options}
               value={[]}
               onChange={() => {}}
@@ -1858,6 +1876,7 @@ export const MultiSelectShowcase = () => {
 
 // 14. ITChipInput Showcase
 export const ChipInputShowcase = () => {
+  const { t } = useITTranslation();
   const [tags, setTags] = useState<string[]>(["react", "typescript"]);
   const [maxTags, setMaxTags] = useState(5);
 
@@ -1866,17 +1885,17 @@ export const ChipInputShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITChipInput"
-      description="Entrada de texto libre que convierte los valores escritos en etiquetas (chips) removibles. Confirma con Enter o coma, al perder foco o al pegar texto delimitado."
+      description={t("showcase.forms.chipInputDesc")}
       code={code}
       demo={
         <div className="w-full max-w-sm">
           <ITChipInput
-            label="Etiquetas"
+            label={t("showcase.forms.tags")}
             value={tags}
             onChange={setTags}
             maxTags={maxTags}
-            placeholder="Agrega una etiqueta..."
-            helpText="Enter o coma para agregar. Backspace para borrar la última."
+            placeholder={t("showcase.forms.addTagPlaceholder")}
+            helpText={t("showcase.forms.chipInputHelp")}
           />
           <div className="mt-3 flex flex-wrap gap-1">
             {tags.map((t) => (
@@ -1888,7 +1907,7 @@ export const ChipInputShowcase = () => {
       controls={
         <ITInput
           name="maxTags"
-          label="Máximo de etiquetas"
+          label={t("showcase.forms.maxTags")}
           type="number"
           value={maxTags}
           onChange={(e: any) => setMaxTags(Number(e.target.value) || 0)}
@@ -1931,6 +1950,7 @@ const MaskedDemo = ({
   hint?: string;
   initial?: string;
 }) => {
+  const { t } = useITTranslation();
   const [raw, setRaw] = useState<string>(initial ?? "");
   const [complete, setComplete] = useState<string | null>(null);
   return (
@@ -1949,8 +1969,8 @@ const MaskedDemo = ({
         onComplete={(v) => setComplete(v)}
       />
       <p className="mt-1.5 text-xs font-mono text-slate-500">
-        raw: {raw || "(vacío)"}
-        {complete && <span className="text-emerald-600 ml-2">✓ completo</span>}
+        {t("showcase.forms.rawLabel")} {raw || t("showcase.forms.emptyValue")}
+        {complete && <span className="text-emerald-600 ml-2">{t("showcase.forms.completeValue")}</span>}
         {hint && <span className="text-slate-400 ml-2">· {hint}</span>}
       </p>
     </div>
@@ -1958,6 +1978,7 @@ const MaskedDemo = ({
 };
 
 export const MaskedInputShowcase = () => {
+  const { t } = useITTranslation();
   const [code, setCode] = useState<string>("");
   const [variant, setVariant] = useState<any>("primary");
   const [size, setSize] = useState<any>("md");
@@ -1969,13 +1990,13 @@ export const MaskedInputShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITMaskedInput"
-      description="Input de texto con máscara de formato: teclea solo caracteres útiles y los separadores se insertan solos (xxxx-xxxx-xxxx, (999) 999-9999, etc.)."
+      description={t("showcase.forms.maskedInputDesc")}
       code={codeExample}
       demo={
         <div className="w-full max-w-sm">
           <ITMaskedInput
             name="showcase_masked"
-            label="Código de activación"
+            label={t("showcase.forms.activationCode")}
             mask="xxxx-xxxx-xxxx"
             value={code}
             variant={variant}
@@ -1986,7 +2007,7 @@ export const MaskedInputShowcase = () => {
           />
           {code && (
             <p className="mt-2 text-xs text-slate-500 font-mono">
-              Valor actual (raw): {code || "—"}
+              {t("showcase.forms.currentRawValue")} {code || "—"}
             </p>
           )}
         </div>
@@ -1995,7 +2016,7 @@ export const MaskedInputShowcase = () => {
         <>
           <ITSelect
             name="masked_variant_ctrl"
-            label="Tema de Color"
+            label={t("showcase.forms.colorTheme")}
             value={variant}
             onChange={(e: any) => setVariant(e.target.value)}
             options={[
@@ -2009,7 +2030,7 @@ export const MaskedInputShowcase = () => {
           />
           <ITSelect
             name="masked_size_ctrl"
-            label="Tamaño"
+            label={t("showcase.common.size")}
             value={size}
             onChange={(e: any) => setSize(e.target.value)}
             options={[
@@ -2019,11 +2040,11 @@ export const MaskedInputShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">Deshabilitado</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
             <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">Error</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.error")}</span>
             <ITSlideToggle isOn={withError} onToggle={setWithError} activeColor="danger" size="sm" />
           </div>
         </>
@@ -2031,33 +2052,33 @@ export const MaskedInputShowcase = () => {
       gallery={
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           <MaskedDemo
-            title="Código alfanumérico"
+            title={t("showcase.forms.maskAlphanumeric")}
             mask="xxxx-xxxx-xxxx"
             hint="Escribe: ABC1-2345"
           />
           <MaskedDemo
-            title="Número de tarjeta"
+            title={t("showcase.forms.maskCardNumber")}
             mask="9999-9999-9999-9999"
             hint="Escribe 16 dígitos"
           />
           <MaskedDemo
-            title="Teléfono"
+            title={t("showcase.forms.maskPhone")}
             mask="(999) 999-9999"
             pattern={/^\d{10}$/}
             hint="Regex /^\\d{10}$/"
           />
           <MaskedDemo
-            title="Código postal"
+            title={t("showcase.forms.maskPostalCode")}
             mask="99999"
             hint="Ejemplo: 44100"
           />
           <MaskedDemo
-            title="CVV / OTP"
+            title={t("showcase.forms.maskCvv")}
             mask="999"
             hint="3 dígitos, onComplete"
           />
           <MaskedDemo
-            title="Clave con letras en MAYÚSCULA"
+            title={t("showcase.forms.maskUppercase")}
             mask="A-A-A-999"
             hint="Token A auto-mayúscula"
             initial="ABC123"
@@ -2096,6 +2117,7 @@ export const MaskedInputShowcase = () => {
 
 // 17. ITSegmentedControl Showcase
 export const SegmentedControlShowcase = () => {
+  const { t } = useITTranslation();
   const [view, setView] = useState("day");
   const [size, setSize] = useState<any>("md");
   const [disabled, setDisabled] = useState(false);
@@ -2118,7 +2140,7 @@ export const SegmentedControlShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITSegmentedControl"
-      description="Grupo de botones mutuamente excluyentes estilo iOS para alternar vistas o filtros."
+      description={t("showcase.forms.segmentedDesc")}
       code={code}
       demo={
         <div className="flex flex-col items-center gap-3">
@@ -2129,14 +2151,14 @@ export const SegmentedControlShowcase = () => {
             size={size}
             disabled={disabled}
           />
-          <span className="text-xs font-mono text-slate-500">Seleccionado: "{view}"</span>
+          <span className="text-xs font-mono text-slate-500">{t("showcase.forms.selectedValue", { value: view })}</span>
         </div>
       }
       controls={
         <>
           <ITSelect
             name="seg_size_ctrl"
-            label="Tamaño"
+            label={t("showcase.common.size")}
             value={size}
             onChange={(e: any) => setSize(e.target.value)}
             options={[
@@ -2145,11 +2167,11 @@ export const SegmentedControlShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">Con iconos</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.withIcons")}</span>
             <ITSlideToggle isOn={withIcons} onToggle={setWithIcons} size="sm" />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">Deshabilitado</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
             <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
           </div>
         </>
@@ -2215,6 +2237,7 @@ export const SegmentedControlShowcase = () => {
 
 // 18. ITInputNumber Showcase
 export const InputNumberShowcase = () => {
+  const { t } = useITTranslation();
   const [amount, setAmount] = useState<number | null>(1234.5);
   const [quantity, setQuantity] = useState<number | null>(3);
   const [decimals, setDecimals] = useState<any>("2");
@@ -2230,13 +2253,13 @@ onChange={(value) => console.log(value + 1)} // ${amount === null ? "undefined" 
   return (
     <ShowcaseLayout
       title="ITInputNumber"
-      description="Campo numérico con formato de moneda que emite un number real (entero o decimal) en onChange."
+      description={t("showcase.forms.inputNumberDesc")}
       code={code}
       demo={
         <div className="w-full max-w-sm space-y-3">
           <ITInputNumber
             name="amount"
-            label="Monto"
+            label={t("showcase.forms.amount")}
             placeholder="0.00"
             prefix="$"
             value={amount}
@@ -2245,15 +2268,15 @@ onChange={(value) => console.log(value + 1)} // ${amount === null ? "undefined" 
             disabled={disabled}
             required={required}
             touched={showError}
-            error={showError ? "El monto es obligatorio" : undefined}
+            error={showError ? t("showcase.forms.amountRequired") : undefined}
           />
           <p className="text-xs font-mono text-slate-500">
-            value: {amount === null ? "null" : `${amount} (${typeof amount})`}
+            {t("showcase.forms.valueLabel")} {amount === null ? "null" : `${amount} (${typeof amount})`}
           </p>
           <div className="grid grid-cols-2 gap-3">
             <ITInputNumber
               name="quantity"
-              label="Cantidad (enteros)"
+              label={t("showcase.forms.quantityIntegers")}
               value={quantity}
               decimals={0}
               min={1}
@@ -2262,7 +2285,7 @@ onChange={(value) => console.log(value + 1)} // ${amount === null ? "undefined" 
             />
             <ITInputNumber
               name="bounded"
-              label="Entre 10 y 500"
+              label={t("showcase.forms.between10And500")}
               min={10}
               max={500}
               value={null}
@@ -2275,7 +2298,7 @@ onChange={(value) => console.log(value + 1)} // ${amount === null ? "undefined" 
         <>
           <ITSelect
             name="in_decimals"
-            label="Decimales"
+            label={t("showcase.forms.decimals")}
             value={decimals}
             onChange={(e: any) => setDecimals(e.target.value)}
             options={[
@@ -2285,15 +2308,15 @@ onChange={(value) => console.log(value + 1)} // ${amount === null ? "undefined" 
             ]}
           />
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">Requerido</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.required")}</span>
             <ITSlideToggle isOn={required} onToggle={setRequired} size="sm" />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">Simular error</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.simulateError")}</span>
             <ITSlideToggle isOn={showError} onToggle={setShowError} activeColor="danger" size="sm" />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">Deshabilitado</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
             <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
           </div>
         </>
@@ -2303,7 +2326,7 @@ onChange={(value) => console.log(value + 1)} // ${amount === null ? "undefined" 
           <div className="w-full max-w-sm">
             <ITInputNumber
               name="g_amount"
-              label="Prefijo $"
+              label={t("showcase.forms.prefixDollar")}
               prefix="$"
               value={98765.43}
               readOnly
@@ -2313,7 +2336,7 @@ onChange={(value) => console.log(value + 1)} // ${amount === null ? "undefined" 
           <div className="w-full max-w-sm">
             <ITInputNumber
               name="g_price"
-              label="Precio unitario"
+              label={t("showcase.forms.unitPrice")}
               prefix="$"
               value={null}
               onChange={() => {}}
@@ -2322,7 +2345,7 @@ onChange={(value) => console.log(value + 1)} // ${amount === null ? "undefined" 
           <div className="w-full max-w-sm">
             <ITInputNumber
               name="g_qty"
-              label="Cantidad (decimals=0)"
+              label={t("showcase.forms.quantityDecimals0")}
               decimals={0}
               value={12}
               onChange={() => {}}
@@ -2331,7 +2354,7 @@ onChange={(value) => console.log(value + 1)} // ${amount === null ? "undefined" 
           <div className="w-full max-w-sm">
             <ITInputNumber
               name="g_disabled"
-              label="Deshabilitado"
+              label={t("showcase.common.disabled")}
               prefix="$"
               value={1500}
               disabled

@@ -8,8 +8,9 @@
 - **Ruta raíz**: `/Users/axzy/DEV/AXZY/AXZY_UI_SYSTEM`
 - **Entry point**: `src/index.ts` (escribe todos los exports)
 - **Build**: `tsup` produce `dist/index.cjs` + `dist/index.js` + types
-- **Tests/Stories**: Storybook (`.stories.tsx`), pero la superficie principal de ejemplos es el sandbox (`pnpm dev` → `src/showcases/*.tsx`)
+- **Tests/Stories**: sin Storybook; la superficie de ejemplos es el sandbox (`pnpm dev` → `src/showcases/*.tsx`) y la documentación por componente vive en `docs/`
 - **Package manager**: pnpm
+- **i18n**: runtime propio en `src/i18n/` (`ITI18nProvider` + `useITTranslation`), catálogos `es`/`en`; sin provider el render es idéntico al español.
 
 ---
 
@@ -22,9 +23,8 @@ src/
 │   ├── molecules/    → Compuestos: card/, date-picker/, select/, table/, stepper/, ...
 │   ├── organisms/    → Complejos: data-table/, form-builder/, dialog/, sidebar/, topbar/, ...
 │   ├── templates/    → layout/ (chasis estructural), page/
-│   ├── isolation/    → Stories de validación de aislamiento CSS
 │   └── theme-provider/ → Sistema de theming central (ITThemeProvider)
-├── showcases/        → Demos primarios del sandbox (`pnpm dev`); Storybook queda secundario
+├── showcases/        → Demos del sandbox (`pnpm dev`); superficie de ejemplos
 ├── sandbox/          → Router hash, landing, búsqueda y 404 del sandbox (dev-only, NO se publica)
 ├── theme/            → theme.ts (tokens) + theme-context.ts (contexto de theming)
 ├── hooks/            → Custom hooks compartidos
@@ -40,7 +40,7 @@ Un componente NO importa de una capa superior. Se valida con `pnpm check:atomic`
 ### Convenciones de Componentes
 
 - **Prefijo**: `IT` (Intelligent Theme) → `ITButton`, `ITCard`, `ITText`, etc.
-- **Archivos**: `<nombre>.tsx` + `<nombre>.props.ts` + `<nombre>.stories.tsx`
+- **Archivos**: `<nombre>.tsx` + `<nombre>.props.ts` (referencia en `docs/<capa>/<nombre>.md`)
 - **Props**: Siempre en archivo separado, interfaz `IT<Nombre>Props`
 - **Default export**: función con nombre `IT<Nombre>`
 - **CSS**: Tailwind + CSS variables (`--it-*`). Los estilos propios usan clases con

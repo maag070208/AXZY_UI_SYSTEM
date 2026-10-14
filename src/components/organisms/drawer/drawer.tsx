@@ -4,6 +4,7 @@ import { FaTimes } from "react-icons/fa";
 import useClickOutside from "@/hooks/useClickOutside";
 import { useRef } from "react";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Sliding panel drawer from the left or right screen edge.
@@ -35,6 +36,7 @@ export default function ITDrawer({
   className,
   style,
 }: ITDrawerProps) {
+  const { t } = useITTranslation();
   const panelRef = useRef<HTMLDivElement>(null);
   useClickOutside(panelRef, onClose);
 
@@ -58,6 +60,7 @@ export default function ITDrawer({
                 <ITText as="h2" className="text-lg font-bold text-slate-800 dark:text-white">{title}</ITText>
                 <button
                   onClick={onClose}
+                  aria-label={t("common.close")}
                   className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 transition-colors"
                 >
                   <FaTimes size={14} />

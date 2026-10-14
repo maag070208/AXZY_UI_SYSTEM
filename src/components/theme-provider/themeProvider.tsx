@@ -9,6 +9,7 @@ import ITInput from "@/components/atoms/input/input";
 import ITSegmentedControl from "@/components/atoms/segmented-control/segmented-control";
 import ITDivider from "@/components/atoms/divider/divider";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 // ============================================================================
 // DEFAULT PALETTE & PRESETS CONFIG
@@ -65,6 +66,15 @@ const shadowLevel = (level: number | undefined): Record<string, string> | null =
 };
 
 import { DEFAULT_PALETTE, PRESETS } from "./themePresets";
+
+/** Mapea el nombre de un preset integrado a su key de i18n (`themeProvider.presets.*`). */
+const PRESET_I18N_KEY: Record<string, string> = {
+  "Midnight Indigo 🌌": "themeProvider.presets.midnightIndigo",
+  "Coral Reef 🪸": "themeProvider.presets.coralReef",
+  "Oceanic Teal 🌊": "themeProvider.presets.oceanicTeal",
+  "Golden Hour ☀️": "themeProvider.presets.goldenHour",
+  "Deep Forest 🌲": "themeProvider.presets.deepForest",
+};
 
 // ============================================================================
 // CONTEXT & PROVIDER
@@ -145,6 +155,7 @@ export default function ITThemeProvider({
   shadow,
   appearance = "soft",
 }: ITThemeProviderProps) {
+  const { t } = useITTranslation();
   const [palette, setPaletteState] = useState<ITThemePalette>(() => {
     const basePalette = {
       ...DEFAULT_PALETTE,
@@ -1587,13 +1598,13 @@ export default function ITThemeProvider({
               handleDeletePreset(preset.name, e);
             }}
             className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 p-0.5 rounded-md hover:bg-danger-500/10 hover:text-danger-500 text-slate-400 dark:text-slate-500 cursor-pointer transition-all z-10"
-            title="Eliminar"
+            title={t("themeProvider.designer.deletePreset")}
           >
             <MdClose size={12} />
           </span>
         )}
         <ITText as="span" className="text-xs font-semibold truncate w-full mb-1.5 pr-4 text-slate-700 dark:text-slate-300">
-          {preset.name}
+          {PRESET_I18N_KEY[preset.name] ? t(PRESET_I18N_KEY[preset.name]) : preset.name}
         </ITText>
         <div className="flex gap-1">
           {(["primary", "secondary", "ternary", "success"] as const).map((c) => (
@@ -1630,7 +1641,7 @@ export default function ITThemeProvider({
           onClick={() => setIsOpen((prev) => !prev)}
           className="it-theme-fab it-theme-bounce"
           style={{ backgroundColor: "var(--color-primary)" }}
-          aria-label="Configurar Paleta de Colores"
+          aria-label={t("themeProvider.fab.ariaLabel")}
         >
           <MdPalette size={28} />
         </button>
@@ -1640,7 +1651,7 @@ export default function ITThemeProvider({
         <ITDialog
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          title="Diseñador de Temas"
+          title={t("themeProvider.designer.title")}
           useFormHeader
         >
           <div className="flex gap-6 h-[580px]">
@@ -1648,7 +1659,7 @@ export default function ITThemeProvider({
             <div className="w-64 flex-shrink-0 flex flex-col gap-5 overflow-y-auto pr-1">
               <div>
                 <ITText as="span" className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2.5 block">
-                  Apariencia
+                  {t("themeProvider.designer.appearance")}
                 </ITText>
                 <ITSegmentedControl
                   options={[
@@ -1665,7 +1676,7 @@ export default function ITThemeProvider({
               <div>
                 <div className="flex items-center justify-between mb-2.5">
                   <ITText as="span" className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                    Presets
+                    {t("themeProvider.designer.presets")}
                   </ITText>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
@@ -1678,7 +1689,7 @@ export default function ITThemeProvider({
               {customPresets.length > 0 && (
                 <div>
                   <ITText as="span" className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2.5 block">
-                    Mis Temas
+                    {t("themeProvider.designer.myThemes")}
                   </ITText>
                   <div className="flex flex-col gap-1.5">
                     {customPresets.map((preset) => (
@@ -1693,7 +1704,7 @@ export default function ITThemeProvider({
                 <div className="flex flex-col gap-2 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/50">
                   <ITInput
                     name="presetName"
-                    placeholder="Nombre del tema..."
+                    placeholder={t("themeProvider.designer.presetNamePlaceholder")}
                     value={newPresetName}
                     onChange={(e: any) => setNewPresetName(e.target.value)}
                     containerClassName="mb-0"
@@ -1708,7 +1719,7 @@ export default function ITThemeProvider({
                   />
                   <div className="flex gap-2">
                     <ITButton
-                      label="Guardar"
+                      label={t("themeProvider.designer.save")}
                       color="primary"
                       onClick={handleSavePreset}
                       disabled={!newPresetName.trim()}
@@ -1716,7 +1727,7 @@ export default function ITThemeProvider({
                       className="flex-1"
                     />
                     <ITButton
-                      label="X"
+                      label={t("themeProvider.designer.cancelSave")}
                       variant="ghost"
                       onClick={() => {
                         setIsSavingPreset(false);
@@ -1732,7 +1743,7 @@ export default function ITThemeProvider({
                 <ITButton
                   variant="outlined"
                   icon={<MdPalette size={14} />}
-                  label="Guardar actual"
+                  label={t("themeProvider.designer.saveCurrent")}
                   onClick={() => setIsSavingPreset(true)}
                   size="sm"
                 />
@@ -1742,7 +1753,7 @@ export default function ITThemeProvider({
                 variant="outlined"
                 color="danger"
                 icon={<MdRefresh size={14} />}
-                label="Restaurar default"
+                label={t("themeProvider.designer.reset")}
                 onClick={resetTheme}
                 size="sm"
               />
@@ -1757,7 +1768,7 @@ export default function ITThemeProvider({
                 items={[
                   {
                     id: "brand",
-                    label: "Marca",
+                    label: t("themeProvider.tabs.brand"),
                     content: (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[480px] overflow-y-auto pr-2 mt-3">
                         {[
@@ -1777,7 +1788,7 @@ export default function ITThemeProvider({
                   },
                   {
                     id: "layout",
-                    label: "Nav & Sidebar",
+                    label: t("themeProvider.tabs.layout"),
                     content: (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[480px] overflow-y-auto pr-2 mt-3">
                         {[
@@ -1793,7 +1804,7 @@ export default function ITThemeProvider({
                   },
                   {
                     id: "tables",
-                    label: "Tablas",
+                    label: t("themeProvider.tabs.tables"),
                     content: (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[480px] overflow-y-auto pr-2 mt-3">
                         {[
@@ -1813,10 +1824,10 @@ export default function ITThemeProvider({
 
               <div className="flex items-center justify-end gap-3 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800">
                 <ITText as="p" className="text-[11px] text-slate-400 mr-auto">
-                  Los cambios se guardan automáticamente
+                  {t("themeProvider.designer.autosave")}
                 </ITText>
                 <ITButton
-                  label="Cerrar"
+                  label={t("themeProvider.designer.close")}
                   color="primary"
                   onClick={() => setIsOpen(false)}
                   size="sm"

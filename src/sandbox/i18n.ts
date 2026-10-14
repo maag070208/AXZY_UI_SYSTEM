@@ -1,0 +1,1861 @@
+import type { ITMessagesByLocale } from "@/i18n";
+
+/**
+ * Dev-only message catalog for the sandbox (chrome, navigation and showcase copy).
+ *
+ * It is **not** part of the published i18n catalog (`src/i18n/locales/*`): it is passed to
+ * `ITI18nProvider` via the `messages` prop from the sandbox only, so the package's runtime
+ * catalog stays free of dev-only strings.
+ */
+export const sandboxMessages: ITMessagesByLocale = {
+  es: {
+    // Chrome
+    "sandbox.language": "Idioma",
+    "sandbox.notifications": "Notificaciones",
+    "sandbox.nav.portfolio": "Portafolio",
+    "sandbox.userMenu.portfolio": "Ir al Portafolio",
+    "sandbox.search.label": "Buscar componentes",
+    "sandbox.search.placeholder": "Buscar componente…",
+    "sandbox.search.clear": "Limpiar búsqueda",
+    "sandbox.search.results": "{count} resultados",
+
+    // Navigation (group + item labels that need translation)
+    "navigation.group.general": "General",
+    "navigation.group.struc": "Estructura & Layout",
+    "navigation.group.forms": "Formularios & Inputs",
+    "navigation.group.data": "Visualización Datos",
+    "navigation.group.nav": "Navegación & Control",
+    "navigation.group.feed": "Feedback & Sistema",
+    "navigation.item.help": "Ayuda · Solución de Bugs",
+    "navigation.item.sizes": "Medidas · sm / md / lg",
+    "navigation.item.screenDashboard": "Dashboard Ejemplo",
+    "navigation.item.screenForm": "Formulario Ejemplo",
+
+    // ── Showcase copy (dev-only) ──────────────────────────────────────────
+    // Common
+    "showcase.common.active": "Activo",
+    "showcase.common.activeLabel": "Activo:",
+    "showcase.common.cancel": "Cancelar",
+    "showcase.common.code": "Código",
+    "showcase.common.color": "Color",
+    "showcase.common.copied": "Copiado",
+    "showcase.common.copy": "Copiar",
+    "showcase.common.correct": "✅ Correcto",
+    "showcase.common.delete": "Eliminar",
+    "showcase.common.disabled": "Deshabilitado",
+    "showcase.common.edit": "Editar",
+    "showcase.common.error": "Error",
+    "showcase.common.hideCode": "Ocultar código",
+    "showcase.common.home": "Inicio",
+    "showcase.common.incorrect": "❌ Incorrecto",
+    "showcase.common.label": "Etiqueta",
+    "showcase.common.noSelection": "Sin selección",
+    "showcase.common.required": "Requerido",
+    "showcase.common.reset": "Reset",
+    "showcase.common.save": "Guardar",
+    "showcase.common.showCode": "Ver código",
+    "showcase.common.size": "Tamaño",
+    "showcase.common.variant": "Variante",
+    "showcase.common.view": "Ver",
+
+    // ShowcaseLayout chrome
+    "showcase.layout.code": "Código",
+    "showcase.layout.copied": "¡Copiado!",
+    "showcase.layout.copy": "Copiar",
+    "showcase.layout.default": "Por defecto",
+    "showcase.layout.docs": "Documentación",
+    "showcase.layout.eyebrow": "Vitrina de componentes",
+    "showcase.layout.gallery": "Variaciones y estados (Galería)",
+    "showcase.layout.jsxCode": "Código JSX",
+    "showcase.layout.notes": "Notas",
+    "showcase.layout.overview": "Descripción general",
+    "showcase.layout.preview": "Vista previa",
+    "showcase.layout.prop": "Prop",
+    "showcase.layout.properties": "Propiedades",
+    "showcase.layout.props": "Props",
+    "showcase.layout.sandbox": "Sandbox Interactivo",
+    "showcase.layout.type": "Tipo",
+    "showcase.layout.usageExamples": "Ejemplos de uso",
+
+    // Sizes
+    "showcase.sizes.title": "Medidas estándar · sm / md / lg",
+    "showcase.sizes.desc":
+      "Una sola escala para todos los componentes. El tamaño del formulario, select, botón y badge se controla con la misma prop",
+    "showcase.sizes.rowDesc": "Medida estándar del sistema",
+    "showcase.sizes.name": "Nombre",
+    "showcase.sizes.role": "Rol",
+    "showcase.sizes.placeholder": "Selecciona una opción",
+    "showcase.sizes.exampleName": "Ej: Juan",
+    "showcase.sizes.draft": "Borrador",
+
+    // Producto detalle
+    "showcase.producto.whatItSolves": "Qué resuelve",
+    "showcase.producto.stack": "Stack",
+    "showcase.producto.specSheet": "Ficha técnica",
+
+    // Getting started
+    "showcase.gettingStarted.heroDesc":
+      "Librería de componentes React con Tailwind CSS v4. Diseñada para apps enterprise con experiencia de desarrollo fluida.",
+    "showcase.gettingStarted.step1Title": "Instalar dependencias",
+    "showcase.gettingStarted.step1Desc": "Tailwind v4 y su plugin para Vite.",
+    "showcase.gettingStarted.step2Title": "Configurar Vite",
+    "showcase.gettingStarted.step2Desc": "Agrega Tailwind como plugin de Vite.",
+    "showcase.gettingStarted.step3Title": "Agregar Tailwind",
+    "showcase.gettingStarted.step3Desc": "Importa Tailwind en tu archivo CSS.",
+    "showcase.gettingStarted.step4Title": "Importar estilos",
+    "showcase.gettingStarted.step4Desc": "Envuelve tu app con el provider.",
+    "showcase.gettingStarted.step5Title": "Declaración de tipos",
+    "showcase.gettingStarted.step5Desc": "Para que TS acepte imports CSS.",
+    "showcase.gettingStarted.step6Title": "Primer componente",
+    "showcase.gettingStarted.step6Desc": "Ya puedes usar cualquier componente.",
+    "showcase.gettingStarted.themingTitle": "Theming",
+    "showcase.gettingStarted.themingDesc":
+      "Personaliza colores en runtime. Solo necesitas los que quieras cambiar.",
+
+    // Landing (#ui-system) & 404
+    "showcase.landing.previewBadge": "preview",
+    "showcase.landing.typed": "Tipado",
+    "showcase.landing.statComponents": "Componentes",
+    "showcase.landing.statComponentsHint": "páginas documentadas",
+    "showcase.landing.statFamilies": "Familias",
+    "showcase.landing.statFamiliesHint": "grupos de navegación",
+    "showcase.landing.statTypedHint": "tipado estricto",
+    "showcase.landing.statUiDeps": "UI deps",
+    "showcase.landing.statUiDepsHint": "sin runtime extra",
+    "showcase.landing.featureTokens":
+      "Tailwind CSS v4 con tokens de tema en runtime",
+    "showcase.landing.featureA11y":
+      "Accesibilidad: roles, foco y nombres accesibles",
+    "showcase.landing.featureDarkMode":
+      "Dark mode automático vía ITThemeProvider",
+    "showcase.landing.featureTreeShakeable":
+      "Tree-shakeable: solo importas lo que usas",
+    "showcase.landing.featureNoDeps":
+      "Sin dependencias de UI de terceros",
+    "showcase.landing.featureDocumented":
+      "Documentado con ejemplos ejecutables",
+    "showcase.landing.heroTitleLead": "Componentes para",
+    "showcase.landing.heroTitleHighlight": "interfaces serias",
+    "showcase.landing.heroSubtitle":
+      "Una librería React + TypeScript con Tailwind CSS v4: accesible, temable y lista para producción. Explora {pages} páginas en {families} familias.",
+    "showcase.landing.exploreComponents": "Explorar componentes",
+    "showcase.landing.viewPortfolio": "Ver portafolio",
+    "showcase.landing.ariaStats": "Métricas de la librería",
+    "showcase.landing.exploreTitle": "Explora por familia",
+    "showcase.landing.exploreSubtitle":
+      "Cada fila te lleva directo al primer componente del grupo.",
+    "showcase.landing.moreItems": "+{count} más",
+    "showcase.landing.quickstartEyebrow": "Puesta en marcha",
+    "showcase.landing.quickstartTitle": "Quickstart",
+    "showcase.landing.quickstartSubtitle":
+      "Un provider de tema, una hoja de estilos y tu primer botón.",
+    "showcase.landing.minimalExample": "Ejemplo mínimo",
+    "showcase.landing.builtIn": "Incluido de fábrica",
+    "showcase.landing.ctaTitle": "¿Listo para construir?",
+    "showcase.landing.ctaSubtitle":
+      "Revisa el portafolio, el código fuente o explora el sandbox de componentes.",
+    "showcase.landing.footerRun": "Ejecuta",
+    "showcase.landing.footerOpen": "y abre",
+    "showcase.landing.footerSuffix": "para ver cada componente.",
+    "showcase.notFound.eyebrow": "// error 404",
+    "showcase.notFound.title": "Ruta no encontrada",
+    "showcase.notFound.description":
+      "No existe una página para este hash. Revisa el enlace o vuelve al inicio.",
+    "showcase.notFound.backHome": "Volver al inicio",
+
+    // Help
+    "showcase.help.badge": "Soporte",
+    "showcase.help.title": "Ayuda & Solución de Bugs",
+    "showcase.help.subtitle":
+      "Guía para diagnosticar y resolver los problemas más frecuentes al usar AXZY UI System, más una checklist para reportar incidencias con todo el contexto necesario.",
+    "showcase.help.reportBug": "Reportar un bug",
+    "showcase.help.viewRepo": "Ver repositorio",
+    "showcase.help.quickDiagnosis": "Diagnóstico rápido",
+    "showcase.help.quickDiagnosisHint":
+      "Ejecuta estos comandos antes de reportar cualquier fallo.",
+    "showcase.help.commonErrors": "Errores comunes y su solución",
+    "showcase.help.commonErrorsHint":
+      "Síntoma, causa y arreglo de los tropiezos más habituales del stack.",
+    "showcase.help.faq": "Preguntas frecuentes",
+    "showcase.help.faqHint": "Respuestas cortas a las dudas más repetidas.",
+    "showcase.help.howToReport": "Cómo reportar un bug",
+    "showcase.help.reportIntro":
+      "Un buen reporte se puede reproducir sin preguntas extra. Sigue estos pasos y completa la checklist antes de abrir el issue.",
+    "showcase.help.steps": "Pasos",
+    "showcase.help.includeInReport": "Incluye en el reporte",
+    "showcase.help.footerHint":
+      "¿Dudas de uso en lugar de un bug? Abre una discusión en el repositorio.",
+    "showcase.help.openIssue": "Abrir issue",
+    "showcase.help.viewAgents": "Ver AGENTS.md",
+    "showcase.help.fixPill":
+      "Pasos reproducibles + versión + entorno = reporte accionable",
+
+    // Home (portfolio)
+    "showcase.home.ariaStats": "Métricas del perfil",
+    "showcase.home.badge": "Portafolio · 2026",
+    "showcase.home.hello": "Hola, soy",
+    "showcase.home.bio":
+      "Fullstack Developer con 4+ años creando aplicaciones web modernas. Especializado en TypeScript, Angular y React, con foco en arquitectura limpia y en productos que la gente usa todos los días.",
+    "showcase.home.downloadCv": "Descargar CV",
+    "showcase.home.availableFullstack": "Disponible para proyectos fullstack",
+    "showcase.home.role": "Fullstack Developer",
+    "showcase.home.location": "Remoto · México",
+    "showcase.home.available": "Disponible",
+    "showcase.home.statExperience": "Experiencia",
+    "showcase.home.statExperienceHint": "años como fullstack",
+    "showcase.home.statTech": "Tecnologías",
+    "showcase.home.statTechHint": "en el stack",
+    "showcase.home.statProducts": "Productos",
+    "showcase.home.statProductsHint": "propios y en uso",
+    "showcase.home.statMode": "Modalidad",
+    "showcase.home.statModeValue": "Remoto",
+    "showcase.home.statModeHint": "disponible ya",
+    "showcase.home.eyebrowBase": "Base técnica",
+    "showcase.home.titleTech": "Lenguajes y frameworks",
+    "showcase.home.subtitleTech": "Con los que trabajo todos los días.",
+    "showcase.home.labelLanguages": "Lenguajes",
+    "showcase.home.labelFrameworks": "Frameworks",
+    "showcase.home.eyebrowStack": "Stack",
+    "showcase.home.titleStack": "Tecnologías que uso",
+    "showcase.home.subtitleStack": "Filtra por área o busca por nombre.",
+    "showcase.home.searchTech": "Buscar tecnología...",
+    "showcase.home.noTech": "No se encontraron tecnologías para “{term}”.",
+    "showcase.home.techCount": "{shown} de {total} tecnologías",
+    "showcase.home.catAll": "Todos",
+    "showcase.home.catFrontend": "Frontend",
+    "showcase.home.catBackend": "Backend",
+    "showcase.home.catMobile": "Móvil",
+    "showcase.home.catDatabase": "Bases de Datos",
+    "showcase.home.catDevops": "DevOps",
+    "showcase.home.eyebrowPortfolio": "Portafolio",
+    "showcase.home.titleProducts": "Productos que construí",
+    "showcase.home.subtitleProducts":
+      "Los que tienen capturas se abren en su pantalla de detalle.",
+    "showcase.home.viewDetail": "Ver detalle",
+    "showcase.home.viewDetailOf": "Ver detalle de {name}",
+    "showcase.home.captures": "{count} capturas",
+    "showcase.home.viewRepo": "Ver el repositorio",
+    "showcase.home.eyebrowNext": "Siguientes pasos",
+    "showcase.home.titleTogether": "¿Trabajamos juntos?",
+    "showcase.home.subtitleTogether":
+      "Estoy disponible para proyectos fullstack, de producto o de diseño de sistemas.",
+    "showcase.home.writingPrefix": "También escribo en",
+    "showcase.home.codeOn": "y el código de mis productos está en",
+
+    // Navigation showcases
+    "showcase.nav.tabsDesc":
+      "Separadores de contenido en pestañas integrables con íconos y transiciones.",
+    "showcase.nav.tabGeneral": "General",
+    "showcase.nav.tabsGeneralBody":
+      "Configuración global y perfil general de la cuenta.",
+    "showcase.nav.tabSecurity": "Seguridad",
+    "showcase.nav.tabsSecurityBody":
+      "Ajustes de credenciales, MFA y logs de accesos.",
+    "showcase.nav.tabNotifications": "Notificaciones",
+    "showcase.nav.tabsNotificationsBody":
+      "Preferencias de alertas vía email, SMS y notificaciones PUSH.",
+    "showcase.nav.variantAesthetic": "Variante Estética",
+    "showcase.nav.stepperDesc":
+      "Barra e indicador secuencial de pasos para completar procesos guiados complejos.",
+    "showcase.nav.stepValidate": "Validar Identidad",
+    "showcase.nav.stepValidateBody":
+      "Paso 1: Sube tu documento de identidad oficial.",
+    "showcase.nav.stepKyc": "Cargar KYC",
+    "showcase.nav.stepKycBody":
+      "Paso 2: Rellena tus datos fiscales y origen de fondos.",
+    "showcase.nav.stepSign": "Completar Firma",
+    "showcase.nav.stepSignBody": "Paso 3: Realiza la firma biométrica digital.",
+    "showcase.nav.stepperFinish": "Proceso completado exitosamente!",
+    "showcase.nav.useIcons": "Usar íconos",
+    "showcase.nav.resetStep": "Reiniciar Paso",
+    "showcase.nav.paginationDesc":
+      "Controlador de navegación de páginas numeradas con botones de dirección rápida.",
+    "showcase.nav.currentPage": "Página actual activa: {page} de 10",
+    "showcase.nav.activeColorLabel": "Color del Botón Activo",
+    "showcase.nav.tripleFilterDesc":
+      "Selector segmentado rápido diseñado típicamente para filtros rápidos de 3 estados.",
+    "showcase.nav.filterAll": "Todos",
+    "showcase.nav.filterActive": "Activos",
+    "showcase.nav.filterInactive": "Inactivos",
+    "showcase.nav.activeFilter": "Filtro activo: \"{filter}\"",
+    "showcase.nav.tripleFilterHint":
+      "Proporciona un layout de tipo segmentado con animación al cambiar entre las opciones disponibles.",
+    "showcase.nav.dropdownDesc":
+      "Menú de acciones con navegación por teclado y semántica ARIA. Se renderiza en portal, por lo que no lo recorta un ITCard ni ancestros con overflow: hidden.",
+    "showcase.nav.rowActions": "Acciones de fila",
+    "showcase.nav.lastAction": "Última acción: {action}",
+    "showcase.nav.dropdownKeyboardHint":
+      "Teclado: flechas para navegar, Enter para activar, Esc para cerrar. El menú se abre dentro del ITCard sin recortarse.",
+    "showcase.nav.customTrigger": "Trigger personalizado",
+    "showcase.nav.actions": "Acciones",
+    "showcase.nav.actionEdit": "Editar",
+    "showcase.nav.actionDuplicate": "Duplicar",
+    "showcase.nav.actionDownload": "Descargar",
+    "showcase.nav.actionDelete": "Eliminar",
+    "showcase.nav.none": "—",
+
+    // Data showcases
+    "showcase.data.tableDesc":
+      "Tabla con vista responsive Table / Cards, paginación, filtros y template de card personalizable.",
+    "showcase.data.selectedName": "Seleccionado: {name}",
+    "showcase.data.selectedNameId": "Seleccionado: {name} (id {id})",
+    "showcase.data.clickToSelect":
+      "Haz clic en una fila/card o pulsa Enter/Espacio para seleccionar",
+    "showcase.data.teamMembers": "Miembros del equipo",
+    "showcase.data.tableVariant": "Variante de tabla",
+    "showcase.data.rowSize": "Tamaño de fila",
+    "showcase.data.customCardTemplate": "Template de card personalizado",
+    "showcase.data.defaultCardActive":
+      "Card por defecto activa — muestra todas las columnas como pares etiqueta-valor",
+    "showcase.data.galleryCustomCardsHover": "Cards personalizadas con hover",
+    "showcase.data.galleryDefaultCards": "ITTable con cards por defecto",
+    "showcase.data.galleryCustomCardsPagination":
+      "ITTable con cards personalizadas + paginación",
+    "showcase.data.galleryAllMembers": "Todos los miembros",
+    "showcase.data.galleryCompactFixed":
+      "Layout fijo compacto — sin scroll horizontal",
+    "showcase.data.galleryFixedLayout": "Layout fijo",
+    "showcase.data.galleryPinnedNameActions":
+      "Columnas fijas — izquierda (Name) y derecha (Actions)",
+    "showcase.data.galleryPinnedColumns": "Columnas fijas",
+    "showcase.data.galleryAutoCards":
+      "Fallback a cards automático (< 640px de contenedor)",
+    "showcase.data.galleryNarrowContainer": "Contenedor estrecho",
+    "showcase.data.galleryVirtualized":
+      "Tabla virtualizada — 300 filas (solo se monta la ventana visible)",
+    "showcase.data.galleryVirtualizedTitle": "Virtualizada · 300 filas",
+    "showcase.data.galleryColumnFilters":
+      "Filtros de columna: ITSearchSelect + ITDatePicker (única y rango)",
+    "showcase.data.galleryFilterDemo": "Demo de filtros",
+    "showcase.data.galleryDesignOverrides":
+      "Overrides de diseño — colors + slots design, sin switch",
+    "showcase.data.galleryCustomDesign": "Diseño personalizado",
+    "showcase.data.galleryPerColumnDesign":
+      "Diseño por columna — header y celda por columna",
+    "showcase.data.galleryPerColumnTitle": "Por columna",
+    "showcase.data.dataTableDesc":
+      "Tabla auto-suficiente con carga dinámica, filtros, paginación y vista responsive Cards/Table.",
+    "showcase.data.titleConnectionError": "Error de conexión",
+    "showcase.data.titleNoData": "Sin datos",
+    "showcase.data.titleUsers": "Usuarios",
+    "showcase.data.inactive": "Inactivo",
+    "showcase.data.apiState": "Estado de la API",
+    "showcase.data.stateNormal": "Normal",
+    "showcase.data.stateLoading": "Cargando",
+    "showcase.data.stateEmpty": "Vacío",
+    "showcase.data.stateError": "Error",
+    "showcase.data.borders": "Bordes",
+    "showcase.data.borderGray": "Gris",
+    "showcase.data.borderBlue": "Azul",
+    "showcase.data.borderRose": "Rosa",
+    "showcase.data.borderNone": "Ninguno",
+    "showcase.data.tableCapabilities": "Capacidades de la tabla",
+    "showcase.data.density": "Densidad",
+    "showcase.data.layout": "Layout",
+    "showcase.data.autoCardsBelow": "Auto cards por debajo (px)",
+    "showcase.data.virtualizedGallery": "Virtualizada (galería)",
+    "showcase.data.stickyHeader": "Header fijo",
+    "showcase.data.capabilitiesHint":
+      'size, density, layout y auto-cards aplican al demo principal; virtualized y sticky header solo al bloque "Server-side virtualization" de la galería. Ese bloque no recibe autoCardBreakpoint: las cards nunca se virtualizan y el fallback de auto-cards desactivaría la virtualización en silencio.',
+    "showcase.data.galleryDefaultCardsPagination":
+      "Cards por defecto con paginación",
+    "showcase.data.galleryPinnedIdActive":
+      "Columnas fijas — izquierda (ID) y derecha (Active)",
+    "showcase.data.galleryServerVirtualization":
+      "Virtualización server-side — 240 filas (página {page})",
+    "showcase.data.galleryVirtualizedUsers": "Usuarios virtualizados",
+    "showcase.data.badgetDesc":
+      "Badges (etiquetas) estilizados para representar estados o categorías de items.",
+    "showcase.data.textLabel": "Texto",
+    "showcase.data.imageDesc":
+      "Componente de renderizado de imágenes inteligente con cargador interno y fallback automático ante fallas de red.",
+    "showcase.data.imageAlt": "Imagen abstracta",
+    "showcase.data.imageBroken": "Cargando URL Rota (Fallback Activo)",
+    "showcase.data.imageOk": "Cargando URL Correcta",
+    "showcase.data.forceError": "Forzar Error de Carga (URL rota)",
+    "showcase.data.chipDesc":
+      "Etiqueta compacta (tag / pill) para labels, filtros activos y selecciones múltiples. Variantes soft, filled y outlined, icono, botón de quitar (X) y estado seleccionado.",
+    "showcase.data.chipDisabled": "Deshabilitado",
+    "showcase.data.chipHint":
+      "Los chips con onClick son toggles de filtro (role=button, Enter/Space). Los chips removibles muestran una X.",
+
+    // Feedback showcases
+    "showcase.feedback.dialogDesc":
+      "Cajas de diálogo modales con overlay oscuro y soporte de cabeceras de formulario.",
+    "showcase.feedback.openModal": "Abrir Ventana Modal",
+    "showcase.feedback.dialogTitle": "Confirmación de Auditoría",
+    "showcase.feedback.dialogBody":
+      "Se guardará un registro inmutable en los logs de la blockchain corporativa. Esta acción es irreversible.",
+    "showcase.feedback.auditorLabel": "Auditor responsable",
+    "showcase.feedback.auditorPlaceholder": "Busca un auditor...",
+    "showcase.feedback.authorize": "Autorizar",
+    "showcase.feedback.signedTransaction": "Transacción firmada!",
+    "showcase.feedback.useFormHeader": "Usar Cabecera de Formulario",
+    "showcase.feedback.toastDesc":
+      "Alertas efímeras del sistema flotantes para notificar eventos inmediatos al usuario.",
+    "showcase.feedback.toastDefaultMsg": "¡La operación se procesó con éxito!",
+    "showcase.feedback.message": "Mensaje",
+    "showcase.feedback.notificationType": "Tipo de Notificación",
+    "showcase.feedback.launchNotification": "Lanzar Notificación",
+    "showcase.feedback.toastSuccess": "Toast Éxito",
+    "showcase.feedback.toastError": "Toast Error",
+    "showcase.feedback.toastWarning": "Toast Warning",
+    "showcase.feedback.toastInfo": "Toast Info",
+    "showcase.feedback.msgSuccess": "Operación exitosa!",
+    "showcase.feedback.msgError": "Ocurrió un fallo de red.",
+    "showcase.feedback.msgWarning": "Licencia por expirar.",
+    "showcase.feedback.msgInfo": "Actualización disponible.",
+    "showcase.feedback.loaderDesc":
+      "Indicadores de carga animados con soporte para múltiples estilos visuales.",
+    "showcase.feedback.loaderVariant": "Tipo de Cargador",
+    "showcase.feedback.themeDesc":
+      "Inyector dinámico de tokens CSS que gestiona el modo oscuro/claro y las paletas de colores unificadas.",
+    "showcase.feedback.appearanceMode": "Modo de Apariencia",
+    "showcase.feedback.modeLight": "☀️ Claro",
+    "showcase.feedback.modeDark": "🌙 Oscuro",
+    "showcase.feedback.modeSystem": "💻 Sistema",
+    "showcase.feedback.currentTheme": "Tema actual:",
+    "showcase.feedback.modeDarkName": "Oscuro",
+    "showcase.feedback.modeLightName": "Claro",
+    "showcase.feedback.quickPresets": "Presets Rápidos",
+    "showcase.feedback.themeHint1":
+      "Haz clic en el botón flotante de paleta 🎨 en la esquina inferior derecha para abrir el diseñador completo.",
+    "showcase.feedback.themeHint2":
+      "Allí puedes ajustar cada color, guardar temas personalizados y alternar entre modo claro/oscuro.",
+
+    // Layout primitives showcases
+    "showcase.layoutPrimitives.stackDesc":
+      "Layout basado en flexbox con dirección, spacing uniforme, alineación y distribución. Ideal para secciones verticales, toolbars horizontales, listas de items y form rows.",
+    "showcase.layoutPrimitives.direction": "Dirección",
+    "showcase.layoutPrimitives.spacingUnits": "Espaciado (unidades de 0.25rem)",
+    "showcase.layoutPrimitives.alignItems": "Alinear Items",
+    "showcase.layoutPrimitives.justifyContent": "Justificar Contenido",
+    "showcase.layoutPrimitives.flexWrap": "Ajuste de Línea",
+    "showcase.layoutPrimitives.showDivider": "Mostrar divisor",
+    "showcase.layoutPrimitives.spacingScale": "Escala de Espaciado",
+    "showcase.layoutPrimitives.spacingScaleSubtitle":
+      "Prueba distintos valores de gap para sentir el ritmo",
+    "showcase.layoutPrimitives.scaleTight": "Ajustado",
+    "showcase.layoutPrimitives.scaleTightDesc": "UI compacta",
+    "showcase.layoutPrimitives.scaleDefault": "Por defecto",
+    "showcase.layoutPrimitives.scaleDefaultDesc": "Cómodo",
+    "showcase.layoutPrimitives.scaleRelaxed": "Relajado",
+    "showcase.layoutPrimitives.scaleRelaxedDesc": "Espacio para respirar",
+    "showcase.layoutPrimitives.scaleSpacious": "Amplio",
+    "showcase.layoutPrimitives.scaleSpaciousDesc": "Secciones hero",
+    "showcase.layoutPrimitives.justifyTitle": "Justificar Contenido",
+    "showcase.layoutPrimitives.justifySubtitle":
+      "Cómo se distribuyen los hijos a lo largo del eje principal",
+    "showcase.layoutPrimitives.justifyStartDesc": "Hijos agrupados al inicio",
+    "showcase.layoutPrimitives.justifyCenterDesc": "Hijos centrados en el eje",
+    "showcase.layoutPrimitives.justifyEndDesc": "Hijos agrupados al final",
+    "showcase.layoutPrimitives.justifyBetweenDesc":
+      "Primero/último en los bordes, el resto repartido uniformemente",
+    "showcase.layoutPrimitives.justifyAroundDesc":
+      "Espacio igual alrededor de cada hijo",
+    "showcase.layoutPrimitives.justifyEvenlyDesc": "Espacio igual en todas partes",
+    "showcase.layoutPrimitives.alignTitle": "Alinear Items",
+    "showcase.layoutPrimitives.alignSubtitle":
+      "Cómo se alinean los hijos en el eje transversal",
+    "showcase.layoutPrimitives.alignStartDesc": "Alineados arriba (en fila)",
+    "showcase.layoutPrimitives.alignCenterDesc": "Centrados en el eje transversal",
+    "showcase.layoutPrimitives.alignEndDesc": "Alineados abajo (en fila)",
+    "showcase.layoutPrimitives.alignStretchDesc":
+      "Los hijos llenan el eje transversal",
+    "showcase.layoutPrimitives.alignBaselineDesc":
+      "Las líneas base del texto se alinean",
+    "showcase.layoutPrimitives.stackGallerySubtitle":
+      "UI lista para producción construida enteramente con ITStack",
+    "showcase.layoutPrimitives.patternPageHeader": "Encabezado de página",
+    "showcase.layoutPrimitives.patternPageHeaderDesc": "Título + acciones a la derecha",
+    "showcase.layoutPrimitives.patternTagCloud": "Nube de etiquetas",
+    "showcase.layoutPrimitives.patternTagCloudDesc":
+      "Wrap activado para etiquetas fluidas",
+    "showcase.layoutPrimitives.patternSectionList": "Lista de secciones",
+    "showcase.layoutPrimitives.patternSectionListDesc": "Divisor sutil entre items",
+    "showcase.layoutPrimitives.patternNotification": "Banner de notificación",
+    "showcase.layoutPrimitives.patternNotificationDesc": "Icono + mensaje + cerrar",
+    "showcase.layoutPrimitives.patternStatsRow": "Fila de métricas",
+    "showcase.layoutPrimitives.patternStatsRowDesc":
+      "3 tarjetas de métrica en una fila",
+    "showcase.layoutPrimitives.flexDesc":
+      "Contenedor flexbox completo con control total sobre alineación, distribución y gap. Para layouts complejos que requieren más control que ITStack.",
+    "showcase.layoutPrimitives.gapUnits": "Gap (unidades de 0.25rem)",
+    "showcase.layoutPrimitives.flexGallerySubtitle":
+      "UI lista para producción construida enteramente con ITFlex",
+    "showcase.layoutPrimitives.patternToolbarRow": "Fila de toolbar",
+    "showcase.layoutPrimitives.patternGrowLayout": "Layout con grow",
+    "showcase.layoutPrimitives.patternCenteredHero": "Hero centrado",
+    "showcase.layoutPrimitives.patternResponsiveForm": "Formulario responsivo",
+    "showcase.layoutPrimitives.patternFullHeight": "Layout a altura completa",
+    "showcase.layoutPrimitives.gridDesc":
+      "Sistema de grid responsivo de 12 columnas. Ideal para dashboards, galerías, y layouts de página completos.",
+    "showcase.layoutPrimitives.columnsLabel": "Columnas",
+    "showcase.layoutPrimitives.gridGallerySubtitle":
+      "Layouts listos para producción construidos con ITGrid",
+    "showcase.layoutPrimitives.patternAppDashboard": "Dashboard de app",
+    "showcase.layoutPrimitives.patternUserProfile": "Perfil de usuario",
+    "showcase.layoutPrimitives.patternArticleLayout": "Layout de artículo",
+    "showcase.layoutPrimitives.patternPricingComparison": "Comparación de precios",
+    "showcase.layoutPrimitives.screensTitle": "Pantallas Compuestas",
+    "showcase.layoutPrimitives.screensSubtitle":
+      "Ejemplos reales combinando ITStack + ITFlex + ITGrid para construir pantallas completas en minutos.",
+    "showcase.layoutPrimitives.dashboardCard": "Dashboard de Métricas",
+    "showcase.layoutPrimitives.dashboardSubtitle":
+      "Resumen de actividad del sistema",
+    "showcase.layoutPrimitives.export": "Exportar",
+    "showcase.layoutPrimitives.statActiveUsers": "Usuarios Activos",
+    "showcase.layoutPrimitives.statOpenTickets": "Tickets Abiertos",
+    "showcase.layoutPrimitives.salesChart": "Gráfico de Ventas",
+    "showcase.layoutPrimitives.last30Days": "Últimos 30 días",
+    "showcase.layoutPrimitives.formCard": "Formulario Responsivo",
+    "showcase.layoutPrimitives.newUser": "Nuevo Usuario",
+    "showcase.layoutPrimitives.newUserSubtitle":
+      "Completa los campos para registrar un nuevo usuario",
+    "showcase.layoutPrimitives.exampleJuan": "Ej: Juan",
+    "showcase.layoutPrimitives.examplePerez": "Ej: Pérez",
+    "showcase.layoutPrimitives.exampleEmail": "ej: usuario@correo.com",
+    "showcase.layoutPrimitives.department": "Departamento",
+
+    // Structure showcases
+    "showcase.structure.cardDesc":
+      "Contenedor multipropósito con cabecera opcional, imagen, contenido y pie de acciones. Se vuelve interactivo con `onClick` (efecto hover).",
+    "showcase.structure.cardTitleLabel": "Título",
+    "showcase.structure.cardTitlePlaceholder": "Deja vacío para ocultar",
+    "showcase.structure.showImage": "Mostrar imagen",
+    "showcase.structure.showActions": "Mostrar acciones",
+    "showcase.structure.interactiveOnClick": "Interactivo (onClick)",
+    "showcase.structure.galleryRealCases": "Casos de UI reales",
+    "showcase.structure.galleryCardsSubtitle":
+      "Layouts de card listos para producción construidos con ITCard",
+    "showcase.structure.patternCourseProgress": "Progreso del curso",
+    "showcase.structure.patternPricing": "Plan de precios destacado",
+    "showcase.structure.patternActivity": "Item de feed de actividad",
+    "showcase.structure.patternTeamMember": "Perfil de miembro del equipo",
+    "showcase.structure.textDesc":
+      "Wrapper tipográfico semántico. Renderiza cualquier elemento HTML, con soporte para truncado por caracteres, clamp de líneas y corte programático.",
+    "showcase.structure.renderingAs": "Renderizando como",
+    "showcase.structure.elementAs": "Elemento HTML (as)",
+    "showcase.structure.lineClampLabel": "Número de líneas (lineClamp)",
+    "showcase.structure.maxTextLabel": "Texto máximo (caracteres)",
+    "showcase.structure.noLimit": "0 = sin límite",
+    "showcase.structure.truncateHint":
+      "Trunca con \"…\" al superar (0 = desactivado).",
+    "showcase.structure.breakLabel": "Salto de línea después de (caracteres)",
+    "showcase.structure.noBreak": "0 = sin salto",
+    "showcase.structure.brHint": "Inserta un <br /> al superar el límite.",
+    "showcase.structure.breakWrapLabel":
+      "breakLengthWrap (corte cada N caracteres)",
+    "showcase.structure.noCut": "0 = sin corte",
+    "showcase.structure.cutHint":
+      "Inserta oportunidades de corte cada N chars (0 = desactivado).",
+    "showcase.structure.boldLabel": "Negrita (font-bold)",
+    "showcase.structure.mutedLabel": "Color atenuado",
+    "showcase.structure.galleryTextSubtitle":
+      "Patrones tipográficos listos para producción construidos con ITText",
+    "showcase.structure.patternArticleHeader": "Cabecera de artículo",
+    "showcase.structure.patternSectionHeading": "Encabezado de sección",
+    "showcase.structure.patternEmptyState": "Estado vacío",
+    "showcase.structure.patternInlineContent": "Contenido en línea",
+    "showcase.structure.patternFormLabels": "Etiquetas de formulario",
+    "showcase.structure.accordionDesc":
+      "Secciones plegables para FAQs, paneles de configuración y contenido largo. Controlado o no controlado, single o multiple, con animación CSS grid-rows.",
+    "showcase.structure.allowMultiple": "Permitir múltiples abiertas",
+    "showcase.structure.accordionBordered": "Con bordes",
+    "showcase.structure.accordionSeparated": "Separadas (por defecto)",
+    "showcase.structure.accWhat": "¿Qué es AXZY UI System?",
+    "showcase.structure.accWhatBody":
+      "Una librería de componentes React + TypeScript con Tailwind CSS v4.",
+    "showcase.structure.accInstall": "¿Cómo lo instalo?",
+    "showcase.structure.accTheme": "¿Puedo personalizar el tema?",
+    "showcase.structure.accThemeBody":
+      "Sí, usa ITThemeProvider para definir la paleta y los tokens.",
+    "showcase.structure.accDisabled": "Sección deshabilitada",
+    "showcase.structure.accDisabledBody": "No se puede abrir.",
+    "showcase.structure.navDocuments": "Documentos",
+    "showcase.structure.navAlerts": "Alertas",
+    "showcase.structure.navSettings": "Ajustes",
+    "showcase.structure.navLogout": "Cerrar sesión",
+    "showcase.structure.navDashboard": "Dashboard",
+    "showcase.structure.navUsers": "Usuarios",
+    "showcase.structure.navSales": "Ventas",
+    "showcase.structure.navManagement": "Gestión",
+    "showcase.structure.navOrders": "Órdenes",
+    "showcase.structure.navInvoices": "Facturas",
+    "showcase.structure.navCatalog": "Catálogo",
+    "showcase.structure.navQuotes": "Cotizaciones",
+    "showcase.structure.navProducts": "Productos",
+    "showcase.structure.navConfiguration": "Configuración",
+    "showcase.structure.navInbox": "Bandeja",
+    "showcase.structure.navExit": "Salir",
+    "showcase.structure.dashboardDesc": "Resumen general del sistema",
+    "showcase.structure.statSalesToday": "Ventas Hoy",
+    "showcase.structure.statTickets": "Tickets",
+    "showcase.structure.recentActivity": "Actividad reciente",
+    "showcase.structure.layoutBody":
+      "El layout se adapta al colapsar/expandir el sidebar y muestra un drawer en móvil.",
+    "showcase.structure.sidebarCollapsed": "Sidebar colapsado",
+    "showcase.structure.layoutHint":
+      "En móvil (<lg) el sidebar se abre como drawer con un fondo oscuro. Usa el botón ☰ del topbar. En desktop el riel colapsado se expande al pasar el cursor; no hay botón de colapso en el sidebar.",
+    "showcase.structure.galleryNavbarStandalone": "ITNavbar (standalone)",
+    "showcase.structure.galleryNavbarSubmenus": "ITNavbar con submenús",
+    "showcase.structure.activeItem": "Item activo: \"{label}\"",
+    "showcase.structure.selectNavItem": "Selecciona un item en la navegación",
+    "showcase.structure.submenuHint":
+      "Haz clic en \"Ventas\" para expandir/colapsar el submenú",
+    "showcase.structure.gallerySidebarBadges":
+      "ITSidebar — badges + notificación",
+    "showcase.structure.sidebarItemsHint1":
+      "Cada ítem puede llevar un contador con",
+    "showcase.structure.sidebarItemsHint2":
+      ", y el sidebar admite una fila",
+    "showcase.structure.sidebarItemsHint3": "con icono + ITBadget.",
+
+    // Page showcases
+    "showcase.pages.pageHeaderDesc":
+      "Encabezado estandarizado para pantallas. Incluye título, descripción, icono, breadcrumbs, botón de volver y área de acciones.",
+    "showcase.pages.teamMembers": "Miembros del equipo",
+    "showcase.pages.teamDesc":
+      "Gestiona invitaciones, roles y permisos del espacio de trabajo de tu organización.",
+    "showcase.pages.crumbAdmin": "Admin",
+    "showcase.pages.crumbTeam": "Equipo",
+    "showcase.pages.backButton": "Botón de volver",
+    "showcase.pages.breadcrumbs": "Breadcrumbs",
+    "showcase.pages.icon": "Icono",
+    "showcase.pages.description": "Descripción",
+    "showcase.pages.addMember": "Añadir miembro",
+    "showcase.pages.export": "Exportar",
+    "showcase.pages.searchByNameEmail": "Buscar por nombre o correo...",
+    "showcase.pages.allRoles": "Todos los roles",
+    "showcase.pages.allStatus": "Todos los estados",
+    "showcase.pages.clear": "Limpiar",
+    "showcase.pages.headerElements": "Elementos del encabezado",
+    "showcase.pages.actions": "Acciones",
+    "showcase.pages.filters": "Filtros",
+    "showcase.pages.showFilterBar": "Mostrar barra de filtros",
+    "showcase.pages.galleryTeamManagement": "Gestión de equipo",
+    "showcase.pages.galleryDetailEdit": "Detalle / Edición",
+    "showcase.pages.crumbProducts": "Productos",
+    "showcase.pages.crumbEdit": "Editar",
+    "showcase.pages.editProduct": "Editar producto",
+    "showcase.pages.editProductDesc":
+      "Actualiza los detalles, el precio y la información de inventario del producto.",
+    "showcase.pages.saveChanges": "Guardar cambios",
+    "showcase.pages.productName": "Nombre del producto",
+    "showcase.pages.price": "Precio",
+    "showcase.pages.stock": "Stock",
+    "showcase.pages.galleryDashboard": "Dashboard",
+    "showcase.pages.dashboardDesc":
+      "Resumen en tiempo real de las métricas y la actividad de tu negocio.",
+    "showcase.pages.last7Days": "Últimos 7 días",
+    "showcase.pages.last30Days": "Últimos 30 días",
+    "showcase.pages.thisQuarter": "Este trimestre",
+    "showcase.pages.customRange": "Rango personalizado",
+    "showcase.pages.refresh": "Actualizar",
+    "showcase.pages.gallerySettingsPrefs": "Ajustes / Preferencias",
+    "showcase.pages.generalSettings": "Ajustes generales",
+    "showcase.pages.generalSettingsDesc":
+      "Configura las preferencias de tu espacio, las notificaciones y las opciones de seguridad.",
+    "showcase.pages.galleryUsersList": "Lista de usuarios",
+    "showcase.pages.usersDesc":
+      "1,245 usuarios registrados · 38 activos ahora mismo",
+    "showcase.pages.searchShort": "Buscar...",
+    "showcase.pages.invite": "Invitar",
+    "showcase.pages.pageDesc":
+      "Template completo de página con tabla, detalle y 4 estados (carga, error, vacío, normal).",
+    "showcase.pages.memberSummary": "Miembro · {role} · {status}",
+    "showcase.pages.userLoadError":
+      "No se pudieron cargar los datos del usuario. Inténtalo de nuevo.",
+    "showcase.pages.detailsError": "Error de detalles",
+    "showcase.pages.noUserData": "Sin datos de usuario",
+    "showcase.pages.noUserInfo":
+      "No hay información disponible para este usuario.",
+    "showcase.pages.accountDetails": "Detalles de la cuenta",
+    "showcase.pages.fullName": "Nombre completo",
+    "showcase.pages.emailAddress": "Correo electrónico",
+    "showcase.pages.role": "Rol",
+    "showcase.pages.status": "Estado",
+    "showcase.pages.lastLogin": "Último acceso",
+    "showcase.pages.teamLoadError":
+      "No se pudieron cargar los miembros del equipo. Comprueba tu conexión e inténtalo de nuevo.",
+    "showcase.pages.connectionError": "Error de conexión",
+    "showcase.pages.noTeamMembers": "Todavía no hay miembros del equipo",
+    "showcase.pages.noTeamMembersHint":
+      "Invita a tu primer miembro del equipo para empezar.",
+    "showcase.pages.inviteMembers": "Invitar miembros",
+    "showcase.pages.pageState": "Estado de página",
+    "showcase.pages.iconInHeader": "Icono en el encabezado",
+    "showcase.pages.horizontalPadding": "Padding horizontal",
+    "showcase.pages.paddingDefault": "Por defecto",
+    "showcase.pages.screen": "Pantalla",
+    "showcase.pages.list": "Lista",
+    "showcase.pages.detailLastViewed": "Detalle (visto por última vez)",
+    "showcase.pages.selected": "Seleccionado:",
+    "showcase.pages.galleryUsersTable": "Usuarios — tabla con acciones",
+    "showcase.pages.usersDescShort": "1,245 registrados · 38 activos ahora",
+    "showcase.pages.addUser": "Añadir usuario",
+    "showcase.pages.galleryProductDetail": "Detalle de producto",
+    "showcase.pages.pricing": "Precios",
+    "showcase.pages.descriptionField": "Descripción",
+    "showcase.pages.galleryEditProfile": "Editar perfil",
+    "showcase.pages.editProfile": "Editar perfil",
+    "showcase.pages.editProfileDesc":
+      "Actualiza tu información personal y datos de contacto",
+    "showcase.pages.crumbAccount": "Cuenta",
+    "showcase.pages.profilePhoto": "Foto de perfil",
+    "showcase.pages.uploadImage": "Subir imagen",
+    "showcase.pages.personalInformation": "Información personal",
+    "showcase.pages.firstName": "Nombre",
+    "showcase.pages.lastName": "Apellidos",
+    "showcase.pages.emailField": "Correo",
+    "showcase.pages.galleryOrdersTable": "Órdenes — tabla de estados",
+    "showcase.pages.ordersDesc": "89 pendientes · 1,247 completadas este mes",
+    "showcase.pages.newOrder": "Nueva orden",
+    "showcase.pages.gallerySettings": "Ajustes",
+    "showcase.pages.settingsDesc":
+      "Gestiona tu cuenta y las preferencias del espacio de trabajo",
+    "showcase.pages.settingsNavGeneral": "General",
+    "showcase.pages.settingsNavNotifications": "Notificaciones",
+    "showcase.pages.settingsNavSecurity": "Seguridad",
+    "showcase.pages.settingsNavAppearance": "Apariencia",
+    "showcase.pages.settingsNavBilling": "Facturación",
+    "showcase.pages.generalPreferences": "Preferencias generales",
+    "showcase.pages.workspaceName": "Nombre del espacio",
+    "showcase.pages.darkMode": "Modo oscuro",
+    "showcase.pages.followSystem": "Seguir la apariencia del sistema",
+    "showcase.pages.emailNotifications": "Notificaciones por correo",
+    "showcase.pages.receiveAlerts": "Recibir alertas de actividad",
+
+    // Forms showcases
+    "showcase.forms.buttonDesc":
+      "Botón premium con soporte completo de variantes, colores del tema, icono y estados.",
+    "showcase.forms.clickMe": "Hacer Click",
+    "showcase.forms.clicksRegistered": "Clicks registrados: {count}",
+    "showcase.forms.withIcon": "Con Icono",
+    "showcase.forms.galleryWithIcon": "Con Icono",
+    "showcase.forms.galleryVariants": "Variantes",
+    "showcase.forms.gallerySemanticColors": "Colores Semánticos",
+    "showcase.forms.sync": "Sincronizar",
+    "showcase.forms.inputFormDesc":
+      "Formulario unificado con todos los tipos de campos de entrada (Texto, Menú, Búsqueda, Fechas, Horas, Toggles y Archivos) para validar su correcto comportamiento visual.",
+    "showcase.forms.inputSingleDesc":
+      "Sandbox interactivo para experimentar con el componente individual de tipo {type}.",
+    "showcase.forms.errName": "El nombre es obligatorio",
+    "showcase.forms.errEmail": "Formato de correo no válido",
+    "showcase.forms.errPassword": "La contraseña es muy corta",
+    "showcase.forms.errRole": "Debes elegir un rol administrativo",
+    "showcase.forms.errCountry": "Debes elegir tu país de residencia",
+    "showcase.forms.errBirthday": "Fecha incorrecta",
+    "showcase.forms.errTime": "Hora no permitida",
+    "showcase.forms.errFile": "Debes adjuntar un archivo",
+    "showcase.forms.inputUserLabel": "Nombre de Usuario",
+    "showcase.forms.inputUserPlaceholder": "Escribe tu apodo...",
+    "showcase.forms.inputPasswordLabel": "Contraseña",
+    "showcase.forms.inputPasswordPlaceholder": "Introduce tu clave...",
+    "showcase.forms.inputSelectLabel": "Rol Administrativo",
+    "showcase.forms.inputSelectPlaceholder": "Selecciona un rol",
+    "showcase.forms.inputCountryLabel": "País de Origen",
+    "showcase.forms.inputCountryPlaceholder": "Buscar país...",
+    "showcase.forms.inputDateLabel": "Fecha de Registro",
+    "showcase.forms.inputDatePlaceholder": "Elige una fecha",
+    "showcase.forms.inputTimeLabel": "Hora de Turno",
+    "showcase.forms.inputTimePlaceholder": "Elige una hora",
+    "showcase.forms.inputToggleLabel": "Habilitar Notificaciones",
+    "showcase.forms.inputFileLabel": "Subir Documento",
+    "showcase.forms.tabText": "Texto",
+    "showcase.forms.tabPassword": "Contraseña",
+    "showcase.forms.tabForm": "Formulario",
+    "showcase.forms.fullName": "Nombre Completo",
+    "showcase.forms.email": "Correo Electrónico",
+    "showcase.forms.password": "Contraseña",
+    "showcase.forms.userRole": "Rol de Usuario",
+    "showcase.forms.countryResidence": "País de Residencia",
+    "showcase.forms.birthDate": "Fecha de Nacimiento",
+    "showcase.forms.entryTime": "Hora de Entrada",
+    "showcase.forms.newsletter": "Recibir Boletín",
+    "showcase.forms.submitForm": "Enviar Formulario",
+    "showcase.forms.submitData": "✓ Submit Data (JSON):",
+    "showcase.forms.toggleSwitch": "Toggle Switch",
+    "showcase.forms.buttonColorVariant": "Variante de Color de Botón",
+    "showcase.forms.simulateErrors": "Simular Errores",
+    "showcase.forms.disableAll": "Deshabilitar Todo",
+    "showcase.forms.labelProp": "Etiqueta (Label)",
+    "showcase.forms.placeholderLabel": "Placeholder",
+    "showcase.forms.colorVariant": "Variante de Color",
+    "showcase.forms.errorMessage": "Mensaje de Error",
+    "showcase.forms.invalidFormatPlaceholder": "Ej. Formato inválido",
+    "showcase.forms.inputStandard": "Input Estándar",
+    "showcase.forms.enterData": "Ingresa datos...",
+    "showcase.forms.inputWithError": "Input Con Error",
+    "showcase.forms.emailFormatError": "El formato del correo es incorrecto",
+    "showcase.forms.inputDisabled": "Input Deshabilitado",
+    "showcase.forms.readOnly": "Solo lectura",
+    "showcase.forms.inputPassword": "Input Contraseña",
+    "showcase.forms.selectDesc":
+      "Menú desplegable de selección simple optimizado con los estilos visuales AXZY.",
+    "showcase.forms.selection": "Selección: \"{value}\"",
+    "showcase.forms.simpleOption": "Opción Simple",
+    "showcase.forms.selectWithError": "Select Con Error",
+    "showcase.forms.requiredFieldError": "Este campo es obligatorio",
+    "showcase.forms.requiredFieldError2": "Este campo es obligatorio",
+    "showcase.forms.searchSelectDesc":
+      "Selector avanzado con barra de búsqueda para filtrar colecciones grandes o cargar opciones remotas.",
+    "showcase.forms.selectCountry": "Seleccionar País",
+    "showcase.forms.countrySelected": "País seleccionado: \"{value}\"",
+    "showcase.forms.customTemplate": "Template personalizado (renderOption)",
+    "showcase.forms.countryCustomLabel": "País (template personalizado)",
+    "showcase.forms.clearButton": "Botón de limpiar (X)",
+    "showcase.forms.countryClearable": "País (clearable)",
+    "showcase.forms.loadingState": "Estado de Carga (Loading)",
+    "showcase.forms.datePickerDesc":
+      "Calendario de entrada de fechas estático y flotante con soporte para selección de rangos.",
+    "showcase.forms.eventDate": "Fecha del Evento",
+    "showcase.forms.currentValue": "Valor actual:",
+    "showcase.forms.rangeValue": "Rango: {from} - {to}",
+    "showcase.forms.colorTheme": "Tema de Color",
+    "showcase.forms.rangeSelection": "Selección de Rango",
+    "showcase.forms.timePickerDesc":
+      "Selector de horas y minutos con panel interactivo de scroll suave.",
+    "showcase.forms.startTime": "Hora de Inicio",
+    "showcase.forms.timeChosen": "Hora elegida: \"{value}\"",
+    "showcase.forms.calendarDesc":
+      "Calendario completo con soporte para eventos y agendamiento diario/semanal.",
+    "showcase.forms.slotClick": "Click en horario: {date}",
+    "showcase.forms.eventDetail": "Detalle del Evento: {title}",
+    "showcase.forms.viewMode": "Modo de Vista",
+    "showcase.forms.selectionMode": "Modo de Selección",
+    "showcase.forms.slideToggleDesc":
+      "Interruptor de alternancia (Switch) estilizado para cambiar estados binarios.",
+    "showcase.forms.stateLabel": "Estado:",
+    "showcase.forms.stateOn": "ENCENDIDO",
+    "showcase.forms.stateOff": "APAGADO",
+    "showcase.forms.activeColor": "Color Activo",
+    "showcase.forms.disableSwitch": "Deshabilitar Switch",
+    "showcase.forms.dropfileDesc":
+      "Área interactiva para arrastrar y soltar archivos, con previsualización de imágenes y barra de progreso.",
+    "showcase.forms.fileName": "Nombre:",
+    "showcase.forms.fileSize": "Tamaño:",
+    "showcase.forms.fileType": "Tipo:",
+    "showcase.forms.forceUploadState": "Forzar Estado de Subida",
+    "showcase.forms.wysiwygDesc":
+      "Editor WYSIWYG ligero sin dependencias externas: negrita, itálica, subrayado, marcador amarillo y listas. Implementado a mano sobre Selection/Range (sin execCommand).",
+    "showcase.forms.articleContent": "Contenido del artículo",
+    "showcase.forms.wysiwygPlaceholder": "Escribe o pega tu contenido...",
+    "showcase.forms.generatedHtml": "HTML generado",
+    "showcase.forms.forceError": "Forzar error",
+    "showcase.forms.formBuilderDesc":
+      "Generador dinámico de formularios basado en un esquema estructurado JSON. Soporta V1 retrocompatible y la arquitectura V2 con motor de reglas, secciones, renderers custom y opciones asíncronas.",
+    "showcase.forms.clear": "Limpiar",
+    "showcase.forms.send": "Enviar",
+    "showcase.forms.payloadSent": "✓ Payload Enviado:",
+    "showcase.forms.formBuilderHint":
+      "El formulario se genera dinámicamente inyectando un array de campos configurados.",
+    "showcase.forms.exampleFillTitle": "Formulario llenado desde API",
+    "showcase.forms.exampleFillDesc":
+      "Carga datos asíncronamente al montar el formulario",
+    "showcase.forms.exampleCascadeTitle": "Select conectado a API con Cascade",
+    "showcase.forms.exampleCascadeDesc":
+      "Select asíncrono que al seleccionar actualiza otro campo",
+    "showcase.forms.exampleCurrencyTitle": "Conversor de Moneda",
+    "showcase.forms.exampleCurrencyDesc":
+      "Select de divisa que actualiza precios en MXN y USD",
+    "showcase.forms.loadingUserData": "Cargando datos del usuario...",
+    "showcase.forms.saveChanges": "Guardar Cambios",
+    "showcase.forms.editedPayload": "✓ Editado:",
+    "showcase.forms.dataPayload": "✓ Datos:",
+    "showcase.forms.exchangeRate": "TC: 1 USD = {rate} MXN",
+    "showcase.forms.fieldDesc":
+      "Contenedor de campo de formulario que estandariza label, asterisco de requerido, texto de ayuda y mensaje de error alrededor de cualquier control.",
+    "showcase.forms.emailSubject": "Correo",
+    "showcase.forms.invalidEmail": "Ingresa un correo válido.",
+    "showcase.forms.emailHelp": "Nunca compartimos tu correo.",
+    "showcase.forms.showHelp": "Mostrar ayuda",
+    "showcase.forms.multiSelectDesc":
+      "Selector de múltiples valores con dropdown buscable, chips removibles y navegación por teclado. El dropdown va en portal, así que no se recorta dentro de un ITCard.",
+    "showcase.forms.countries": "Países",
+    "showcase.forms.selectedCount": "{count} seleccionados: {values}",
+    "showcase.forms.multiSelectHint":
+      "Usa las flechas para navegar, Enter para alternar y Backspace para quitar el último chip.",
+    "showcase.forms.optionTemplate": "Plantilla de opción (renderOption)",
+    "showcase.forms.withError": "Con error",
+    "showcase.forms.chipInputDesc":
+      "Entrada de texto libre que convierte los valores escritos en etiquetas (chips) removibles. Confirma con Enter o coma, al perder foco o al pegar texto delimitado.",
+    "showcase.forms.tags": "Etiquetas",
+    "showcase.forms.addTagPlaceholder": "Agrega una etiqueta...",
+    "showcase.forms.chipInputHelp":
+      "Enter o coma para agregar. Backspace para borrar la última.",
+    "showcase.forms.maxTags": "Máximo de etiquetas",
+    "showcase.forms.maskedInputDesc":
+      "Input de texto con máscara de formato: teclea solo caracteres útiles y los separadores se insertan solos (xxxx-xxxx-xxxx, (999) 999-9999, etc.).",
+    "showcase.forms.activationCode": "Código de activación",
+    "showcase.forms.currentRawValue": "Valor actual (raw):",
+    "showcase.forms.rawLabel": "raw:",
+    "showcase.forms.emptyValue": "(vacío)",
+    "showcase.forms.completeValue": "✓ completo",
+    "showcase.forms.maskAlphanumeric": "Código alfanumérico",
+    "showcase.forms.maskCardNumber": "Número de tarjeta",
+    "showcase.forms.maskPhone": "Teléfono",
+    "showcase.forms.maskPostalCode": "Código postal",
+    "showcase.forms.maskCvv": "CVV / OTP",
+    "showcase.forms.maskUppercase": "Clave con letras en MAYÚSCULA",
+    "showcase.forms.segmentedDesc":
+      "Grupo de botones mutuamente excluyentes estilo iOS para alternar vistas o filtros.",
+    "showcase.forms.selectedValue": "Seleccionado: \"{value}\"",
+    "showcase.forms.withIcons": "Con iconos",
+    "showcase.forms.inputNumberDesc":
+      "Campo numérico con formato de moneda que emite un number real (entero o decimal) en onChange.",
+    "showcase.forms.amount": "Monto",
+    "showcase.forms.amountRequired": "El monto es obligatorio",
+    "showcase.forms.valueLabel": "value:",
+    "showcase.forms.quantityIntegers": "Cantidad (enteros)",
+    "showcase.forms.between10And500": "Entre 10 y 500",
+    "showcase.forms.decimals": "Decimales",
+    "showcase.forms.simulateError": "Simular error",
+    "showcase.forms.prefixDollar": "Prefijo $",
+    "showcase.forms.unitPrice": "Precio unitario",
+    "showcase.forms.quantityDecimals0": "Cantidad (decimals=0)",
+  },
+  en: {
+    // Chrome
+    "sandbox.language": "Language",
+    "sandbox.notifications": "Notifications",
+    "sandbox.nav.portfolio": "Portfolio",
+    "sandbox.userMenu.portfolio": "Go to portfolio",
+    "sandbox.search.label": "Search components",
+    "sandbox.search.placeholder": "Search component…",
+    "sandbox.search.clear": "Clear search",
+    "sandbox.search.results": "{count} results",
+
+    // Navigation
+    "navigation.group.general": "General",
+    "navigation.group.struc": "Structure & Layout",
+    "navigation.group.forms": "Forms & Inputs",
+    "navigation.group.data": "Data Visualization",
+    "navigation.group.nav": "Navigation & Control",
+    "navigation.group.feed": "Feedback & System",
+    "navigation.item.help": "Help · Troubleshooting",
+    "navigation.item.sizes": "Sizes · sm / md / lg",
+    "navigation.item.screenDashboard": "Dashboard Example",
+    "navigation.item.screenForm": "Form Example",
+
+    // ── Showcase copy (dev-only) ──────────────────────────────────────────
+    // Common
+    "showcase.common.active": "Active",
+    "showcase.common.activeLabel": "Active:",
+    "showcase.common.cancel": "Cancel",
+    "showcase.common.code": "Code",
+    "showcase.common.color": "Color",
+    "showcase.common.copied": "Copied",
+    "showcase.common.copy": "Copy",
+    "showcase.common.correct": "✅ Correct",
+    "showcase.common.delete": "Delete",
+    "showcase.common.disabled": "Disabled",
+    "showcase.common.edit": "Edit",
+    "showcase.common.error": "Error",
+    "showcase.common.hideCode": "Hide code",
+    "showcase.common.home": "Home",
+    "showcase.common.incorrect": "❌ Incorrect",
+    "showcase.common.label": "Label",
+    "showcase.common.noSelection": "No selection",
+    "showcase.common.required": "Required",
+    "showcase.common.reset": "Reset",
+    "showcase.common.save": "Save",
+    "showcase.common.showCode": "View code",
+    "showcase.common.size": "Size",
+    "showcase.common.variant": "Variant",
+    "showcase.common.view": "View",
+
+    // ShowcaseLayout chrome
+    "showcase.layout.code": "Code",
+    "showcase.layout.copied": "Copied!",
+    "showcase.layout.copy": "Copy",
+    "showcase.layout.default": "Default",
+    "showcase.layout.docs": "Docs",
+    "showcase.layout.eyebrow": "Component showcase",
+    "showcase.layout.gallery": "Variations & States (Gallery)",
+    "showcase.layout.jsxCode": "JSX Code",
+    "showcase.layout.notes": "Notes",
+    "showcase.layout.overview": "Overview",
+    "showcase.layout.preview": "Preview",
+    "showcase.layout.prop": "Prop",
+    "showcase.layout.properties": "Properties",
+    "showcase.layout.props": "Props",
+    "showcase.layout.sandbox": "Interactive Sandbox",
+    "showcase.layout.type": "Type",
+    "showcase.layout.usageExamples": "Usage Examples",
+
+    // Sizes
+    "showcase.sizes.title": "Standard sizes · sm / md / lg",
+    "showcase.sizes.desc":
+      "A single scale for every component. The size of the form, select, button and badge is controlled with the same prop",
+    "showcase.sizes.rowDesc": "Standard system size",
+    "showcase.sizes.name": "Name",
+    "showcase.sizes.role": "Role",
+    "showcase.sizes.placeholder": "Select an option",
+    "showcase.sizes.exampleName": "E.g.: Juan",
+    "showcase.sizes.draft": "Draft",
+
+    // Producto detalle
+    "showcase.producto.whatItSolves": "What it solves",
+    "showcase.producto.stack": "Stack",
+    "showcase.producto.specSheet": "Technical sheet",
+
+    // Getting started
+    "showcase.gettingStarted.heroDesc":
+      "React component library built with Tailwind CSS v4. Designed for enterprise apps with a smooth developer experience.",
+    "showcase.gettingStarted.step1Title": "Install dependencies",
+    "showcase.gettingStarted.step1Desc": "Tailwind v4 and its Vite plugin.",
+    "showcase.gettingStarted.step2Title": "Configure Vite",
+    "showcase.gettingStarted.step2Desc": "Add Tailwind as a Vite plugin.",
+    "showcase.gettingStarted.step3Title": "Add Tailwind",
+    "showcase.gettingStarted.step3Desc": "Import Tailwind in your CSS file.",
+    "showcase.gettingStarted.step4Title": "Import styles",
+    "showcase.gettingStarted.step4Desc": "Wrap your app with the provider.",
+    "showcase.gettingStarted.step5Title": "Type declaration",
+    "showcase.gettingStarted.step5Desc": "So TS accepts CSS imports.",
+    "showcase.gettingStarted.step6Title": "First component",
+    "showcase.gettingStarted.step6Desc": "You can now use any component.",
+    "showcase.gettingStarted.themingTitle": "Theming",
+    "showcase.gettingStarted.themingDesc":
+      "Customize colors at runtime. You only need the ones you want to change.",
+
+    // Landing (#ui-system) & 404
+    "showcase.landing.previewBadge": "preview",
+    "showcase.landing.typed": "Typed",
+    "showcase.landing.statComponents": "Components",
+    "showcase.landing.statComponentsHint": "documented pages",
+    "showcase.landing.statFamilies": "Families",
+    "showcase.landing.statFamiliesHint": "navigation groups",
+    "showcase.landing.statTypedHint": "strict typing",
+    "showcase.landing.statUiDeps": "UI deps",
+    "showcase.landing.statUiDepsHint": "no extra runtime",
+    "showcase.landing.featureTokens":
+      "Tailwind CSS v4 with runtime theme tokens",
+    "showcase.landing.featureA11y":
+      "Accessibility: roles, focus and accessible names",
+    "showcase.landing.featureDarkMode":
+      "Automatic dark mode via ITThemeProvider",
+    "showcase.landing.featureTreeShakeable":
+      "Tree-shakeable: only import what you use",
+    "showcase.landing.featureNoDeps":
+      "No third-party UI dependencies",
+    "showcase.landing.featureDocumented":
+      "Documented with runnable examples",
+    "showcase.landing.heroTitleLead": "Components for",
+    "showcase.landing.heroTitleHighlight": "serious interfaces",
+    "showcase.landing.heroSubtitle":
+      "A React + TypeScript library with Tailwind CSS v4: accessible, themeable and production-ready. Explore {pages} pages across {families} families.",
+    "showcase.landing.exploreComponents": "Explore components",
+    "showcase.landing.viewPortfolio": "View portfolio",
+    "showcase.landing.ariaStats": "Library metrics",
+    "showcase.landing.exploreTitle": "Explore by family",
+    "showcase.landing.exploreSubtitle":
+      "Each row takes you straight to the group's first component.",
+    "showcase.landing.moreItems": "+{count} more",
+    "showcase.landing.quickstartEyebrow": "Getting started",
+    "showcase.landing.quickstartTitle": "Quickstart",
+    "showcase.landing.quickstartSubtitle":
+      "A theme provider, a stylesheet and your first button.",
+    "showcase.landing.minimalExample": "Minimal example",
+    "showcase.landing.builtIn": "Built in",
+    "showcase.landing.ctaTitle": "Ready to build?",
+    "showcase.landing.ctaSubtitle":
+      "Check the portfolio, the source code or explore the component sandbox.",
+    "showcase.landing.footerRun": "Run",
+    "showcase.landing.footerOpen": "and open",
+    "showcase.landing.footerSuffix": "to see every component.",
+    "showcase.notFound.eyebrow": "// error 404",
+    "showcase.notFound.title": "Route not found",
+    "showcase.notFound.description":
+      "There is no page for this hash. Check the link or go back home.",
+    "showcase.notFound.backHome": "Back to home",
+
+    // Help
+    "showcase.help.badge": "Support",
+    "showcase.help.title": "Help & Troubleshooting",
+    "showcase.help.subtitle":
+      "A guide to diagnose and fix the most common issues when using AXZY UI System, plus a checklist to report incidents with all the necessary context.",
+    "showcase.help.reportBug": "Report a bug",
+    "showcase.help.viewRepo": "View repository",
+    "showcase.help.quickDiagnosis": "Quick diagnosis",
+    "showcase.help.quickDiagnosisHint":
+      "Run these commands before reporting any failure.",
+    "showcase.help.commonErrors": "Common errors and their fix",
+    "showcase.help.commonErrorsHint":
+      "Symptom, cause and fix for the stack's most common pitfalls.",
+    "showcase.help.faq": "Frequently asked questions",
+    "showcase.help.faqHint": "Short answers to the most repeated questions.",
+    "showcase.help.howToReport": "How to report a bug",
+    "showcase.help.reportIntro":
+      "A good report can be reproduced without extra questions. Follow these steps and complete the checklist before opening the issue.",
+    "showcase.help.steps": "Steps",
+    "showcase.help.includeInReport": "Include in the report",
+    "showcase.help.footerHint":
+      "Usage questions instead of a bug? Open a discussion in the repository.",
+    "showcase.help.openIssue": "Open issue",
+    "showcase.help.viewAgents": "View AGENTS.md",
+    "showcase.help.fixPill":
+      "Reproducible steps + version + environment = actionable report",
+
+    // Home (portfolio)
+    "showcase.home.ariaStats": "Profile metrics",
+    "showcase.home.badge": "Portfolio · 2026",
+    "showcase.home.hello": "Hi, I'm",
+    "showcase.home.bio":
+      "Fullstack Developer with 4+ years building modern web applications. Specialized in TypeScript, Angular and React, focused on clean architecture and products people use every day.",
+    "showcase.home.downloadCv": "Download CV",
+    "showcase.home.availableFullstack": "Available for fullstack projects",
+    "showcase.home.role": "Fullstack Developer",
+    "showcase.home.location": "Remote · Mexico",
+    "showcase.home.available": "Available",
+    "showcase.home.statExperience": "Experience",
+    "showcase.home.statExperienceHint": "years as fullstack",
+    "showcase.home.statTech": "Technologies",
+    "showcase.home.statTechHint": "in the stack",
+    "showcase.home.statProducts": "Products",
+    "showcase.home.statProductsHint": "own and in use",
+    "showcase.home.statMode": "Work mode",
+    "showcase.home.statModeValue": "Remote",
+    "showcase.home.statModeHint": "available now",
+    "showcase.home.eyebrowBase": "Technical base",
+    "showcase.home.titleTech": "Languages and frameworks",
+    "showcase.home.subtitleTech": "The ones I work with every day.",
+    "showcase.home.labelLanguages": "Languages",
+    "showcase.home.labelFrameworks": "Frameworks",
+    "showcase.home.eyebrowStack": "Stack",
+    "showcase.home.titleStack": "Technologies I use",
+    "showcase.home.subtitleStack": "Filter by area or search by name.",
+    "showcase.home.searchTech": "Search technology...",
+    "showcase.home.noTech": "No technologies found for “{term}”.",
+    "showcase.home.techCount": "{shown} of {total} technologies",
+    "showcase.home.catAll": "All",
+    "showcase.home.catFrontend": "Frontend",
+    "showcase.home.catBackend": "Backend",
+    "showcase.home.catMobile": "Mobile",
+    "showcase.home.catDatabase": "Databases",
+    "showcase.home.catDevops": "DevOps",
+    "showcase.home.eyebrowPortfolio": "Portfolio",
+    "showcase.home.titleProducts": "Products I built",
+    "showcase.home.subtitleProducts":
+      "Those with screenshots open in their detail screen.",
+    "showcase.home.viewDetail": "View details",
+    "showcase.home.viewDetailOf": "View details of {name}",
+    "showcase.home.captures": "{count} screenshots",
+    "showcase.home.viewRepo": "View repository",
+    "showcase.home.eyebrowNext": "Next steps",
+    "showcase.home.titleTogether": "Shall we work together?",
+    "showcase.home.subtitleTogether":
+      "I'm available for fullstack, product or design-system projects.",
+    "showcase.home.writingPrefix": "I also write on",
+    "showcase.home.codeOn": "and my products' code is on",
+
+    // Navigation showcases
+    "showcase.nav.tabsDesc":
+      "Content tabs with icons and transitions.",
+    "showcase.nav.tabGeneral": "General",
+    "showcase.nav.tabsGeneralBody": "Global settings and account profile.",
+    "showcase.nav.tabSecurity": "Security",
+    "showcase.nav.tabsSecurityBody":
+      "Credential settings, MFA and access logs.",
+    "showcase.nav.tabNotifications": "Notifications",
+    "showcase.nav.tabsNotificationsBody":
+      "Alert preferences via email, SMS and PUSH notifications.",
+    "showcase.nav.variantAesthetic": "Aesthetic variant",
+    "showcase.nav.stepperDesc":
+      "Sequential step indicator for completing complex guided processes.",
+    "showcase.nav.stepValidate": "Verify identity",
+    "showcase.nav.stepValidateBody":
+      "Step 1: Upload your official ID document.",
+    "showcase.nav.stepKyc": "Upload KYC",
+    "showcase.nav.stepKycBody":
+      "Step 2: Fill in your tax data and source of funds.",
+    "showcase.nav.stepSign": "Complete signature",
+    "showcase.nav.stepSignBody":
+      "Step 3: Complete the digital biometric signature.",
+    "showcase.nav.stepperFinish": "Process completed successfully!",
+    "showcase.nav.useIcons": "Use icons",
+    "showcase.nav.resetStep": "Reset step",
+    "showcase.nav.paginationDesc":
+      "Numbered page navigation control with quick-direction buttons.",
+    "showcase.nav.currentPage": "Active page: {page} of 10",
+    "showcase.nav.activeColorLabel": "Active button color",
+    "showcase.nav.tripleFilterDesc":
+      "Quick segmented selector typically designed for 3-state fast filters.",
+    "showcase.nav.filterAll": "All",
+    "showcase.nav.filterActive": "Active",
+    "showcase.nav.filterInactive": "Inactive",
+    "showcase.nav.activeFilter": "Active filter: \"{filter}\"",
+    "showcase.nav.tripleFilterHint":
+      "Provides a segmented layout with animation when switching between the available options.",
+    "showcase.nav.dropdownDesc":
+      "Action menu with keyboard navigation and ARIA semantics. It renders in a portal, so it isn't clipped by an ITCard or ancestors with overflow: hidden.",
+    "showcase.nav.rowActions": "Row actions",
+    "showcase.nav.lastAction": "Last action: {action}",
+    "showcase.nav.dropdownKeyboardHint":
+      "Keyboard: arrows to navigate, Enter to activate, Esc to close. The menu opens inside the ITCard without clipping.",
+    "showcase.nav.customTrigger": "Custom trigger",
+    "showcase.nav.actions": "Actions",
+    "showcase.nav.actionEdit": "Edit",
+    "showcase.nav.actionDuplicate": "Duplicate",
+    "showcase.nav.actionDownload": "Download",
+    "showcase.nav.actionDelete": "Delete",
+    "showcase.nav.none": "—",
+
+    // Data showcases
+    "showcase.data.tableDesc":
+      "Table with responsive Table / Cards view, pagination, filters and a customizable card template.",
+    "showcase.data.selectedName": "Selected: {name}",
+    "showcase.data.selectedNameId": "Selected: {name} (id {id})",
+    "showcase.data.clickToSelect":
+      "Click a row/card or press Enter/Space to select",
+    "showcase.data.teamMembers": "Team members",
+    "showcase.data.tableVariant": "Table variant",
+    "showcase.data.rowSize": "Row size",
+    "showcase.data.customCardTemplate": "Custom card template",
+    "showcase.data.defaultCardActive":
+      "Default card active — shows all columns as label-value pairs",
+    "showcase.data.galleryCustomCardsHover": "Custom cards with hover",
+    "showcase.data.galleryDefaultCards": "ITTable with default cards",
+    "showcase.data.galleryCustomCardsPagination":
+      "ITTable with custom cards + pagination",
+    "showcase.data.galleryAllMembers": "All members",
+    "showcase.data.galleryCompactFixed":
+      "Compact fixed layout — no horizontal scroll",
+    "showcase.data.galleryFixedLayout": "Fixed layout",
+    "showcase.data.galleryPinnedNameActions":
+      "Pinned columns — left (Name) & right (Actions)",
+    "showcase.data.galleryPinnedColumns": "Pinned columns",
+    "showcase.data.galleryAutoCards":
+      "Auto cards fallback (< 640px container)",
+    "showcase.data.galleryNarrowContainer": "Narrow container",
+    "showcase.data.galleryVirtualized":
+      "Virtualized table — 300 rows (only visible window mounted)",
+    "showcase.data.galleryVirtualizedTitle": "Virtualized · 300 rows",
+    "showcase.data.galleryColumnFilters":
+      "Column filters: ITSearchSelect + ITDatePicker (single & range)",
+    "showcase.data.galleryFilterDemo": "Filter demo",
+    "showcase.data.galleryDesignOverrides":
+      "Design overrides — colors + design slots, no switch",
+    "showcase.data.galleryCustomDesign": "Custom design",
+    "showcase.data.galleryPerColumnDesign":
+      "Per-column design — header and cell per column",
+    "showcase.data.galleryPerColumnTitle": "Per-column",
+    "showcase.data.dataTableDesc":
+      "Self-sufficient table with dynamic loading, filters, pagination and responsive Cards/Table view.",
+    "showcase.data.titleConnectionError": "Connection error",
+    "showcase.data.titleNoData": "No data",
+    "showcase.data.titleUsers": "Users",
+    "showcase.data.inactive": "Inactive",
+    "showcase.data.apiState": "API state",
+    "showcase.data.stateNormal": "Normal",
+    "showcase.data.stateLoading": "Loading",
+    "showcase.data.stateEmpty": "Empty",
+    "showcase.data.stateError": "Error",
+    "showcase.data.borders": "Borders",
+    "showcase.data.borderGray": "Gray",
+    "showcase.data.borderBlue": "Blue",
+    "showcase.data.borderRose": "Rose",
+    "showcase.data.borderNone": "None",
+    "showcase.data.tableCapabilities": "Table capabilities",
+    "showcase.data.density": "Density",
+    "showcase.data.layout": "Layout",
+    "showcase.data.autoCardsBelow": "Auto cards below (px)",
+    "showcase.data.virtualizedGallery": "Virtualized (gallery)",
+    "showcase.data.stickyHeader": "Sticky header",
+    "showcase.data.capabilitiesHint":
+      'size, density, layout and auto-cards apply to the main demo; virtualized and sticky header only to the gallery\'s "Server-side virtualization" block. That block doesn\'t receive autoCardBreakpoint: cards are never virtualized and the auto-cards fallback would silently disable virtualization.',
+    "showcase.data.galleryDefaultCardsPagination":
+      "Default cards with pagination",
+    "showcase.data.galleryPinnedIdActive":
+      "Pinned columns — left (ID) & right (Active)",
+    "showcase.data.galleryServerVirtualization":
+      "Server-side virtualization — 240 rows (page {page})",
+    "showcase.data.galleryVirtualizedUsers": "Virtualized users",
+    "showcase.data.badgetDesc":
+      "Styled badges (tags) to represent item states or categories.",
+    "showcase.data.textLabel": "Text",
+    "showcase.data.imageDesc":
+      "Smart image rendering component with an internal loader and automatic fallback on network failures.",
+    "showcase.data.imageAlt": "Abstract image",
+    "showcase.data.imageBroken": "Loading broken URL (fallback active)",
+    "showcase.data.imageOk": "Loading valid URL",
+    "showcase.data.forceError": "Force load error (broken URL)",
+    "showcase.data.chipDesc":
+      "Compact label (tag / pill) for labels, active filters and multi-selections. Soft, filled and outlined variants, icon, remove button (X) and selected state.",
+    "showcase.data.chipDisabled": "Disabled",
+    "showcase.data.chipHint":
+      "Chips with onClick are filter toggles (role=button, Enter/Space). Removable chips show an X.",
+
+    // Feedback showcases
+    "showcase.feedback.dialogDesc":
+      "Modal dialog boxes with a dark overlay and form header support.",
+    "showcase.feedback.openModal": "Open modal",
+    "showcase.feedback.dialogTitle": "Audit confirmation",
+    "showcase.feedback.dialogBody":
+      "An immutable record will be saved in the corporate blockchain logs. This action is irreversible.",
+    "showcase.feedback.auditorLabel": "Responsible auditor",
+    "showcase.feedback.auditorPlaceholder": "Search an auditor...",
+    "showcase.feedback.authorize": "Authorize",
+    "showcase.feedback.signedTransaction": "Transaction signed!",
+    "showcase.feedback.useFormHeader": "Use form header",
+    "showcase.feedback.toastDesc":
+      "Floating ephemeral system alerts to notify the user of immediate events.",
+    "showcase.feedback.toastDefaultMsg": "The operation was processed successfully!",
+    "showcase.feedback.message": "Message",
+    "showcase.feedback.notificationType": "Notification type",
+    "showcase.feedback.launchNotification": "Trigger notification",
+    "showcase.feedback.toastSuccess": "Toast Success",
+    "showcase.feedback.toastError": "Toast Error",
+    "showcase.feedback.toastWarning": "Toast Warning",
+    "showcase.feedback.toastInfo": "Toast Info",
+    "showcase.feedback.msgSuccess": "Operation successful!",
+    "showcase.feedback.msgError": "A network failure occurred.",
+    "showcase.feedback.msgWarning": "License expiring soon.",
+    "showcase.feedback.msgInfo": "Update available.",
+    "showcase.feedback.loaderDesc":
+      "Animated loading indicators with support for multiple visual styles.",
+    "showcase.feedback.loaderVariant": "Loader type",
+    "showcase.feedback.themeDesc":
+      "Dynamic CSS token injector that manages dark/light mode and unified color palettes.",
+    "showcase.feedback.appearanceMode": "Appearance mode",
+    "showcase.feedback.modeLight": "☀️ Light",
+    "showcase.feedback.modeDark": "🌙 Dark",
+    "showcase.feedback.modeSystem": "💻 System",
+    "showcase.feedback.currentTheme": "Current theme:",
+    "showcase.feedback.modeDarkName": "Dark",
+    "showcase.feedback.modeLightName": "Light",
+    "showcase.feedback.quickPresets": "Quick presets",
+    "showcase.feedback.themeHint1":
+      "Click the floating palette button 🎨 in the bottom-right corner to open the full designer.",
+    "showcase.feedback.themeHint2":
+      "There you can adjust each color, save custom themes and switch between light/dark mode.",
+
+    // Layout primitives showcases
+    "showcase.layoutPrimitives.stackDesc":
+      "Flexbox-based layout with direction, uniform spacing, alignment and distribution. Ideal for vertical sections, horizontal toolbars, item lists and form rows.",
+    "showcase.layoutPrimitives.direction": "Direction",
+    "showcase.layoutPrimitives.spacingUnits": "Spacing (0.25rem units)",
+    "showcase.layoutPrimitives.alignItems": "Align items",
+    "showcase.layoutPrimitives.justifyContent": "Justify content",
+    "showcase.layoutPrimitives.flexWrap": "Flex wrap",
+    "showcase.layoutPrimitives.showDivider": "Show divider",
+    "showcase.layoutPrimitives.spacingScale": "Spacing scale",
+    "showcase.layoutPrimitives.spacingScaleSubtitle":
+      "Try different gap values to feel the rhythm",
+    "showcase.layoutPrimitives.scaleTight": "Tight",
+    "showcase.layoutPrimitives.scaleTightDesc": "Compact UI",
+    "showcase.layoutPrimitives.scaleDefault": "Default",
+    "showcase.layoutPrimitives.scaleDefaultDesc": "Comfortable",
+    "showcase.layoutPrimitives.scaleRelaxed": "Relaxed",
+    "showcase.layoutPrimitives.scaleRelaxedDesc": "Breathing room",
+    "showcase.layoutPrimitives.scaleSpacious": "Spacious",
+    "showcase.layoutPrimitives.scaleSpaciousDesc": "Hero sections",
+    "showcase.layoutPrimitives.justifyTitle": "Justify content",
+    "showcase.layoutPrimitives.justifySubtitle":
+      "How children are distributed along the main axis",
+    "showcase.layoutPrimitives.justifyStartDesc": "Children packed at the start",
+    "showcase.layoutPrimitives.justifyCenterDesc": "Children centered on the axis",
+    "showcase.layoutPrimitives.justifyEndDesc": "Children packed at the end",
+    "showcase.layoutPrimitives.justifyBetweenDesc":
+      "First/last at the edges, the rest spread evenly",
+    "showcase.layoutPrimitives.justifyAroundDesc":
+      "Equal space around each child",
+    "showcase.layoutPrimitives.justifyEvenlyDesc": "Equal space everywhere",
+    "showcase.layoutPrimitives.alignTitle": "Align items",
+    "showcase.layoutPrimitives.alignSubtitle":
+      "How children are aligned on the cross axis",
+    "showcase.layoutPrimitives.alignStartDesc": "Aligned to top (in a row)",
+    "showcase.layoutPrimitives.alignCenterDesc": "Centered on the cross axis",
+    "showcase.layoutPrimitives.alignEndDesc": "Aligned to bottom (in a row)",
+    "showcase.layoutPrimitives.alignStretchDesc": "Children fill the cross axis",
+    "showcase.layoutPrimitives.alignBaselineDesc": "Text baselines align",
+    "showcase.layoutPrimitives.stackGallerySubtitle":
+      "Production-ready UI built entirely with ITStack",
+    "showcase.layoutPrimitives.patternPageHeader": "Page header",
+    "showcase.layoutPrimitives.patternPageHeaderDesc": "Title + actions on the right",
+    "showcase.layoutPrimitives.patternTagCloud": "Tag cloud",
+    "showcase.layoutPrimitives.patternTagCloudDesc":
+      "Wrap enabled for flowing tags",
+    "showcase.layoutPrimitives.patternSectionList": "Section list",
+    "showcase.layoutPrimitives.patternSectionListDesc": "Subtle divider between items",
+    "showcase.layoutPrimitives.patternNotification": "Notification banner",
+    "showcase.layoutPrimitives.patternNotificationDesc": "Icon + message + dismiss",
+    "showcase.layoutPrimitives.patternStatsRow": "Stats row",
+    "showcase.layoutPrimitives.patternStatsRowDesc": "3 metric cards in one row",
+    "showcase.layoutPrimitives.flexDesc":
+      "Full flexbox container with total control over alignment, distribution and gap. For complex layouts that need more control than ITStack.",
+    "showcase.layoutPrimitives.gapUnits": "Gap (0.25rem units)",
+    "showcase.layoutPrimitives.flexGallerySubtitle":
+      "Production-ready UI built entirely with ITFlex",
+    "showcase.layoutPrimitives.patternToolbarRow": "Toolbar row",
+    "showcase.layoutPrimitives.patternGrowLayout": "Grow layout",
+    "showcase.layoutPrimitives.patternCenteredHero": "Centered hero",
+    "showcase.layoutPrimitives.patternResponsiveForm": "Responsive form",
+    "showcase.layoutPrimitives.patternFullHeight": "Full-height layout",
+    "showcase.layoutPrimitives.gridDesc":
+      "Responsive 12-column grid system. Ideal for dashboards, galleries and full-page layouts.",
+    "showcase.layoutPrimitives.columnsLabel": "Columns",
+    "showcase.layoutPrimitives.gridGallerySubtitle":
+      "Production-ready layouts built with ITGrid",
+    "showcase.layoutPrimitives.patternAppDashboard": "App dashboard",
+    "showcase.layoutPrimitives.patternUserProfile": "User profile",
+    "showcase.layoutPrimitives.patternArticleLayout": "Article layout",
+    "showcase.layoutPrimitives.patternPricingComparison": "Pricing comparison",
+    "showcase.layoutPrimitives.screensTitle": "Composite screens",
+    "showcase.layoutPrimitives.screensSubtitle":
+      "Real examples combining ITStack + ITFlex + ITGrid to build complete screens in minutes.",
+    "showcase.layoutPrimitives.dashboardCard": "Metrics dashboard",
+    "showcase.layoutPrimitives.dashboardSubtitle": "System activity overview",
+    "showcase.layoutPrimitives.export": "Export",
+    "showcase.layoutPrimitives.statActiveUsers": "Active users",
+    "showcase.layoutPrimitives.statOpenTickets": "Open tickets",
+    "showcase.layoutPrimitives.salesChart": "Sales chart",
+    "showcase.layoutPrimitives.last30Days": "Last 30 days",
+    "showcase.layoutPrimitives.formCard": "Responsive form",
+    "showcase.layoutPrimitives.newUser": "New user",
+    "showcase.layoutPrimitives.newUserSubtitle":
+      "Fill in the fields to register a new user",
+    "showcase.layoutPrimitives.exampleJuan": "E.g.: Juan",
+    "showcase.layoutPrimitives.examplePerez": "E.g.: Pérez",
+    "showcase.layoutPrimitives.exampleEmail": "e.g.: user@example.com",
+    "showcase.layoutPrimitives.department": "Department",
+
+    // Structure showcases
+    "showcase.structure.cardDesc":
+      "Multi-purpose container with optional header, image, content and actions footer. Becomes interactive with `onClick` (hover effect).",
+    "showcase.structure.cardTitleLabel": "Title",
+    "showcase.structure.cardTitlePlaceholder": "Leave empty to hide",
+    "showcase.structure.showImage": "Show image",
+    "showcase.structure.showActions": "Show actions",
+    "showcase.structure.interactiveOnClick": "Interactive (onClick)",
+    "showcase.structure.galleryRealCases": "Real UI cases",
+    "showcase.structure.galleryCardsSubtitle":
+      "Production-ready card layouts built with ITCard",
+    "showcase.structure.patternCourseProgress": "Course progress",
+    "showcase.structure.patternPricing": "Featured pricing plan",
+    "showcase.structure.patternActivity": "Activity feed item",
+    "showcase.structure.patternTeamMember": "Team member profile",
+    "showcase.structure.textDesc":
+      "Semantic typography wrapper. Renders any HTML element, with support for character truncation, line clamp and programmatic breaking.",
+    "showcase.structure.renderingAs": "Rendering as",
+    "showcase.structure.elementAs": "HTML element (as)",
+    "showcase.structure.lineClampLabel": "Number of lines (lineClamp)",
+    "showcase.structure.maxTextLabel": "Max text (characters)",
+    "showcase.structure.noLimit": "0 = no limit",
+    "showcase.structure.truncateHint":
+      "Truncates with \"…\" when exceeded (0 = disabled).",
+    "showcase.structure.breakLabel": "Line break after (characters)",
+    "showcase.structure.noBreak": "0 = no break",
+    "showcase.structure.brHint": "Inserts a <br /> when exceeding the limit.",
+    "showcase.structure.breakWrapLabel":
+      "breakLengthWrap (break every N characters)",
+    "showcase.structure.noCut": "0 = no break",
+    "showcase.structure.cutHint":
+      "Inserts break opportunities every N chars (0 = disabled).",
+    "showcase.structure.boldLabel": "Bold (font-bold)",
+    "showcase.structure.mutedLabel": "Muted color",
+    "showcase.structure.galleryTextSubtitle":
+      "Production-ready typography patterns built with ITText",
+    "showcase.structure.patternArticleHeader": "Article header",
+    "showcase.structure.patternSectionHeading": "Section heading",
+    "showcase.structure.patternEmptyState": "Empty state",
+    "showcase.structure.patternInlineContent": "Inline content",
+    "showcase.structure.patternFormLabels": "Form labels",
+    "showcase.structure.accordionDesc":
+      "Collapsible sections for FAQs, settings panels and long content. Controlled or uncontrolled, single or multiple, with CSS grid-rows animation.",
+    "showcase.structure.allowMultiple": "Allow multiple open",
+    "showcase.structure.accordionBordered": "Bordered",
+    "showcase.structure.accordionSeparated": "Separated (default)",
+    "showcase.structure.accWhat": "What is AXZY UI System?",
+    "showcase.structure.accWhatBody":
+      "A React + TypeScript component library with Tailwind CSS v4.",
+    "showcase.structure.accInstall": "How do I install it?",
+    "showcase.structure.accTheme": "Can I customize the theme?",
+    "showcase.structure.accThemeBody":
+      "Yes, use ITThemeProvider to define the palette and tokens.",
+    "showcase.structure.accDisabled": "Disabled section",
+    "showcase.structure.accDisabledBody": "It cannot be opened.",
+    "showcase.structure.navDocuments": "Documents",
+    "showcase.structure.navAlerts": "Alerts",
+    "showcase.structure.navSettings": "Settings",
+    "showcase.structure.navLogout": "Sign out",
+    "showcase.structure.navDashboard": "Dashboard",
+    "showcase.structure.navUsers": "Users",
+    "showcase.structure.navSales": "Sales",
+    "showcase.structure.navManagement": "Management",
+    "showcase.structure.navOrders": "Orders",
+    "showcase.structure.navInvoices": "Invoices",
+    "showcase.structure.navCatalog": "Catalog",
+    "showcase.structure.navQuotes": "Quotes",
+    "showcase.structure.navProducts": "Products",
+    "showcase.structure.navConfiguration": "Settings",
+    "showcase.structure.navInbox": "Inbox",
+    "showcase.structure.navExit": "Exit",
+    "showcase.structure.dashboardDesc": "System overview",
+    "showcase.structure.statSalesToday": "Sales Today",
+    "showcase.structure.statTickets": "Tickets",
+    "showcase.structure.recentActivity": "Recent activity",
+    "showcase.structure.layoutBody":
+      "The layout adapts when collapsing/expanding the sidebar and shows a drawer on mobile.",
+    "showcase.structure.sidebarCollapsed": "Sidebar collapsed",
+    "showcase.structure.layoutHint":
+      "On mobile (<lg) the sidebar opens as a drawer with a dark backdrop. Use the ☰ button in the topbar. On desktop the collapsed rail expands on hover; there is no collapse button in the sidebar.",
+    "showcase.structure.galleryNavbarStandalone": "ITNavbar (standalone)",
+    "showcase.structure.galleryNavbarSubmenus": "ITNavbar with submenus",
+    "showcase.structure.activeItem": "Active item: \"{label}\"",
+    "showcase.structure.selectNavItem": "Select a navigation item",
+    "showcase.structure.submenuHint":
+      "Click \"Sales\" to expand/collapse the submenu",
+    "showcase.structure.gallerySidebarBadges":
+      "ITSidebar — badges + notification",
+    "showcase.structure.sidebarItemsHint1":
+      "Each item can carry a counter with",
+    "showcase.structure.sidebarItemsHint2":
+      ", and the sidebar supports a",
+    "showcase.structure.sidebarItemsHint3": "row with icon + ITBadget.",
+
+    // Page showcases
+    "showcase.pages.pageHeaderDesc":
+      "Standardized screen header. Includes title, description, icon, breadcrumbs, back button and actions area.",
+    "showcase.pages.teamMembers": "Team members",
+    "showcase.pages.teamDesc":
+      "Manage invitations, roles and permissions for your organization workspace.",
+    "showcase.pages.crumbAdmin": "Admin",
+    "showcase.pages.crumbTeam": "Team",
+    "showcase.pages.backButton": "Back button",
+    "showcase.pages.breadcrumbs": "Breadcrumbs",
+    "showcase.pages.icon": "Icon",
+    "showcase.pages.description": "Description",
+    "showcase.pages.addMember": "Add member",
+    "showcase.pages.export": "Export",
+    "showcase.pages.searchByNameEmail": "Search by name or email...",
+    "showcase.pages.allRoles": "All roles",
+    "showcase.pages.allStatus": "All status",
+    "showcase.pages.clear": "Clear",
+    "showcase.pages.headerElements": "Header elements",
+    "showcase.pages.actions": "Actions",
+    "showcase.pages.filters": "Filters",
+    "showcase.pages.showFilterBar": "Show filter bar",
+    "showcase.pages.galleryTeamManagement": "Team management",
+    "showcase.pages.galleryDetailEdit": "Detail / Edit form",
+    "showcase.pages.crumbProducts": "Products",
+    "showcase.pages.crumbEdit": "Edit",
+    "showcase.pages.editProduct": "Edit product",
+    "showcase.pages.editProductDesc":
+      "Update product details, pricing and inventory information.",
+    "showcase.pages.saveChanges": "Save changes",
+    "showcase.pages.productName": "Product name",
+    "showcase.pages.price": "Price",
+    "showcase.pages.stock": "Stock",
+    "showcase.pages.galleryDashboard": "Dashboard",
+    "showcase.pages.dashboardDesc":
+      "Real-time overview of your business metrics and activity.",
+    "showcase.pages.last7Days": "Last 7 days",
+    "showcase.pages.last30Days": "Last 30 days",
+    "showcase.pages.thisQuarter": "This quarter",
+    "showcase.pages.customRange": "Custom range",
+    "showcase.pages.refresh": "Refresh",
+    "showcase.pages.gallerySettingsPrefs": "Settings / Preferences",
+    "showcase.pages.generalSettings": "General settings",
+    "showcase.pages.generalSettingsDesc":
+      "Configure your workspace preferences, notifications and security options.",
+    "showcase.pages.galleryUsersList": "Users list",
+    "showcase.pages.usersDesc":
+      "1,245 registered users · 38 active right now",
+    "showcase.pages.searchShort": "Search...",
+    "showcase.pages.invite": "Invite",
+    "showcase.pages.pageDesc":
+      "Complete page template with table, detail and 4 states (loading, error, empty, normal).",
+    "showcase.pages.memberSummary": "Member · {role} · {status}",
+    "showcase.pages.userLoadError":
+      "Could not load user details. Please try again.",
+    "showcase.pages.detailsError": "Details error",
+    "showcase.pages.noUserData": "No user data",
+    "showcase.pages.noUserInfo":
+      "No information available for this user.",
+    "showcase.pages.accountDetails": "Account details",
+    "showcase.pages.fullName": "Full name",
+    "showcase.pages.emailAddress": "Email address",
+    "showcase.pages.role": "Role",
+    "showcase.pages.status": "Status",
+    "showcase.pages.lastLogin": "Last login",
+    "showcase.pages.teamLoadError":
+      "Could not load team members. Check your connection and try again.",
+    "showcase.pages.connectionError": "Connection error",
+    "showcase.pages.noTeamMembers": "No team members yet",
+    "showcase.pages.noTeamMembersHint":
+      "Invite your first team member to get started.",
+    "showcase.pages.inviteMembers": "Invite members",
+    "showcase.pages.pageState": "Page state",
+    "showcase.pages.iconInHeader": "Icon in header",
+    "showcase.pages.horizontalPadding": "Horizontal padding",
+    "showcase.pages.paddingDefault": "Default",
+    "showcase.pages.screen": "Screen",
+    "showcase.pages.list": "List",
+    "showcase.pages.detailLastViewed": "Detail (last viewed)",
+    "showcase.pages.selected": "Selected:",
+    "showcase.pages.galleryUsersTable": "Users — table with actions",
+    "showcase.pages.usersDescShort": "1,245 registered · 38 active now",
+    "showcase.pages.addUser": "Add user",
+    "showcase.pages.galleryProductDetail": "Product detail",
+    "showcase.pages.pricing": "Pricing",
+    "showcase.pages.descriptionField": "Description",
+    "showcase.pages.galleryEditProfile": "Edit profile",
+    "showcase.pages.editProfile": "Edit profile",
+    "showcase.pages.editProfileDesc":
+      "Update your personal information and contact details",
+    "showcase.pages.crumbAccount": "Account",
+    "showcase.pages.profilePhoto": "Profile photo",
+    "showcase.pages.uploadImage": "Upload image",
+    "showcase.pages.personalInformation": "Personal information",
+    "showcase.pages.firstName": "First name",
+    "showcase.pages.lastName": "Last name",
+    "showcase.pages.emailField": "Email",
+    "showcase.pages.galleryOrdersTable": "Orders — status table",
+    "showcase.pages.ordersDesc": "89 pending · 1,247 completed this month",
+    "showcase.pages.newOrder": "New order",
+    "showcase.pages.gallerySettings": "Settings",
+    "showcase.pages.settingsDesc":
+      "Manage your account and workspace preferences",
+    "showcase.pages.settingsNavGeneral": "General",
+    "showcase.pages.settingsNavNotifications": "Notifications",
+    "showcase.pages.settingsNavSecurity": "Security",
+    "showcase.pages.settingsNavAppearance": "Appearance",
+    "showcase.pages.settingsNavBilling": "Billing",
+    "showcase.pages.generalPreferences": "General preferences",
+    "showcase.pages.workspaceName": "Workspace name",
+    "showcase.pages.darkMode": "Dark mode",
+    "showcase.pages.followSystem": "Follow system appearance",
+    "showcase.pages.emailNotifications": "Email notifications",
+    "showcase.pages.receiveAlerts": "Receive activity alerts",
+
+    // Forms showcases
+    "showcase.forms.buttonDesc":
+      "Premium button with full support for variants, theme colors, icon and states.",
+    "showcase.forms.clickMe": "Click me",
+    "showcase.forms.clicksRegistered": "Clicks registered: {count}",
+    "showcase.forms.withIcon": "With icon",
+    "showcase.forms.galleryWithIcon": "With icon",
+    "showcase.forms.galleryVariants": "Variants",
+    "showcase.forms.gallerySemanticColors": "Semantic colors",
+    "showcase.forms.sync": "Sync",
+    "showcase.forms.inputFormDesc":
+      "Unified form with all input field types (Text, Menu, Search, Dates, Times, Toggles and Files) to validate their visual behavior.",
+    "showcase.forms.inputSingleDesc":
+      "Interactive sandbox to experiment with the individual {type} component.",
+    "showcase.forms.errName": "Name is required",
+    "showcase.forms.errEmail": "Invalid email format",
+    "showcase.forms.errPassword": "Password is too short",
+    "showcase.forms.errRole": "You must choose an administrative role",
+    "showcase.forms.errCountry": "You must choose your country of residence",
+    "showcase.forms.errBirthday": "Incorrect date",
+    "showcase.forms.errTime": "Time not allowed",
+    "showcase.forms.errFile": "You must attach a file",
+    "showcase.forms.inputUserLabel": "Username",
+    "showcase.forms.inputUserPlaceholder": "Type your nickname...",
+    "showcase.forms.inputPasswordLabel": "Password",
+    "showcase.forms.inputPasswordPlaceholder": "Enter your password...",
+    "showcase.forms.inputSelectLabel": "Administrative role",
+    "showcase.forms.inputSelectPlaceholder": "Select a role",
+    "showcase.forms.inputCountryLabel": "Country of origin",
+    "showcase.forms.inputCountryPlaceholder": "Search country...",
+    "showcase.forms.inputDateLabel": "Registration date",
+    "showcase.forms.inputDatePlaceholder": "Choose a date",
+    "showcase.forms.inputTimeLabel": "Shift time",
+    "showcase.forms.inputTimePlaceholder": "Choose a time",
+    "showcase.forms.inputToggleLabel": "Enable notifications",
+    "showcase.forms.inputFileLabel": "Upload document",
+    "showcase.forms.tabText": "Text",
+    "showcase.forms.tabPassword": "Password",
+    "showcase.forms.tabForm": "Form",
+    "showcase.forms.fullName": "Full name",
+    "showcase.forms.email": "Email",
+    "showcase.forms.password": "Password",
+    "showcase.forms.userRole": "User role",
+    "showcase.forms.countryResidence": "Country of residence",
+    "showcase.forms.birthDate": "Date of birth",
+    "showcase.forms.entryTime": "Entry time",
+    "showcase.forms.newsletter": "Receive newsletter",
+    "showcase.forms.submitForm": "Submit form",
+    "showcase.forms.submitData": "✓ Submitted data (JSON):",
+    "showcase.forms.toggleSwitch": "Toggle switch",
+    "showcase.forms.buttonColorVariant": "Button color variant",
+    "showcase.forms.simulateErrors": "Simulate errors",
+    "showcase.forms.disableAll": "Disable all",
+    "showcase.forms.labelProp": "Label",
+    "showcase.forms.placeholderLabel": "Placeholder",
+    "showcase.forms.colorVariant": "Color variant",
+    "showcase.forms.errorMessage": "Error message",
+    "showcase.forms.invalidFormatPlaceholder": "E.g. Invalid format",
+    "showcase.forms.inputStandard": "Standard input",
+    "showcase.forms.enterData": "Enter data...",
+    "showcase.forms.inputWithError": "Input with error",
+    "showcase.forms.emailFormatError": "The email format is incorrect",
+    "showcase.forms.inputDisabled": "Disabled input",
+    "showcase.forms.readOnly": "Read-only",
+    "showcase.forms.inputPassword": "Password input",
+    "showcase.forms.selectDesc":
+      "Single-selection dropdown optimized with AXZY visual styles.",
+    "showcase.forms.selection": "Selection: \"{value}\"",
+    "showcase.forms.simpleOption": "Simple option",
+    "showcase.forms.selectWithError": "Select with error",
+    "showcase.forms.requiredFieldError": "This field is required",
+    "showcase.forms.requiredFieldError2": "This field is required",
+    "showcase.forms.searchSelectDesc":
+      "Advanced selector with a search bar to filter large collections or load remote options.",
+    "showcase.forms.selectCountry": "Select country",
+    "showcase.forms.countrySelected": "Selected country: \"{value}\"",
+    "showcase.forms.customTemplate": "Custom template (renderOption)",
+    "showcase.forms.countryCustomLabel": "Country (custom template)",
+    "showcase.forms.clearButton": "Clear button (X)",
+    "showcase.forms.countryClearable": "Country (clearable)",
+    "showcase.forms.loadingState": "Loading state",
+    "showcase.forms.datePickerDesc":
+      "Static and floating date input calendar with range selection support.",
+    "showcase.forms.eventDate": "Event date",
+    "showcase.forms.currentValue": "Current value:",
+    "showcase.forms.rangeValue": "Range: {from} - {to}",
+    "showcase.forms.colorTheme": "Color theme",
+    "showcase.forms.rangeSelection": "Range selection",
+    "showcase.forms.timePickerDesc":
+      "Hour and minute picker with an interactive smooth-scroll panel.",
+    "showcase.forms.startTime": "Start time",
+    "showcase.forms.timeChosen": "Selected time: \"{value}\"",
+    "showcase.forms.calendarDesc":
+      "Full calendar with support for events and daily/weekly scheduling.",
+    "showcase.forms.slotClick": "Slot click: {date}",
+    "showcase.forms.eventDetail": "Event detail: {title}",
+    "showcase.forms.viewMode": "View mode",
+    "showcase.forms.selectionMode": "Selection mode",
+    "showcase.forms.slideToggleDesc":
+      "Styled toggle switch to change binary states.",
+    "showcase.forms.stateLabel": "State:",
+    "showcase.forms.stateOn": "ON",
+    "showcase.forms.stateOff": "OFF",
+    "showcase.forms.activeColor": "Active color",
+    "showcase.forms.disableSwitch": "Disable switch",
+    "showcase.forms.dropfileDesc":
+      "Interactive drag-and-drop area for files, with image preview and progress bar.",
+    "showcase.forms.fileName": "Name:",
+    "showcase.forms.fileSize": "Size:",
+    "showcase.forms.fileType": "Type:",
+    "showcase.forms.forceUploadState": "Force upload state",
+    "showcase.forms.wysiwygDesc":
+      "Lightweight WYSIWYG editor with no external dependencies: bold, italic, underline, yellow highlight and lists. Implemented by hand over Selection/Range (no execCommand).",
+    "showcase.forms.articleContent": "Article content",
+    "showcase.forms.wysiwygPlaceholder": "Write or paste your content...",
+    "showcase.forms.generatedHtml": "Generated HTML",
+    "showcase.forms.forceError": "Force error",
+    "showcase.forms.formBuilderDesc":
+      "Dynamic form generator based on a structured JSON schema. Supports backward-compatible V1 and the V2 architecture with a rules engine, sections, custom renderers and async options.",
+    "showcase.forms.clear": "Clear",
+    "showcase.forms.send": "Send",
+    "showcase.forms.payloadSent": "✓ Payload sent:",
+    "showcase.forms.formBuilderHint":
+      "The form is generated dynamically by injecting an array of configured fields.",
+    "showcase.forms.exampleFillTitle": "Form filled from API",
+    "showcase.forms.exampleFillDesc":
+      "Loads data asynchronously when the form mounts",
+    "showcase.forms.exampleCascadeTitle": "API-connected select with cascade",
+    "showcase.forms.exampleCascadeDesc":
+      "Async select that updates another field when changed",
+    "showcase.forms.exampleCurrencyTitle": "Currency converter",
+    "showcase.forms.exampleCurrencyDesc":
+      "Currency select that updates prices in MXN and USD",
+    "showcase.forms.loadingUserData": "Loading user data...",
+    "showcase.forms.saveChanges": "Save changes",
+    "showcase.forms.editedPayload": "✓ Edited:",
+    "showcase.forms.dataPayload": "✓ Data:",
+    "showcase.forms.exchangeRate": "FX: 1 USD = {rate} MXN",
+    "showcase.forms.fieldDesc":
+      "Form field container that standardizes label, required asterisk, help text and error message around any control.",
+    "showcase.forms.emailSubject": "Email",
+    "showcase.forms.invalidEmail": "Enter a valid email.",
+    "showcase.forms.emailHelp": "We never share your email.",
+    "showcase.forms.showHelp": "Show help",
+    "showcase.forms.multiSelectDesc":
+      "Multi-value selector with a searchable dropdown, removable chips and keyboard navigation. The dropdown renders in a portal, so it isn't clipped inside an ITCard.",
+    "showcase.forms.countries": "Countries",
+    "showcase.forms.selectedCount": "{count} selected: {values}",
+    "showcase.forms.multiSelectHint":
+      "Use the arrows to navigate, Enter to toggle and Backspace to remove the last chip.",
+    "showcase.forms.optionTemplate": "Option template (renderOption)",
+    "showcase.forms.withError": "With error",
+    "showcase.forms.chipInputDesc":
+      "Free-text input that turns typed values into removable tags (chips). Confirm with Enter or comma, on blur or when pasting delimited text.",
+    "showcase.forms.tags": "Tags",
+    "showcase.forms.addTagPlaceholder": "Add a tag...",
+    "showcase.forms.chipInputHelp":
+      "Enter or comma to add. Backspace to delete the last one.",
+    "showcase.forms.maxTags": "Max tags",
+    "showcase.forms.maskedInputDesc":
+      "Text input with a format mask: type only useful characters and separators are inserted automatically (xxxx-xxxx-xxxx, (999) 999-9999, etc.).",
+    "showcase.forms.activationCode": "Activation code",
+    "showcase.forms.currentRawValue": "Current value (raw):",
+    "showcase.forms.rawLabel": "raw:",
+    "showcase.forms.emptyValue": "(empty)",
+    "showcase.forms.completeValue": "✓ complete",
+    "showcase.forms.maskAlphanumeric": "Alphanumeric code",
+    "showcase.forms.maskCardNumber": "Card number",
+    "showcase.forms.maskPhone": "Phone",
+    "showcase.forms.maskPostalCode": "Postal code",
+    "showcase.forms.maskCvv": "CVV / OTP",
+    "showcase.forms.maskUppercase": "Key with UPPERCASE letters",
+    "showcase.forms.segmentedDesc":
+      "iOS-style group of mutually exclusive buttons to toggle views or filters.",
+    "showcase.forms.selectedValue": "Selected: \"{value}\"",
+    "showcase.forms.withIcons": "With icons",
+    "showcase.forms.inputNumberDesc":
+      "Numeric field with currency formatting that emits a real number (integer or decimal) in onChange.",
+    "showcase.forms.amount": "Amount",
+    "showcase.forms.amountRequired": "Amount is required",
+    "showcase.forms.valueLabel": "value:",
+    "showcase.forms.quantityIntegers": "Quantity (integers)",
+    "showcase.forms.between10And500": "Between 10 and 500",
+    "showcase.forms.decimals": "Decimals",
+    "showcase.forms.simulateError": "Simulate error",
+    "showcase.forms.prefixDollar": "Prefix $",
+    "showcase.forms.unitPrice": "Unit price",
+    "showcase.forms.quantityDecimals0": "Quantity (decimals=0)",
+  },
+};
+
+/**
+ * Stable id → i18n key map for sandbox navigation labels.
+ *
+ * Only ids whose label needs translation appear here; the rest (mostly component names like
+ * `ITButton`) keep their literal label from `navigation.ts`.
+ */
+export const SANDBOX_LABEL_KEYS: Record<string, string> = {
+  general: "navigation.group.general",
+  struc: "navigation.group.struc",
+  forms: "navigation.group.forms",
+  data: "navigation.group.data",
+  nav: "navigation.group.nav",
+  feed: "navigation.group.feed",
+  help: "navigation.item.help",
+  sizes: "navigation.item.sizes",
+  "screen-dashboard": "navigation.item.screenDashboard",
+  "screen-form": "navigation.item.screenForm",
+};
+
+/**
+ * Resolves a navigation label: uses the i18n key when present, else the literal fallback.
+ *
+ * `t` returns the key itself when it is missing, so we detect that to fall back.
+ *
+ * @example
+ * ```ts
+ * translateLabel("struc", "Estructura & Layout", t); // "Structure & Layout" (en)
+ * ```
+ */
+export function translateLabel(
+  id: string,
+  fallback: string,
+  t: (key: string) => string
+): string {
+  const key = SANDBOX_LABEL_KEYS[id];
+  if (!key) return fallback;
+  const value = t(key);
+  return value === key ? fallback : value;
+}

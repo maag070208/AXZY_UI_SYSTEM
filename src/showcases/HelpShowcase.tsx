@@ -15,12 +15,14 @@ import {
 } from "react-icons/fa";
 import { ITAccordion, ITBadget, ITButton, ITCard, ITFlex, ITGrid, ITStack, ITText } from "../index";
 import type { ITAccordionItem } from "../index";
+import { useITTranslation } from "@/i18n";
 
 const GITHUB_URL = "https://github.com/maag070208/AXZY_UI_SYSTEM";
 const ISSUE_URL = `${GITHUB_URL}/issues/new`;
 
 /** Clipboard button that flips to a "Copiado" confirmation for 2s. */
 const CopyButton = ({ text }: { text: string }) => {
+  const { t } = useITTranslation();
   const [copied, setCopied] = useState(false);
   return (
     <ITButton
@@ -35,7 +37,7 @@ const CopyButton = ({ text }: { text: string }) => {
     >
       <ITFlex align="center" gap={1.5}>
         {copied ? <FaCheck size={10} className="text-emerald-400" /> : <FaClipboardList size={10} />}
-        {copied ? "Copiado" : "Copiar"}
+        {copied ? t("showcase.common.copied") : t("showcase.common.copy")}
       </ITFlex>
     </ITButton>
   );
@@ -80,7 +82,9 @@ const ErrorBody = ({
   fix: ReactNode;
   bad?: string;
   good?: string;
-}) => (
+}) => {
+  const { t } = useITTranslation();
+  return (
   <ITStack spacing={3} className="pt-1">
     <div className="flex items-start gap-2">
       <FaExclamationTriangle size={12} className="mt-0.5 shrink-0 text-danger-500" />
@@ -96,18 +100,19 @@ const ErrorBody = ({
     </div>
     {bad && (
       <CodeBlock
-        filename="❌ Incorrecto"
+        filename={t("showcase.common.incorrect")}
         code={bad}
       />
     )}
     {good && (
       <CodeBlock
-        filename="✅ Correcto"
+        filename={t("showcase.common.correct")}
         code={good}
       />
     )}
   </ITStack>
-);
+  );
+};
 
 const COMMON_ERRORS: ITAccordionItem[] = [
   {
@@ -254,13 +259,13 @@ const FAQ: ITAccordionItem[] = [
     id: "faq-examples",
     title: "¿Dónde están los ejemplos de cada componente?",
     content:
-      "En el sandbox: ejecuta `pnpm dev` y navega a `#ui-system`. Las historias de Storybook existen y deben compilar, pero la superficie principal de ejemplos es el sandbox.",
+      "En el sandbox: ejecuta `pnpm dev` y navega a `#ui-system`. La superficie de ejemplos es el sandbox y la referencia por componente vive en `docs/`.",
   },
   {
     id: "faq-new-component",
     title: "¿Cómo agrego un componente nuevo?",
     content:
-      "Crea `src/components/<layer>/<kebab-name>/` con `<name>.tsx`, `<name>.props.ts` y `<name>.stories.tsx`. Documenta cada prop con JSDoc, regístralo en `src/index.ts` y actualiza los documentos y el showcase correspondiente.",
+      "Crea `src/components/<layer>/<kebab-name>/` con `<name>.tsx` y `<name>.props.ts`. Documenta cada prop con JSDoc, regístralo en `src/index.ts` y actualiza `docs/<capa>/<nombre>.md` y el showcase correspondiente.",
   },
   {
     id: "faq-changes-not-visible",
@@ -275,10 +280,10 @@ const FAQ: ITAccordionItem[] = [
       "Sí. Importa named exports (`import { ITButton } from \"@axzydev/axzy_ui_system\"`) y el bundler descarta lo que no usas. No hay dependencias de UI de terceros.",
   },
   {
-    id: "faq-storybook",
-    title: "¿Necesito Storybook para desarrollar?",
+    id: "faq-examples-docs",
+    title: "¿Dónde veo la documentación de un componente?",
     content:
-      "No es obligatorio. `pnpm storybook` es útil para aislar un componente, pero los ejemplos de referencia viven en el sandbox y las historias solo deben seguir compilando.",
+      "En `docs/<capa>/<componente>.md` tienes props, defaults, ejemplo y notas. Los ejemplos vivos están en el sandbox (`pnpm dev` → `#ui-system`).",
   },
   {
     id: "faq-browser-support",
@@ -315,6 +320,7 @@ pnpm check:atomic # valida la dirección de dependencias entre capas`;
  * frecuentes, preguntas frecuentes y guía para reportar incidencias.
  */
 export const HelpShowcase = () => {
+  const { t } = useITTranslation();
   return (
     <ITStack spacing={10} className="animate-fadeIn">
       {/* ─── HERO ─── */}
@@ -324,13 +330,12 @@ export const HelpShowcase = () => {
           <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
           <ITStack spacing={5} className="relative z-10">
             <ITStack spacing={2}>
-              <ITBadget label="Soporte" color="purple" variant="outlined" className="w-fit" />
+              <ITBadget label={t("showcase.help.badge")} color="purple" variant="outlined" className="w-fit" />
               <ITText as="h1" className="!text-4xl !font-bold !tracking-tight">
-                Ayuda & Solución de Bugs
+                {t("showcase.help.title")}
               </ITText>
               <ITText as="p" muted className="!text-base !leading-relaxed max-w-2xl">
-                Guía para diagnosticar y resolver los problemas más frecuentes al usar AXZY UI System,
-                más una checklist para reportar incidencias con todo el contexto necesario.
+                {t("showcase.help.subtitle")}
               </ITText>
             </ITStack>
             <ITFlex gap={3} wrap="wrap" align="center">
@@ -340,7 +345,7 @@ export const HelpShowcase = () => {
                 icon={<FaBug size={13} />}
                 onClick={() => window.open(ISSUE_URL, "_blank", "noopener,noreferrer")}
               >
-                Reportar un bug
+                {t("showcase.help.reportBug")}
               </ITButton>
               <ITButton
                 variant="outlined"
@@ -348,7 +353,7 @@ export const HelpShowcase = () => {
                 icon={<FaBook size={13} />}
                 onClick={() => window.open(GITHUB_URL, "_blank", "noopener,noreferrer")}
               >
-                Ver repositorio
+                {t("showcase.help.viewRepo")}
               </ITButton>
             </ITFlex>
           </ITStack>
@@ -363,10 +368,10 @@ export const HelpShowcase = () => {
           </span>
           <ITStack spacing={0}>
             <ITText as="h2" className="!text-lg !font-bold">
-              Diagnóstico rápido
+              {t("showcase.help.quickDiagnosis")}
             </ITText>
             <ITText as="p" muted className="!text-xs">
-              Ejecuta estos comandos antes de reportar cualquier fallo.
+              {t("showcase.help.quickDiagnosisHint")}
             </ITText>
           </ITStack>
         </ITFlex>
@@ -386,10 +391,10 @@ export const HelpShowcase = () => {
           </span>
           <ITStack spacing={0}>
             <ITText as="h2" className="!text-lg !font-bold">
-              Errores comunes y su solución
+              {t("showcase.help.commonErrors")}
             </ITText>
             <ITText as="p" muted className="!text-xs">
-              Síntoma, causa y arreglo de los tropiezos más habituales del stack.
+              {t("showcase.help.commonErrorsHint")}
             </ITText>
           </ITStack>
         </ITFlex>
@@ -404,10 +409,10 @@ export const HelpShowcase = () => {
           </span>
           <ITStack spacing={0}>
             <ITText as="h2" className="!text-lg !font-bold">
-              Preguntas frecuentes
+              {t("showcase.help.faq")}
             </ITText>
             <ITText as="p" muted className="!text-xs">
-              Respuestas cortas a las dudas más repetidas.
+              {t("showcase.help.faqHint")}
             </ITText>
           </ITStack>
         </ITFlex>
@@ -415,18 +420,17 @@ export const HelpShowcase = () => {
       </section>
 
       {/* ─── CÓMO REPORTAR UN BUG ─── */}
-      <ITCard title="Cómo reportar un bug" className="border-purple-200/60 dark:border-purple-800/60 shadow-sm">
+      <ITCard title={t("showcase.help.howToReport")} className="border-purple-200/60 dark:border-purple-800/60 shadow-sm">
         <ITStack spacing={6}>
           <ITText as="p" className="!text-sm" muted>
-            Un buen reporte se puede reproducir sin preguntas extra. Sigue estos pasos y completa la
-            checklist antes de abrir el issue.
+            {t("showcase.help.reportIntro")}
           </ITText>
 
           <ITGrid container spacing={6}>
             <ITGrid item xs={12} md={6}>
               <ITStack spacing={3}>
                 <ITText as="h3" className="!text-[11px] !font-bold uppercase !tracking-wider text-slate-400 dark:text-slate-500">
-                  Pasos
+                  {t("showcase.help.steps")}
                 </ITText>
                 {REPORT_STEPS.map((step, index) => (
                   <ITFlex key={step} align="start" gap={3}>
@@ -444,7 +448,7 @@ export const HelpShowcase = () => {
             <ITGrid item xs={12} md={6}>
               <div className="h-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 p-5">
                 <ITText as="h3" className="!mb-4 !text-[11px] !font-bold uppercase !tracking-wider text-slate-400 dark:text-slate-500">
-                  Incluye en el reporte
+                  {t("showcase.help.includeInReport")}
                 </ITText>
                 <ul className="space-y-3">
                   {REPORT_CHECKLIST.map((item) => (
@@ -464,7 +468,7 @@ export const HelpShowcase = () => {
             <ITFlex align="center" gap={2}>
               <FaLifeRing size={14} className="text-primary-500" />
               <ITText as="p" className="!text-xs" muted>
-                ¿Dudas de uso en lugar de un bug? Abre una discusión en el repositorio.
+                {t("showcase.help.footerHint")}
               </ITText>
             </ITFlex>
             <ITFlex gap={3} wrap="wrap">
@@ -474,7 +478,7 @@ export const HelpShowcase = () => {
                 icon={<FaBug size={13} />}
                 onClick={() => window.open(ISSUE_URL, "_blank", "noopener,noreferrer")}
               >
-                Abrir issue
+                {t("showcase.help.openIssue")}
               </ITButton>
               <ITButton
                 variant="outlined"
@@ -482,13 +486,13 @@ export const HelpShowcase = () => {
                 icon={<FaSyncAlt size={13} />}
                 onClick={() => window.open(`${GITHUB_URL}/blob/main/AGENTS.md`, "_blank", "noopener,noreferrer")}
               >
-                Ver AGENTS.md
+                {t("showcase.help.viewAgents")}
               </ITButton>
             </ITFlex>
           </ITFlex>
 
           <ITFlex align="center" gap={2} wrap="wrap">
-            <FixPill>Pasos reproducibles + versión + entorno = reporte accionable</FixPill>
+            <FixPill>{t("showcase.help.fixPill")}</FixPill>
           </ITFlex>
         </ITStack>
       </ITCard>

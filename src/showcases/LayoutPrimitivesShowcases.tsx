@@ -13,6 +13,7 @@ import ITSlideToggle from "../components/atoms/slide/slide";
 import ITSelect from "../components/molecules/select/select";
 import ITInput from "../components/atoms/input/input";
 import { ShowcaseLayout, CodeViewer } from "./ShowcaseLayout";
+import { useITTranslation } from "@/i18n";
 
 // ─────────────────────────────────────────
 // 1. ITStack Showcase
@@ -71,6 +72,7 @@ const StackChip = ({ label, color = "primary" }: { label: string; color?: "prima
 };
 
 export const StackShowcase = () => {
+  const { t } = useITTranslation();
   const [direction, setDirection] = useState<"row" | "column">("column");
   const [spacing, setSpacing] = useState(3);
   const [withDivider, setWithDivider] = useState(false);
@@ -173,7 +175,7 @@ export const StackShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITStack"
-      description="Layout basado en flexbox con dirección, spacing uniforme, alineación y distribución. Ideal para secciones verticales, toolbars horizontales, listas de items y form rows."
+      description={t("showcase.layoutPrimitives.stackDesc")}
       code={buildCode()}
       doc={{
         summary:
@@ -248,7 +250,7 @@ export const StackShowcase = () => {
       controls={
         <>
           <div>
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Direction</p>
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">{t("showcase.layoutPrimitives.direction")}</p>
             <ITSegmentedControl
               options={[
                 { value: "column", label: "Column" },
@@ -260,23 +262,23 @@ export const StackShowcase = () => {
               onChange={(v) => setDirection(v as any)}
             />
           </div>
-          <ITSlider label="Spacing (0.25rem units)" value={spacing} onChange={setSpacing} min={0} max={12} />
+          <ITSlider label={t("showcase.layoutPrimitives.spacingUnits")} value={spacing} onChange={setSpacing} min={0} max={12} />
           <ITSelect
             name="align_items"
-            label="Align Items"
+            label={t("showcase.layoutPrimitives.alignItems")}
             value={align}
             onChange={(e) => setAlign(e.target.value)}
             options={alignOptions}
           />
           <ITSelect
             name="justify_content"
-            label="Justify Content"
+            label={t("showcase.layoutPrimitives.justifyContent")}
             value={justify}
             onChange={(e) => setJustify(e.target.value)}
             options={justifyOptions}
           />
           <div>
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Flex Wrap</p>
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">{t("showcase.layoutPrimitives.flexWrap")}</p>
             <ITSegmentedControl
               options={[
                 { value: "nowrap", label: "Nowrap" },
@@ -288,7 +290,7 @@ export const StackShowcase = () => {
             />
           </div>
           <ITFlex justify="between" align="center">
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Show divider</span>
+            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.layoutPrimitives.showDivider")}</span>
             <ITSlideToggle isOn={withDivider} onToggle={setWithDivider} size="sm" />
           </ITFlex>
         </>
@@ -297,15 +299,15 @@ export const StackShowcase = () => {
         <ITStack spacing={8}>
           {/* ── Section 1: Spacing Scale ── */}
           <GallerySection
-            title="Spacing Scale"
-            subtitle="Try different gap values to feel the rhythm"
+            title={t("showcase.layoutPrimitives.spacingScale")}
+            subtitle={t("showcase.layoutPrimitives.spacingScaleSubtitle")}
           >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {[
-                { gap: 1, label: "Tight", desc: "Compact UI" },
-                { gap: 3, label: "Default", desc: "Comfortable" },
-                { gap: 6, label: "Relaxed", desc: "Breathing room" },
-                { gap: 10, label: "Spacious", desc: "Hero sections" },
+                { gap: 1, label: t("showcase.layoutPrimitives.scaleTight"), desc: t("showcase.layoutPrimitives.scaleTightDesc") },
+                { gap: 3, label: t("showcase.layoutPrimitives.scaleDefault"), desc: t("showcase.layoutPrimitives.scaleDefaultDesc") },
+                { gap: 6, label: t("showcase.layoutPrimitives.scaleRelaxed"), desc: t("showcase.layoutPrimitives.scaleRelaxedDesc") },
+                { gap: 10, label: t("showcase.layoutPrimitives.scaleSpacious"), desc: t("showcase.layoutPrimitives.scaleSpaciousDesc") },
               ].map((s) => (
                 <div key={s.gap} className="bg-white dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm">
                   <div className="flex items-center justify-between mb-3">
@@ -325,17 +327,17 @@ export const StackShowcase = () => {
 
           {/* ── Section 2: Justify Content ── */}
           <GallerySection
-            title="Justify Content"
-            subtitle="How children are distributed along the main axis"
+            title={t("showcase.layoutPrimitives.justifyTitle")}
+            subtitle={t("showcase.layoutPrimitives.justifySubtitle")}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
-                { label: "start", desc: "Children packed at the start" },
-                { label: "center", desc: "Children centered on the axis" },
-                { label: "end", desc: "Children packed at the end" },
-                { label: "between", desc: "First/last at edges, rest spread evenly" },
-                { label: "around", desc: "Equal space around each child" },
-                { label: "evenly", desc: "Equal space everywhere" },
+                { label: "start", desc: t("showcase.layoutPrimitives.justifyStartDesc") },
+                { label: "center", desc: t("showcase.layoutPrimitives.justifyCenterDesc") },
+                { label: "end", desc: t("showcase.layoutPrimitives.justifyEndDesc") },
+                { label: "between", desc: t("showcase.layoutPrimitives.justifyBetweenDesc") },
+                { label: "around", desc: t("showcase.layoutPrimitives.justifyAroundDesc") },
+                { label: "evenly", desc: t("showcase.layoutPrimitives.justifyEvenlyDesc") },
               ].map((j) => (
                 <div key={j.label} className="bg-white dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm">
                   <div className="flex items-center justify-between mb-1">
@@ -356,16 +358,16 @@ export const StackShowcase = () => {
 
           {/* ── Section 3: Align Items ── */}
           <GallerySection
-            title="Align Items"
-            subtitle="How children are aligned on the cross axis"
+            title={t("showcase.layoutPrimitives.alignTitle")}
+            subtitle={t("showcase.layoutPrimitives.alignSubtitle")}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
-                { label: "start", desc: "Aligned to top (in row)" },
-                { label: "center", desc: "Centered on cross axis" },
-                { label: "end", desc: "Aligned to bottom (in row)" },
-                { label: "stretch", desc: "Children fill cross axis" },
-                { label: "baseline", desc: "Text baselines align" },
+                { label: "start", desc: t("showcase.layoutPrimitives.alignStartDesc") },
+                { label: "center", desc: t("showcase.layoutPrimitives.alignCenterDesc") },
+                { label: "end", desc: t("showcase.layoutPrimitives.alignEndDesc") },
+                { label: "stretch", desc: t("showcase.layoutPrimitives.alignStretchDesc") },
+                { label: "baseline", desc: t("showcase.layoutPrimitives.alignBaselineDesc") },
               ].map((a) => (
                 <div key={a.label} className="bg-white dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm">
                   <div className="flex items-center justify-between mb-1">
@@ -393,12 +395,12 @@ export const StackShowcase = () => {
 
           {/* ── Section 4: Real UI cases ── */}
           <GallerySection
-            title="Real UI cases"
-            subtitle="Production-ready UI built entirely with ITStack"
+            title={t("showcase.structure.galleryRealCases")}
+            subtitle={t("showcase.layoutPrimitives.stackGallerySubtitle")}
           >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               {/* Page header with actions */}
-              <PatternCard title="Page Header" desc="Title + actions on the right" code={PATTERN_CODES.pageHeader}>
+              <PatternCard title={t("showcase.layoutPrimitives.patternPageHeader")} desc={t("showcase.layoutPrimitives.patternPageHeaderDesc")} code={PATTERN_CODES.pageHeader}>
                 <div className="rounded-xl p-4 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80">
                   <ITStack direction="row" spacing={3} justifyContent="between" alignItems="center">
                     <div>
@@ -418,13 +420,13 @@ export const StackShowcase = () => {
               </PatternCard>
 
               {/* Tag cloud */}
-              <PatternCard title="Tag Cloud" desc="Wrap enabled for flowing tags" code={PATTERN_CODES.tagCloud}>
+              <PatternCard title={t("showcase.layoutPrimitives.patternTagCloud")} desc={t("showcase.layoutPrimitives.patternTagCloudDesc")} code={PATTERN_CODES.tagCloud}>
                 <div className="rounded-xl p-4 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80">
                   <ITStack direction="row" spacing={2} flexWrap="wrap">
                     <StackChip label="React" color="primary" />
                     <StackChip label="TypeScript" color="success" />
                     <StackChip label="Tailwind" color="info" />
-                    <StackChip label="Storybook" color="warning" />
+                    <StackChip label="Sandbox" color="warning" />
                     <StackChip label="Vite" color="primary" />
                     <StackChip label="CSS Vars" color="info" />
                     <StackChip label="Flexbox" color="success" />
@@ -434,7 +436,7 @@ export const StackShowcase = () => {
               </PatternCard>
 
               {/* Section list with dividers */}
-              <PatternCard title="Section List" desc="Subtle divider between items" code={PATTERN_CODES.sectionList}>
+              <PatternCard title={t("showcase.layoutPrimitives.patternSectionList")} desc={t("showcase.layoutPrimitives.patternSectionListDesc")} code={PATTERN_CODES.sectionList}>
                 <div className="rounded-xl p-2 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80">
                   <ITStack spacing={0} divider={<div className="h-px bg-slate-200 dark:bg-slate-700 mx-3" />}>
                     {[
@@ -469,7 +471,7 @@ export const StackShowcase = () => {
               </PatternCard>
 
               {/* Notification banner */}
-              <PatternCard title="Notification banner" desc="Icon + message + dismiss" code={PATTERN_CODES.notification}>
+              <PatternCard title={t("showcase.layoutPrimitives.patternNotification")} desc={t("showcase.layoutPrimitives.patternNotificationDesc")} code={PATTERN_CODES.notification}>
                 <div className="rounded-xl border border-emerald-200 dark:border-emerald-800/50 overflow-hidden bg-emerald-50 dark:bg-emerald-950/40">
                   <ITStack direction="row" spacing={3} alignItems="center" className="p-4">
                     <div className="w-9 h-9 rounded-full bg-emerald-500 flex items-center justify-center text-white shrink-0 shadow-sm">
@@ -487,7 +489,7 @@ export const StackShowcase = () => {
               </PatternCard>
 
               {/* Stats row */}
-              <PatternCard title="Stats row" desc="3 metric cards in one row" code={PATTERN_CODES.statsRow}>
+              <PatternCard title={t("showcase.layoutPrimitives.patternStatsRow")} desc={t("showcase.layoutPrimitives.patternStatsRowDesc")} code={PATTERN_CODES.statsRow}>
                 <div className="rounded-xl p-4 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80">
                   <ITStack direction="row" spacing={3}>
                     {[
@@ -532,6 +534,7 @@ const GallerySection = ({ title, subtitle, children }: { title: string; subtitle
 );
 
 const PatternCard = ({ title, desc, code, children }: { title: string; desc?: string; code?: string; children: React.ReactNode }) => {
+  const { t } = useITTranslation();
   const [showCode, setShowCode] = useState(false);
   return (
     <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
@@ -544,7 +547,7 @@ const PatternCard = ({ title, desc, code, children }: { title: string; desc?: st
           <ITButton variant="outlined" color="gray" size="sm" onClick={() => setShowCode(!showCode)}>
             <ITFlex align="center" gap={1}>
               <FaCode size={9} />
-              {showCode ? "Hide code" : "Code"}
+              {showCode ? t("showcase.common.hideCode") : t("showcase.common.code")}
             </ITFlex>
           </ITButton>
         )}
@@ -635,6 +638,7 @@ const FLEX_PATTERN_CODES = {
 };
 
 export const FlexShowcase = () => {
+  const { t } = useITTranslation();
   const [direction, setDirection] = useState<"row" | "column" | "row-reverse" | "column-reverse">("row");
   const [justify, setJustify] = useState("start");
   const [align, setAlign] = useState("center");
@@ -662,7 +666,7 @@ export const FlexShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITFlex"
-      description="Contenedor flexbox completo con control total sobre alineación, distribución y gap. Para layouts complejos que requieren más control que ITStack."
+      description={t("showcase.layoutPrimitives.flexDesc")}
       code={buildCode()}
       demo={
         <div className="w-full max-w-xl flex flex-col">
@@ -704,7 +708,7 @@ export const FlexShowcase = () => {
       controls={
         <ITStack spacing={4}>
           <div>
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Direction</p>
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">{t("showcase.layoutPrimitives.direction")}</p>
             <ITSegmentedControl
               options={[
                 { value: "row", label: "Row" },
@@ -719,14 +723,14 @@ export const FlexShowcase = () => {
           </div>
           <ITSelect
             name="flex_justify"
-            label="Justify Content"
+            label={t("showcase.layoutPrimitives.justifyContent")}
             value={justify}
             onChange={(e) => setJustify(e.target.value)}
             options={justifyOptions}
           />
           <ITSelect
             name="flex_align"
-            label="Align Items"
+            label={t("showcase.layoutPrimitives.alignItems")}
             value={align}
             onChange={(e) => setAlign(e.target.value)}
             options={[
@@ -738,7 +742,7 @@ export const FlexShowcase = () => {
             ]}
           />
           <div>
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Flex Wrap</p>
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">{t("showcase.layoutPrimitives.flexWrap")}</p>
             <ITSegmentedControl
               options={[
                 { value: "nowrap", label: "Nowrap" },
@@ -749,19 +753,19 @@ export const FlexShowcase = () => {
               onChange={(v) => setWrap(v as string)}
             />
           </div>
-          <ITSlider label="Gap (0.25rem units)" value={gap} onChange={setGap} min={0} max={12} />
+          <ITSlider label={t("showcase.layoutPrimitives.gapUnits")} value={gap} onChange={setGap} min={0} max={12} />
         </ITStack>
       }
       gallery={
         <ITStack spacing={8}>
           {/* ── Section 1: Real UI cases ── */}
           <GallerySection
-            title="Real UI cases"
-            subtitle="Production-ready UI built entirely with ITFlex"
+            title={t("showcase.structure.galleryRealCases")}
+            subtitle={t("showcase.layoutPrimitives.flexGallerySubtitle")}
           >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               {/* Space-between row */}
-              <PatternCard title="Toolbar row" desc="justify-between + nested actions" code={FLEX_PATTERN_CODES.spaceBetween}>
+              <PatternCard title={t("showcase.layoutPrimitives.patternToolbarRow")} desc="justify-between + nested actions" code={FLEX_PATTERN_CODES.spaceBetween}>
                 <div className="rounded-xl p-4 border border-slate-200 dark:border-slate-700 overflow-x-auto bg-slate-50 dark:bg-slate-800/80">
                   <ITFlex direction="row" justify="between" align="center" gap={3}>
                     <ITFlex direction="column" gap={0}>
@@ -777,7 +781,7 @@ export const FlexShowcase = () => {
               </PatternCard>
 
               {/* Grow items */}
-              <PatternCard title="Grow layout" desc="flex-grow distributes remaining space" code={FLEX_PATTERN_CODES.growItems}>
+              <PatternCard title={t("showcase.layoutPrimitives.patternGrowLayout")} desc="flex-grow distributes remaining space" code={FLEX_PATTERN_CODES.growItems}>
                 <div className="rounded-xl p-4 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80">
                   <ITFlex direction="row" gap={3}>
                     <ITFlex grow direction="column" gap={1} className="bg-blue-100 dark:bg-blue-900/30 rounded-xl p-4">
@@ -797,7 +801,7 @@ export const FlexShowcase = () => {
               </PatternCard>
 
               {/* Centered card */}
-              <PatternCard title="Centered hero" desc="justify-center + align-center" code={FLEX_PATTERN_CODES.centeredCard}>
+              <PatternCard title={t("showcase.layoutPrimitives.patternCenteredHero")} desc="justify-center + align-center" code={FLEX_PATTERN_CODES.centeredCard}>
                 <div className="rounded-xl border border-primary-100 dark:border-primary-800/40 overflow-x-auto bg-blue-50 dark:bg-blue-950/30">
                   <ITFlex direction="column" justify="center" align="center" gap={3} className="min-h-56 text-center px-6 py-6">
                     <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl font-bold"
@@ -818,7 +822,7 @@ export const FlexShowcase = () => {
               </PatternCard>
 
               {/* Form row with wrap */}
-              <PatternCard title="Responsive form" desc="wrap + grow + basis" code={FLEX_PATTERN_CODES.formRowWrap}>
+              <PatternCard title={t("showcase.layoutPrimitives.patternResponsiveForm")} desc="wrap + grow + basis" code={FLEX_PATTERN_CODES.formRowWrap}>
                 <div className="rounded-xl p-4 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80">
                   <ITFlex direction="row" wrap="wrap" gap={3}>
                     {[
@@ -838,7 +842,7 @@ export const FlexShowcase = () => {
               </PatternCard>
 
               {/* Stretch column */}
-              <PatternCard title="Full-height layout" desc="column + stretch + grow" code={FLEX_PATTERN_CODES.stretchColumn}>
+              <PatternCard title={t("showcase.layoutPrimitives.patternFullHeight")} desc="column + stretch + grow" code={FLEX_PATTERN_CODES.stretchColumn}>
                 <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden h-72 bg-slate-50 dark:bg-slate-800/80">
                   <ITFlex direction="column" align="stretch" gap={0} className="h-full">
                     <div className="h-12 px-4 flex items-center justify-between bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
@@ -915,6 +919,7 @@ const GRID_PATTERN_CODES = {
 };
 
 export const GridShowcase = () => {
+  const { t } = useITTranslation();
   const [spacing, setSpacing] = useState(3);
   const [columns, setColumns] = useState(3);
 
@@ -931,7 +936,7 @@ export const GridShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITGrid"
-      description="Sistema de grid responsivo de 12 columnas. Ideal para dashboards, galerías, y layouts de página completos."
+      description={t("showcase.layoutPrimitives.gridDesc")}
       code={buildCode()}
       demo={
         <div className="w-full max-w-xl flex flex-col">
@@ -964,21 +969,21 @@ export const GridShowcase = () => {
       }
       controls={
         <ITStack spacing={4}>
-          <ITSlider label="Columns" value={columns} onChange={setColumns} min={1} max={6} />
-          <ITSlider label="Spacing (0.25rem units)" value={spacing} onChange={setSpacing} min={0} max={8} />
+          <ITSlider label={t("showcase.layoutPrimitives.columnsLabel")} value={columns} onChange={setColumns} min={1} max={6} />
+          <ITSlider label={t("showcase.layoutPrimitives.spacingUnits")} value={spacing} onChange={setSpacing} min={0} max={8} />
         </ITStack>
       }
       gallery={
         <ITStack spacing={8}>
           <GallerySection
-            title="Real UI cases"
-            subtitle="Production-ready layouts built with ITGrid"
+            title={t("showcase.structure.galleryRealCases")}
+            subtitle={t("showcase.layoutPrimitives.gridGallerySubtitle")}
           >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
               {/* 1. App dashboard — sidebar (3) + main (9) */}
               <PatternCard
-                title="App dashboard"
+                title={t("showcase.layoutPrimitives.patternAppDashboard")}
                 desc="md=3 + md=9 → stacks on mobile"
                 code={GRID_PATTERN_CODES.appDashboard}
               >
@@ -1047,7 +1052,7 @@ export const GridShowcase = () => {
 
               {/* 2. User profile — avatar card (4) + activity (8) */}
               <PatternCard
-                title="User profile"
+                title={t("showcase.layoutPrimitives.patternUserProfile")}
                 desc="md=4 + md=8 with nested activity"
                 code={GRID_PATTERN_CODES.userProfile}
               >
@@ -1104,7 +1109,7 @@ export const GridShowcase = () => {
 
               {/* 3. Settings page — section nav (3) + form panels (9) */}
               <PatternCard
-                title="Settings"
+                title={t("showcase.pages.gallerySettings")}
                 desc="md=3 nav + md=9 form panels"
                 code={GRID_PATTERN_CODES.settingsPage}
               >
@@ -1164,7 +1169,7 @@ export const GridShowcase = () => {
 
               {/* 4. Article layout — body (8) + meta (4) */}
               <PatternCard
-                title="Article layout"
+                title={t("showcase.layoutPrimitives.patternArticleLayout")}
                 desc="md=8 body + md=4 sticky meta"
                 code={GRID_PATTERN_CODES.articleLayout}
               >
@@ -1218,7 +1223,7 @@ export const GridShowcase = () => {
 
               {/* 5. Pricing tiers — 3 equal columns */}
               <PatternCard
-                title="Pricing comparison"
+                title={t("showcase.layoutPrimitives.patternPricingComparison")}
                 desc="md=4 × 3 → comparison table"
                 code={GRID_PATTERN_CODES.pricingTiers}
               >
@@ -1301,6 +1306,7 @@ export const GridShowcase = () => {
  // ─────────────────────────────────────────
 
  export const ScreenDashboardShowcase = () => {
+  const { t } = useITTranslation();
   const code = `// Dashboard completo en 30 líneas
 <ITStack spacing={6}>
   {/* Header row */}
@@ -1341,35 +1347,35 @@ export const GridShowcase = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       <div>
-        <h1 className="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight">Pantallas Compuestas</h1>
+        <h1 className="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight">{t("showcase.layoutPrimitives.screensTitle")}</h1>
         <p className="text-slate-500 mt-1.5 text-sm md:text-base">
-          Ejemplos reales combinando ITStack + ITFlex + ITGrid para construir pantallas completas en minutos.
+          {t("showcase.layoutPrimitives.screensSubtitle")}
         </p>
       </div>
 
       {/* Dashboard Example */}
-      <ITCard title="Dashboard de Métricas" className="overflow-hidden">
+      <ITCard title={t("showcase.layoutPrimitives.dashboardCard")} className="overflow-hidden">
         <ITStack spacing={6}>
           <ITFlex justify="between" align="center">
             <div>
-              <h2 className="text-xl font-bold text-slate-800 dark:text-white">Dashboard</h2>
-              <p className="text-xs text-slate-400">Resumen de actividad del sistema</p>
+              <h2 className="text-xl font-bold text-slate-800 dark:text-white">{t("showcase.structure.navDashboard")}</h2>
+              <p className="text-xs text-slate-400">{t("showcase.layoutPrimitives.dashboardSubtitle")}</p>
             </div>
-            <ITButton label="Exportar" variant="outlined" size="sm" />
+            <ITButton label={t("showcase.layoutPrimitives.export")} variant="outlined" size="sm" />
           </ITFlex>
 
           <ITGrid container spacing={3}>
             <ITGrid item xs={12} sm={6} lg={3}>
-              <ITStatCard label="Usuarios Activos" value="1,245" trend="+12%" trendDirection="up" />
+              <ITStatCard label={t("showcase.layoutPrimitives.statActiveUsers")} value="1,245" trend="+12%" trendDirection="up" />
             </ITGrid>
             <ITGrid item xs={12} sm={6} lg={3}>
-              <ITStatCard label="Ventas Hoy" value="$4,320" trend="+5.4%" trendDirection="up" color="bg-blue-50 dark:bg-blue-950/20" />
+              <ITStatCard label={t("showcase.structure.statSalesToday")} value="$4,320" trend="+5.4%" trendDirection="up" color="bg-blue-50 dark:bg-blue-950/20" />
             </ITGrid>
             <ITGrid item xs={12} sm={6} lg={3}>
-              <ITStatCard label="Órdenes" value="89" trend="-2.1%" trendDirection="down" color="bg-amber-50 dark:bg-amber-950/20" />
+              <ITStatCard label={t("showcase.structure.navOrders")} value="89" trend="-2.1%" trendDirection="down" color="bg-amber-50 dark:bg-amber-950/20" />
             </ITGrid>
             <ITGrid item xs={12} sm={6} lg={3}>
-              <ITStatCard label="Tickets Abiertos" value="12" trend="-8%" trendDirection="down" color="bg-rose-50 dark:bg-rose-950/20" />
+              <ITStatCard label={t("showcase.layoutPrimitives.statOpenTickets")} value="12" trend="-8%" trendDirection="down" color="bg-rose-50 dark:bg-rose-950/20" />
             </ITGrid>
           </ITGrid>
 
@@ -1377,8 +1383,8 @@ export const GridShowcase = () => {
             <ITGrid item xs={12} lg={8}>
               <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-6 border border-slate-100 dark:border-slate-800">
                 <ITFlex justify="between" align="center" className="mb-4">
-                  <span className="text-sm font-bold text-slate-700 dark:text-slate-200">Gráfico de Ventas</span>
-                  <span className="text-xs text-slate-400">Últimos 30 días</span>
+                  <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{t("showcase.layoutPrimitives.salesChart")}</span>
+                  <span className="text-xs text-slate-400">{t("showcase.layoutPrimitives.last30Days")}</span>
                 </ITFlex>
                 <div className="h-48 flex items-end gap-2">
                   {[40, 65, 45, 80, 55, 90, 70, 85, 60, 95, 75, 50].map((h, i) => (
@@ -1389,7 +1395,7 @@ export const GridShowcase = () => {
             </ITGrid>
             <ITGrid item xs={12} lg={4}>
               <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-6 border border-slate-100 dark:border-slate-800 h-full">
-                <span className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3 block">Actividad Reciente</span>
+                <span className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3 block">{t("showcase.structure.recentActivity")}</span>
                 <ITStack spacing={3}>
                   {[
                     { user: "Ana López", action: "creó un reporte" },
@@ -1417,6 +1423,7 @@ export const GridShowcase = () => {
 };
 
 export const ScreenFormShowcase = () => {
+  const { t } = useITTranslation();
   const formCode = `// Formulario responsivo en 20 líneas
 <ITStack spacing={6}>
   <div>
@@ -1450,19 +1457,19 @@ export const ScreenFormShowcase = () => {
 </ITStack>`;
 
   return (
-    <ITCard title="Formulario Responsivo">
+    <ITCard title={t("showcase.layoutPrimitives.formCard")}>
       <ITStack spacing={6}>
         <div>
-          <h2 className="text-xl font-bold text-slate-800 dark:text-white">Nuevo Usuario</h2>
-          <p className="text-xs text-slate-400">Completa los campos para registrar un nuevo usuario</p>
+          <h2 className="text-xl font-bold text-slate-800 dark:text-white">{t("showcase.layoutPrimitives.newUser")}</h2>
+          <p className="text-xs text-slate-400">{t("showcase.layoutPrimitives.newUserSubtitle")}</p>
         </div>
 
         <ITGrid container spacing={4}>
           <ITGrid item xs={12} md={6}>
             <ITInput
               name="nombre"
-              label="Nombre"
-              placeholder="Ej: Juan"
+              label={t("showcase.pages.firstName")}
+              placeholder={t("showcase.layoutPrimitives.exampleJuan")}
               onChange={() => {}}
               size="sm"
             />
@@ -1470,23 +1477,23 @@ export const ScreenFormShowcase = () => {
           <ITGrid item xs={12} md={6}>
             <ITInput
               name="apellido"
-              label="Apellido"
-              placeholder="Ej: Pérez"
+              label={t("showcase.pages.lastName")}
+              placeholder={t("showcase.layoutPrimitives.examplePerez")}
               onChange={() => {}}
             />
           </ITGrid>
           <ITGrid item xs={12}>
             <ITInput
               name="email"
-              label="Email"
-              placeholder="ej: usuario@correo.com"
+              label={t("showcase.pages.emailField")}
+              placeholder={t("showcase.layoutPrimitives.exampleEmail")}
               onChange={() => {}}
             />
           </ITGrid>
           <ITGrid item xs={12} md={6}>
             <ITSelect
               name="rol"
-              label="Rol"
+              label={t("showcase.pages.role")}
               options={[
                 { label: "Seleccionar...", value: "" },
                 { label: "Admin", value: "admin" },
@@ -1498,7 +1505,7 @@ export const ScreenFormShowcase = () => {
           <ITGrid item xs={12} md={6}>
             <ITSelect
               name="departamento"
-              label="Departamento"
+              label={t("showcase.layoutPrimitives.department")}
               options={[
                 { label: "Seleccionar...", value: "" },
                 { label: "Ingeniería", value: "ingenieria" },
@@ -1509,8 +1516,8 @@ export const ScreenFormShowcase = () => {
           </ITGrid>
           <ITGrid item xs={12}>
             <ITFlex justify="end" gap={3}>
-              <ITButton label="Cancelar" variant="outlined" size="sm" />
-              <ITButton label="Guardar" size="sm" />
+              <ITButton label={t("showcase.common.cancel")} variant="outlined" size="sm" />
+              <ITButton label={t("showcase.common.save")} size="sm" />
             </ITFlex>
           </ITGrid>
         </ITGrid>

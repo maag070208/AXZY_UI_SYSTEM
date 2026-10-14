@@ -11,6 +11,7 @@ import { useFieldRules } from "./useFormBuilder";
 import { getColSpanClass, getGridColsClass } from "@/utils/styles";
 import ITText from "@/components/atoms/text/text";
 import { FaSpinner } from "react-icons/fa";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Resolves `FieldConfigV2["options"]` to a stable `{ value, label }[]` array,
@@ -123,6 +124,7 @@ const ITFieldRenderer = ({
   dependentValues = {},
 }: ITFieldRendererProps) => {
   const context = useITFormBuilderContext();
+  const { t } = useITTranslation();
   const { isVisible, isRequired, isDisabled, dynamicProps } = useFieldRules(
     config,
     dependentValues,
@@ -220,7 +222,7 @@ const ITFieldRenderer = ({
               >
                 <FaSpinner className="animate-spin text-primary-500" />
                 <ITText as="span" className="text-sm text-slate-500">
-                  Cargando opciones...
+                  {t("formBuilder.loadingOptions")}
                 </ITText>
               </div>
             );
@@ -366,7 +368,7 @@ const ITFieldRenderer = ({
         return (
           <div className="p-4 border-2 border-dashed border-secondary-200 rounded-xl">
             <ITText as="p" className="text-sm text-secondary-500 text-center">
-              Array Field: {label}
+              {t("formBuilder.arrayField", { label: label ?? "" })}
             </ITText>
           </div>
         );

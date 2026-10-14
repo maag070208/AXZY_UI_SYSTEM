@@ -21,17 +21,17 @@ export interface ITPageProps {
   loading?: boolean;
   /** Error message to display. Shows an error state with retry button when provided. */
   error?: string | null;
-  /** Custom title for the error state. Default: "Error". */
+  /** Custom title for the error state. Default: i18n `common.error` ("Error"). */
   errorTitle?: string;
-  /** Label for the retry button in the error state. Default: "Reintentar". */
+  /** Label for the retry button in the error state. Default: i18n `common.retry` ("Reintentar"). */
   errorActionLabel?: string;
   /** Callback fired when the retry button is clicked in the error state. */
   onRetry?: () => void;
   /** Whether the page is in an empty state. Shows a placeholder when true. */
   empty?: boolean;
-  /** Custom title for the empty state. Default: "Sin datos". */
+  /** Custom title for the empty state. Default: i18n `common.noData` ("Sin datos"). */
   emptyTitle?: string;
-  /** Custom description for the empty state. */
+  /** Custom description for the empty state. Default: i18n `common.empty` ("No hay información para mostrar"). */
   emptyDescription?: string;
   /** Custom action element for the empty state. */
   emptyAction?: ReactNode;

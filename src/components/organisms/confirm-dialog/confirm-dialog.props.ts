@@ -8,13 +8,13 @@ export interface ITConfirmDialogProps {
   onClose: () => void;
   /** Callback fired when the user confirms the destructive action. */
   onConfirm: () => void;
-  /** Heading text displayed at the top of the dialog. @default "Confirmar acción" */
+  /** Heading text displayed at the top of the dialog. @default i18n `confirmDialog.title` ("Confirmar acción") */
   title?: string;
-  /** Body content — accepts plain strings or React nodes. @default "¿Estás seguro de que deseas continuar?" */
+  /** Body content — accepts plain strings or React nodes. @default i18n `confirmDialog.message` ("¿Estás seguro de que deseas continuar?") */
   message?: ReactNode;
-  /** Label for the confirm button. @default "Confirmar" */
+  /** Label for the confirm button. @default i18n `common.confirm` ("Confirmar") */
   confirmLabel?: string;
-  /** Label for the cancel button. @default "Cancelar" */
+  /** Label for the cancel button. @default i18n `common.cancel` ("Cancelar") */
   cancelLabel?: string;
   /** Color variant applied to the confirm button. Accepts any ColorsTypes value (e.g. "primary", "danger", "warning", "info"). @default "primary" */
   variant?: ColorsTypes;

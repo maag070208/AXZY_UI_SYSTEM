@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { ITTopBarProps } from "./topbar.props";
 import ITText from "@/components/atoms/text/text";
 import { useITFlatAppearance } from "@/theme/theme-context";
+import { useITTranslation } from "@/i18n";
 
 /**
  * ITTopBar — sticky top navigation bar with logo, nav items, and user avatar dropdown.
@@ -73,6 +74,7 @@ export default function ITTopBar({
 }: ITTopBarProps) {
   // Flat appearance: plain bar (no shadow/blur), initials avatar, name before it.
   const flat = useITFlatAppearance();
+  const { t } = useITTranslation();
   const initials = (userMenu?.userName ?? "")
     .trim()
     .split(/\s+/)
@@ -102,7 +104,7 @@ export default function ITTopBar({
           {showMobileMenuButton && (
             <button
               type="button"
-              aria-label="Menú"
+              aria-label={t("common.menu")}
               className={`${showDesktopMenuButton ? "" : "lg:hidden"} p-2.5 -ml-2.5 rounded-xl transition-colors duration-200`}
               style={{
                  color: "var(--it-topbar-icon, #64748b)",
@@ -200,7 +202,7 @@ export default function ITTopBar({
                       <img
                         className="w-9 h-9 rounded-full object-cover ring-2 ring-white shadow-sm"
                         src={userMenu.userImage}
-                        alt="Current user"
+                        alt={t("common.userAvatar")}
                       />
                     ) : flat && initials ? (
                       <div

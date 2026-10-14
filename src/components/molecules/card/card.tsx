@@ -3,6 +3,7 @@ import { ITCardProps } from "./card.props";
 import { useState } from "react";
 import ITText from "@/components/atoms/text/text";
 import { useITFlatAppearance } from "@/theme/theme-context";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Versatile card container with optional image, title, body content, and action footer. Supports interactive hover states.
@@ -20,7 +21,7 @@ import { useITFlatAppearance } from "@/theme/theme-context";
 export default function ITCard({
   title,
   image,
-  alt = "Card Image",
+  alt,
   children,
   actions,
   className,
@@ -30,8 +31,10 @@ export default function ITCard({
   actionClassName,
   onClick,
 }: ITCardProps) {
+  const { t } = useITTranslation();
   const [isHovered, setIsHovered] = useState(false);
   const flat = useITFlatAppearance();
+  const resolvedAlt = alt ?? t("card.imageAlt");
 
   const containerStyle: React.CSSProperties = {
     backgroundColor: "var(--it-card-bg, #ffffff)",
@@ -76,7 +79,7 @@ export default function ITCard({
       {image && (
         <img
           src={image}
-          alt={alt}
+          alt={resolvedAlt}
           className={clsx("w-full h-48 object-cover", imageClassName)}
         />
       )}

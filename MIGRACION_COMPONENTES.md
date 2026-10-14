@@ -1,6 +1,6 @@
 # 🚀 Plan de Migración y Verificación — AXZY UI System
 
-> Documento vivo para garantizar que los 52 componentes funcionan correctamente en el dev app (`npm run dev`) y Storybook (`npm run storybook`).
+> ⚠️ **Documento histórico.** Storybook fue eliminado del repo: las columnas de las tablas y los pasos que lo mencionan ya **no aplican**. La superficie de ejemplos actual es el sandbox (`pnpm dev`).
 
 ## 📋 Reglas de verificación
 
@@ -26,18 +26,13 @@ Para cada componente, marcar el estado de las siguientes 4 verificaciones:
    - **Controles**: ¿Los controles (ITS, Select, ITSlider) actualizan el sandbox?
    - **Dark mode**: Toggle a modo oscuro → ¿se ve bien?
    - **Responsive**: Reducir el ancho del browser → ¿se adapta?
-4. Abrir `npm run storybook` en http://localhost:6006
-5. Buscar el componente en el sidebar
-6. Verificar:
-   - **Controls**: ¿Los argumentos se pueden modificar?
-   - **Stories**: ¿Las variantes se renderizan?
-   - **Docs**: ¿La pestaña de Docs muestra la tabla de props?
+4. Comparar con el showcase del grupo correspondiente en el sandbox.
 
 ---
 
 ## 📦 Estado actual por componente
 
-> **52/52 componentes tienen:** `*.tsx` + `*.props.ts` + `*.stories.tsx` + `*.doc.mdx` + JSDoc en props y default export.
+> **Componentes:** `*.tsx` + `*.props.ts` + JSDoc en props y default export (Storybook ya no forma parte del repo).
 
 ### Estructura & Layout (10 componentes)
 
@@ -145,7 +140,7 @@ O usar colores Tailwind nativos directamente:
 <div className="bg-gradient-to-br from-blue-500 to-blue-700">
 ```
 
-### 2. Storybook + ITSlider `showValue` prop
+### 2. ITSlider `showValue` prop
 
 El `ITSlider` no tiene `showValue`. Si alguna showcase lo usa, fallará en TypeScript.
 
@@ -158,7 +153,7 @@ Hay errores pre-existentes en varios componentes (any types, unused imports) que
 ## 🔧 Plan de acción recomendado
 
 ### Fase 1: Diagnóstico
-- [ ] Levantar `npm run dev` y `npm run storybook`
+- [ ] Levantar `npm run dev`
 - [ ] Verificar consola: errores de TypeScript, warnings de React, errores de Tailwind
 - [ ] Listar todos los errores recurrentes por componente
 
@@ -176,7 +171,6 @@ Hay errores pre-existentes en varios componentes (any types, unused imports) que
 - [ ] `npx tsc --noEmit` → 0 errores
 - [ ] `npm run lint` → revisar warnings
 - [ ] `npm run build` → verificar bundle
-- [ ] `npm run build-storybook` → verificar Storybook build
 
 ### Fase 5: Documentación
 - [ ] Actualizar este MD con el estado final ✅ de cada componente
@@ -209,12 +203,8 @@ Hay errores pre-existentes en varios componentes (any types, unused imports) que
 # Dev app (localhost:5173)
 npm run dev
 
-# Storybook (localhost:6006)
-npm run storybook
-
 # Build
 npm run build
-npm run build-storybook
 
 # Type check
 npx tsc --noEmit

@@ -30,8 +30,10 @@ import ITText from "@/components/atoms/text/text";
 import ITTable from "@/components/molecules/table/table";
 import type { Column } from "@/components/molecules/table/table.props";
 import { ShowcaseLayout } from "./ShowcaseLayout";
+import { useITTranslation } from "@/i18n";
 
 export const PageHeaderShowcase = () => {
+  const { t } = useITTranslation();
   const [showBack, setShowBack] = useState(true);
   const [showBreadcrumbs, setShowBreadcrumbs] = useState(true);
   const [showIcon, setShowIcon] = useState(true);
@@ -60,9 +62,9 @@ export const PageHeaderShowcase = () => {
   const actionEl =
     actionsVariant === "none" ? undefined : (
       <ITFlex gap={2}>
-        <ITButton label="Add member" variant="filled" color="primary" size="sm" />
+        <ITButton label={t("showcase.pages.addMember")} variant="filled" color="primary" size="sm" />
         {(actionsVariant === "double" || actionsVariant === "full") && (
-          <ITButton label="Export" variant="outlined" color="gray" size="sm" />
+          <ITButton label={t("showcase.pages.export")} variant="outlined" color="gray" size="sm" />
         )}
       </ITFlex>
     );
@@ -70,20 +72,20 @@ export const PageHeaderShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITPageHeader"
-      description="Encabezado estandarizado para pantallas. Incluye título, descripción, icono, breadcrumbs, botón de volver y área de acciones."
+      description={t("showcase.pages.pageHeaderDesc")}
       code={buildCode()}
       demo={
         <div className="w-full flex flex-col">
           <div className="border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900/50 overflow-hidden">
             <div className="p-6 pb-4">
               <ITPageHeader
-                title="Team members"
-                description={showDesc ? "Manage invitations, roles and permissions for your organization workspace." : undefined}
+                title={t("showcase.pages.teamMembers")}
+                description={showDesc ? t("showcase.pages.teamDesc") : undefined}
                 icon={showIcon ? <FaUsers size={20} /> : undefined}
                 iconColor={showIcon ? iconColor : undefined}
                 breadcrumbs={showBreadcrumbs ? [
-                  { label: "Admin", href: "#" },
-                  { label: "Team" },
+                  { label: t("showcase.pages.crumbAdmin"), href: "#" },
+                  { label: t("showcase.pages.crumbTeam") },
                 ] : undefined}
                 backAction={showBack ? () => {} : undefined}
                 actions={actionEl}
@@ -98,7 +100,7 @@ export const PageHeaderShowcase = () => {
                     <FaSearch size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input
                       type="text"
-                      placeholder="Search by name or email..."
+                      placeholder={t("showcase.pages.searchByNameEmail")}
                       className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
@@ -107,7 +109,7 @@ export const PageHeaderShowcase = () => {
                     onChange={() => {}}
                     className="px-3 py-2 text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-primary-500"
                   >
-                    <option value="all">All roles</option>
+                    <option value="all">{t("showcase.pages.allRoles")}</option>
                     <option value="admin">Admin</option>
                     <option value="editor">Editor</option>
                     <option value="viewer">Viewer</option>
@@ -117,12 +119,12 @@ export const PageHeaderShowcase = () => {
                     onChange={() => {}}
                     className="px-3 py-2 text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-primary-500"
                   >
-                    <option value="all">All status</option>
+                    <option value="all">{t("showcase.pages.allStatus")}</option>
                     <option value="active">Active</option>
                     <option value="pending">Pending</option>
                     <option value="inactive">Inactive</option>
                   </select>
-                  <ITButton label="Clear" variant="text" color="gray" size="sm" />
+                  <ITButton label={t("showcase.pages.clear")} variant="text" color="gray" size="sm" />
                 </ITFlex>
               </div>
             )}
@@ -143,18 +145,18 @@ export const PageHeaderShowcase = () => {
       controls={
         <ITStack spacing={4}>
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Header elements</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">{t("showcase.pages.headerElements")}</p>
             <ITFlex direction="column" gap={3}>
               <ITFlex justify="between" align="center">
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Back button</span>
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.pages.backButton")}</span>
                 <ITSlideToggle isOn={showBack} onToggle={setShowBack} size="sm" />
               </ITFlex>
               <ITFlex justify="between" align="center">
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Breadcrumbs</span>
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.pages.breadcrumbs")}</span>
                 <ITSlideToggle isOn={showBreadcrumbs} onToggle={setShowBreadcrumbs} size="sm" />
               </ITFlex>
               <ITFlex justify="between" align="center">
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Icon</span>
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.pages.icon")}</span>
                 <ITSlideToggle isOn={showIcon} onToggle={setShowIcon} size="sm" />
               </ITFlex>
               {showIcon && (
@@ -172,14 +174,14 @@ export const PageHeaderShowcase = () => {
                 </ITFlex>
               )}
               <ITFlex justify="between" align="center">
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Description</span>
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.pages.description")}</span>
                 <ITSlideToggle isOn={showDesc} onToggle={setShowDesc} size="sm" />
               </ITFlex>
             </ITFlex>
           </div>
 
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Actions</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">{t("showcase.pages.actions")}</p>
             <ITFlex gap={2} wrap="wrap">
               {(["none", "single", "double", "full"] as const).map((v) => (
                 <ITButton
@@ -195,9 +197,9 @@ export const PageHeaderShowcase = () => {
           </div>
 
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Filters</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">{t("showcase.pages.filters")}</p>
             <ITFlex justify="between" align="center">
-              <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Show filter bar</span>
+              <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.pages.showFilterBar")}</span>
               <ITSlideToggle isOn={showFilters} onToggle={setShowFilters} size="sm" />
             </ITFlex>
           </div>
@@ -207,20 +209,20 @@ export const PageHeaderShowcase = () => {
         <ITStack spacing={6}>
           {/* 1. Team management — full header + search + filter bar + user rows */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Team management</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryTeamManagement")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-900/50">
               <div className="p-5 pb-3">
                 <ITPageHeader
-                  title="Team members"
-                  description="Manage invitations, roles and permissions for your organization workspace."
+                  title={t("showcase.pages.teamMembers")}
+                  description={t("showcase.pages.teamDesc")}
                   icon={<FaUsers size={20} />}
                   iconColor="#6366f1"
-                  breadcrumbs={[{ label: "Admin", href: "#" }, { label: "Team" }]}
+                  breadcrumbs={[{ label: t("showcase.pages.crumbAdmin"), href: "#" }, { label: t("showcase.pages.crumbTeam") }]}
                   backAction={() => {}}
                   actions={
                     <ITFlex gap={2}>
-                      <ITButton label="Export" variant="outlined" color="gray" size="sm" />
-                      <ITButton label="Add member" variant="filled" color="primary" size="sm" />
+                      <ITButton label={t("showcase.pages.export")} variant="outlined" color="gray" size="sm" />
+                      <ITButton label={t("showcase.pages.addMember")} variant="filled" color="primary" size="sm" />
                     </ITFlex>
                   }
                 />
@@ -228,15 +230,15 @@ export const PageHeaderShowcase = () => {
               <ITFlex gap={3} align="center" wrap="wrap" className="px-5 pb-3">
                 <div className="flex-1 min-w-[180px] relative">
                   <FaSearch size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input type="text" placeholder="Search..." className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 outline-none focus:ring-2 focus:ring-primary-500 text-slate-800 dark:text-white" />
+                  <input type="text" placeholder={t("showcase.pages.searchShort")} className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 outline-none focus:ring-2 focus:ring-primary-500 text-slate-800 dark:text-white" />
                 </div>
                 <select className="px-3 py-2 text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 outline-none">
-                  <option>All roles</option>
+                  <option>{t("showcase.pages.allRoles")}</option>
                   <option>Admin</option>
                   <option>Editor</option>
                 </select>
                 <select className="px-3 py-2 text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 outline-none">
-                  <option>All status</option>
+                  <option>{t("showcase.pages.allStatus")}</option>
                   <option>Active</option>
                   <option>Pending</option>
                 </select>
@@ -270,35 +272,35 @@ export const PageHeaderShowcase = () => {
 
           {/* 2. Detail page — back + breadcrumbs + back button + save/cancel */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Detail / Edit form</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryDetailEdit")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-900/50">
               <div className="p-5 pb-3">
                 <ITPageHeader
-                  title="Edit product"
-                  description="Update product details, pricing and inventory information."
+                  title={t("showcase.pages.editProduct")}
+                  description={t("showcase.pages.editProductDesc")}
                   icon={<FaBoxOpen size={20} />}
                   iconColor="#ec4899"
-                  breadcrumbs={[{ label: "Products", href: "#" }, { label: "MacBook Pro 16", href: "#" }, { label: "Edit" }]}
+                  breadcrumbs={[{ label: t("showcase.pages.crumbProducts"), href: "#" }, { label: "MacBook Pro 16", href: "#" }, { label: t("showcase.pages.crumbEdit") }]}
                   backAction={() => {}}
                   actions={
                     <ITFlex gap={2}>
-                      <ITButton label="Cancel" variant="outlined" color="gray" size="sm" />
-                      <ITButton label="Save changes" variant="filled" color="primary" size="sm" />
+                      <ITButton label={t("showcase.common.cancel")} variant="outlined" color="gray" size="sm" />
+                      <ITButton label={t("showcase.pages.saveChanges")} variant="filled" color="primary" size="sm" />
                     </ITFlex>
                   }
                 />
               </div>
               <ITGrid container spacing={3} className="px-5 pb-5">
                 <ITGrid item xs={12} md={6}>
-                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">Product name</label>
+                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">{t("showcase.pages.productName")}</label>
                   <input type="text" defaultValue="MacBook Pro 16" className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                 </ITGrid>
                 <ITGrid item xs={12} md={3}>
-                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">Price</label>
+                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">{t("showcase.pages.price")}</label>
                   <input type="text" defaultValue="$3,499" className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                 </ITGrid>
                 <ITGrid item xs={12} md={3}>
-                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">Stock</label>
+                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">{t("showcase.pages.stock")}</label>
                   <input type="text" defaultValue="24" className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                 </ITGrid>
               </ITGrid>
@@ -307,23 +309,23 @@ export const PageHeaderShowcase = () => {
 
           {/* 3. Dashboard header — icon + title + desc + date range + refresh */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Dashboard</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryDashboard")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-900/50">
               <div className="p-5">
                 <ITPageHeader
-                  title="Dashboard"
-                  description="Real-time overview of your business metrics and activity."
+                  title={t("showcase.structure.navDashboard")}
+                  description={t("showcase.pages.dashboardDesc")}
                   icon={<FaChartLine size={20} />}
                   iconColor="#10b981"
                   actions={
                     <ITFlex gap={2} align="center">
                       <select className="px-3 py-2 text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-primary-500">
-                        <option>Last 7 days</option>
-                        <option>Last 30 days</option>
-                        <option>This quarter</option>
-                        <option>Custom range</option>
+                        <option>{t("showcase.pages.last7Days")}</option>
+                        <option>{t("showcase.pages.last30Days")}</option>
+                        <option>{t("showcase.pages.thisQuarter")}</option>
+                        <option>{t("showcase.pages.customRange")}</option>
                       </select>
-                      <ITButton label="Refresh" variant="outlined" color="gray" size="sm" />
+                      <ITButton label={t("showcase.pages.refresh")} variant="outlined" color="gray" size="sm" />
                     </ITFlex>
                   }
                 />
@@ -333,16 +335,16 @@ export const PageHeaderShowcase = () => {
 
           {/* 4. Settings header — no icon, no breadcrumbs, just title + desc + save */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Settings / Preferences</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.gallerySettingsPrefs")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-900/50">
               <div className="p-5">
                 <ITPageHeader
-                  title="General settings"
-                  description="Configure your workspace preferences, notifications and security options."
+                  title={t("showcase.pages.generalSettings")}
+                  description={t("showcase.pages.generalSettingsDesc")}
                   actions={
                     <ITFlex gap={2}>
-                      <ITButton label="Reset" variant="outlined" color="gray" size="sm" />
-                      <ITButton label="Save" variant="filled" color="primary" size="sm" />
+                      <ITButton label={t("showcase.common.reset")} variant="outlined" color="gray" size="sm" />
+                      <ITButton label={t("showcase.common.save")} variant="filled" color="primary" size="sm" />
                     </ITFlex>
                   }
                 />
@@ -352,23 +354,23 @@ export const PageHeaderShowcase = () => {
 
           {/* 5. Users list — icon + breadcrumbs + search in actions + add button */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Users list</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryUsersList")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-900/50">
               <div className="p-5">
                 <ITPageHeader
-                  title="Users"
-                  description="1,245 registered users · 38 active right now"
+                  title={t("showcase.structure.navUsers")}
+                  description={t("showcase.pages.usersDesc")}
                   icon={<FaUsers size={20} />}
                   iconColor="#8b5cf6"
                   backAction={() => {}}
-                  breadcrumbs={[{ label: "Admin", href: "#" }, { label: "Users" }]}
+                  breadcrumbs={[{ label: t("showcase.pages.crumbAdmin"), href: "#" }, { label: t("showcase.structure.navUsers") }]}
                   actions={
                     <ITFlex gap={2}>
                       <div className="relative">
                         <FaSearch size={11} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                        <input type="text" placeholder="Search..." className="w-[180px] pl-9 pr-3 py-2 text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
+                        <input type="text" placeholder={t("showcase.pages.searchShort")} className="w-[180px] pl-9 pr-3 py-2 text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                       </div>
-                      <ITButton label="Invite" variant="filled" color="primary" size="sm" />
+                      <ITButton label={t("showcase.pages.invite")} variant="filled" color="primary" size="sm" />
                     </ITFlex>
                   }
                 />
@@ -393,6 +395,7 @@ const USERS: Record<string, unknown>[] = [
 ];
 
 export const PageShowcase = () => {
+  const { t } = useITTranslation();
   const [state, setState] = useState<"normal" | "loading" | "error" | "empty">("normal");
   const [screen, setScreen] = useState<"list" | "detail">("list");
   const [selectedUser, setSelectedUser] = useState<Record<string, unknown> | null>(null);
@@ -544,26 +547,26 @@ export const PageShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITPage"
-      description="Template completo de página con tabla, detalle y 4 estados (carga, error, vacío, normal)."
+      description={t("showcase.pages.pageDesc")}
       code={buildCode()}
       demo={
         <div className="w-full border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-900/50">
           {isDetail && user ? (
             <ITPage
               title={user.name as string}
-              description={`Member · ${user.role as string} · ${(user.active as boolean) ? "Active" : "Inactive"}`}
+              description={t("showcase.pages.memberSummary", { role: user.role as string, status: (user.active as boolean) ? t("showcase.common.active") : t("showcase.data.inactive") })}
               icon={shouldShowIcon}
               iconColor={shouldShowIconColor}
-              breadcrumbs={[{ label: "Team", href: "#" }, { label: user.name as string }]}
+              breadcrumbs={[{ label: t("showcase.pages.crumbTeam"), href: "#" }, { label: user.name as string }]}
               backAction={handleBackToList}
               loading={state === "loading"}
-              error={state === "error" ? "Could not load user details. Please try again." : null}
-              errorTitle="Details error"
+              error={state === "error" ? t("showcase.pages.userLoadError") : null}
+              errorTitle={t("showcase.pages.detailsError")}
               onRetry={() => setState("normal")}
               horizontalPadding={hPaddingValue}
               empty={state === "empty"}
-              emptyTitle="No user data"
-              emptyDescription="No information available for this user."
+              emptyTitle={t("showcase.pages.noUserData")}
+              emptyDescription={t("showcase.pages.noUserInfo")}
             >
               <ITGrid container spacing={4}>
                 <ITGrid item xs={12} md={4}>
@@ -581,14 +584,14 @@ export const PageShowcase = () => {
                   </ITCard>
                 </ITGrid>
                 <ITGrid item xs={12} md={8}>
-                  <ITCard title="Account details">
+                  <ITCard title={t("showcase.pages.accountDetails")}>
                     <ITStack spacing={4}>
                       {[
-                        { label: "Full name", value: user.name as string },
-                        { label: "Email address", value: user.email as string },
-                        { label: "Role", value: user.role as string },
-                        { label: "Status", value: (user.active as boolean) ? "Active" : "Inactive" },
-                        { label: "Last login", value: new Date(user.lastLogin as string).toLocaleString("en-US") },
+                        { label: t("showcase.pages.fullName"), value: user.name as string },
+                        { label: t("showcase.pages.emailAddress"), value: user.email as string },
+                        { label: t("showcase.pages.role"), value: user.role as string },
+                        { label: t("showcase.pages.status"), value: (user.active as boolean) ? t("showcase.common.active") : t("showcase.data.inactive") },
+                        { label: t("showcase.pages.lastLogin"), value: new Date(user.lastLogin as string).toLocaleString("en-US") },
                       ].map((f) => (
                         <div key={f.label}>
                           <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">{f.label}</p>
@@ -602,28 +605,28 @@ export const PageShowcase = () => {
             </ITPage>
           ) : (
             <ITPage
-              title="Team members"
-              description="Manage invitations, roles and permissions for your organization workspace."
+              title={t("showcase.pages.teamMembers")}
+              description={t("showcase.pages.teamDesc")}
               icon={shouldShowIcon}
               iconColor={shouldShowIconColor}
-              breadcrumbs={[{ label: "Admin", href: "#" }, { label: "Team" }]}
+              breadcrumbs={[{ label: t("showcase.pages.crumbAdmin"), href: "#" }, { label: t("showcase.pages.crumbTeam") }]}
               loading={state === "loading"}
-              error={state === "error" ? "Could not load team members. Check your connection and try again." : null}
-              errorTitle="Connection error"
+              error={state === "error" ? t("showcase.pages.teamLoadError") : null}
+              errorTitle={t("showcase.pages.connectionError")}
               onRetry={() => setState("normal")}
               horizontalPadding={hPaddingValue}
               empty={state === "empty"}
-              emptyTitle="No team members yet"
-              emptyDescription="Invite your first team member to get started."
-              emptyAction={<ITButton label="Invite members" size="sm" icon={<FaPlus />} />}
-              actions={<ITButton label="Invite" size="sm" icon={<FaPlus />} />}
+              emptyTitle={t("showcase.pages.noTeamMembers")}
+              emptyDescription={t("showcase.pages.noTeamMembersHint")}
+              emptyAction={<ITButton label={t("showcase.pages.inviteMembers")} size="sm" icon={<FaPlus />} />}
+              actions={<ITButton label={t("showcase.pages.invite")} size="sm" icon={<FaPlus />} />}
             >
               <ITTable
                 columns={columns}
                 data={USERS}
                 size="sm"
                 defaultItemsPerPage={5}
-                title="All members"
+                title={t("showcase.data.galleryAllMembers")}
               />
             </ITPage>
           )}
@@ -632,12 +635,12 @@ export const PageShowcase = () => {
       controls={
         <ITStack spacing={4}>
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Page state</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">{t("showcase.pages.pageState")}</p>
             <ITFlex gap={2} wrap="wrap">
               {(["normal", "loading", "error", "empty"] as const).map((s) => (
                 <ITButton
                   key={s}
-                  label={s.charAt(0).toUpperCase() + s.slice(1)}
+                  label={s === "normal" ? t("showcase.data.stateNormal") : s === "loading" ? t("showcase.data.stateLoading") : s === "error" ? t("showcase.data.stateError") : t("showcase.data.stateEmpty")}
                   variant={state === s ? "filled" : "outlined"}
                   size="sm"
                   onClick={() => setState(s)}
@@ -647,17 +650,17 @@ export const PageShowcase = () => {
           </div>
 
           <ITFlex justify="between" align="center">
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Icon in header</span>
+            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.pages.iconInHeader")}</span>
             <ITSlideToggle isOn={showIcon} onToggle={setShowIcon} size="sm" />
           </ITFlex>
 
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Horizontal padding</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">{t("showcase.pages.horizontalPadding")}</p>
             <ITFlex gap={2} wrap="wrap">
               {(["default", "none", "tight", "wide"] as const).map((p) => (
                 <ITButton
                   key={p}
-                  label={p === "default" ? "Default" : p === "none" ? "px-0" : p === "tight" ? "px-2" : "px-8"}
+                  label={p === "default" ? t("showcase.pages.paddingDefault") : p === "none" ? "px-0" : p === "tight" ? "px-2" : "px-8"}
                   variant={hPadding === p ? "filled" : "outlined"}
                   size="sm"
                   onClick={() => setHPadding(p)}
@@ -668,16 +671,16 @@ export const PageShowcase = () => {
 
           {isNormal && (
             <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Screen</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">{t("showcase.pages.screen")}</p>
               <ITFlex gap={2} wrap="wrap">
                 <ITButton
-                  label="List"
+                  label={t("showcase.pages.list")}
                   variant={screen === "list" ? "filled" : "outlined"}
                   size="sm"
                   onClick={() => handleBackToList()}
                 />
                 <ITButton
-                  label="Detail (last viewed)"
+                  label={t("showcase.pages.detailLastViewed")}
                   variant={screen === "detail" ? "filled" : "outlined"}
                   size="sm"
                   disabled={!selectedUser}
@@ -686,7 +689,7 @@ export const PageShowcase = () => {
               </ITFlex>
               {selectedUser && (
                 <p className="text-xs text-slate-500 mt-2">
-                  Selected: <span className="font-semibold text-slate-700 dark:text-slate-200">{selectedUser.name as string}</span>
+                  {t("showcase.pages.selected")} <span className="font-semibold text-slate-700 dark:text-slate-200">{selectedUser.name as string}</span>
                 </p>
               )}
             </div>
@@ -697,19 +700,19 @@ export const PageShowcase = () => {
         <ITStack spacing={6}>
           {/* 1. Users list with ITTable */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Users — table with actions</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryUsersTable")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITPage
                 horizontalPadding={hPaddingValue}
-                title="Users"
-                description="1,245 registered · 38 active now"
+                title={t("showcase.structure.navUsers")}
+                description={t("showcase.pages.usersDescShort")}
                 icon={<FaUsers size={20} />}
                 iconColor="#6366f1"
-                breadcrumbs={[{ label: "Admin", href: "#" }, { label: "Users" }]}
+                breadcrumbs={[{ label: t("showcase.pages.crumbAdmin"), href: "#" }, { label: t("showcase.structure.navUsers") }]}
                 actions={
                   <ITFlex gap={2}>
-                    <ITButton label="Export" variant="outlined" size="sm" icon={<FaDownload />} />
-                    <ITButton label="Add user" size="sm" icon={<FaPlus />} />
+                    <ITButton label={t("showcase.pages.export")} variant="outlined" size="sm" icon={<FaDownload />} />
+                    <ITButton label={t("showcase.pages.addUser")} size="sm" icon={<FaPlus />} />
                   </ITFlex>
                 }
               >
@@ -725,7 +728,7 @@ export const PageShowcase = () => {
 
           {/* 2. Product detail */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Product detail</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryProductDetail")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITPage
                 horizontalPadding={hPaddingValue}
@@ -733,12 +736,12 @@ export const PageShowcase = () => {
                 description="SKU: MBP-16-M3MAX-2024 · Stock: 24"
                 icon={<FaBoxOpen size={20} />}
                 iconColor="#ec4899"
-                breadcrumbs={[{ label: "Products", href: "#" }, { label: "MacBook Pro 16" }]}
+                breadcrumbs={[{ label: t("showcase.pages.crumbProducts"), href: "#" }, { label: "MacBook Pro 16" }]}
                 backAction={() => {}}
                 actions={
                   <ITFlex gap={2}>
-                    <ITButton label="Delete" variant="outlined" color="gray" size="sm" icon={<FaTrash />} />
-                    <ITButton label="Edit" size="sm" icon={<FaEdit />} />
+                    <ITButton label={t("showcase.common.delete")} variant="outlined" color="gray" size="sm" icon={<FaTrash />} />
+                    <ITButton label={t("showcase.common.edit")} size="sm" icon={<FaEdit />} />
                   </ITFlex>
                 }
               >
@@ -752,14 +755,14 @@ export const PageShowcase = () => {
                   </ITGrid>
                   <ITGrid item xs={12} md={7}>
                     <ITStack spacing={3}>
-                      <ITCard title="Pricing">
+                      <ITCard title={t("showcase.pages.pricing")}>
                         <ITFlex align="baseline" gap={2}>
                           <span className="text-3xl font-extrabold text-slate-800 dark:text-white">$3,499</span>
                           <span className="text-sm text-slate-400 line-through">$3,799</span>
                           <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-md">-8%</span>
                         </ITFlex>
                       </ITCard>
-                      <ITCard title="Description">
+                      <ITCard title={t("showcase.pages.descriptionField")}>
                         <ITText className="text-sm text-slate-600 dark:text-slate-300">
                           Extreme performance for professionals. M3 Max chip with 16-core CPU, 40-core GPU, and 64GB unified memory.
                         </ITText>
@@ -773,45 +776,45 @@ export const PageShowcase = () => {
 
           {/* 3. Edit profile form */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Edit profile</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryEditProfile")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITPage
                 horizontalPadding={hPaddingValue}
-                title="Edit profile"
-                description="Update your personal information and contact details"
+                title={t("showcase.pages.editProfile")}
+                description={t("showcase.pages.editProfileDesc")}
                 icon={<FaEdit size={20} />}
                 iconColor="#10b981"
-                breadcrumbs={[{ label: "Account", href: "#" }, { label: "Edit profile" }]}
+                breadcrumbs={[{ label: t("showcase.pages.crumbAccount"), href: "#" }, { label: t("showcase.pages.editProfile") }]}
                 backAction={() => {}}
                 actions={
                   <ITFlex gap={2}>
-                    <ITButton label="Cancel" variant="outlined" color="gray" size="sm" />
-                    <ITButton label="Save changes" size="sm" icon={<FaSave />} />
+                    <ITButton label={t("showcase.common.cancel")} variant="outlined" color="gray" size="sm" />
+                    <ITButton label={t("showcase.pages.saveChanges")} size="sm" icon={<FaSave />} />
                   </ITFlex>
                 }
               >
                 <ITGrid container spacing={3}>
                   <ITGrid item xs={12} md={4}>
-                    <ITCard title="Profile photo">
+                    <ITCard title={t("showcase.pages.profilePhoto")}>
                       <div className="flex flex-col items-center gap-4">
                         <ITAvatar initials="AL" size="xl" />
-                        <ITButton label="Upload image" variant="outlined" size="sm" />
+                        <ITButton label={t("showcase.pages.uploadImage")} variant="outlined" size="sm" />
                       </div>
                     </ITCard>
                   </ITGrid>
                   <ITGrid item xs={12} md={8}>
-                    <ITCard title="Personal information">
+                    <ITCard title={t("showcase.pages.personalInformation")}>
                       <ITGrid container spacing={3}>
                         <ITGrid item xs={12} sm={6}>
-                          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">First name</label>
+                          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">{t("showcase.pages.firstName")}</label>
                           <input type="text" defaultValue="Ana" className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                         </ITGrid>
                         <ITGrid item xs={12} sm={6}>
-                          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">Last name</label>
+                          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">{t("showcase.pages.lastName")}</label>
                           <input type="text" defaultValue="López" className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                         </ITGrid>
                         <ITGrid item xs={12}>
-                          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">Email</label>
+                          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">{t("showcase.pages.emailField")}</label>
                           <input type="email" defaultValue="ana.lopez@axzy.dev" className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                         </ITGrid>
                       </ITGrid>
@@ -824,19 +827,19 @@ export const PageShowcase = () => {
 
           {/* 4. Orders with table */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Orders — status table</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryOrdersTable")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITPage
                 horizontalPadding={hPaddingValue}
-                title="Orders"
-                description="89 pending · 1,247 completed this month"
+                title={t("showcase.structure.navOrders")}
+                description={t("showcase.pages.ordersDesc")}
                 icon={<FaShoppingCart size={20} />}
                 iconColor="#f59e0b"
-                breadcrumbs={[{ label: "Dashboard", href: "#" }, { label: "Orders" }]}
+                breadcrumbs={[{ label: t("showcase.structure.navDashboard"), href: "#" }, { label: t("showcase.structure.navOrders") }]}
                 actions={
                   <ITFlex gap={2}>
-                    <ITButton label="Export" variant="outlined" color="gray" size="sm" icon={<FaDownload />} />
-                    <ITButton label="New order" size="sm" icon={<FaPlus />} />
+                    <ITButton label={t("showcase.pages.export")} variant="outlined" color="gray" size="sm" icon={<FaDownload />} />
+                    <ITButton label={t("showcase.pages.newOrder")} size="sm" icon={<FaPlus />} />
                   </ITFlex>
                 }
               >
@@ -877,26 +880,26 @@ export const PageShowcase = () => {
 
           {/* 5. Settings with tabs */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Settings</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.gallerySettings")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITPage
                 horizontalPadding={hPaddingValue}
-                title="Settings"
-                description="Manage your account and workspace preferences"
+                title={t("showcase.structure.navConfiguration")}
+                description={t("showcase.pages.settingsDesc")}
                 icon={<FaCog size={20} />}
                 iconColor="#10b981"
-                breadcrumbs={[{ label: "Account", href: "#" }, { label: "Settings" }]}
+                breadcrumbs={[{ label: t("showcase.pages.crumbAccount"), href: "#" }, { label: t("showcase.structure.navConfiguration") }]}
               >
                 <ITGrid container spacing={3}>
                   <ITGrid item xs={12} md={4}>
                     <ITCard>
                       <ITStack spacing={1}>
                         {[
-                          { id: "general", label: "General", icon: <FaCog />, active: true },
-                          { id: "notif", label: "Notifications", icon: <FaBell /> },
-                          { id: "sec", label: "Security", icon: <FaShieldAlt /> },
-                          { id: "apariencia", label: "Appearance", icon: <FaPalette /> },
-                          { id: "billing", label: "Billing", icon: <FaDollarSign /> },
+                          { id: "general", label: t("showcase.pages.settingsNavGeneral"), icon: <FaCog />, active: true },
+                          { id: "notif", label: t("showcase.pages.settingsNavNotifications"), icon: <FaBell /> },
+                          { id: "sec", label: t("showcase.pages.settingsNavSecurity"), icon: <FaShieldAlt /> },
+                          { id: "apariencia", label: t("showcase.pages.settingsNavAppearance"), icon: <FaPalette /> },
+                          { id: "billing", label: t("showcase.pages.settingsNavBilling"), icon: <FaDollarSign /> },
                         ].map(item => (
                           <button key={item.id} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${item.active ? "bg-primary-50 text-primary-700 dark:bg-primary-950/30 dark:text-primary-300" : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"}`}>
                             <span className="text-base">{item.icon}</span>
@@ -907,24 +910,24 @@ export const PageShowcase = () => {
                     </ITCard>
                   </ITGrid>
                   <ITGrid item xs={12} md={8}>
-                    <ITCard title="General preferences">
+                    <ITCard title={t("showcase.pages.generalPreferences")}>
                       <ITStack spacing={4}>
                         <div>
-                          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">Workspace name</label>
+                          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">{t("showcase.pages.workspaceName")}</label>
                           <input type="text" defaultValue="AXZY Console" className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                         </div>
                         <ITStack spacing={3} className="pt-2 border-t border-slate-100 dark:border-slate-800">
                           <ITFlex justify="between" align="center">
                             <div>
-                              <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Dark mode</p>
-                              <p className="text-xs text-slate-500">Follow system appearance</p>
+                              <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{t("showcase.pages.darkMode")}</p>
+                              <p className="text-xs text-slate-500">{t("showcase.pages.followSystem")}</p>
                             </div>
                             <ITSlideToggle isOn={true} onToggle={() => {}} size="sm" />
                           </ITFlex>
                           <ITFlex justify="between" align="center">
                             <div>
-                              <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Email notifications</p>
-                              <p className="text-xs text-slate-500">Receive activity alerts</p>
+                              <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{t("showcase.pages.emailNotifications")}</p>
+                              <p className="text-xs text-slate-500">{t("showcase.pages.receiveAlerts")}</p>
                             </div>
                             <ITSlideToggle isOn={false} onToggle={() => {}} size="sm" />
                           </ITFlex>

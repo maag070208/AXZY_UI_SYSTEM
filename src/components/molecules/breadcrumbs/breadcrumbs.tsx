@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { ITBreadcrumbsProps } from "./breadcrumbs.props";
 import { FaChevronRight } from "react-icons/fa";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Navigation breadcrumb trail with automatic link/button rendering and custom separator.
@@ -20,8 +21,9 @@ export default function ITBreadcrumbs({
   separator = <FaChevronRight size={10} />,
   className,
 }: ITBreadcrumbsProps) {
+  const { t } = useITTranslation();
   return (
-    <nav className={clsx("flex items-center gap-1.5 text-sm", className)} aria-label="Breadcrumb">
+    <nav className={clsx("flex items-center gap-1.5 text-sm", className)} aria-label={t("breadcrumbs.aria")}>
       {items.map((item, i) => {
         const isLast = i === items.length - 1;
         return (

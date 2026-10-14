@@ -35,6 +35,7 @@ import {
   tableRowClickable,
 } from "@/utils/styles";
 import { formatCurrencyMX, getNestedValue, getPinnedColumnMeta, isInteractiveTarget } from "@/utils/table.utils";
+import { useITTranslation, toIntlLocale } from "@/i18n";
 
 /**
  * A feature-rich data table with per-column filtering, sortable columns,
@@ -95,6 +96,7 @@ export default function ITTable<T extends Record<string, unknown>>({
   footerClassName,
   footerStyle,
 }: ITTableProps<T>) {
+  const { t, locale } = useITTranslation();
   const [viewMode, setViewMode] = useState<"table" | "cards">(defaultView);
   const { ref: rootRef, width: containerWidth } = useElementSize<HTMLDivElement>();
 
@@ -282,17 +284,17 @@ export default function ITTable<T extends Record<string, unknown>>({
             : undefined;
 
       const getToggleLabel = () => {
-        if (currentValue === undefined) return "Mostrar todos";
-        if (currentValue === true) return "Filtrar solo verdaderos";
-        return "Filtrar solo falsos";
+        if (currentValue === undefined) return t("table.showAll");
+        if (currentValue === true) return t("table.filterTrue");
+        return t("table.filterFalse");
       };
 
       return (
         <button
           className="flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 rounded-full p-1 transition-all duration-200"
           onClick={() => handleFilterChange(col.key, nextValue)}
-          aria-label={`${getToggleLabel()} para ${col.label}`}
-          title={`${getToggleLabel()} para ${col.label}`}
+          aria-label={t("table.filterToggle", { action: getToggleLabel(), label: col.label })}
+          title={t("table.filterToggle", { action: getToggleLabel(), label: col.label })}
         >
           <div className="relative w-10 h-5 bg-secondary-300 rounded-full">
             <div
@@ -315,21 +317,21 @@ export default function ITTable<T extends Record<string, unknown>>({
         return (
           <FaSpinner
             className="animate-spin"
-            aria-label="Cargando opciones"
-            title="Cargando opciones"
+            aria-label={t("common.loadingOptions")}
+            title={t("common.loadingOptions")}
           />
         );
       }
 
       if (col.catalogOptions.error) {
-        return <ITText as="span" className="text-danger-500 text-xs">Error cargando</ITText>;
+        return <ITText as="span" className="text-danger-500 text-xs">{t("common.loadError")}</ITText>;
       }
 
       return (
         <ITSelect
           name={`filter-${col.key}`}
           options={[
-            { value: "", label: "Todos" },
+            { value: "", label: t("common.all") },
             ...col.catalogOptions.data.map((item) => ({
               value: String(item.id),
               label: item.name,
@@ -351,14 +353,14 @@ export default function ITTable<T extends Record<string, unknown>>({
         return (
           <FaSpinner
             className="animate-spin"
-            aria-label="Cargando opciones"
-            title="Cargando opciones"
+            aria-label={t("common.loadingOptions")}
+            title={t("common.loadingOptions")}
           />
         );
       }
 
       if (col.catalogOptions.error) {
-        return <ITText as="span" className="text-danger-500 text-xs">Error cargando</ITText>;
+        return <ITText as="span" className="text-danger-500 text-xs">{t("common.loadError")}</ITText>;
       }
 
       const searchValue = filters[col.key];
@@ -378,7 +380,7 @@ export default function ITTable<T extends Record<string, unknown>>({
           onSearch={col.catalogOptions.onSearch}
           isLoading={col.catalogOptions.loading}
           size="sm"
-          placeholder="Buscar..."
+          placeholder={t("common.search")}
           clearable
           className="w-full"
           onBlur={() => { }}
@@ -396,7 +398,7 @@ export default function ITTable<T extends Record<string, unknown>>({
           minDate={col.dateFilterOptions?.minDate}
           maxDate={col.dateFilterOptions?.maxDate}
           size="sm"
-          placeholder="dd/mm/aaaa"
+          placeholder={t("datePicker.placeholder")}
           className="w-full"
         />
       );
@@ -415,7 +417,7 @@ export default function ITTable<T extends Record<string, unknown>>({
           minDate={col.dateFilterOptions?.minDate}
           maxDate={col.dateFilterOptions?.maxDate}
           size="sm"
-          placeholder="dd/mm/aaaa - dd/mm/aaaa"
+          placeholder={t("datePicker.rangePlaceholder")}
           className="w-full"
         />
       );
@@ -425,7 +427,7 @@ export default function ITTable<T extends Record<string, unknown>>({
       <ITInput
         name={`filter-${col.key}`}
         className="w-full text-xs"
-        placeholder="Buscar..."
+        placeholder={t("common.search")}
         value={String(filters[col.key] || "")}
         onChange={(e) => handleFilterChange(col.key, e.target.value)}
         onBlur={() => { }}
@@ -442,19 +444,19 @@ export default function ITTable<T extends Record<string, unknown>>({
 
     switch (col.type) {
       case "number":
-        return (typeof value === "number") && col.currencyMX ? formatCurrencyMX(value) : value;
+        return (typeof value === "number") && col.currencyMX ? formatCurrencyMX(value, toIntlLocale(locale)) : value;
       case "boolean":
         return value ? (
           <FaCheck
             className="text-success-500"
-            aria-label="Verdadero"
-            title="Verdadero"
+            aria-label={t("common.true")}
+            title={t("common.true")}
           />
         ) : (
           <FaTimes
             className="text-danger-500"
-            aria-label="Falso"
-            title="Falso"
+            aria-label={t("common.false")}
+            title={t("common.false")}
           />
         );
       case "actions":
@@ -531,7 +533,7 @@ export default function ITTable<T extends Record<string, unknown>>({
         }`}
       >
         <FaTable size={11} />
-        Table
+        {t("table.viewTable")}
       </button>
       <button
         onClick={() => setViewMode("cards")}
@@ -542,7 +544,7 @@ export default function ITTable<T extends Record<string, unknown>>({
         }`}
       >
         <FaThLarge size={11} />
-        Cards
+        {t("table.viewCards")}
       </button>
     </div>
   );
@@ -591,8 +593,8 @@ export default function ITTable<T extends Record<string, unknown>>({
               ))
             ) : (
               <div className={clsx(tableEmptyContent, "py-12")}>
-                <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
-                <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
+                <ITText as="span" className="text-lg">{t("table.noResults")}</ITText>
+                <ITText as="span" className="text-sm mt-1">{t("table.adjustFilters")}</ITText>
               </div>
             )}
           </div>
@@ -674,7 +676,7 @@ export default function ITTable<T extends Record<string, unknown>>({
                                   ? "bg-secondary-200 text-secondary-900"
                                   : "hover:bg-secondary-200 text-secondary-400 hover:text-secondary-700"
                                 }`}
-                              title={`Ordenar por ${col.label}`}
+                              title={t("table.sortBy", { label: col.label })}
                             >
                               <MdOutlineSwapVert className="w-4 h-4" aria-hidden="true" />
                             </button>
@@ -772,8 +774,8 @@ export default function ITTable<T extends Record<string, unknown>>({
                   <tr>
                     <td colSpan={columns.length} className="px-6 py-12 text-center">
                       <div className={tableEmptyContent}>
-                        <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
-                        <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
+                        <ITText as="span" className="text-lg">{t("table.noResults")}</ITText>
+                        <ITText as="span" className="text-sm mt-1">{t("table.adjustFilters")}</ITText>
                       </div>
                     </td>
                   </tr>

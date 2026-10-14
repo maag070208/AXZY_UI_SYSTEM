@@ -6,6 +6,7 @@ import { ITDialogProps } from "./dialog.props";
 import useClickOutside from "@/hooks/useClickOutside";
 import ITFormHeader from "@/components/molecules/form-header/form-header";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Modal dialog rendered via React portal with overlay backdrop.
@@ -42,6 +43,7 @@ export default function ITDialog({
   useFormHeader = false,
   fullScreen = false,
 }: ITDialogProps) {
+  const { t } = useITTranslation();
   const modalRef = useRef<HTMLDivElement>(null);
 
   useClickOutside(modalRef, onClose);
@@ -100,6 +102,7 @@ export default function ITDialog({
             <button
               className="absolute top-2 right-2 text-secondary-600 hover:text-secondary-900"
               onClick={onClose}
+              aria-label={t("common.close")}
             >
               <FaRegTimesCircle />
             </button>

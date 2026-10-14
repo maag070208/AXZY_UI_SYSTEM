@@ -2,6 +2,7 @@ import React, { useRef, useState, useMemo } from "react";
 import clsx from "clsx";
 import ITInput from "@/components/atoms/input/input";
 import { ITMaskedInputProps } from "./masked-input.props";
+import { useITTranslation } from "@/i18n";
 
 type Token = "9" | "A" | "a" | "x" | "*";
 
@@ -157,6 +158,7 @@ export default function ITMaskedInput({
   iconRight,
   autoFocus = false,
 }: ITMaskedInputProps) {
+  const { t } = useITTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const rawRef = useRef<string>(value ?? "");
   const isControlled = value !== undefined;
@@ -215,7 +217,7 @@ export default function ITMaskedInput({
   const resolvedError = invalidPattern
     ? typeof error === "string"
       ? error
-      : "Formato inválido"
+      : t("input.invalidFormat")
     : error;
 
   return (

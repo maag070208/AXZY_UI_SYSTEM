@@ -8,6 +8,7 @@ import ITInput from "@/components/atoms/input/input";
 import { ITDatePickerProps } from "./date-picker.props";
 import { useFloatingPanel } from "@/hooks/useFloatingPanel";
 import { theme } from "@/theme/theme";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Date picker component with single-date and date-range modes.
@@ -58,6 +59,7 @@ export default function ITDatePicker({
   maxDate,
   range = false,
 }: ITDatePickerProps) {
+  const { t, formatDate: formatDateLocale } = useITTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [isValidDate, setIsValidDate] = useState(true);
@@ -171,13 +173,11 @@ export default function ITDatePicker({
   };
 
   const formatDate = (date: Date) =>
-    date
-      .toLocaleDateString("es-ES", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      })
-      .replace(/\//g, "/");
+    formatDateLocale(date, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
 
   const validateDate = (dateString: string) => {
     const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
@@ -266,7 +266,7 @@ export default function ITDatePicker({
         name={name}
         type="text"
         label={label}
-        placeholder={placeholder}
+        placeholder={placeholder ?? (range ? t("datePicker.rangePlaceholder") : t("datePicker.placeholder"))}
         value={inputValue}
         onChange={handleInputChange}
         onBlur={handleInputBlur}
@@ -284,7 +284,7 @@ export default function ITDatePicker({
         disabled={disabled}
         required={required}
         touched={touched}
-        error={!isValidDate ? "Fecha inválida" : error}
+        error={!isValidDate ? t("datePicker.invalid") : error}
         onClick={handleIconClick}
       />
 

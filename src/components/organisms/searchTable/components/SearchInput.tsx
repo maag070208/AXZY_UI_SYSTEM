@@ -1,6 +1,7 @@
 import ITInput from "@/components/atoms/input/input";
 import React from "react";
 import { FaSearch } from "react-icons/fa";
+import { useITTranslation } from "@/i18n";
 
 interface SearchInputProps {
   placeholder?: string;
@@ -10,11 +11,12 @@ interface SearchInputProps {
 }
 
 export default function SearchInput({
-  placeholder = "Buscar en todos los campos...",
+  placeholder,
   value,
   onChange,
   className = "",
 }: SearchInputProps) {
+  const { t } = useITTranslation();
   return (
     <div className={`relative flex-1 ${className}`}>
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -22,7 +24,7 @@ export default function SearchInput({
       </div>
       <ITInput
         name="global-search"
-        placeholder={placeholder}
+        placeholder={placeholder ?? t("searchTable.searchPlaceholder")}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onBlur={() => {}}

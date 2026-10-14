@@ -5,6 +5,7 @@ import { theme } from "@/theme/theme";
 import ITButton from "@/components/atoms/button/button";
 import { FaChevronLeft, FaChevronRight, FaCheck } from "react-icons/fa";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * A step-by-step wizard / progress indicator with animated content transitions,
@@ -35,6 +36,7 @@ export default function ITStepper({
   maxContentHeight = "400px",
   color = "primary",
 }: ITStepperProps) {
+  const { t } = useITTranslation();
   const [direction, setDirection] = useState<"next" | "prev">("next");
   const contentRef = useRef<HTMLDivElement | null>(null);
   const progressRef = useRef<HTMLDivElement | null>(null);
@@ -149,7 +151,7 @@ export default function ITStepper({
                 onClick={() => jumpTo(idx)}
                 disabled={!allowClickToJump && idx !== currentStep}
                 aria-current={isActive ? "step" : undefined}
-                aria-label={`Paso ${idx + 1} ${step.label}`}
+                aria-label={t("stepper.stepAria", { n: idx + 1, label: step.label })}
                 className="flex-1 group"
                 title={step.label}
               >
@@ -214,13 +216,13 @@ export default function ITStepper({
         >
           <div className="flex items-center gap-2">
             <FaChevronLeft />
-            <ITText as="span">Atrás</ITText>
+            <ITText as="span">{t("common.back")}</ITText>
           </div>
         </ITButton>
 
         <div className="flex items-center gap-3">
           <ITText as="div" className="text-sm text-secondary-500 mr-2 hidden sm:block">
-            Paso {currentStep + 1} de {steps.length}
+            {t("stepper.stepOf", { current: currentStep + 1, total: steps.length })}
           </ITText>
           
           <ITButton
@@ -230,7 +232,7 @@ export default function ITStepper({
             onClick={nextStep}
           >
             <div className="flex items-center gap-2">
-              <ITText as="span">{currentStep === steps.length - 1 ? "Finalizar" : "Siguiente"}</ITText>
+              <ITText as="span">{currentStep === steps.length - 1 ? t("common.finish") : t("common.next")}</ITText>
               {currentStep === steps.length - 1 ? <FaCheck /> : <FaChevronRight />}
             </div>
           </ITButton>

@@ -11,6 +11,7 @@ import { getNestedValue } from "@/utils/table.utils";
 import TableEmptyState from "./components/TableEmptyState";
 import PaginationControls from "./components/PaginationControls";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 interface CustomITSearchTableProps<T> extends ITSearchTableProps<T> {
   editingRow?: number | null;
@@ -53,7 +54,7 @@ export default function ITSearchTable<T extends Record<string, unknown>>({
   data,
   containerClassName,
   searchTermInitial = "",
-  searchInputPlaceholder = "Buscar en todos los campos...",
+  searchInputPlaceholder,
   variant = "default",
   size = "md",
   itemsPerPageOptions = [10, 20, 50, 100],
@@ -76,6 +77,7 @@ export default function ITSearchTable<T extends Record<string, unknown>>({
   onSave,
   onCancel,
 }: CustomITSearchTableProps<T>) {
+  const { t } = useITTranslation();
   const [itemsPerPage, setItemsPerPage] = useState(defaultItemsPerPage);
 
   const { searchTerm, handleSearchChange, handleClearSearch } = useDebouncedSearch({
@@ -145,7 +147,7 @@ return (
              onClearSearch={handleClearSearchWithClear}
             onGlobalSort={handleGlobalSort}
             sortConfig={sortConfig}
-            searchInputPlaceholder={searchInputPlaceholder}
+            searchInputPlaceholder={searchInputPlaceholder ?? t("searchTable.searchPlaceholder")}
           />
         </div>
 

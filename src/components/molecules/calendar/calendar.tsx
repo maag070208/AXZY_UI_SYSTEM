@@ -18,12 +18,12 @@ import {
   isBefore,
   isAfter
 } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { ITCalendarProps, CalendarEvent } from './calendar.props';
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -74,6 +74,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
   className,
   variant = 'primary',
 }) => {
+  const { t, dateLocale } = useITTranslation();
   // Determine mode: if onChange provided, assume picker (month) unless specialized
   const mode = modeProp || (onChange ? 'month' : 'week');
   
@@ -326,7 +327,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                   e.currentTarget.style.backgroundColor = 'transparent';
                 }}
               >
-                {format(currentDate, 'MMMM', { locale: es })}
+                {format(currentDate, 'MMMM', { locale: dateLocale })}
               </button>
             )}
             <button
@@ -364,7 +365,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
             onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--it-calendar-header-hover, #f1f5f9)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
           >
-            <ITText as="span">Hoy</ITText>
+            <ITText as="span">{t("calendar.today")}</ITText>
           </button>
           <button 
             onClick={handleNext} 
@@ -437,7 +438,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                               onClick={() => pickMonth(monthIndex)}
                           >
                               <ITText as="span" className="capitalize">
-                                  {format(new Date(2000, monthIndex, 1), 'MMM', { locale: es })}
+                                  {format(new Date(2000, monthIndex, 1), 'MMM', { locale: dateLocale })}
                               </ITText>
                           </button>
                       );
@@ -447,7 +448,9 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
            <div className="p-4">
              {/* Weekday Headers */}
              <div className="grid grid-cols-7 mb-2">
-                {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map(day => (
+                {Array.from({ length: 7 }, (_, i) =>
+                  format(addDays(startOfWeek(currentDate, { weekStartsOn: 1 }), i), 'EEE', { locale: dateLocale })
+                ).map(day => (
                   <ITText key={day} as="div" className="text-center text-xs font-semibold text-secondary-400 uppercase py-1">
                     {day}
                   </ITText>
@@ -554,7 +557,7 @@ export const ITCalendar: React.FC<ITCalendarProps> = ({
                         opacity: isToday(day) ? 1 : 0.6,
                       }}
                     >
-                      {format(day, 'EEE', { locale: es })}
+                      {format(day, 'EEE', { locale: dateLocale })}
                     </ITText>
                     <ITText
                       as="span"

@@ -3,6 +3,7 @@ import { ITFormHeaderProps } from "./form-header.props";
 import { useITThemeSafe } from "@/theme/theme-context";
 import { getContrastTextColor } from "@/utils/color.utils";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Colored header bar for modals and forms with an optional close button.
@@ -21,6 +22,7 @@ export default function ITFormHeader({
   className = "",
 }: ITFormHeaderProps) {
   const themeContext = useITThemeSafe();
+  const { t } = useITTranslation();
 
   const isDarkMode = themeContext?.resolvedTheme === "dark";
   const palette = themeContext?.palette;
@@ -38,7 +40,7 @@ export default function ITFormHeader({
           onClick={onClose}
           className={`absolute right-4 ${textColorClass} hover:opacity-80 transition-colors duration-200 p-1 rounded-full`}
           style={{ color: "inherit" }}
-          aria-label="Cerrar"
+          aria-label={t("common.close")}
         >
           <FaTimes className="w-4 h-4" />
         </button>

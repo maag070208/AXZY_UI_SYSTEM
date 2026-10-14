@@ -6,6 +6,7 @@ import ITText from "@/components/atoms/text/text";
 import ITButton from "@/components/atoms/button/button";
 import ITDialog from "@/components/organisms/dialog/dialog";
 import { ITDropfileProps, FileTypeEnum, UploadStatus } from "./dropfile.props";
+import { useITTranslation } from "@/i18n";
 export { FileTypeEnum, UploadStatus } from "./dropfile.props";
 
 /**
@@ -50,9 +51,10 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
   onStatusChange,
   initialPreviewUrl,
   view = "drop",
-  buttonLabel = "Subir archivo",
+  buttonLabel,
   modalTitle,
 }) => {
+  const { t } = useITTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileType, setFileType] = useState<string | null>(null);
@@ -172,22 +174,22 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
   const StatusBadge = ({ status }: { status: UploadStatus }) => {
     const config = {
       [UploadStatus.PENDING]: {
-        label: "Pendiente",
+        label: t("dropfile.status.pending"),
         color: "bg-warning-100 text-warning-800 border-warning-200",
         dotColor: "bg-warning-400",
       },
       [UploadStatus.UPLOADING]: {
-        label: "Subiendo...",
+        label: t("dropfile.status.uploading"),
         color: "bg-primary-100 text-primary-800 border-primary-200",
         dotColor: "bg-primary-400 animate-pulse",
       },
       [UploadStatus.UPLOADED]: {
-        label: "Subido",
+        label: t("dropfile.status.uploaded"),
         color: "bg-success-100 text-success-800 border-success-200",
         dotColor: "bg-success-400",
       },
       [UploadStatus.ERROR]: {
-        label: "Error",
+        label: t("dropfile.status.error"),
         color: "bg-danger-100 text-danger-800 border-danger-200",
         dotColor: "bg-danger-400",
       },
@@ -223,7 +225,7 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
           setImagePreview(previewUrl);
         }
       } else {
-        alert(`Tipo de archivo no permitido.`);
+        alert(t("dropfile.fileTypeNotAllowed"));
         setSelectedFile(null);
         setFileType(null);
         setImagePreview(null);
@@ -318,7 +320,7 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
   const headerRow = (
     <div className="flex items-center justify-between mb-2">
       <label className="block text-sm font-semibold text-secondary-700">
-        <ITText as="span">Subir archivo </ITText><ITText as="span" className="text-secondary-400 font-normal text-xs">({getFileExtensions()})</ITText>
+        <ITText as="span">{t("dropfile.upload")} </ITText><ITText as="span" className="text-secondary-400 font-normal text-xs">({getFileExtensions()})</ITText>
       </label>
 
       {showStatusBadge && selectedFile && (
@@ -355,7 +357,7 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
 
           <div className="text-center space-y-1">
             <ITText as="p" className={`text-sm font-medium transition-colors duration-300 ${isDragActive ? 'text-primary-700' : 'text-secondary-700'}`}>
-              {isDragActive ? "¡Suelta aquí!" : "Haz clic o arrastra"}
+              {isDragActive ? t("dropfile.dropHere") : t("dropfile.clickOrDrag")}
             </ITText>
           </div>
         </div>
@@ -375,8 +377,8 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
                   )}
                 </div>
                 <div className="min-w-0">
-                  <ITText as="p" className="text-xs font-medium text-secondary-900 truncate" title={selectedFile?.name || "Imagen cargada"}>
-                    {selectedFile?.name || "Imagen cargada"}
+                  <ITText as="p" className="text-xs font-medium text-secondary-900 truncate" title={selectedFile?.name || t("dropfile.imageLoaded")}>
+                    {selectedFile?.name || t("dropfile.imageLoaded")}
                   </ITText>
                   <ITText as="p" className="text-[10px] text-secondary-500">
                     {selectedFile ? (selectedFile.size / 1024 / 1024).toFixed(2) + " MB" : ""}
@@ -389,7 +391,7 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
             {((selectedFile && fileType?.startsWith('image/')) || (!selectedFile && imagePreview)) ? (
               <img 
                 src={imagePreview} 
-                alt="Vista previa" 
+                alt={t("dropfile.previewAlt")} 
                 className="w-full h-full object-contain max-h-[200px]"
               />
             ) : (
@@ -397,7 +399,7 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
                 <svg className="w-10 h-10 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
-                <ITText as="span" className="text-xs">Sin vista previa</ITText>
+                <ITText as="span" className="text-xs">{t("dropfile.noPreview")}</ITText>
               </div>
             )}
           </div>
@@ -412,7 +414,7 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
                   size="sm"
                   onClick={handleCancel}
                 >
-                  <ITText>Cancelar</ITText>
+                  <ITText>{t("common.cancel")}</ITText>
                 </ITButton>
                 <ITButton
                   type="button"
@@ -422,7 +424,7 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
                   onClick={handleConfirm}
                 >
                   <div className="flex items-center gap-2">
-                    <ITText>Confirmar</ITText>
+                    <ITText>{t("common.confirm")}</ITText>
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
@@ -440,7 +442,7 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
                 <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
-                <ITText>Eliminar</ITText>
+                <ITText>{t("common.delete")}</ITText>
               </ITButton>
             )}
           </div>
@@ -479,13 +481,13 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
             <ITText className="truncate">
-              {selectedFile?.name || (hasFile ? "Archivo cargado" : buttonLabel)}
+              {selectedFile?.name || (hasFile ? t("dropfile.fileLoaded") : (buttonLabel ?? t("dropfile.upload")))}
             </ITText>
             {showStatusBadge && hasFile && <StatusBadge status={uploadStatus} />}
           </div>
         </ITButton>
 
-        <ITDialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={modalTitle ?? buttonLabel}>
+        <ITDialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={modalTitle ?? buttonLabel ?? t("dropfile.upload")}>
           <div className="w-full transition-all duration-300">
             {headerRow}
             {dropZoneOrPreview}

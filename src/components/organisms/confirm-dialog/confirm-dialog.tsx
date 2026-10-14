@@ -3,6 +3,7 @@ import { ITConfirmDialogProps } from "./confirm-dialog.props";
 import ITButton from "@/components/atoms/button/button";
 import { FaExclamationTriangle } from "react-icons/fa";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Confirmation modal dialog for destructive or critical actions.
@@ -27,14 +28,21 @@ export default function ITConfirmDialog({
   isOpen,
   onClose,
   onConfirm,
-  title = "Confirmar acción",
-  message = "¿Estás seguro de que deseas continuar?",
-  confirmLabel = "Confirmar",
-  cancelLabel = "Cancelar",
+  title,
+  message,
+  confirmLabel,
+  cancelLabel,
   variant = "primary",
   loading = false,
 }: ITConfirmDialogProps) {
+  const { t } = useITTranslation();
+
   if (!isOpen) return null;
+
+  const resolvedTitle = title ?? t("confirmDialog.title");
+  const resolvedMessage = message ?? t("confirmDialog.message");
+  const resolvedConfirmLabel = confirmLabel ?? t("common.confirm");
+  const resolvedCancelLabel = cancelLabel ?? t("common.cancel");
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
@@ -50,13 +58,13 @@ export default function ITConfirmDialog({
             <FaExclamationTriangle className="text-amber-600" size={18} />
           </div>
           <div className="flex-1">
-            <ITText as="h3" className="text-lg font-bold text-slate-800 dark:text-white">{title}</ITText>
-            <ITText as="p" className="text-sm text-slate-500 dark:text-slate-400 mt-1">{message}</ITText>
+            <ITText as="h3" className="text-lg font-bold text-slate-800 dark:text-white">{resolvedTitle}</ITText>
+            <ITText as="p" className="text-sm text-slate-500 dark:text-slate-400 mt-1">{resolvedMessage}</ITText>
           </div>
         </div>
         <div className="flex justify-end gap-3 mt-6">
-          <ITButton label={cancelLabel} variant="outlined" size="sm" onClick={onClose} disabled={loading} />
-          <ITButton label={confirmLabel} color={variant} size="sm" onClick={onConfirm} disabled={loading} />
+          <ITButton label={resolvedCancelLabel} variant="outlined" size="sm" onClick={onClose} disabled={loading} />
+          <ITButton label={resolvedConfirmLabel} color={variant} size="sm" onClick={onConfirm} disabled={loading} />
         </div>
       </div>
     </div>

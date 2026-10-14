@@ -9,6 +9,7 @@ import ITText from "../components/atoms/text/text";
 import ITDialog from "../components/organisms/dialog/dialog";
 import ProductoIcono from "./ProductoIcono";
 import type { Producto } from "./productos";
+import { useITTranslation } from "@/i18n";
 
 interface Props {
   /** Producto que se muestra. */
@@ -16,6 +17,10 @@ interface Props {
   /** Cierra la pantalla de detalle. */
   onClose: () => void;
 }
+
+/** Muted mono eyebrow used by the spec-sheet labels. */
+const EYEBROW =
+  "font-mono !text-[10px] !font-medium uppercase !tracking-[0.14em] text-slate-500 dark:text-slate-400";
 
 /**
  * Pantalla de detalle de un producto del portafolio.
@@ -30,6 +35,7 @@ interface Props {
  * ```
  */
 export default function ProductoDetalle({ producto, onClose }: Props) {
+  const { t } = useITTranslation();
   const capturas = producto.capturas ?? [];
   const [activa, setActiva] = useState(capturas[0]);
   const hayGaleria = capturas.length > 0;
@@ -42,7 +48,7 @@ export default function ProductoDetalle({ producto, onClose }: Props) {
           {hayGaleria && activa && (
             <ITGrid item xs={12} lg={7}>
               <ITStack spacing={3}>
-                <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60">
+                <div className="overflow-hidden rounded-[14px] border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950">
                   <img
                     src={activa.src}
                     alt={`${producto.nombre}: ${activa.titulo}`}
@@ -57,10 +63,11 @@ export default function ProductoDetalle({ producto, onClose }: Props) {
                       type="button"
                       title={captura.titulo}
                       aria-label={captura.titulo}
+                      aria-pressed={activa.src === captura.src}
                       onClick={() => setActiva(captura)}
-                      className={`h-14 w-20 shrink-0 overflow-hidden rounded-lg border-2 bg-slate-100 dark:bg-slate-950 transition-all ${
+                      className={`h-14 w-20 shrink-0 overflow-hidden rounded-[10px] border-2 bg-slate-100 transition-all dark:bg-slate-950 ${
                         activa.src === captura.src
-                          ? "border-primary-500 opacity-100"
+                          ? "border-primary-600 opacity-100 dark:border-primary-500"
                           : "border-transparent opacity-55 hover:opacity-100"
                       }`}
                     >
@@ -69,7 +76,7 @@ export default function ProductoDetalle({ producto, onClose }: Props) {
                   ))}
                 </ITFlex>
 
-                <ITText as="p" muted className="!text-xs">
+                <ITText as="p" className="font-mono !text-[11px] text-slate-500 dark:text-slate-400">
                   {activa.titulo}
                 </ITText>
               </ITStack>
@@ -81,10 +88,10 @@ export default function ProductoDetalle({ producto, onClose }: Props) {
             <ITStack spacing={5}>
               <ITFlex align="center" justify="between" gap={3}>
                 <ITFlex align="center" gap={3}>
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${producto.gradiente} text-white flex items-center justify-center shadow-md shrink-0`}>
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] border border-slate-200 bg-slate-50 text-primary-600 dark:border-slate-800 dark:bg-slate-950 dark:text-primary-400">
                     <ProductoIcono icono={producto.icono} size={20} />
                   </div>
-                  <ITText as="h2" className="!text-xl !font-bold">
+                  <ITText as="h2" className="font-display !text-xl !font-bold -tracking-[0.02em]">
                     {producto.nombre}
                   </ITText>
                 </ITFlex>
@@ -92,21 +99,21 @@ export default function ProductoDetalle({ producto, onClose }: Props) {
               </ITFlex>
 
               {producto.detalle && (
-                <ITText as="p" muted className="!text-sm !leading-relaxed">
+                <ITText as="p" className="!text-sm !leading-relaxed text-slate-600 dark:text-slate-300">
                   {producto.detalle}
                 </ITText>
               )}
 
               {!!producto.caracteristicas?.length && (
                 <div>
-                  <ITText as="h3" className="!text-sm !font-bold !mb-2.5">
-                    Qué resuelve
+                  <ITText as="h3" className={`!mb-2.5 ${EYEBROW}`}>
+                    {t("showcase.producto.whatItSolves")}
                   </ITText>
                   <ITStack spacing={2}>
                     {producto.caracteristicas.map((caracteristica) => (
                       <ITFlex key={caracteristica} align="start" gap={2}>
-                        <FaCheck size={11} className="mt-1 shrink-0 text-emerald-500" />
-                        <ITText as="span" muted className="!text-xs !leading-relaxed">
+                        <FaCheck size={11} className="mt-1 shrink-0 text-primary-600 dark:text-primary-400" />
+                        <ITText as="span" className="!text-xs !leading-relaxed text-slate-600 dark:text-slate-300">
                           {caracteristica}
                         </ITText>
                       </ITFlex>
@@ -116,8 +123,8 @@ export default function ProductoDetalle({ producto, onClose }: Props) {
               )}
 
               <div>
-                <ITText as="h3" className="!text-sm !font-bold !mb-2.5">
-                  Stack
+                <ITText as="h3" className={`!mb-2.5 ${EYEBROW}`}>
+                  {t("showcase.producto.stack")}
                 </ITText>
                 <ITFlex gap={2} wrap="wrap">
                   {producto.stack.map((tecnologia) => (
@@ -131,14 +138,14 @@ export default function ProductoDetalle({ producto, onClose }: Props) {
                   <ITDivider />
 
                   <div>
-                    <ITText as="h3" className="!text-sm !font-bold !mb-2.5">
-                      Ficha técnica
+                    <ITText as="h3" className={`!mb-2.5 ${EYEBROW}`}>
+                      {t("showcase.producto.specSheet")}
                     </ITText>
                     <ITStack spacing={2.5}>
                       {producto.ficha.map((dato) => (
                         <ITGrid container spacing={2} key={dato.etiqueta}>
                           <ITGrid item xs={4}>
-                            <ITText as="span" muted className="!text-xs !font-semibold">
+                            <ITText as="span" className={EYEBROW}>
                               {dato.etiqueta}
                             </ITText>
                           </ITGrid>
@@ -163,12 +170,12 @@ export default function ProductoDetalle({ producto, onClose }: Props) {
                   className="!text-xs !font-semibold !text-primary-600 dark:!text-primary-400 inline-flex items-center gap-1.5"
                 >
                   {!producto.enlace.startsWith("#") && <FaExternalLinkAlt size={11} />}
-                  {producto.enlaceTexto ?? "Ver el repositorio"}
+                  {producto.enlaceTexto ?? t("showcase.home.viewRepo")}
                 </a>
               )}
 
               {producto.nota && (
-                <ITText as="p" muted className="!text-[11px] !leading-relaxed">
+                <ITText as="p" className="!text-[11px] !leading-relaxed text-slate-500 dark:text-slate-400">
                   {producto.nota}
                 </ITText>
               )}

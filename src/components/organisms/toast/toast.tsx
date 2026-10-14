@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ITToastProps } from "./toast.props";
 import { FaTimesCircle, FaCheckCircle, FaExclamationTriangle, FaInfoCircle, FaTimes } from "react-icons/fa";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * ITToast — floating notification with automatic dismiss and severity-based styling.
@@ -34,6 +35,7 @@ export default function ITToast({
   position = "top-right",
   onClose,
 }: ITToastProps) {
+  const { t } = useITTranslation();
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -98,7 +100,7 @@ export default function ITToast({
       <button
         onClick={handleClose}
         className="p-1.5 rounded-full hover:bg-black/15 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
-        aria-label="Close notification"
+        aria-label={t("common.closeNotification")}
       >
         <FaTimes className="w-4 h-4" />
       </button>

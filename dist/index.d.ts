@@ -1,7 +1,8 @@
 import * as Yup from 'yup';
 import * as React$1 from 'react';
-import React__default, { RefObject, CSSProperties, ReactNode, ElementType, ChangeEvent, FocusEvent, KeyboardEvent, HTMLAttributes } from 'react';
+import React__default, { CSSProperties, RefObject, ReactNode, ElementType, ChangeEvent, FocusEvent, KeyboardEvent, HTMLAttributes } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
+import { Locale } from 'date-fns';
 
 declare const useClickOutside: (ref: React.RefObject<HTMLElement>, callback: () => void) => void;
 
@@ -19,6 +20,110 @@ interface UseDebouncedSearchResult {
 declare function useDebouncedSearch({ initialValue, debounceMs, onSearch, }: UseDebouncedSearchOptions): UseDebouncedSearchResult;
 
 type TableVariants = "default" | "striped" | "bordered";
+/**
+ * A single, optional style slot for one region of a table. Both fields are
+ * merged *after* the component's built-in values.
+ */
+interface TableDesignSlot {
+    /**
+     * Extra CSS classes merged after the built-in ones. Note that Tailwind
+     * resolves conflicts by utility order (not class order), so use inline
+     * `style` (or `!` modifiers) when a value must always win.
+     */
+    className?: string;
+    /** Inline CSS merged after the built-in values; wins over classes unless the global theme forces a value with `!important`. */
+    style?: CSSProperties;
+}
+/**
+ * Per-instance visual overrides for a table. Every region is optional and, when
+ * present, is applied on top of the built-in styles. The global
+ * `ITThemeProvider` colors (`--color-table-*`) still apply underneath, so use
+ * `TableColors` for this-instance color changes instead of `style`.
+ */
+interface TableDesign {
+    /** Outermost wrapper (`space-y-4 w-full`). Prefer `containerClassName` for width/spacing. */
+    container?: TableDesignSlot;
+    /** The rounded card surface that wraps the toolbar, table and footer (border, radius, shadow, background). */
+    card?: TableDesignSlot;
+    /** Toolbar strip holding the title and/or the Table|Cards toggle. */
+    toolbar?: TableDesignSlot;
+    /** The `<thead>` row that carries the column titles. */
+    header?: TableDesignSlot;
+    /** Every `<th>` header cell. */
+    headerCell?: TableDesignSlot;
+    /** Every body `<tr>`. */
+    row?: TableDesignSlot;
+    /** Every body `<td>`. */
+    cell?: TableDesignSlot;
+    /** Scroll wrapper of the cards view (the responsive card list). */
+    cards?: TableDesignSlot;
+    /** Pagination footer strip. */
+    footer?: TableDesignSlot;
+}
+/**
+ * Per-instance color overrides. They are written as local `--color-table-*`
+ * variables on the table wrapper, so they beat the global theme for this
+ * instance only, without touching `ITThemeProvider`.
+ */
+interface TableColors {
+    /** Header row background. Overrides the theme's `table.headerBg` for this instance. */
+    headerBg?: string;
+    /** Header text color. Overrides the theme's `table.headerText` for this instance. */
+    headerText?: string;
+    /** Body row background. Overrides the theme's `table.rowBg` for this instance. */
+    rowBg?: string;
+    /** Body text color. Overrides the theme's `table.rowText` for this instance. */
+    rowText?: string;
+    /** Body row hover background. Overrides the theme's `table.rowHover` for this instance. */
+    rowHover?: string;
+}
+/**
+ * Shared design props for ITTable and ITDataTable. `design` exposes every
+ * region as an object; the flat `*ClassName` / `*Style` shortcuts are merged
+ * after it, so the flat prop wins when both are provided.
+ */
+interface TableDesignProps {
+    /** Whether to render the Table|Cards view switcher in the toolbar. Hiding it still honors `defaultView` and `autoCardBreakpoint`. @default true */
+    showViewToggle?: boolean;
+    /** Per-region visual overrides (classes + inline styles). */
+    design?: TableDesign;
+    /** Per-instance color overrides for header and rows, beating the global theme. */
+    colors?: TableColors;
+    /** Inline styles for the outermost wrapper. */
+    containerStyle?: CSSProperties;
+    /** Extra classes for the card surface (the rounded container). */
+    cardClassName?: string;
+    /** Inline styles for the card surface. */
+    cardStyle?: CSSProperties;
+    /** Extra classes for the toolbar strip (title + view toggle). */
+    toolbarClassName?: string;
+    /** Inline styles for the toolbar strip. */
+    toolbarStyle?: CSSProperties;
+    /** Extra classes for the header row. */
+    headerClassName?: string;
+    /** Inline styles for the header row. */
+    headerStyle?: CSSProperties;
+    /** Extra classes for every header cell. */
+    headerCellClassName?: string;
+    /** Inline styles for every header cell. */
+    headerCellStyle?: CSSProperties;
+    /** Extra classes for every body row. */
+    rowClassName?: string;
+    /** Inline styles for every body row. */
+    rowStyle?: CSSProperties;
+    /** Extra classes for every body cell. */
+    cellClassName?: string;
+    /** Inline styles for every body cell. */
+    cellStyle?: CSSProperties;
+    /** Extra classes for the cards-view scroll wrapper. */
+    cardsClassName?: string;
+    /** Inline styles for the cards-view scroll wrapper. */
+    cardsStyle?: CSSProperties;
+    /** Extra classes for the pagination footer strip. */
+    footerClassName?: string;
+    /** Inline styles for the pagination footer strip. */
+    footerStyle?: CSSProperties;
+}
 /**
  * Value stored for a single column filter.
  *
@@ -832,7 +937,7 @@ interface ITDropdownMenuProps {
     items: ITDropdownMenuItem[];
     /** Custom trigger content. Defaults to a vertical ellipsis icon. */
     trigger?: ReactNode;
-    /** Accessible label for the trigger button. @default "Abrir menú" */
+    /** Accessible label for the trigger button. @default i18n `dropdownMenu.open` ("Abrir menú") */
     triggerLabel?: string;
     /** Placement of the menu relative to the trigger. Valid values: `"bottom-start"`, `"bottom-end"`, `"top-start"`, `"top-end"`. @default "bottom-end" */
     placement?: "bottom-start" | "bottom-end" | "top-start" | "top-end";
@@ -1096,13 +1201,13 @@ interface ITConfirmDialogProps {
     onClose: () => void;
     /** Callback fired when the user confirms the destructive action. */
     onConfirm: () => void;
-    /** Heading text displayed at the top of the dialog. @default "Confirmar acción" */
+    /** Heading text displayed at the top of the dialog. @default i18n `confirmDialog.title` ("Confirmar acción") */
     title?: string;
-    /** Body content — accepts plain strings or React nodes. @default "¿Estás seguro de que deseas continuar?" */
+    /** Body content — accepts plain strings or React nodes. @default i18n `confirmDialog.message` ("¿Estás seguro de que deseas continuar?") */
     message?: ReactNode;
-    /** Label for the confirm button. @default "Confirmar" */
+    /** Label for the confirm button. @default i18n `common.confirm` ("Confirmar") */
     confirmLabel?: string;
-    /** Label for the cancel button. @default "Cancelar" */
+    /** Label for the cancel button. @default i18n `common.cancel` ("Cancelar") */
     cancelLabel?: string;
     /** Color variant applied to the confirm button. Accepts any ColorsTypes value (e.g. "primary", "danger", "warning", "info"). @default "primary" */
     variant?: ColorsTypes;
@@ -1159,6 +1264,14 @@ interface Column<T = any> {
     label: string;
     /** Additional CSS classes applied to both the header (`<th>`) and body (`<td>`) cells of this column. */
     className?: string;
+    /** Extra CSS classes applied only to this column's header (`<th>`), merged after `className`. */
+    headerClassName?: string;
+    /** Inline styles applied only to this column's header (`<th>`), merged after the table-level header-cell style. */
+    headerStyle?: React.CSSProperties;
+    /** Extra CSS classes applied only to this column's body cells (`<td>`), merged after `className`. */
+    cellClassName?: string;
+    /** Inline styles applied only to this column's body cells (`<td>`), merged after the table-level cell style. */
+    cellStyle?: React.CSSProperties;
     /** Formats numeric values as Mexican pesos (MXN) via `Intl`-based currency formatting. Only applies when `type` is `"number"`. @default false */
     currencyMX?: boolean;
     /** Custom action buttons/content rendered for a `"actions"`-type column. Receives the full row object. */
@@ -1236,7 +1349,7 @@ interface Column<T = any> {
      */
     pinned?: "left" | "right";
 }
-interface ITTableProps<T> {
+interface ITTableProps<T> extends TableDesignProps {
     /** Column definitions: key, label, type, sortable behavior, filters, and custom rendering. */
     columns: Column<T>[];
     /** Additional CSS classes for the outermost container. */
@@ -1352,7 +1465,7 @@ interface ITDataTableResponse<T> {
     /** Total row count across all pages (used to compute the paginator's total pages). */
     total: number;
 }
-interface ITDataTableProps<T extends Record<string, unknown>> {
+interface ITDataTableProps<T extends Record<string, unknown>> extends TableDesignProps {
     /**
      * The column configuration array matching ITTable but adapted for Server-Side processing
      */
@@ -1492,7 +1605,7 @@ interface ITDataTableProps<T extends Record<string, unknown>> {
  * />
  * ```
  */
-declare function ITDataTable<T extends Record<string, unknown>>({ columns, fetchData, debounceMs, externalFilters, loadingIndicator, fetchOnMount, reloadTrigger, containerClassName, className, variant, size, itemsPerPageOptions, defaultItemsPerPage, title, renderCard, defaultView, showVerticalBorder, verticalBorderClassname, onRowClick, layout, density, autoCardBreakpoint, virtualized, virtualizedMaxHeight, rowHeight, overscan, stickyHeader, }: ITDataTableProps<T>): react_jsx_runtime.JSX.Element;
+declare function ITDataTable<T extends Record<string, unknown>>({ columns, fetchData, debounceMs, externalFilters, loadingIndicator, fetchOnMount, reloadTrigger, containerClassName, className, variant, size, itemsPerPageOptions, defaultItemsPerPage, title, renderCard, defaultView, showVerticalBorder, verticalBorderClassname, onRowClick, layout, density, autoCardBreakpoint, virtualized, virtualizedMaxHeight, rowHeight, overscan, stickyHeader, showViewToggle, design, colors, containerStyle, cardClassName, cardStyle, toolbarClassName, toolbarStyle, headerClassName, headerStyle, headerCellClassName, headerCellStyle, rowClassName, rowStyle, cellClassName, cellStyle, cardsClassName, cardsStyle, footerClassName, footerStyle, }: ITDataTableProps<T>): react_jsx_runtime.JSX.Element;
 
 interface ITDatePickerProps {
     /** Unique name attribute for the underlying input element. */
@@ -2526,17 +2639,17 @@ interface ITPageProps {
     loading?: boolean;
     /** Error message to display. Shows an error state with retry button when provided. */
     error?: string | null;
-    /** Custom title for the error state. Default: "Error". */
+    /** Custom title for the error state. Default: i18n `common.error` ("Error"). */
     errorTitle?: string;
-    /** Label for the retry button in the error state. Default: "Reintentar". */
+    /** Label for the retry button in the error state. Default: i18n `common.retry` ("Reintentar"). */
     errorActionLabel?: string;
     /** Callback fired when the retry button is clicked in the error state. */
     onRetry?: () => void;
     /** Whether the page is in an empty state. Shows a placeholder when true. */
     empty?: boolean;
-    /** Custom title for the empty state. Default: "Sin datos". */
+    /** Custom title for the empty state. Default: i18n `common.noData` ("Sin datos"). */
     emptyTitle?: string;
-    /** Custom description for the empty state. */
+    /** Custom description for the empty state. Default: i18n `common.empty` ("No hay información para mostrar"). */
     emptyDescription?: string;
     /** Custom action element for the empty state. */
     emptyAction?: ReactNode;
@@ -3074,7 +3187,7 @@ interface ITSidebarNotification {
     count: number;
     /** Icon rendered left of the label (e.g. a bell). Omit for a count-only pill. */
     icon?: React.ReactNode;
-    /** Accessible label and tooltip for the notification button. @default "Notificaciones" */
+    /** Accessible label and tooltip for the notification button. @default i18n `sidebar.notifications` ("Notificaciones") */
     label?: string;
     /** Click handler for the notification button. */
     onClick?: () => void;
@@ -3383,9 +3496,9 @@ interface ITLineBarChartProps {
     data: ITLineBarDatum[];
     /** Etiqueta accesible del gráfico. */
     ariaLabel: string;
-    /** Nombre de la serie de la línea (leyenda y tooltip). */
+    /** Nombre de la serie de la línea (leyenda y tooltip). @default i18n `lineBarChart.lineLabel` ("Serie A") */
     lineLabel?: string;
-    /** Nombre de la serie de barras (leyenda y tooltip). */
+    /** Nombre de la serie de barras (leyenda y tooltip). @default i18n `lineBarChart.barLabel` ("Serie B") */
     barLabel?: string;
     /** Color de la línea (por defecto el verde de la casa). */
     lineColor?: string;
@@ -3424,7 +3537,7 @@ declare function ITLineBarChart({ data, ariaLabel, lineLabel, barLabel, lineColo
  *   size="sm"
  * />
  */
-declare function ITTable<T extends Record<string, unknown>>({ columns, data, containerClassName, variant, size, itemsPerPageOptions, defaultItemsPerPage, title, renderCard, defaultView, showVerticalBorder, verticalBorderClassname, onRowClick, layout, density, autoCardBreakpoint, virtualized, virtualizedMaxHeight, rowHeight, overscan, stickyHeader, }: ITTableProps<T>): react_jsx_runtime.JSX.Element;
+declare function ITTable<T extends Record<string, unknown>>({ columns, data, containerClassName, variant, size, itemsPerPageOptions, defaultItemsPerPage, title, renderCard, defaultView, showVerticalBorder, verticalBorderClassname, onRowClick, layout, density, autoCardBreakpoint, virtualized, virtualizedMaxHeight, rowHeight, overscan, stickyHeader, showViewToggle, design, colors, containerStyle, cardClassName, cardStyle, toolbarClassName, toolbarStyle, headerClassName, headerStyle, headerCellClassName, headerCellStyle, rowClassName, rowStyle, cellClassName, cellStyle, cardsClassName, cardsStyle, footerClassName, footerStyle, }: ITTableProps<T>): react_jsx_runtime.JSX.Element;
 
 interface ITTextProps extends HTMLAttributes<HTMLElement> {
     /** The content rendered inside the element. */
@@ -4313,4 +4426,94 @@ declare const resolveCssColor: (colorStr: string, palette?: ITThemePalette, isDa
  */
 declare const getContrastTextColor: (bgColor: string, palette?: ITThemePalette, isDarkMode?: boolean) => "text-white" | "text-slate-800";
 
-export { type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITLayout, type ITLayoutProps, ITLineBarChart, type ITLineBarChartProps, type ITLineBarDatum, ITLoader, type LoaderProps as ITLoaderProps, ITMaskedInput, type ITMaskedInputProps, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarBrand, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeAppearance, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type TableDensity, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITFlatAppearance, useITTheme, useITThemeSafe, useTableState };
+/** Supported base locales shipped with the library. */
+type ITLocale = "es" | "en";
+/** Message catalog: flat `namespace.key` → text. */
+type ITMessages = Record<string, string>;
+/** Message overrides keyed by locale. */
+type ITMessagesByLocale = Record<string, ITMessages>;
+/** Interpolation variables for `t()`. */
+type ITVars = Record<string, string | number>;
+/** Contract of the i18n context (returned by `useITTranslation()`). */
+interface ITI18nValue {
+    /** Active locale. */
+    locale: string;
+    /** Fallback locale. */
+    fallbackLocale: string;
+    /** Translate a `namespace.key` and interpolate `{var}` placeholders. */
+    t: (key: string, vars?: ITVars) => string;
+    /** Format a number using `Intl.NumberFormat(locale)`. */
+    formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string;
+    /** Format a currency using `Intl.NumberFormat(locale)`. */
+    formatCurrency: (value: number, currency?: string, options?: Intl.NumberFormatOptions) => string;
+    /** Format a date using `Intl.DateTimeFormat(locale)`. */
+    formatDate: (value: Date | number | string, options?: Intl.DateTimeFormatOptions) => string;
+    /** Matching `date-fns` locale. */
+    dateLocale: Locale;
+}
+/** Props for `ITI18nProvider`. */
+interface ITI18nProviderProps {
+    /** Active locale. @default "es" */
+    locale?: string;
+    /** Fallback locale for missing keys. @default "es" */
+    fallbackLocale?: string;
+    /** Custom messages merged over the built-in catalog, keyed by locale. */
+    messages?: ITMessagesByLocale;
+    /** Application tree. */
+    children: ReactNode;
+}
+
+/**
+ * Provee locale y mensajes al árbol de componentes.
+ *
+ * Sin provider, los componentes usan el catálogo base en español. Con provider,
+ * cualquier prop de texto explícita de un componente sigue teniendo prioridad
+ * sobre el catálogo.
+ *
+ * @example
+ * ```tsx
+ * <ITThemeProvider>
+ *   <ITI18nProvider locale="en">
+ *     <App />
+ *   </ITI18nProvider>
+ * </ITThemeProvider>
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Overrides parciales sobre el catálogo incluido
+ * <ITI18nProvider locale="es" messages={{ es: { "common.cancel": "Abortar" } }}>
+ *   <App />
+ * </ITI18nProvider>
+ * ```
+ */
+declare function ITI18nProvider({ locale, fallbackLocale, messages, children, }: ITI18nProviderProps): react_jsx_runtime.JSX.Element;
+
+/**
+ * Devuelve el traductor y los formateadores de la locale activa.
+ *
+ * Funciona aunque no exista `ITI18nProvider` (cae al catálogo base en español).
+ *
+ * @example
+ * ```tsx
+ * const { t, formatCurrency } = useITTranslation();
+ * return <ITButton label={t("common.cancel")} onClick={onCancel} />;
+ * ```
+ */
+declare function useITTranslation(): ITI18nValue;
+
+/**
+ * Catálogo base en español (locale por defecto de la librería).
+ *
+ * Las keys siguen `docs/i18n/conventions.md` (`namespace.clave`) y el inventario de
+ * `docs/i18n/strings.md`. Añade nuevas keys aquí y en `en.ts` a la vez.
+ */
+declare const es: ITMessages;
+
+/**
+ * Catálogo base en inglés. Mantiene exactamente las mismas keys que `es.ts`
+ * (ver `docs/i18n/conventions.md`); si falta una key, se usa el texto en español.
+ */
+declare const en: ITMessages;
+
+export { type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITI18nProvider, type ITI18nProviderProps, type ITI18nValue, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITLayout, type ITLayoutProps, ITLineBarChart, type ITLineBarChartProps, type ITLineBarDatum, ITLoader, type LoaderProps as ITLoaderProps, type ITLocale, ITMaskedInput, type ITMaskedInputProps, type ITMessages, type ITMessagesByLocale, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarBrand, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeAppearance, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type TableColors, type TableDensity, type TableDesign, type TableDesignProps, type TableDesignSlot, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, en as enMessages, es as esMessages, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITFlatAppearance, useITTheme, useITThemeSafe, useITTranslation, useTableState };

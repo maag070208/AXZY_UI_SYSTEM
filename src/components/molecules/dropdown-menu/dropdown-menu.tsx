@@ -5,6 +5,7 @@ import { FaEllipsisV } from "react-icons/fa";
 import { ITDropdownMenuProps } from "./dropdown-menu.props";
 import { useFloatingPanel } from "@/hooks/useFloatingPanel";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Action menu with keyboard navigation and ARIA menu semantics.
@@ -24,13 +25,15 @@ import ITText from "@/components/atoms/text/text";
 export default function ITDropdownMenu({
   items,
   trigger,
-  triggerLabel = "Abrir menú",
+  triggerLabel,
   placement = "bottom-end",
   onSelect,
   disabled = false,
   className,
   menuClassName,
 }: ITDropdownMenuProps) {
+  const { t } = useITTranslation();
+  const resolvedTriggerLabel = triggerLabel ?? t("dropdownMenu.open");
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
 
@@ -153,7 +156,7 @@ export default function ITDropdownMenu({
         type="button"
         aria-haspopup="menu"
         aria-expanded={isOpen}
-        aria-label={triggerLabel}
+        aria-label={resolvedTriggerLabel}
         disabled={disabled}
         onClick={() => (isOpen ? close() : open())}
         onKeyDown={handleTriggerKeyDown}
@@ -174,7 +177,7 @@ export default function ITDropdownMenu({
             ref={panelRef}
             data-it-floating="true"
             role="menu"
-            aria-label={triggerLabel}
+            aria-label={resolvedTriggerLabel}
             style={panelStyle}
             onKeyDown={handleMenuKeyDown}
             className={clsx(

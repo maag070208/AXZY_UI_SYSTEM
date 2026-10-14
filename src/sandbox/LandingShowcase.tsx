@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import {
   FaArrowRight,
   FaBoxOpen,
@@ -27,6 +27,8 @@ import {
   SANDBOX_GROUPS,
   TOTAL_ITEMS,
 } from "./navigation";
+import { translateLabel } from "./i18n";
+import { useITTranslation } from "@/i18n";
 
 /** Props for the sandbox landing page. */
 export interface LandingShowcaseProps {
@@ -58,22 +60,20 @@ const GROUP_ICONS: Record<string, ReactNode> = {
   feed: <FaRegBell />,
 };
 
-/**
- * Literal per-index gradient classes for the family and stat tiles. Tailwind
- * v4 cannot see runtime-built class names, so every gradient is written out
- * in full and indexed by position.
- */
-const GROUP_ACCENTS = [
-  "from-primary-500 to-info-500",
-  "from-purple-500 to-primary-500",
-  "from-primary-600 to-purple-600",
-  "from-info-500 to-purple-500",
-  "from-purple-600 to-info-600",
-  "from-primary-500 to-purple-500",
-];
-
 const GITHUB_URL = "https://github.com/maag070208/AXZY_UI_SYSTEM";
 const INSTALL_CMD = "pnpm add @axzydev/axzy_ui_system";
+
+/** Shared stagger offset for the hero entrance cascade (`it-reveal`). */
+const reveal = (delay: number): CSSProperties =>
+  ({ "--it-delay": `${delay}ms` }) as CSSProperties;
+
+/** Muted mono eyebrow used by every section heading and metadata label. */
+const EYEBROW =
+  "font-mono !text-[11px] !font-medium uppercase !tracking-[0.18em] text-slate-500 dark:text-slate-400";
+
+/** Technical card surface: 1px border, 14px radius, shadow only on hover. */
+const CARD =
+  "rounded-[14px] border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900";
 
 /**
  * Copy text to the clipboard, falling back to a hidden textarea +
@@ -118,6 +118,7 @@ const copyText = async (text: string): Promise<boolean> => {
  * <CopyButton text="pnpm add @axzydev/axzy_ui_system" />
  */
 const CopyButton = ({ text }: { text: string }) => {
+  const { t } = useITTranslation();
   const [copied, setCopied] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -147,11 +148,11 @@ const CopyButton = ({ text }: { text: string }) => {
       >
         <ITFlex align="center" gap={1.5}>
           {copied ? (
-            <FaCheck size={10} className="text-emerald-400" />
+            <FaCheck size={10} className="text-emerald-500" />
           ) : (
             <FaCopy size={10} />
           )}
-          {copied ? "Copiado" : "Copiar"}
+          {copied ? t("showcase.common.copied") : t("showcase.common.copy")}
         </ITFlex>
       </ITButton>
     </span>
@@ -159,30 +160,29 @@ const CopyButton = ({ text }: { text: string }) => {
 };
 
 /**
- * Dark code surface with an optional filename strip.
+ * Dark terminal surface with an optional filename strip. Signal cyan
+ * (`cyan-400`) is used only here, per the blueprint spec.
  *
  * @example
  * <CodeBlock code="pnpm add pkg" filename="terminal" />
  */
 const CodeBlock = ({ code, filename }: { code: string; filename?: string }) => (
-  <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+  <div className="overflow-hidden rounded-[14px] border border-slate-800 bg-slate-950">
     {filename && (
-      <div className="px-4 py-2 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80">
-        <ITText as="span" className="!text-xs !font-mono !text-slate-400">
-          {filename}
-        </ITText>
+      <div className="flex items-center gap-2 border-b border-slate-800 px-4 py-2">
+        <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-cyan-400">
+          ▍ {filename}
+        </span>
       </div>
     )}
-    <div className="relative bg-slate-950">
-      <pre className="p-4 text-xs font-mono overflow-x-auto leading-relaxed text-slate-200">
-        <code>{code}</code>
-      </pre>
-    </div>
+    <pre className="overflow-x-auto p-4 font-mono text-xs leading-relaxed text-slate-200">
+      <code>{code}</code>
+    </pre>
   </div>
 );
 
 /**
- * Uniform section heading: uppercase eyebrow + `<h2>` title + subtitle.
+ * Uniform section heading: mono eyebrow (`//`) + display `<h2>` + subtitle.
  * Used by every section so the document outline stays consistent.
  *
  * @example
@@ -194,21 +194,18 @@ const SectionHeading = ({
   subtitle,
   className = "",
 }: SectionHeadingProps) => (
-  <ITStack spacing={1} className={className}>
-    <ITText
-      as="p"
-      className="!text-[11px] !font-bold uppercase !tracking-wider text-primary-600 dark:text-primary-400"
-    >
-      {eyebrow}
+  <ITStack spacing={1.5} className={className}>
+    <ITText as="p" className={EYEBROW}>
+      {`// ${eyebrow}`}
     </ITText>
     <ITText
       as="h2"
-      className="!text-xl !font-bold !tracking-tight text-slate-900 dark:text-white"
+      className="font-display !text-xl !font-bold -tracking-[0.02em] text-slate-900 dark:text-white"
     >
       {title}
     </ITText>
     {subtitle && (
-      <ITText as="p" className="!text-sm text-slate-500 dark:text-slate-400">
+      <ITText as="p" className="!text-sm !leading-relaxed text-slate-500 dark:text-slate-400">
         {subtitle}
       </ITText>
     )}
@@ -222,94 +219,70 @@ const SectionHeading = ({
  * @example
  * <HeroLibraryPreview />
  */
-const HeroLibraryPreview = () => (
-  <div
-    aria-hidden
-    className="hidden w-[340px] shrink-0 justify-end xl:flex"
-  >
-    <div
-      className="it-landing-float w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-white/85 shadow-xl backdrop-blur-sm dark:border-slate-700/70 dark:bg-slate-900/85"
-      style={{ animationDelay: "0.8s" }}
-    >
-      {/* fake toolbar */}
-      <div className="flex items-center gap-1.5 border-b border-slate-200/80 px-4 py-3 dark:border-slate-700/70">
-        <span className="h-2.5 w-2.5 rounded-full bg-danger-400/70" />
-        <span className="h-2.5 w-2.5 rounded-full bg-warning-400/70" />
-        <span className="h-2.5 w-2.5 rounded-full bg-success-400/70" />
-        <span className="ml-2 h-2 w-24 rounded-full bg-slate-200 dark:bg-slate-700" />
-      </div>
-
-      {/* mini table skeleton */}
-      <div className="px-4 pt-4">
-        <div className="flex items-center justify-between">
-          <span className="h-2.5 w-20 rounded-full bg-slate-200 dark:bg-slate-700" />
-          <span className="h-4 w-14 rounded-full bg-primary-100 dark:bg-primary-900/50" />
+const HeroLibraryPreview = () => {
+  const { t } = useITTranslation();
+  return (
+    <div aria-hidden className="hidden w-[340px] shrink-0 justify-end xl:flex">
+      <div
+        className="it-reveal w-full overflow-hidden rounded-[14px] border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900"
+        style={reveal(350)}
+      >
+        {/* fake toolbar */}
+        <div className="flex items-center gap-1.5 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+          <span className="h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-slate-700" />
+          <span className="h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-slate-700" />
+          <span className="h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-slate-700" />
+          <span className="ml-2 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400">
+            {t("showcase.landing.previewBadge")}
+          </span>
         </div>
 
-        <div className="mt-4 space-y-3">
-          <div className="flex items-center gap-3">
-            <span className="h-6 w-6 flex-shrink-0 rounded-md bg-gradient-to-br from-primary-500 to-info-500 opacity-80" />
-            <span className="h-2 w-[68%] rounded-full bg-slate-200 dark:bg-slate-700" />
+        {/* mini table skeleton */}
+        <div className="px-4 pt-4">
+          <div className="flex items-center justify-between">
+            <span className="h-2.5 w-20 rounded-full bg-slate-200 dark:bg-slate-700" />
+            <span className="h-4 w-14 rounded-full bg-primary-100 dark:bg-primary-950/50" />
           </div>
-          <div className="flex items-center gap-3">
-            <span className="h-6 w-6 flex-shrink-0 rounded-md bg-gradient-to-br from-purple-500 to-primary-500 opacity-80" />
-            <span className="h-2 w-[92%] rounded-full bg-slate-200 dark:bg-slate-700" />
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="h-6 w-6 flex-shrink-0 rounded-md bg-gradient-to-br from-info-500 to-purple-500 opacity-80" />
-            <span className="h-2 w-[54%] rounded-full bg-slate-200 dark:bg-slate-700" />
+
+          <div className="mt-4 space-y-3">
+            {[68, 92, 54].map((width) => (
+              <div key={width} className="flex items-center gap-3">
+                <span className="h-6 w-6 flex-shrink-0 rounded-[6px] border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950" />
+                <span
+                  className="h-2 rounded-full bg-slate-200 dark:bg-slate-700"
+                  style={{ width: `${width}%` }}
+                />
+              </div>
+            ))}
           </div>
         </div>
-      </div>
 
-      {/* fake action + status */}
-      <div className="mt-5 flex items-center justify-between border-t border-slate-200/80 px-4 py-3.5 dark:border-slate-700/70">
-        <span className="inline-flex items-center rounded-lg bg-primary-500 px-3 py-1.5 text-[10px] font-bold tracking-wide text-white shadow-sm">
-          ITButton
-        </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-success-500/40 px-2.5 py-1 text-[10px] font-semibold text-success-600 dark:text-success-400">
-          <span className="h-1.5 w-1.5 rounded-full bg-success-500" />
-          Tipado
-        </span>
+        {/* fake action + status */}
+        <div className="mt-5 flex items-center justify-between border-t border-slate-200 px-4 py-3.5 dark:border-slate-800">
+          <span className="inline-flex items-center rounded-[8px] bg-primary-600 px-3 py-1.5 font-mono text-[10px] font-medium text-white">
+            ITButton
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-success-500/40 px-2.5 py-1 font-mono text-[10px] font-medium text-success-600 dark:text-success-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-success-500" />
+            {t("showcase.landing.typed")}
+          </span>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
-const STATS = [
-  {
-    label: "Componentes",
-    value: `${TOTAL_ITEMS}`,
-    hint: "páginas documentadas",
-    icon: <FaLayerGroup />,
-  },
-  {
-    label: "Familias",
-    value: `${SANDBOX_GROUPS.length}`,
-    hint: "grupos de navegación",
-    icon: <FaFolderOpen />,
-  },
-  {
-    label: "TypeScript",
-    value: "100%",
-    hint: "tipado estricto",
-    icon: <FaCode />,
-  },
-  {
-    label: "UI deps",
-    value: "0",
-    hint: "sin runtime extra",
-    icon: <FaBoxOpen />,
-  },
-];
-
-const FEATURES = [
-  "Tailwind CSS v4 con tokens de tema en runtime",
-  "Accesibilidad: roles, foco y nombres accesibles",
-  "Dark mode automático vía ITThemeProvider",
-  "Tree-shakeable: solo importas lo que usas",
-  "Sin dependencias de UI de terceros",
-  "Documentado con ejemplos ejecutables",
+/**
+ * i18n keys for the "built in" feature list, rendered in order inside the
+ * quickstart section.
+ */
+const FEATURE_KEYS = [
+  "showcase.landing.featureTokens",
+  "showcase.landing.featureA11y",
+  "showcase.landing.featureDarkMode",
+  "showcase.landing.featureTreeShakeable",
+  "showcase.landing.featureNoDeps",
+  "showcase.landing.featureDocumented",
 ];
 
 const QUICKSTART_CODE = `import { ITThemeProvider, ITButton } from "@axzydev/axzy_ui_system"
@@ -325,7 +298,7 @@ export default function App() {
 
 /**
  * Sandbox landing page (`#ui-system`): a dashboard-style entry point with a
- * hero, real derived stats, deep-linking family cards, quickstart, and links.
+ * hero, real derived stats, deep-linking family index, quickstart, and links.
  *
  * @example
  * <LandingShowcase
@@ -337,33 +310,54 @@ export function LandingShowcase({
   onOpenItem,
   onOpenPortfolio,
 }: LandingShowcaseProps) {
+  const { t } = useITTranslation();
+
+  const stats = [
+    {
+      id: "components",
+      label: t("showcase.landing.statComponents"),
+      value: `${TOTAL_ITEMS}`,
+      hint: t("showcase.landing.statComponentsHint"),
+      icon: <FaLayerGroup />,
+    },
+    {
+      id: "families",
+      label: t("showcase.landing.statFamilies"),
+      value: `${SANDBOX_GROUPS.length}`,
+      hint: t("showcase.landing.statFamiliesHint"),
+      icon: <FaFolderOpen />,
+    },
+    {
+      id: "typescript",
+      label: "TypeScript",
+      value: "100%",
+      hint: t("showcase.landing.statTypedHint"),
+      icon: <FaCode />,
+    },
+    {
+      id: "uiDeps",
+      label: t("showcase.landing.statUiDeps"),
+      value: "0",
+      hint: t("showcase.landing.statUiDepsHint"),
+      icon: <FaBoxOpen />,
+    },
+  ];
+
   return (
     <ITStack spacing={10} className="animate-fadeIn pb-5">
-      {/* ─── HERO ─── */}
+      {/* ─── HERO (split-screen) ─── */}
       <section
         aria-labelledby="ui-system-hero-title"
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-50 via-white to-purple-50 dark:from-primary-950/30 dark:via-slate-900 dark:to-purple-950/30 px-8 py-14 sm:px-14"
+        className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white px-6 py-12 dark:border-slate-800 dark:bg-slate-900 sm:px-12 sm:py-16"
       >
         <div
           aria-hidden
-          className="it-landing-float pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full bg-primary-400/20 blur-3xl"
-        />
-        <div
-          aria-hidden
-          className="it-landing-float pointer-events-none absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-purple-400/20 blur-3xl"
-          style={{ animationDelay: "1.5s" }}
-        />
-        <div
-          aria-hidden
-          className="it-landing-grid pointer-events-none absolute inset-0 text-slate-400/50 dark:text-slate-600/40"
+          className="it-blueprint pointer-events-none absolute inset-0 text-slate-300 dark:text-slate-800"
         />
 
         <div className="relative z-10 flex flex-col gap-12 xl:flex-row xl:items-center xl:gap-10">
           <div className="min-w-0 max-w-3xl flex-1 xl:max-w-2xl">
-            <div
-              className="it-landing-rise"
-              style={{ animationDelay: "0ms" }}
-            >
+            <div className="it-reveal">
               <ITBadget
                 label="v1.3.0 · Tailwind v4"
                 color="primary"
@@ -375,31 +369,32 @@ export function LandingShowcase({
             <ITText
               as="h1"
               id="ui-system-hero-title"
-              className="it-landing-rise !mt-5 !text-4xl sm:!text-5xl !font-extrabold !tracking-tight text-slate-900 dark:text-white"
-              style={{ animationDelay: "70ms" }}
+              className="it-reveal font-display !mt-5 !text-4xl !font-bold -tracking-[0.02em] text-slate-900 dark:text-white sm:!text-5xl"
+              style={reveal(70)}
             >
-              Componentes para{" "}
-              <span className="bg-gradient-to-r from-primary-600 via-primary-500 to-purple-500 bg-clip-text text-transparent">
-                interfaces serias
+              {t("showcase.landing.heroTitleLead")}{" "}
+              <span className="text-primary-600 dark:text-primary-400">
+                {t("showcase.landing.heroTitleHighlight")}
               </span>
             </ITText>
 
             <ITText
               as="p"
-              className="it-landing-rise !mt-4 !text-base !leading-relaxed max-w-xl text-slate-600 dark:text-slate-300"
-              style={{ animationDelay: "140ms" }}
+              className="it-reveal !mt-4 max-w-xl !text-base !leading-relaxed text-slate-600 dark:text-slate-300"
+              style={reveal(140)}
             >
-              Una librería React + TypeScript con Tailwind CSS v4: accesible,
-              temable y lista para producción. Explora {TOTAL_ITEMS} páginas en{" "}
-              {SANDBOX_GROUPS.length} familias.
+              {t("showcase.landing.heroSubtitle", {
+                pages: TOTAL_ITEMS,
+                families: SANDBOX_GROUPS.length,
+              })}
             </ITText>
 
             <ITFlex
               gap={3}
               wrap="wrap"
               align="center"
-              className="it-landing-rise !mt-7"
-              style={{ animationDelay: "210ms" }}
+              className="it-reveal !mt-7"
+              style={reveal(210)}
             >
               <ITButton
                 variant="filled"
@@ -408,7 +403,7 @@ export function LandingShowcase({
                 icon={<FaRocket size={13} />}
                 onClick={() => onOpenItem("general", "getting-started")}
               >
-                Explorar componentes
+                {t("showcase.landing.exploreComponents")}
               </ITButton>
               <ITButton
                 variant="outlined"
@@ -417,19 +412,19 @@ export function LandingShowcase({
                 icon={<FaLayerGroup size={13} />}
                 onClick={onOpenPortfolio}
               >
-                Ver portafolio
+                {t("showcase.landing.viewPortfolio")}
               </ITButton>
             </ITFlex>
 
             <div
-              className="it-landing-rise mt-7 inline-flex flex-wrap items-center gap-x-3 gap-y-2 rounded-2xl border border-primary-200 bg-gradient-to-r from-primary-50 to-purple-50 px-4 py-2 shadow-sm dark:border-primary-800/50 dark:from-primary-950/30 dark:to-purple-950/30"
-              style={{ animationDelay: "280ms" }}
+              className="it-reveal mt-7 inline-flex flex-wrap items-center gap-x-3 gap-y-2 rounded-[10px] border border-slate-200 bg-slate-50 px-4 py-2 dark:border-slate-800 dark:bg-slate-950"
+              style={reveal(280)}
             >
-              <FaNpm size={16} className="shrink-0 text-primary-500" />
-              <code className="text-sm font-medium text-slate-800 dark:text-slate-200">
+              <FaNpm size={16} className="shrink-0 text-primary-600 dark:text-primary-400" />
+              <code className="font-mono text-xs text-slate-700 dark:text-slate-200">
                 {INSTALL_CMD}
               </code>
-              <span className="inline-flex items-center rounded-lg border border-primary-200/90 bg-white/85 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-500 dark:border-primary-800/90 dark:bg-slate-900/70">
+              <span className="inline-flex items-center rounded-[8px] border border-slate-200 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-500 dark:border-slate-800">
                 <CopyButton text={INSTALL_CMD} />
               </span>
             </div>
@@ -440,23 +435,21 @@ export function LandingShowcase({
       </section>
 
       {/* ─── STAT STRIP ─── */}
-      <section aria-label="Métricas de la librería">
+      <section aria-label={t("showcase.landing.ariaStats")}>
         <ITGrid container spacing={4}>
-          {STATS.map((stat, index) => (
-            <ITGrid item xs={6} lg={3} key={stat.label}>
-              <div className="flex h-full flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-300 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900 dark:hover:border-primary-700">
+          {stats.map((stat) => (
+            <ITGrid item xs={6} lg={3} key={stat.id}>
+              <div
+                className={`flex h-full flex-col gap-4 p-5 ${CARD} transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-400 hover:shadow-[0_8px_30px_-12px_rgba(15,23,42,0.25)] dark:hover:border-primary-500`}
+              >
                 <div className="flex items-start justify-between gap-3">
                   <ITText
                     as="p"
-                    className="!text-3xl !font-extrabold !tracking-tight !leading-none tabular-nums text-slate-900 dark:text-white"
+                    className="font-display !text-3xl !font-bold !leading-none tabular-nums -tracking-[0.02em] text-slate-900 dark:text-white"
                   >
                     {stat.value}
                   </ITText>
-                  <span
-                    className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br text-[13px] text-white shadow-sm ${
-                      GROUP_ACCENTS[index % GROUP_ACCENTS.length]
-                    }`}
-                  >
+                  <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] border border-slate-200 bg-slate-50 text-[13px] text-primary-600 dark:border-slate-800 dark:bg-slate-950 dark:text-primary-400">
                     {stat.icon}
                   </span>
                 </div>
@@ -464,13 +457,13 @@ export function LandingShowcase({
                 <div className="mt-auto">
                   <ITText
                     as="p"
-                    className="!text-sm !font-semibold text-primary-600 dark:text-primary-400"
+                    className="font-mono !text-[10px] !font-medium uppercase !tracking-[0.14em] text-slate-500 dark:text-slate-400"
                   >
                     {stat.label}
                   </ITText>
                   <ITText
                     as="p"
-                    className="!mt-0.5 !text-[11px] text-slate-400 dark:text-slate-500"
+                    className="!mt-1 !text-[11px] text-slate-500 dark:text-slate-400"
                   >
                     {stat.hint}
                   </ITText>
@@ -481,75 +474,76 @@ export function LandingShowcase({
         </ITGrid>
       </section>
 
-      {/* ─── EXPLORE BY FAMILY ─── */}
+      {/* ─── EXPLORE BY FAMILY (index list) ─── */}
       <section>
         <SectionHeading
-          eyebrow="Catálogo"
-          title="Explora por familia"
-          subtitle="Cada tarjeta te lleva directo al primer componente del grupo."
+          eyebrow={t("showcase.structure.navCatalog")}
+          title={t("showcase.landing.exploreTitle")}
+          subtitle={t("showcase.landing.exploreSubtitle")}
           className="!mb-5"
         />
 
-        <ITGrid container spacing={5}>
+        <div className={CARD}>
           {SANDBOX_GROUPS.map((group, index) => (
-            <ITGrid item xs={12} sm={6} lg={4} key={group.id}>
-              <button
-                type="button"
-                onClick={() => onOpenItem(group.id, group.subitems[0].id)}
-                className="group flex h-full w-full flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 text-left transition-all duration-300 hover:-translate-y-1 hover:border-primary-300 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-primary-700 dark:hover:shadow-2xl"
-              >
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br text-[13px] text-white shadow-sm ${
-                      GROUP_ACCENTS[index % GROUP_ACCENTS.length]
-                    }`}
-                  >
-                    {GROUP_ICONS[group.id]}
-                  </span>
-                  <ITText
-                    as="span"
-                    className="min-w-0 flex-1 truncate !text-[15px] !font-bold !tracking-tight text-slate-900 dark:text-white"
-                  >
-                    {group.label}
-                  </ITText>
-                  <span className="inline-flex shrink-0 items-center rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold tabular-nums text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-                    {group.subitems.length}
-                  </span>
-                  <span className="flex w-4 shrink-0 items-center justify-center">
-                    <FaArrowRight
-                      size={12}
-                      className="text-primary-500 opacity-0 -translate-x-1.5 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
-                    />
-                  </span>
-                </div>
-
-                <div className="mt-auto flex flex-wrap gap-1.5">
+            <button
+              key={group.id}
+              type="button"
+              onClick={() => onOpenItem(group.id, group.subitems[0].id)}
+              className={`group flex w-full flex-wrap items-center gap-4 px-4 py-4 text-left transition-colors hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 dark:hover:bg-slate-950 ${
+                index > 0 ? "border-t border-slate-200 dark:border-slate-800" : ""
+              }`}
+            >
+              <span className="font-mono text-[11px] tabular-nums text-slate-500 dark:text-slate-400">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[10px] border border-slate-200 bg-slate-50 text-[13px] text-primary-600 dark:border-slate-800 dark:bg-slate-950 dark:text-primary-400">
+                {GROUP_ICONS[group.id]}
+              </span>
+              <span className="min-w-0 flex-1">
+                <ITText
+                  as="span"
+                  className="block font-display !text-[15px] !font-bold -tracking-[0.02em] text-slate-900 dark:text-white"
+                >
+                  {translateLabel(group.id, group.label, t)}
+                </ITText>
+                <span className="mt-1.5 flex flex-wrap gap-1.5">
                   {group.subitems.slice(0, 4).map((sub) => (
                     <span
                       key={sub.id}
-                      className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-medium text-slate-500 dark:text-slate-400"
+                      className="rounded-[6px] border border-slate-200 bg-slate-50 px-2 py-0.5 font-mono text-[10px] text-slate-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400"
                     >
-                      {sub.label}
+                      {translateLabel(sub.id, sub.label, t)}
                     </span>
                   ))}
                   {group.subitems.length > 4 && (
-                    <span className="rounded-md bg-primary-50 dark:bg-primary-950/40 px-2 py-0.5 text-[10px] font-semibold text-primary-600 dark:text-primary-400">
-                      +{group.subitems.length - 4} más
+                    <span className="rounded-[6px] border border-primary-200 bg-primary-50 px-2 py-0.5 font-mono text-[10px] text-primary-600 dark:border-primary-900/50 dark:bg-primary-950/40 dark:text-primary-400">
+                      {t("showcase.landing.moreItems", {
+                        count: group.subitems.length - 4,
+                      })}
                     </span>
                   )}
-                </div>
-              </button>
-            </ITGrid>
+                </span>
+              </span>
+              <span className="ml-auto flex items-center gap-3">
+                <span className="font-mono text-[11px] tabular-nums text-slate-500 dark:text-slate-400">
+                  {group.subitems.length}
+                </span>
+                <FaArrowRight
+                  size={12}
+                  className="text-primary-600 transition-transform duration-200 group-hover:translate-x-1 dark:text-primary-400"
+                />
+              </span>
+            </button>
           ))}
-        </ITGrid>
+        </div>
       </section>
 
       {/* ─── QUICKSTART ─── */}
       <section>
         <SectionHeading
-          eyebrow="Puesta en marcha"
-          title="Quickstart"
-          subtitle="Un provider de tema, una hoja de estilos y tu primer botón."
+          eyebrow={t("showcase.landing.quickstartEyebrow")}
+          title={t("showcase.landing.quickstartTitle")}
+          subtitle={t("showcase.landing.quickstartSubtitle")}
           className="!mb-5"
         />
 
@@ -557,13 +551,10 @@ export function LandingShowcase({
           <ITGrid item xs={12} lg={7}>
             <ITStack spacing={3}>
               <ITFlex align="center" justify="between" gap={3}>
-                <ITText
-                  as="p"
-                  className="!text-[11px] !font-bold uppercase !tracking-wider text-slate-400 dark:text-slate-500"
-                >
-                  Ejemplo mínimo
+                <ITText as="p" className={EYEBROW}>
+                  {t("showcase.landing.minimalExample")}
                 </ITText>
-                <span className="inline-flex items-center rounded-lg focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-500">
+                <span className="inline-flex items-center rounded-[8px] focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-500">
                   <CopyButton text={QUICKSTART_CODE} />
                 </span>
               </ITFlex>
@@ -572,21 +563,18 @@ export function LandingShowcase({
           </ITGrid>
 
           <ITGrid item xs={12} lg={5}>
-            <div className="h-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-              <ITText
-                as="h3"
-                className="!mb-4 !text-sm !font-bold uppercase !tracking-wider text-slate-400 dark:text-slate-500"
-              >
-                Incluido de fábrica
+            <div className={`h-full p-6 ${CARD}`}>
+              <ITText as="h3" className={`!mb-4 ${EYEBROW}`}>
+                {t("showcase.landing.builtIn")}
               </ITText>
               <ul className="space-y-3">
-                {FEATURES.map((feature) => (
-                  <li key={feature} className="flex items-start gap-3">
-                    <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-success-100 text-success-600 dark:bg-success-950/40 dark:text-success-400">
+                {FEATURE_KEYS.map((featureKey) => (
+                  <li key={featureKey} className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-[6px] border border-primary-200 text-primary-600 dark:border-primary-900/50 dark:text-primary-400">
                       <FaCheck size={10} />
                     </span>
                     <span className="text-sm text-slate-600 dark:text-slate-300">
-                      {feature}
+                      {t(featureKey)}
                     </span>
                   </li>
                 ))}
@@ -597,22 +585,18 @@ export function LandingShowcase({
       </section>
 
       {/* ─── CLOSING CTA ─── */}
-      <section className="relative overflow-hidden rounded-3xl border border-primary-200 bg-gradient-to-br from-primary-50 via-white to-purple-50 p-6 shadow-sm dark:border-primary-900/40 dark:from-primary-950/30 dark:via-slate-900 dark:to-purple-950/30 sm:p-7">
+      <section className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900 sm:p-7">
         <div
           aria-hidden
-          className="it-landing-float pointer-events-none absolute -top-20 -right-16 h-56 w-56 rounded-full bg-primary-400/20 blur-3xl"
-        />
-        <div
-          aria-hidden
-          className="it-landing-grid pointer-events-none absolute inset-0 text-slate-400/40 dark:text-slate-600/30"
+          className="it-blueprint pointer-events-none absolute inset-0 text-slate-300 dark:text-slate-800"
         />
 
         <div className="relative z-10">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
             <SectionHeading
-              eyebrow="Siguientes pasos"
-              title="¿Listo para construir?"
-              subtitle="Revisa el portafolio, el código fuente o levanta Storybook."
+              eyebrow={t("showcase.home.eyebrowNext")}
+              title={t("showcase.landing.ctaTitle")}
+              subtitle={t("showcase.landing.ctaSubtitle")}
             />
 
             <ITFlex gap={3} wrap="wrap" align="center" className="shrink-0">
@@ -622,7 +606,7 @@ export function LandingShowcase({
                 icon={<FaLayerGroup size={13} />}
                 onClick={onOpenPortfolio}
               >
-                Portafolio
+                {t("sandbox.nav.portfolio")}
               </ITButton>
               <ITButton
                 variant="outlined"
@@ -641,11 +625,15 @@ export function LandingShowcase({
             as="p"
             className="!mt-6 !text-xs text-slate-500 dark:text-slate-400"
           >
-            Ejecuta{" "}
-            <code className="rounded bg-white/70 px-1.5 py-0.5 font-mono text-slate-700 dark:bg-slate-800/70 dark:text-slate-200">
-              pnpm storybook
+            {t("showcase.landing.footerRun")}{" "}
+            <code className="rounded-[6px] border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-mono text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200">
+              pnpm dev
             </code>{" "}
-            para ver cada componente aislado.
+            {t("showcase.landing.footerOpen")}{" "}
+            <code className="rounded-[6px] border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-mono text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200">
+              #ui-system
+            </code>{" "}
+            {t("showcase.landing.footerSuffix")}
           </ITText>
         </div>
       </section>

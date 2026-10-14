@@ -20,20 +20,30 @@ import ITTooltip from "@/components/atoms/tooltip/tooltip";
 import ITText from "@/components/atoms/text/text";
 import { inputError, inputLabel, inputWrapper } from "@/utils/styles";
 import { inputSizeTokens } from "@/theme/theme";
+import { useITTranslation } from "@/i18n";
 
 const INLINE_TAGS = new Set(["STRONG", "B", "EM", "I", "U", "MARK"]);
 
-const ACTION_META: Record<
-  ToolbarAction,
-  { label: string; icon: ReactNode }
-> = {
-  bold: { label: "Negrita", icon: <FaBold /> },
-  italic: { label: "Itálica", icon: <FaItalic /> },
-  underline: { label: "Subrayado", icon: <FaUnderline /> },
-  highlight: { label: "Marcador", icon: <FaHighlighter /> },
-  ul: { label: "Lista con viñetas", icon: <FaListUl /> },
-  ol: { label: "Lista numerada", icon: <FaListOl /> },
-  clear: { label: "Limpiar formato", icon: <FaEraser /> },
+/** Catálogo de key por acción de la barra de herramientas. */
+const ACTION_LABEL_KEYS: Record<ToolbarAction, string> = {
+  bold: "wysiwyg.bold",
+  italic: "wysiwyg.italic",
+  underline: "wysiwyg.underline",
+  highlight: "wysiwyg.highlight",
+  ul: "wysiwyg.bulletList",
+  ol: "wysiwyg.numberedList",
+  clear: "wysiwyg.clearFormat",
+};
+
+/** Icono por acción de la barra de herramientas. */
+const ACTION_ICONS: Record<ToolbarAction, ReactNode> = {
+  bold: <FaBold />,
+  italic: <FaItalic />,
+  underline: <FaUnderline />,
+  highlight: <FaHighlighter />,
+  ul: <FaListUl />,
+  ol: <FaListOl />,
+  clear: <FaEraser />,
 };
 
 type ActiveState = Partial<Record<ToolbarAction, boolean>>;
@@ -73,6 +83,7 @@ export default function ITWysiwyg({
   toolbar = toolbarActions,
   className,
 }: ITWysiwygProps) {
+  const { t } = useITTranslation();
   const editorRef = useRef<HTMLDivElement>(null);
   const focusedRef = useRef(false);
   const [active, setActive] = useState<ActiveState>({});
@@ -516,7 +527,7 @@ export default function ITWysiwyg({
   }: {
     action: ToolbarAction;
   }) => {
-    const meta = ACTION_META[action];
+    const meta = { label: t(ACTION_LABEL_KEYS[action]), icon: ACTION_ICONS[action] };
     const isActive = !!active[action];
     return (
       <ITTooltip content={meta.label}>

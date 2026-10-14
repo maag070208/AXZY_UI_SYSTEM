@@ -5,6 +5,7 @@ import { ITPaginationProps } from "./pagination.props";
 import { theme } from "@/theme/theme";
 import ITSelect from "@/components/molecules/select/select";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 const DOTS = "...";
 
@@ -103,6 +104,7 @@ export default function ITPagination({
   onItemsPerPageChange,
   totalItems,
 }: ITPaginationProps) {
+  const { t } = useITTranslation();
   const paginationRange = usePagination({
     currentPage,
     totalPages,
@@ -151,6 +153,8 @@ export default function ITPagination({
         )}
         onClick={handlePrevious}
         aria-disabled={currentPage === 1}
+        aria-label={t("pagination.previous")}
+        role="button"
       >
         <FaChevronLeft size={12} />
       </div>
@@ -184,7 +188,7 @@ export default function ITPagination({
               ...(isActive ? {} : { "--hover-bg": resolvedHoverBgColor } as React.CSSProperties),
             }}
             onClick={() => onPageChange(pageNumber as number)}
-            title={`Page ${pageNumber}`}
+            title={t("pagination.page", { page: pageNumber })}
           >
             <ITText as="span">{pageNumber}</ITText>
           </ITText>
@@ -201,6 +205,8 @@ export default function ITPagination({
         )}
         onClick={handleNext}
         aria-disabled={currentPage === totalPages}
+        aria-label={t("pagination.next")}
+        role="button"
       >
         <FaChevronRight size={12} />
       </div>
@@ -216,7 +222,7 @@ export default function ITPagination({
       <div className={clsx("flex flex-col sm:flex-row justify-between items-center gap-4 w-full", className)}>
         <div className="flex items-center gap-4 text-sm text-secondary-500">
           <div className="flex items-center gap-2 bg-secondary-50 px-3 py-1 rounded-lg border border-secondary-200">
-            <ITText as="span" className="text-xs font-medium">Mostrar</ITText>
+            <ITText as="span" className="text-xs font-medium">{t("pagination.itemsPerPage")}</ITText>
             <ITSelect
               name="itemsPerPage"
               options={itemsPerPageOptions.map((option) => ({
@@ -236,13 +242,13 @@ export default function ITPagination({
             <>
               <ITText as="span" className="text-secondary-300">|</ITText>
               <ITText as="span" className="text-xs">
-                <ITText as="span" className="font-semibold text-secondary-700">{startItem}</ITText><ITText as="span"> - </ITText><ITText as="span" className="font-semibold text-secondary-700">{endItem}</ITText><ITText as="span"> de </ITText><ITText as="span" className="font-semibold text-secondary-900">{totalItems}</ITText>
+                <ITText as="span" className="font-semibold text-secondary-700">{startItem}</ITText><ITText as="span"> - </ITText><ITText as="span" className="font-semibold text-secondary-700">{endItem}</ITText><ITText as="span"> {t("pagination.of")} </ITText><ITText as="span" className="font-semibold text-secondary-900">{totalItems}</ITText>
               </ITText>
             </>
           )}
         </div>
         
-        <nav aria-label="Pagination">
+        <nav aria-label={t("pagination.aria")}>
           {renderPaginationControls()}
         </nav>
       </div>
@@ -251,7 +257,7 @@ export default function ITPagination({
 
   // Otherwise, render just the standard pagination component
   return (
-    <nav aria-label="Pagination" className={clsx("inline-flex", className)}>
+    <nav aria-label={t("pagination.aria")} className={clsx("inline-flex", className)}>
       {renderPaginationControls()}
     </nav>
   );

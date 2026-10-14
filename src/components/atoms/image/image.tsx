@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ITImageProps } from "./image.props";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Image component with automatic fallback on load error.
@@ -27,6 +28,7 @@ const ITImage = ({
   fallback = "",
 }: ITImageProps) => {
   const [imageError, setImageError] = useState(false);
+  const { t } = useITTranslation();
 
   const handleImageError = () => {
     setImageError(true);
@@ -39,7 +41,7 @@ const ITImage = ({
       {imageError ? (
         <img
           src={fallback}
-          alt="Fallback"
+          alt={t("image.fallbackAlt")}
           className="w-full h-full object-cover"
         />
       ) : (

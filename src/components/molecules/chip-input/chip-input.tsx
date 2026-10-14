@@ -5,6 +5,7 @@ import { theme } from "@/theme/theme";
 import { inputFieldStyle } from "@/utils/styles";
 import ITChip from "@/components/atoms/chip/chip";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Free-text input that turns entered values into removable tags (chips).
@@ -24,7 +25,7 @@ import ITText from "@/components/atoms/text/text";
 export default function ITChipInput({
   name,
   label,
-  placeholder = "Escribe y presiona Enter",
+  placeholder,
   value,
   onChange,
   onBlur,
@@ -41,6 +42,7 @@ export default function ITChipInput({
   helpText,
   className,
 }: ITChipInputProps) {
+  const { t } = useITTranslation();
   const [inputValue, setInputValue] = useState("");
   const [localTouched, setLocalTouched] = useState(false);
   const [localError, setLocalError] = useState<string | undefined>(undefined);
@@ -53,10 +55,10 @@ export default function ITChipInput({
   const externalError =
     error !== undefined && error !== false
       ? error === true
-        ? "Este campo es requerido"
+        ? t("field.required")
         : error
       : required && value.length === 0
-      ? "Este campo es requerido"
+      ? t("field.required")
       : undefined;
   const effectiveError = localError || externalError;
   const hasError = isTouched && !!effectiveError;
@@ -88,11 +90,11 @@ export default function ITChipInput({
     const tag = raw.trim();
     if (!tag) return;
     if (maxTags !== undefined && value.length >= maxTags) {
-      setLocalError(`Máximo ${maxTags} etiquetas`);
+      setLocalError(t("chipInput.maxTags", { count: maxTags }));
       return;
     }
     if (!allowDuplicates && value.includes(tag)) {
-      setLocalError("Etiqueta duplicada");
+      setLocalError(t("chipInput.duplicate"));
       return;
     }
     const validationError = validate?.(tag);
@@ -107,7 +109,7 @@ export default function ITChipInput({
 
   const removeTag = (tag: string) => {
     if (disabled) return;
-    onChange?.(value.filter((t) => t !== tag));
+    onChange?.(value.filter((item) => item !== tag));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -188,7 +190,7 @@ export default function ITChipInput({
           onFocus={() => setIsFocused(true)}
           onBlur={handleBlur}
           disabled={disabled}
-          placeholder={value.length === 0 ? placeholder : ""}
+          placeholder={value.length === 0 ? (placeholder ?? t("chipInput.placeholder")) : ""}
           autoComplete="off"
           className="flex-1 min-w-[100px] bg-transparent outline-none border-none text-sm text-secondary-900 dark:text-slate-100"
           style={{ padding: 0, fontSize: inputFieldStyle(inputTheme, size).fontSize }}

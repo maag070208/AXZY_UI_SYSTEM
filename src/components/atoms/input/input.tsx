@@ -5,6 +5,7 @@ import { KeyboardEvent, useState, useEffect, useRef, useCallback } from "react";
 import { theme } from "@/theme/theme";
 import { disabledOverlay, iconAbsoluteLeft, iconAbsoluteRight, inputError, inputLabel, inputFieldStyle } from "@/utils/styles";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Text input component with label, validation error display, icon slots,
@@ -69,6 +70,7 @@ export default function ITInput({
   size = "md",
   decimals
 }: ITInputProps) {
+  const { t, formatNumber: formatNumberLocale } = useITTranslation();
   const isCheckboxOrRadio = type === "checkbox" || type === "radio";
   const isNumberType = type === "number";
   const isTextArea = type === "textarea";
@@ -120,11 +122,11 @@ export default function ITInput({
     : (value === undefined || value === null || String(value).trim() === "");
 
   const effectiveError = error !== undefined && error !== false
-    ? (error === true ? "Este campo es requerido" : error)
-    : (required && isEmpty ? "Este campo es requerido" : undefined);
+    ? (error === true ? t("field.required") : error)
+    : (required && isEmpty ? t("field.required") : undefined);
 
   const hasError = isTouched && !!effectiveError;
-  const errorMessage = typeof effectiveError === "string" ? effectiveError : "Este campo es requerido";
+  const errorMessage = typeof effectiveError === "string" ? effectiveError : t("field.required");
 
 
    const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
@@ -148,7 +150,7 @@ export default function ITInput({
       }
 
       if (currencyFormat) {
-        return num.toLocaleString("es-MX", {
+        return formatNumberLocale(num, {
           minimumFractionDigits: decimalPlaces,
           maximumFractionDigits: decimalPlaces,
         });
@@ -160,7 +162,7 @@ export default function ITInput({
 
       return num.toString();
     },
-    [currencyFormat, decimalPlaces]
+    [currencyFormat, decimalPlaces, formatNumberLocale]
   );
 
   const unformatValue = useCallback(
@@ -594,6 +596,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
                         type="button"
                         className="absolute inset-y-0 right-0 flex items-center pr-3 z-10 text-secondary-400 hover:text-secondary-600 focus:outline-none"
                         onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? t("input.hidePassword") : t("input.showPassword")}
                         tabIndex={-1} // Don't allow tabbing into the eye icon
                       >
                         {showPassword ? (

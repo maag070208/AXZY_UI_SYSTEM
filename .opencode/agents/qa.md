@@ -1,5 +1,5 @@
 ---
-description: Read-only verifier. Runs lint, typecheck, bundle, and Storybook/Vitest checks against the developer's changes, confirms the plan's acceptance criteria and project conventions, and returns a PASS/FAIL verdict with evidence.
+description: Read-only verifier. Runs lint, typecheck, and bundle checks against the developer's changes, confirms the plan's acceptance criteria and project conventions, and returns a PASS/FAIL verdict with evidence.
 mode: subagent
 temperature: 0.1
 permission:
@@ -21,7 +21,6 @@ permission:
     "pnpm check:css*": allow
     "pnpm bundle*": allow
     "pnpm build:app*": allow
-    "pnpm exec vitest*": allow
     "pnpm exec tsc*": allow
     "npx tsc*": allow
     "git status*": allow
@@ -55,7 +54,7 @@ You are **QA**. You verify the developer's `## CHANGE REPORT` against the archit
 2. **Static checks** — run `pnpm lint` (ESLint + `check:atomic` + `check:css`). It must end with `0 errors`. Warnings for `no-explicit-any` are expected and are not failures.
 3. **Types** — run `pnpm exec tsc -b` when types or public exports changed.
 4. **Bundle integrity** — run `pnpm bundle` when components, `src/index.ts`, or CSS changed; confirm it completes and `dist/index.css` is written.
-5. **Tests** — if Storybook stories changed, run `pnpm exec vitest run` (Playwright Chromium). If no test setup applies, say so explicitly.
+5. **Tests** — this repo has no test runner (Storybook/Vitest was removed). State explicitly that no automated test suite applies.
 6. **Conventions** — spot-check the diff for the repo's hard rules:
    - no upward imports across atomic layers;
    - no hardcoded colors (theme only);

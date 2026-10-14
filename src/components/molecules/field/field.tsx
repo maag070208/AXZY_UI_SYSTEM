@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { ITFieldProps } from "./field.props";
 import { inputError, inputLabel } from "@/utils/styles";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Form-field wrapper that standardizes label, required marker, helper text,
@@ -26,8 +27,9 @@ export default function ITField({
   labelClassName,
   contentClassName,
 }: ITFieldProps) {
+  const { t } = useITTranslation();
   const hasError = Boolean(error);
-  const message = typeof error === "string" ? error : hasError ? "Este campo es requerido" : undefined;
+  const message = typeof error === "string" ? error : hasError ? t("field.required") : undefined;
 
   return (
     <div className={clsx("flex flex-col gap-1.5", className)}>

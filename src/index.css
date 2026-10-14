@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
 @source "./**/*.{ts,tsx}";
-@source "../.storybook/**/*.{ts,tsx}";
 
 @variant dark (&:is(.dark &));
 

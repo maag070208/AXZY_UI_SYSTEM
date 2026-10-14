@@ -9,6 +9,10 @@ componentes de AXZY UI System.
 Todos los componentes son compatibles con Modo Claro, Modo Oscuro y son personalizables
 mediante variables CSS a través de ITThemeProvider.
 
+i18n: todos los textos de UI se resuelven vía `useITTranslation()` -> `t("namespace.key")`
+(runtime en `src/i18n/`, catálogos es/en). Sin `ITI18nProvider` el render es idéntico al
+español; las props de texto explícitas siempre ganan. Detalle: `docs/i18n/`.
+
 --------------------------------------------------------------------------------
 ÍNDICE DE COMPONENTES
 --------------------------------------------------------------------------------

@@ -6,6 +6,7 @@ import { ITSearchSelectProps, ITSearchSelectOption } from "./search-select.props
 import { theme, inputSizeTokens } from "@/theme/theme";
 import { useFloatingPanel } from "@/hooks/useFloatingPanel";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Searchable dropdown select with local client-side filtering and server-side search via API.
@@ -52,7 +53,7 @@ export default function ITSearchSelect({
   name,
   options = [],
   label,
-  placeholder = "Selecciona una opción",
+  placeholder,
   valueField = "value",
   labelField = "label",
   value,
@@ -66,12 +67,13 @@ export default function ITSearchSelect({
   readOnly = false,
   onSearch,
   isLoading = false,
-  noResultsMessage = "No se encontraron resultados",
+  noResultsMessage,
   size = "md",
   renderOption,
   clearable = true,
   onClear,
 }: ITSearchSelectProps) {
+  const { t } = useITTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -180,11 +182,11 @@ export default function ITSearchSelect({
   const isEmpty = value === undefined || value === null || String(value).trim() === "";
 
   const effectiveError = error !== undefined && error !== false
-    ? (error === true ? "Este campo es requerido" : error)
-    : (required && isEmpty ? "Este campo es requerido" : undefined);
+    ? (error === true ? t("field.required") : error)
+    : (required && isEmpty ? t("field.required") : undefined);
 
   const hasError = isTouched && !!effectiveError;
-  const errorMessage = typeof effectiveError === "string" ? effectiveError : "Este campo es requerido";
+  const errorMessage = typeof effectiveError === "string" ? effectiveError : t("field.required");
 
   const showClearButton =
     clearable && !disabled && !readOnly && (searchTerm.length > 0 || !isEmpty);
@@ -249,7 +251,7 @@ export default function ITSearchSelect({
             onBlur={handleInputBlur}
             disabled={disabled}
             readOnly={readOnly}
-            placeholder={placeholder}
+            placeholder={placeholder ?? t("select.placeholder")}
             className="outline-none pr-10"
             style={getInputStyle()}
             autoComplete="off"
@@ -261,8 +263,8 @@ export default function ITSearchSelect({
              {!isLoading && showClearButton && (
                <button
                  type="button"
-                 aria-label="Limpiar"
-                 title="Limpiar"
+                 aria-label={t("common.clear")}
+                 title={t("common.clear")}
                  onMouseDown={(e) => {
                    e.preventDefault();
                    handleClear();
@@ -313,7 +315,7 @@ export default function ITSearchSelect({
                 })
               ) : (
                 <ITText as="div" className="px-4 py-6 text-sm text-center text-secondary-500 italic">
-                  {isLoading ? "Cargando..." : noResultsMessage}
+                  {isLoading ? t("common.loading") : (noResultsMessage ?? t("select.noResults"))}
                 </ITText>
               )}
             </div>

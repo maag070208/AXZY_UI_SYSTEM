@@ -70,5 +70,5 @@ Ten en cuenta que esto depende de cómo la extensión resuelva imports de `node_
 
 ## 4. Documentación adicional ya incluida en el repo
 
-- **Storybook** (`pnpm storybook`): cada componente tiene un `.doc.mdx` con ejemplos y una tabla de props generada automáticamente desde el JSDoc (vía `react-docgen-typescript`, ya configurado en `.storybook/main.ts`) — es la referencia visual equivalente a este autocomplete.
+- **Sandbox** (`pnpm dev` → `http://localhost:5173/#ui-system`): cada componente tiene su showcase con ejemplos y una tabla de props; además hay un `.md` por componente en `docs/`, derivado del JSDoc del código.
 - `LLM_DOCS.md`, `GUIA_EJEMPLOS_REALES.md`, `DOCUMENTACION_DETALLADA_COMPONENTES.txt`: contexto arquitectónico y ejemplos reales, útiles para pegar como contexto a un asistente de IA cuando alguien del equipo esté generando código con esta librería.

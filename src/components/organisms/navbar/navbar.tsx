@@ -4,6 +4,7 @@ import { FaChevronDown, FaChevronRight, FaUserCircle } from "react-icons/fa";
 import { ITNavbarProps, ITNavigationItem } from "./navbar.props";
 import ITText from "@/components/atoms/text/text";
 import { theme } from "@/theme/theme";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Full sidebar navigation shell with collapsible submenus, user menu dropdown, and themed styling.
@@ -44,6 +45,7 @@ export default function ITNavbar({
   showSidebarOnMobile = false,
   sidebarItems,
 }: ITNavbarProps) {
+  const { t } = useITTranslation();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
@@ -106,7 +108,7 @@ export default function ITNavbar({
                         <img
                           className="w-8 h-8 rounded-full"
                           src={userMenu.userImage}
-                          alt="user photo"
+                          alt={t("common.userAvatar")}
                         />
                       ) : (
                         <FaUserCircle className="w-8 h-8 text-secondary-500" />
@@ -290,7 +292,7 @@ export default function ITNavbar({
                   <img
                     className="w-10 h-10 rounded-full border-2 transition-colors"
                     src={userMenu.userImage}
-                    alt="user photo"
+                    alt={t("common.userAvatar")}
                     style={{ borderColor: sidebar.borderColor }}
                   />
                 ) : (

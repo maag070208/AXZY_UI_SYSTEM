@@ -1,5 +1,6 @@
 import React from "react";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 interface TableEmptyStateProps {
   colSpan: number;
@@ -10,12 +11,13 @@ export default function TableEmptyState({
   colSpan,
   searchTerm,
 }: TableEmptyStateProps) {
+  const { t } = useITTranslation();
   return (
     <tr>
       <td colSpan={colSpan} className="px-6 py-4 text-center">
         {searchTerm
-          ? <ITText as="span">No se encontraron resultados para tu búsqueda</ITText>
-          : <ITText as="span">No se encontraron resultados</ITText>}
+          ? <ITText as="span">{t("searchTable.emptySearch")}</ITText>
+          : <ITText as="span">{t("searchTable.empty")}</ITText>}
       </td>
     </tr>
   );

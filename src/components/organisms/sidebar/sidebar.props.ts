@@ -75,7 +75,7 @@ export interface ITSidebarNotification {
   count: number;
   /** Icon rendered left of the label (e.g. a bell). Omit for a count-only pill. */
   icon?: React.ReactNode;
-  /** Accessible label and tooltip for the notification button. @default "Notificaciones" */
+  /** Accessible label and tooltip for the notification button. @default i18n `sidebar.notifications` ("Notificaciones") */
   label?: string;
   /** Click handler for the notification button. */
   onClick?: () => void;

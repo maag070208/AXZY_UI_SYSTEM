@@ -5,6 +5,7 @@ import { FaAngleDown } from "react-icons/fa";
 import { ITSelectProps } from "./select.props";
 import ITText from "@/components/atoms/text/text";
 import { inputError, inputLabel, inputFieldStyle } from "@/utils/styles";
+import { useITTranslation } from "@/i18n";
 
 export default function ITSelect({
   name,
@@ -24,6 +25,7 @@ export default function ITSelect({
   readOnly = false,
   size = "md",
 }: ITSelectProps) {
+  const { t } = useITTranslation();
   const [isFocused, setIsFocused] = useState(false);
   const [localTouched, setLocalTouched] = useState(false);
 
@@ -34,11 +36,11 @@ export default function ITSelect({
   const isEmpty = value === undefined || value === null || String(value).trim() === "";
 
   const effectiveError = error !== undefined && error !== false
-    ? (error === true ? "Este campo es requerido" : error)
-    : (required && isEmpty ? "Este campo es requerido" : undefined);
+    ? (error === true ? t("field.required") : error)
+    : (required && isEmpty ? t("field.required") : undefined);
 
   const hasError = isTouched && !!effectiveError;
-  const errorMessage = typeof effectiveError === "string" ? effectiveError : "Este campo es requerido";
+  const errorMessage = typeof effectiveError === "string" ? effectiveError : t("field.required");
 
   const getStyle = () => {
     const style = inputFieldStyle(inputTheme, size, {
@@ -100,7 +102,7 @@ export default function ITSelect({
               )}
               style={getStyle()}
             >
-              <option value="">{placeholder || "Selecciona una opción"}</option>
+              <option value="">{placeholder || t("select.placeholder")}</option>
               {
                 readOnly ? (
                   <option value={value} disabled>

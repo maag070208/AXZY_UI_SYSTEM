@@ -3,6 +3,7 @@ import SearchInput from "./SearchInput";
 import SortButton from "./SortButton";
 import ITButton from "@/components/atoms/button/button";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 interface SearchAndSortBarProps {
   searchTerm: string;
@@ -22,13 +23,14 @@ export default function SearchAndSortBar({
   onClearSearch,
   onGlobalSort,
   sortConfig,
-  searchInputPlaceholder = "Buscar en todos los campos...",
+  searchInputPlaceholder,
 }: SearchAndSortBarProps) {
+  const { t } = useITTranslation();
   return (
     <div className="bg-secondary-50 px-6 py-4 border-b border-secondary-200">
       <div className="flex items-center gap-4">
         <SearchInput
-          placeholder={searchInputPlaceholder}
+          placeholder={searchInputPlaceholder ?? t("searchTable.searchPlaceholder")}
           value={searchTerm}
           onChange={onSearchChange}
         />
@@ -41,10 +43,10 @@ export default function SearchAndSortBar({
             variant="outlined"
             color="danger"
             onClick={onClearSearch}
-            ariaLabel="Limpiar búsqueda"
-            title="Limpiar búsqueda"
+            ariaLabel={t("searchTable.clearSearch")}
+            title={t("searchTable.clearSearch")}
           >
-            <ITText as="span">Limpiar</ITText>
+            <ITText as="span">{t("common.clear")}</ITText>
           </ITButton>
         )}
       </div>

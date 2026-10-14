@@ -14,9 +14,11 @@ import {
 } from "../index";
 import { PRESETS } from "../components/theme-provider/themePresets";
 import { ShowcaseLayout } from "./ShowcaseLayout";
+import { useITTranslation } from "@/i18n";
 
 // 1. ITDialog Showcase
 export const DialogShowcase = () => {
+  const { t } = useITTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [useFormHeader, setUseFormHeader] = useState(true);
   const [auditor, setAuditor] = useState("");
@@ -26,26 +28,26 @@ export const DialogShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITDialog"
-      description="Cajas de diálogo modales con overlay oscuro y soporte de cabeceras de formulario."
+      description={t("showcase.feedback.dialogDesc")}
       code={code}
       demo={
         <div>
-          <ITButton label="Abrir Ventana Modal" color="primary" onClick={() => setIsOpen(true)} />
+          <ITButton label={t("showcase.feedback.openModal")} color="primary" onClick={() => setIsOpen(true)} />
           <ITDialog
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
-            title="Confirmación de Auditoría"
+            title={t("showcase.feedback.dialogTitle")}
             useFormHeader={useFormHeader}
           >
             <div className="p-6 space-y-4">
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Se guardará un registro inmutable en los logs de la blockchain corporativa. Esta acción es irreversible.
+                {t("showcase.feedback.dialogBody")}
               </p>
               {/* Los paneles flotantes (selects, pickers, menús) se renderizan en
                   un portal fuera del diálogo: elegir una opción no debe cerrarlo. */}
               <ITSearchSelect
-                label="Auditor responsable"
-                placeholder="Busca un auditor..."
+                label={t("showcase.feedback.auditorLabel")}
+                placeholder={t("showcase.feedback.auditorPlaceholder")}
                 options={[
                   { value: "ana", label: "Ana Torres" },
                   { value: "luis", label: "Luis Paredes" },
@@ -55,8 +57,8 @@ export const DialogShowcase = () => {
                 onChange={(next) => setAuditor(String(next))}
               />
               <div className="flex justify-end gap-3 pt-4 border-t">
-                <ITButton label="Cancelar" variant="ghost" onClick={() => setIsOpen(false)} />
-                <ITButton label="Autorizar" color="success" onClick={() => { alert("Transacción firmada!"); setIsOpen(false); }} />
+                <ITButton label={t("showcase.common.cancel")} variant="ghost" onClick={() => setIsOpen(false)} />
+                <ITButton label={t("showcase.feedback.authorize")} color="success" onClick={() => { alert(t("showcase.feedback.signedTransaction")); setIsOpen(false); }} />
               </div>
             </div>
           </ITDialog>
@@ -65,7 +67,7 @@ export const DialogShowcase = () => {
       controls={
         <>
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">Usar Cabecera de Formulario</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.feedback.useFormHeader")}</span>
             <ITSlideToggle isOn={useFormHeader} onToggle={setUseFormHeader} size="sm" />
           </div>
         </>
@@ -76,20 +78,21 @@ export const DialogShowcase = () => {
 
 // 2. ITToast Showcase
 export const ToastShowcase = () => {
+  const { t } = useITTranslation();
   const [visible, setVisible] = useState(false);
   const [type, setType] = useState<any>("success");
-  const [msg, setMsg] = useState("¡La operación se procesó con éxito!");
+  const [msg, setMsg] = useState(t("showcase.feedback.toastDefaultMsg"));
 
   const code = `<ITToast\n  message="${msg}"\n  type="${type}"\n  duration={3000}\n  onClose={() => setVisible(false)}\n/>`;
 
   return (
     <ShowcaseLayout
       title="ITToast"
-      description="Alertas efímeras del sistema flotantes para notificar eventos inmediatos al usuario."
+      description={t("showcase.feedback.toastDesc")}
       code={code}
       demo={
         <div>
-          <ITButton label="Lanzar Notificación" color="purple" onClick={() => setVisible(true)} />
+          <ITButton label={t("showcase.feedback.launchNotification")} color="purple" onClick={() => setVisible(true)} />
           {visible && (
             <ITToast
               message={msg}
@@ -102,10 +105,10 @@ export const ToastShowcase = () => {
       }
       controls={
         <>
-          <ITInput name="msg_ctrl" label="Mensaje" value={msg} onChange={(e: any) => setMsg(e.target.value)} onBlur={() => { }} />
+          <ITInput name="msg_ctrl" label={t("showcase.feedback.message")} value={msg} onChange={(e: any) => setMsg(e.target.value)} onBlur={() => { }} />
           <ITSelect
             name="type_ctrl"
-            label="Tipo de Notificación"
+            label={t("showcase.feedback.notificationType")}
             value={type}
             onChange={(e: any) => setType(e.target.value)}
             options={[
@@ -119,10 +122,10 @@ export const ToastShowcase = () => {
       }
       gallery={
         <div className="flex flex-wrap gap-3">
-          <ITButton label="Toast Exito" color="success" size="sm" onClick={() => { setMsg("Operación exitosa!"); setType("success"); setVisible(true); }} />
-          <ITButton label="Toast Error" color="danger" size="sm" onClick={() => { setMsg("Ocurrió un fallo de red."); setType("error"); setVisible(true); }} />
-          <ITButton label="Toast Warning" color="warning" size="sm" onClick={() => { setMsg("Licencia por expirar."); setType("warning"); setVisible(true); }} />
-          <ITButton label="Toast Info" color="info" size="sm" onClick={() => { setMsg("Actualización disponible."); setType("info"); setVisible(true); }} />
+          <ITButton label={t("showcase.feedback.toastSuccess")} color="success" size="sm" onClick={() => { setMsg(t("showcase.feedback.msgSuccess")); setType("success"); setVisible(true); }} />
+          <ITButton label={t("showcase.feedback.toastError")} color="danger" size="sm" onClick={() => { setMsg(t("showcase.feedback.msgError")); setType("error"); setVisible(true); }} />
+          <ITButton label={t("showcase.feedback.toastWarning")} color="warning" size="sm" onClick={() => { setMsg(t("showcase.feedback.msgWarning")); setType("warning"); setVisible(true); }} />
+          <ITButton label={t("showcase.feedback.toastInfo")} color="info" size="sm" onClick={() => { setMsg(t("showcase.feedback.msgInfo")); setType("info"); setVisible(true); }} />
         </div>
       }
     />
@@ -131,6 +134,7 @@ export const ToastShowcase = () => {
 
 // 3. ITLoader Showcase
 export const LoaderShowcase = () => {
+  const { t } = useITTranslation();
   const [variant, setVariant] = useState<any>("spinner");
   const [size, setSize] = useState<any>("md");
   const [color, setColor] = useState("primary");
@@ -140,7 +144,7 @@ export const LoaderShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITLoader"
-      description="Indicadores de carga animados con soporte para múltiples estilos visuales."
+      description={t("showcase.feedback.loaderDesc")}
       code={code}
       demo={
         <div className="w-full max-w-xs flex items-center justify-center min-h-[80px]">
@@ -151,7 +155,7 @@ export const LoaderShowcase = () => {
         <>
           <ITSelect
             name="var_ctrl"
-            label="Tipo de Cargador"
+            label={t("showcase.feedback.loaderVariant")}
             value={variant}
             onChange={(e: any) => setVariant(e.target.value)}
             options={[
@@ -163,7 +167,7 @@ export const LoaderShowcase = () => {
           />
           <ITSelect
             name="sz_ctrl"
-            label="Tamaño"
+            label={t("showcase.common.size")}
             value={size}
             onChange={(e: any) => setSize(e.target.value)}
             options={[
@@ -176,7 +180,7 @@ export const LoaderShowcase = () => {
           />
           <ITSelect
             name="col_ctrl"
-            label="Color"
+            label={t("showcase.common.color")}
             value={color}
             onChange={(e: any) => setColor(e.target.value)}
             options={[
@@ -204,6 +208,7 @@ export const LoaderShowcase = () => {
 
 // 4. ITThemeProvider Showcase
 export const ThemeProviderShowcase = () => {
+  const { t } = useITTranslation();
   const { applyPreset, resolvedTheme, darkModeMode, setDarkModeMode } = useITTheme();
 
   const code = `// En index.tsx o App.tsx\n<ITThemeProvider>\n  <App />\n</ITThemeProvider>\n\n// En tu componente:\nconst { palette, resolvedTheme, darkModeMode, setDarkModeMode, applyPreset } = useITTheme();`;
@@ -211,19 +216,19 @@ export const ThemeProviderShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITThemeProvider"
-      description="Inyector dinámico de tokens CSS que gestiona el modo oscuro/claro y las paletas de colores unificadas."
+      description={t("showcase.feedback.themeDesc")}
       code={code}
       demo={
         <ITStack spacing={5} className="w-full max-w-md">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3 block">
-              Modo de Apariencia
+              {t("showcase.feedback.appearanceMode")}
             </span>
             <div className="flex flex-wrap gap-2">
               {(["light", "dark", "system"] as const).map((mode) => (
                 <ITButton
                   key={mode}
-                  label={mode === "light" ? "☀️ Claro" : mode === "dark" ? "🌙 Oscuro" : "💻 Sistema"}
+                  label={mode === "light" ? t("showcase.feedback.modeLight") : mode === "dark" ? t("showcase.feedback.modeDark") : t("showcase.feedback.modeSystem")}
                   color={darkModeMode === mode ? "primary" : "secondary"}
                   onClick={() => setDarkModeMode(mode)}
                   size="sm"
@@ -231,13 +236,13 @@ export const ThemeProviderShowcase = () => {
               ))}
             </div>
             <p className="text-xs text-slate-500 mt-2">
-              Tema actual: <strong>{resolvedTheme === "dark" ? "Oscuro" : "Claro"}</strong>
+              {t("showcase.feedback.currentTheme")} <strong>{resolvedTheme === "dark" ? t("showcase.feedback.modeDarkName") : t("showcase.feedback.modeLightName")}</strong>
             </p>
           </div>
 
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3 block">
-              Presets Rápidos
+              {t("showcase.feedback.quickPresets")}
             </span>
             <ITGrid container spacing={2}>
               {PRESETS.map((preset) => {
@@ -271,10 +276,10 @@ export const ThemeProviderShowcase = () => {
       controls={
         <ITStack spacing={3}>
           <p className="text-xs text-slate-500">
-            Haz clic en el botón flotante de paleta 🎨 en la esquina inferior derecha para abrir el diseñador completo.
+            {t("showcase.feedback.themeHint1")}
           </p>
           <p className="text-xs text-slate-500">
-            Allí puedes ajustar cada color, guardar temas personalizados y alternar entre modo claro/oscuro.
+            {t("showcase.feedback.themeHint2")}
           </p>
         </ITStack>
       }

@@ -11,9 +11,9 @@ export interface ITLineBarChartProps {
   data: ITLineBarDatum[];
   /** Etiqueta accesible del gráfico. */
   ariaLabel: string;
-  /** Nombre de la serie de la línea (leyenda y tooltip). */
+  /** Nombre de la serie de la línea (leyenda y tooltip). @default i18n `lineBarChart.lineLabel` ("Serie A") */
   lineLabel?: string;
-  /** Nombre de la serie de barras (leyenda y tooltip). */
+  /** Nombre de la serie de barras (leyenda y tooltip). @default i18n `lineBarChart.barLabel` ("Serie B") */
   barLabel?: string;
   /** Color de la línea (por defecto el verde de la casa). */
   lineColor?: string;

@@ -9,6 +9,7 @@ import { useFloatingPanel } from "@/hooks/useFloatingPanel";
 import { theme } from "@/theme/theme";
 import { ITTimePickerProps } from "./timePicker.props";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Time selection input with a dual-column dropdown (hours / minutes).
@@ -35,7 +36,7 @@ export default function ITTimePicker({
   name,
   value,
   label,
-  placeholder = "HH:MM",
+  placeholder,
   onChange,
   onBlur,
   required,
@@ -47,6 +48,7 @@ export default function ITTimePicker({
   variant = "primary",
   color = "primary",
 }: ITTimePickerProps) {
+  const { t } = useITTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState(value || "");
   const [isValidTime, setIsValidTime] = useState(true);
@@ -185,7 +187,7 @@ export default function ITTimePicker({
       <ITInput
         name={name}
         label={label}
-        placeholder={placeholder}
+        placeholder={placeholder ?? t("timePicker.placeholder")}
         type="text"
         value={inputValue}
         onChange={handleInputChange}
@@ -196,7 +198,7 @@ export default function ITTimePicker({
         variant={variant}
         size={size}
         touched={touched}
-        error={!isValidTime ? "Hora inválida" : typeof error === 'string' ? error : undefined}
+        error={!isValidTime ? t("timePicker.invalid") : typeof error === 'string' ? error : undefined}
         iconRight={
           <FaClock
             onClick={() => {
@@ -223,9 +225,9 @@ export default function ITTimePicker({
         >
           <div className="flex bg-secondary-50 border-b border-secondary-100 text-xs font-semibold text-secondary-500 uppercase tracking-wider">
             <ITText as="div" className="flex-1 text-center py-2 border-r border-secondary-100">
-              Horas
+              {t("timePicker.hours")}
             </ITText>
-            <ITText as="div" className="flex-1 text-center py-2">Minutos</ITText>
+            <ITText as="div" className="flex-1 text-center py-2">{t("timePicker.minutes")}</ITText>
           </div>
 
           <div className="flex h-56 relative bg-white">
@@ -316,7 +318,7 @@ export default function ITTimePicker({
               size="sm"
               onClick={handleConfirm}
             >
-              <ITText as="span">Aceptar</ITText>
+              <ITText as="span">{t("timePicker.accept")}</ITText>
             </ITButton>
           </div>
         </div>,

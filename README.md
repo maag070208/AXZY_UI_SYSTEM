@@ -120,13 +120,7 @@ El sandbox usa hash routing: `#ui-system` (landing), `#ui-system/<grupo>/<item>`
 `http://localhost:5173/#ui-system/forms/input`. La tabla de rutas y slugs vive en
 `src/sandbox/navigation.ts`.
 
-### 3. Storybook (documentación visual)
-
-```bash
-pnpm storybook
-```
-
-### 4. Build de producción
+### 3. Build de producción
 
 ```bash
 pnpm build        # alias de pnpm bundle (tsup + CSS)
@@ -144,8 +138,6 @@ pnpm bundle       # tsup + CSS
 | `pnpm build:app` | Build de la app sandbox |
 | `pnpm bundle` | Bundle del paquete (tsup + CSS) |
 | `pnpm watch` | Watch mode para desarrollo del paquete |
-| `pnpm storybook` | Storybook local |
-| `pnpm build-storybook` | Build estático de Storybook |
 | `pnpm lint` | ESLint |
 | `pnpm check:atomic` | Valida dependencias atómicas (sin imports hacia capas superiores) |
 | `pnpm check:css` | Valida aislamiento CSS (selectores `it-*`, tokens `--it-*`, sin duplicados) |
@@ -181,8 +173,7 @@ interferencia de estilos. Esto se garantiza por convención y se valida en CI:
 5. **Checks automáticos**: `pnpm check:css` (selectores/tokens genéricos) y
    `pnpm check:atomic` (grafo de dependencias) fallan si se viola la convención.
 
-Story de validación visual: `src/components/isolation/isolation.stories.tsx`
-(`Components/Isolation/CSS Encapsulation`).
+El aislamiento se valida en CI con `pnpm check:css` y `pnpm check:atomic`; ya no hay historia de Storybook de aislamiento.
 
 ---
 

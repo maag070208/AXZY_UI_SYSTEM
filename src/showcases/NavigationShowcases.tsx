@@ -11,29 +11,31 @@ import {
   ITCard
 } from "../index";
 import { ShowcaseLayout } from "./ShowcaseLayout";
+import { useITTranslation } from "@/i18n";
 
 // 1. ITTabs Showcase
 export const TabsShowcase = () => {
+  const { t } = useITTranslation();
   const [variant, setVariant] = useState<any>("line");
 
   const tabItems = [
     {
       id: "tab1",
-      label: "General",
+      label: t("showcase.nav.tabGeneral"),
       icon: <FaInfoCircle />,
-      content: <div className="p-4 text-sm text-slate-600 dark:text-slate-300">Configuración global y perfil general de la cuenta.</div>
+      content: <div className="p-4 text-sm text-slate-600 dark:text-slate-300">{t("showcase.nav.tabsGeneralBody")}</div>
     },
     {
       id: "tab2",
-      label: "Seguridad",
+      label: t("showcase.nav.tabSecurity"),
       icon: <FaSlidersH />,
-      content: <div className="p-4 text-sm text-slate-600 dark:text-slate-300">Ajustes de credenciales, MFA y logs de accesos.</div>
+      content: <div className="p-4 text-sm text-slate-600 dark:text-slate-300">{t("showcase.nav.tabsSecurityBody")}</div>
     },
     {
       id: "tab3",
-      label: "Notificaciones",
+      label: t("showcase.nav.tabNotifications"),
       icon: <FaRegBell />,
-      content: <div className="p-4 text-sm text-slate-600 dark:text-slate-300">Preferencias de alertas vía email, SMS y notificaciones PUSH.</div>
+      content: <div className="p-4 text-sm text-slate-600 dark:text-slate-300">{t("showcase.nav.tabsNotificationsBody")}</div>
     }
   ];
 
@@ -42,7 +44,7 @@ export const TabsShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITTabs"
-      description="Separadores de contenido en pestañas integrables con íconos y transiciones."
+      description={t("showcase.nav.tabsDesc")}
       code={code}
       demo={
         <div className="w-full bg-white dark:bg-slate-900 border rounded-2xl p-6 shadow-sm min-h-[160px]">
@@ -53,7 +55,7 @@ export const TabsShowcase = () => {
         <>
           <ITSelect
             name="var_ctrl"
-            label="Variante Estética"
+            label={t("showcase.nav.variantAesthetic")}
             value={variant}
             onChange={(e: any) => setVariant(e.target.value)}
             options={[
@@ -69,13 +71,14 @@ export const TabsShowcase = () => {
 
 // 2. ITStepper Showcase
 export const StepperShowcase = () => {
+  const { t } = useITTranslation();
   const [step, setStep] = useState(0);
   const [useIcons, setUseIcons] = useState(true);
 
   const steps = [
-    { label: "Validar Identidad", content: <div className="p-6">Paso 1: Sube tu documento de identidad oficial.</div> },
-    { label: "Cargar KYC", content: <div className="p-6">Paso 2: Rellena tus datos fiscales y origen de fondos.</div> },
-    { label: "Completar Firma", content: <div className="p-6">Paso 3: Realiza la firma biométrica digital.</div> }
+    { label: t("showcase.nav.stepValidate"), content: <div className="p-6">{t("showcase.nav.stepValidateBody")}</div> },
+    { label: t("showcase.nav.stepKyc"), content: <div className="p-6">{t("showcase.nav.stepKycBody")}</div> },
+    { label: t("showcase.nav.stepSign"), content: <div className="p-6">{t("showcase.nav.stepSignBody")}</div> }
   ];
 
   const code = `<ITStepper\n  steps={steps}\n  currentStep={${step}}\n  useIcons={${useIcons}}\n  onStepChange={(idx) => setStep(idx)}\n/>`;
@@ -83,7 +86,7 @@ export const StepperShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITStepper"
-      description="Barra e indicador secuencial de pasos para completar procesos guiados complejos."
+      description={t("showcase.nav.stepperDesc")}
       code={code}
       demo={
         <div className="w-full">
@@ -92,18 +95,18 @@ export const StepperShowcase = () => {
             currentStep={step}
             useIcons={useIcons}
             onStepChange={setStep}
-            onFinish={() => alert("Proceso completado exitosamente!")}
+            onFinish={() => alert(t("showcase.nav.stepperFinish"))}
           />
         </div>
       }
       controls={
         <>
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">Usar íconos</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.nav.useIcons")}</span>
             <ITSlideToggle isOn={useIcons} onToggle={setUseIcons} size="sm" />
           </div>
           <div className="flex justify-between items-center pt-2">
-            <span className="text-sm font-semibold text-gray-700">Reiniciar Paso</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.nav.resetStep")}</span>
             <button onClick={() => setStep(0)} className="p-2 bg-slate-100 rounded-lg hover:bg-slate-200 text-slate-800">
               <FaSync size={12} />
             </button>
@@ -116,6 +119,7 @@ export const StepperShowcase = () => {
 
 // 3. ITPagination Showcase
 export const PaginationShowcase = () => {
+  const { t } = useITTranslation();
   const [page, setPage] = useState(1);
   const [color, setColor] = useState<any>("primary");
 
@@ -124,7 +128,7 @@ export const PaginationShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITPagination"
-      description="Controlador de navegación de páginas numeradas con botones de dirección rápida."
+      description={t("showcase.nav.paginationDesc")}
       code={code}
       demo={
         <div className="flex flex-col items-center gap-3">
@@ -134,14 +138,14 @@ export const PaginationShowcase = () => {
             onPageChange={setPage}
             color={color}
           />
-          <span className="text-xs font-mono text-slate-500">Página actual activa: {page} de 10</span>
+          <span className="text-xs font-mono text-slate-500">{t("showcase.nav.currentPage", { page })}</span>
         </div>
       }
       controls={
         <>
           <ITSelect
             name="col_ctrl"
-            label="Color del Botón Activo"
+            label={t("showcase.nav.activeColorLabel")}
             value={color}
             onChange={(e: any) => setColor(e.target.value)}
             options={[
@@ -162,6 +166,7 @@ export const PaginationShowcase = () => {
 
 // 4. ITTripleFilter Showcase
 export const TripleFilterShowcase = () => {
+  const { t } = useITTranslation();
   const [filter, setFilter] = useState("all");
 
   const code = `<ITTripleFilter\n  value="${filter}"\n  onChange={(val) => setFilter(String(val))}\n  options={[\n    { label: 'Todos', value: 'all' },\n    { label: 'Activos', value: 'active' },\n    { label: 'Inactivos', value: 'inactive' }\n  ]}\n/>`;
@@ -169,7 +174,7 @@ export const TripleFilterShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITTripleFilter"
-      description="Selector segmentado rápido diseñado típicamente para filtros rápidos de 3 estados."
+      description={t("showcase.nav.tripleFilterDesc")}
       code={code}
       demo={
         <div className="flex flex-col items-center gap-4">
@@ -177,17 +182,17 @@ export const TripleFilterShowcase = () => {
             value={filter}
             onChange={(val) => setFilter(String(val))}
             options={[
-              { label: "Todos", value: "all" },
-              { label: "Activos", value: "active" },
-              { label: "Inactivos", value: "inactive" }
+              { label: t("showcase.nav.filterAll"), value: "all" },
+              { label: t("showcase.nav.filterActive"), value: "active" },
+              { label: t("showcase.nav.filterInactive"), value: "inactive" }
             ]}
           />
-          <p className="text-xs text-slate-500 font-mono">Filtro activo: "{filter}"</p>
+          <p className="text-xs text-slate-500 font-mono">{t("showcase.nav.activeFilter", { filter })}</p>
         </div>
       }
       controls={
         <div className="p-2 bg-slate-50 dark:bg-slate-900 rounded-lg text-xs">
-          <p className="text-slate-500">Proporciona un layout de tipo segmentado con animación al cambiar entre las opciones disponibles.</p>
+          <p className="text-slate-500">{t("showcase.nav.tripleFilterHint")}</p>
         </div>
       }
     />
@@ -196,13 +201,14 @@ export const TripleFilterShowcase = () => {
 
 // ITDropdownMenu Showcase
 export const DropdownMenuShowcase = () => {
-  const [lastAction, setLastAction] = useState<string>("—");
+  const { t } = useITTranslation();
+  const [lastAction, setLastAction] = useState<string>(t("showcase.nav.none"));
 
   const items = [
-    { id: "edit", label: "Editar", icon: <FaEdit />, onClick: () => setLastAction("Editar") },
-    { id: "copy", label: "Duplicar", icon: <FaCopy />, shortcut: "⌘D", onClick: () => setLastAction("Duplicar") },
-    { id: "download", label: "Descargar", icon: <FaDownload />, disabled: true },
-    { id: "delete", label: "Eliminar", icon: <FaTrash />, danger: true, divider: true, onClick: () => setLastAction("Eliminar") },
+    { id: "edit", label: t("showcase.nav.actionEdit"), icon: <FaEdit />, onClick: () => setLastAction(t("showcase.nav.actionEdit")) },
+    { id: "copy", label: t("showcase.nav.actionDuplicate"), icon: <FaCopy />, shortcut: "⌘D", onClick: () => setLastAction(t("showcase.nav.actionDuplicate")) },
+    { id: "download", label: t("showcase.nav.actionDownload"), icon: <FaDownload />, disabled: true },
+    { id: "delete", label: t("showcase.nav.actionDelete"), icon: <FaTrash />, danger: true, divider: true, onClick: () => setLastAction(t("showcase.nav.actionDelete")) },
   ];
 
   const code = `<ITDropdownMenu\n  items={[\n    { id: 'edit', label: 'Editar', icon: <FaEdit />, onClick: edit },\n    { id: 'delete', label: 'Eliminar', icon: <FaTrash />, danger: true, divider: true, onClick: remove },\n  ]}\n/>`;
@@ -210,15 +216,15 @@ export const DropdownMenuShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITDropdownMenu"
-      description="Menú de acciones con navegación por teclado y semántica ARIA. Se renderiza en portal, por lo que no lo recorta un ITCard ni ancestros con overflow: hidden."
+      description={t("showcase.nav.dropdownDesc")}
       code={code}
       demo={
         <div className="w-full max-w-md">
-          <ITCard title="Acciones de fila">
+          <ITCard title={t("showcase.nav.rowActions")}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Reporte Q3.pdf</p>
-                <p className="text-xs text-slate-500">Última acción: {lastAction}</p>
+                <p className="text-xs text-slate-500">{t("showcase.nav.lastAction", { action: lastAction })}</p>
               </div>
               <ITDropdownMenu items={items} />
             </div>
@@ -227,14 +233,14 @@ export const DropdownMenuShowcase = () => {
       }
       controls={
         <p className="text-xs text-slate-500">
-          Teclado: flechas para navegar, Enter para activar, Esc para cerrar. El menú se abre dentro del ITCard sin recortarse.
+          {t("showcase.nav.dropdownKeyboardHint")}
         </p>
       }
       gallery={
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="w-full max-w-xs">
-            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Trigger personalizado</p>
-            <ITDropdownMenu items={items} trigger={<span className="text-sm font-semibold px-1">Acciones</span>} triggerLabel="Acciones" placement="bottom-start" />
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">{t("showcase.nav.customTrigger")}</p>
+            <ITDropdownMenu items={items} trigger={<span className="text-sm font-semibold px-1">{t("showcase.nav.actions")}</span>} triggerLabel={t("showcase.nav.actions")} placement="bottom-start" />
           </div>
           <div className="w-full max-w-xs">
             <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Placement top-start</p>

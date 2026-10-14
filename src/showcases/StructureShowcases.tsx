@@ -35,6 +35,7 @@ import {
 } from "../index";
 import type { ITSidebarProps } from "../index";
 import { ShowcaseLayout, CodeViewer } from "./ShowcaseLayout";
+import { useITTranslation } from "@/i18n";
 
 // ─────────────────────────────────────────
 // 1. ITCard Showcase
@@ -252,6 +253,7 @@ const GallerySection = ({ title, subtitle, children }: { title: string; subtitle
 );
 
 const PatternCard = ({ title, desc, code, children }: { title: string; desc?: string; code?: string; children: React.ReactNode }) => {
+  const { t } = useITTranslation();
   const [showCode, setShowCode] = useState(false);
   return (
     <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
@@ -264,7 +266,7 @@ const PatternCard = ({ title, desc, code, children }: { title: string; desc?: st
           <ITButton variant="outlined" color="gray" size="sm" onClick={() => setShowCode(!showCode)}>
             <ITFlex align="center" gap={1}>
               <FaCode size={9} />
-              {showCode ? "Hide code" : "Code"}
+              {showCode ? t("showcase.common.hideCode") : t("showcase.common.code")}
             </ITFlex>
           </ITButton>
         )}
@@ -280,6 +282,7 @@ const PatternCard = ({ title, desc, code, children }: { title: string; desc?: st
 };
 
 export const CardShowcase = () => {
+  const { t } = useITTranslation();
   const [title, setTitle] = useState("Monthly revenue");
   const [showActions, setShowActions] = useState(true);
   const [showImage, setShowImage] = useState(false);
@@ -301,7 +304,7 @@ export const CardShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITCard"
-      description="Contenedor multipropósito con cabecera opcional, imagen, contenido y pie de acciones. Se vuelve interactivo con `onClick` (efecto hover)."
+      description={t("showcase.structure.cardDesc")}
       code={buildCode()}
       demo={
         <div className="w-full max-w-xl flex flex-col">
@@ -327,7 +330,7 @@ export const CardShowcase = () => {
 
           {/* Fixed footer with active-property badges */}
           <div className="sticky bottom-0 mt-4 -mx-6 -mb-6 px-6 py-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm border-t border-slate-200 dark:border-slate-700 flex items-center flex-wrap gap-1.5 text-[10px] font-mono">
-            <span className="text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 mr-1">Active:</span>
+            <span className="text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 mr-1">{t("showcase.common.activeLabel")}</span>
             {title && <span className="px-2 py-0.5 rounded-md bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold">title</span>}
             {showImage && <span className="px-2 py-0.5 rounded-md bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">image</span>}
             {showActions && <span className="px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">actions</span>}
@@ -339,22 +342,22 @@ export const CardShowcase = () => {
         <ITStack spacing={4}>
           <ITInput
             name="title_ctrl"
-            label="Title"
+            label={t("showcase.structure.cardTitleLabel")}
             value={title}
             onChange={(e: any) => setTitle(e.target.value)}
             onBlur={() => { }}
-            placeholder="Leave empty to hide"
+            placeholder={t("showcase.structure.cardTitlePlaceholder")}
           />
           <div className="flex items-center justify-between pt-1">
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Show image</span>
+            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.structure.showImage")}</span>
             <ITSlideToggle isOn={showImage} onToggle={setShowImage} size="sm" />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Show actions</span>
+            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.structure.showActions")}</span>
             <ITSlideToggle isOn={showActions} onToggle={setShowActions} size="sm" />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Interactive (onClick)</span>
+            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.structure.interactiveOnClick")}</span>
             <ITSlideToggle isOn={clickable} onToggle={setClickable} size="sm" />
           </div>
         </ITStack>
@@ -362,14 +365,14 @@ export const CardShowcase = () => {
       gallery={
         <ITStack spacing={8}>
           <GallerySection
-            title="Real UI cases"
-            subtitle="Production-ready card layouts built with ITCard"
+            title={t("showcase.structure.galleryRealCases")}
+            subtitle={t("showcase.structure.galleryCardsSubtitle")}
           >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
               {/* 1. Course progress — ITProgress + ITBadget + ITDivider + ITText */}
               <PatternCard
-                title="Course progress"
+                title={t("showcase.structure.patternCourseProgress")}
                 desc="ITProgress + ITBadget + ITDivider + ITText"
                 code={CARD_PATTERN_CODES.course}
               >
@@ -403,7 +406,7 @@ export const CardShowcase = () => {
 
               {/* 2. Featured pricing plan — ITBadget outside + ITFlex + ITStack + ITDivider */}
               <PatternCard
-                title="Featured pricing plan"
+                title={t("showcase.structure.patternPricing")}
                 desc="ITBadget + ITDivider + ITStack with ITFlex items"
                 code={CARD_PATTERN_CODES.pricing}
               >
@@ -443,7 +446,7 @@ export const CardShowcase = () => {
 
               {/* 3. Activity feed item — ITText + ITBadget for commit hash + ITDivider separators */}
               <PatternCard
-                title="Activity feed item"
+                title={t("showcase.structure.patternActivity")}
                 desc="ITText + ITBadget (commit hash) + ITDivider separators"
                 code={CARD_PATTERN_CODES.activity}
               >
@@ -485,7 +488,7 @@ export const CardShowcase = () => {
 
               {/* 4. Team member profile — ITFlex + ITBadget for skills + ITText throughout */}
               <PatternCard
-                title="Team member profile"
+                title={t("showcase.structure.patternTeamMember")}
                 desc="ITFlex + ITBadget skills + ITText throughout"
                 code={CARD_PATTERN_CODES.teamMember}
               >
@@ -530,6 +533,7 @@ export const CardShowcase = () => {
 
 // 2. ITText Showcase
 export const TextShowcase = () => {
+  const { t } = useITTranslation();
   const [element, setElement] = useState("p");
   const [size, setSize] = useState("text-base");
   const [bold, setBold] = useState(false);
@@ -583,7 +587,7 @@ export const TextShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITText"
-      description="Wrapper tipográfico semántico. Renderiza cualquier elemento HTML, con soporte para truncado por caracteres, clamp de líneas y corte programático."
+      description={t("showcase.structure.textDesc")}
       code={buildCode()}
       demo={
         <div className="w-full flex flex-col">
@@ -592,7 +596,7 @@ export const TextShowcase = () => {
               {/* BIG element indicator — makes the `as` change unmissable */}
               <ITStack spacing={2} alignItems="center" className="mb-5 text-center">
                 <ITText muted as="span" className="text-[10px] uppercase tracking-wider font-bold">
-                  Rendering as
+                  {t("showcase.structure.renderingAs")}
                 </ITText>
                 <code
                   key={element}
@@ -617,7 +621,7 @@ export const TextShowcase = () => {
 
           {/* Fixed footer with active-property badges */}
           <div className="sticky bottom-0 mt-4 -mx-6 -mb-6 px-6 py-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm border-t border-slate-200 dark:border-slate-700 flex items-center flex-wrap gap-1.5 text-[10px] font-mono">
-            <span className="text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 mr-1">Active:</span>
+            <span className="text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 mr-1">{t("showcase.common.activeLabel")}</span>
             {element !== "p" && <span className="px-2 py-0.5 rounded-md bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold">as=&quot;{element}&quot;</span>}
             <span className="px-2 py-0.5 rounded-md bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">{size}</span>
             {bold && <span className="px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">font-bold</span>}
@@ -632,7 +636,7 @@ export const TextShowcase = () => {
         <ITStack spacing={4}>
           <ITSelect
             name="elem_ctrl"
-            label="Elemento HTML (as)"
+            label={t("showcase.structure.elementAs")}
             value={element}
             onChange={(e) => setElement(e.target.value)}
             options={[
@@ -647,7 +651,7 @@ export const TextShowcase = () => {
           />
           <ITSelect
             name="sz_ctrl"
-            label="Tamaño"
+            label={t("showcase.common.size")}
             value={size}
             onChange={(e) => setSize(e.target.value)}
             options={[
@@ -661,7 +665,7 @@ export const TextShowcase = () => {
           />
           <ITSelect
             name="clamp_ctrl"
-            label="Número de líneas (lineClamp)"
+            label={t("showcase.structure.lineClampLabel")}
             value={String(lineClamp)}
             onChange={(e) => setLineClamp(Number(e.target.value))}
             options={[
@@ -674,39 +678,39 @@ export const TextShowcase = () => {
           />
           <ITInput
             name="max_ctrl"
-            label="Texto máximo (caracteres)"
+            label={t("showcase.structure.maxTextLabel")}
             type="number"
             value={maxLength}
             onChange={(e) => setMaxLength(e.target.value)}
-            placeholder="0 = sin límite"
+            placeholder={t("showcase.structure.noLimit")}
           />
           <ITFlex justify="between" align="center">
             <ITText muted as="span" className="text-[10px]">
-              Trunca con "…" al superar (0 = desactivado).
+              {t("showcase.structure.truncateHint")}
             </ITText>
             <ITButton variant="text" color="primary" size="sm" onClick={() => setMaxLength("0")}>
-              Reset
+              {t("showcase.common.reset")}
             </ITButton>
           </ITFlex>
           <ITInput
             name="break_ctrl"
-            label="Salto de línea después de (caracteres)"
+            label={t("showcase.structure.breakLabel")}
             type="number"
             value={breakLength}
             onChange={(e) => setBreakLength(e.target.value)}
-            placeholder="0 = sin salto"
+            placeholder={t("showcase.structure.noBreak")}
           />
           <ITFlex justify="between" align="center">
             <ITText muted as="span" className="text-[10px]">
-              Inserta un &lt;br /&gt; al superar el límite.
+              {t("showcase.structure.brHint")}
             </ITText>
             <ITButton variant="text" color="primary" size="sm" onClick={() => setBreakLength("0")}>
-              Reset
+              {t("showcase.common.reset")}
             </ITButton>
           </ITFlex>
           <div>
             <ITText as="label" htmlFor="break_ctrl" className="text-xs font-semibold text-slate-600 dark:text-slate-400 block mb-1">
-              breakLengthWrap (corte cada N caracteres)
+              {t("showcase.structure.breakWrapLabel")}
             </ITText>
             <input
               id="break_ctrl"
@@ -716,27 +720,27 @@ export const TextShowcase = () => {
               value={breakLength}
               onChange={(e) => setBreakLength(e.target.value)}
               className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2 text-xs text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-primary-500"
-              placeholder="0 = sin corte"
+              placeholder={t("showcase.structure.noCut")}
             />
             <ITFlex justify="between" align="center" className="mt-1.5">
               <ITText muted as="span" className="text-[10px]">
-                Inserta oportunidades de corte cada N chars (0 = desactivado).
+                {t("showcase.structure.cutHint")}
               </ITText>
               <button
                 type="button"
                 onClick={() => setBreakLength("0")}
                 className="text-[10px] font-semibold text-primary-600 hover:text-primary-700 dark:text-primary-400"
               >
-                Reset
+                {t("showcase.common.reset")}
               </button>
             </ITFlex>
           </div>
           <div className="flex items-center justify-between pt-1">
-            <ITText as="span" className="text-sm font-semibold text-slate-700 dark:text-slate-300">Negrita (font-bold)</ITText>
+            <ITText as="span" className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.structure.boldLabel")}</ITText>
             <ITSlideToggle isOn={bold} onToggle={setBold} size="sm" />
           </div>
           <div className="flex items-center justify-between">
-            <ITText as="span" className="text-sm font-semibold text-slate-700 dark:text-slate-300">Muted color</ITText>
+            <ITText as="span" className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.structure.mutedLabel")}</ITText>
             <ITSlideToggle isOn={muted} onToggle={setMuted} size="sm" />
           </div>
         </ITStack>
@@ -744,14 +748,14 @@ export const TextShowcase = () => {
       gallery={
         <ITStack spacing={8}>
           <GallerySection
-            title="Real UI cases"
-            subtitle="Production-ready typography patterns built with ITText"
+            title={t("showcase.structure.galleryRealCases")}
+            subtitle={t("showcase.structure.galleryTextSubtitle")}
           >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
               {/* 1. Article header — eyebrow + title + meta */}
               <PatternCard
-                title="Article header"
+                title={t("showcase.structure.patternArticleHeader")}
                 desc="eyebrow tag + h1 title + author/date/read-time meta"
                 code={TEXT_PATTERN_CODES.articleHeader}
               >
@@ -779,7 +783,7 @@ export const TextShowcase = () => {
 
               {/* 2. Section heading — h2 + description + action link */}
               <PatternCard
-                title="Section heading"
+                title={t("showcase.structure.patternSectionHeading")}
                 desc="h2 title + description + action link on the right"
                 code={TEXT_PATTERN_CODES.sectionHeading}
               >
@@ -798,7 +802,7 @@ export const TextShowcase = () => {
 
               {/* 3. Empty state — big title + description + muted helper */}
               <PatternCard
-                title="Empty state"
+                title={t("showcase.structure.patternEmptyState")}
                 desc="big title + description + muted helper text"
                 code={TEXT_PATTERN_CODES.emptyState}
               >
@@ -826,7 +830,7 @@ export const TextShowcase = () => {
 
               {/* 4. Inline content — paragraph with bold name + inline code + muted meta */}
               <PatternCard
-                title="Inline content"
+                title={t("showcase.structure.patternInlineContent")}
                 desc="paragraph with bold name + inline code + muted timestamp"
                 code={TEXT_PATTERN_CODES.inlineContent}
               >
@@ -854,7 +858,7 @@ export const TextShowcase = () => {
 
               {/* 5. Form labels — label + helper text */}
               <PatternCard
-                title="Form labels"
+                title={t("showcase.structure.patternFormLabels")}
                 desc="label + required asterisk + muted helper text"
                 code={TEXT_PATTERN_CODES.formLabels}
               >
@@ -903,6 +907,7 @@ export const TextShowcase = () => {
 
 // 3. ITLayout & ITNavbar Showcase
 export const LayoutShowcase = () => {
+  const { t } = useITTranslation();
   const [collapsed, setCollapsed] = useState(true);
   const [activeId, setActiveId] = useState("dashboard");
   const [navActiveId, setNavActiveId] = useState<string | null>("1");
@@ -913,55 +918,55 @@ export const LayoutShowcase = () => {
     centerContent: (
       <input
         type="search"
-        placeholder="Buscar componente…"
+        placeholder={t("sandbox.search.placeholder")}
         className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-primary-500/40"
       />
     ),
     navItems: [
-      { id: "home", label: "Inicio", icon: <FaHome />, action: () => setActiveId("home") },
-      { id: "docs", label: "Documentos", icon: <FaFileAlt />, action: () => setActiveId("docs") },
-      { id: "alerts", label: "Alertas", icon: <FaBell />, action: () => setActiveId("alerts") },
+      { id: "home", label: t("showcase.common.home"), icon: <FaHome />, action: () => setActiveId("home") },
+      { id: "docs", label: t("showcase.structure.navDocuments"), icon: <FaFileAlt />, action: () => setActiveId("docs") },
+      { id: "alerts", label: t("showcase.structure.navAlerts"), icon: <FaBell />, action: () => setActiveId("alerts") },
     ],
     onNavItemClick: (id: string) => setActiveId(id),
     userMenu: {
       userName: "Auditor AXZY",
       userEmail: "auditor@axzy.dev",
       menuItems: [
-        { label: "Ajustes", onClick: () => {} },
-        { label: "Cerrar sesión", onClick: () => {} },
+        { label: t("showcase.structure.navSettings"), onClick: () => {} },
+        { label: t("showcase.structure.navLogout"), onClick: () => {} },
       ],
     },
   };
 
   const sidebar: ITSidebarProps = {
     navigationItems: [
-      { id: "dashboard", label: "Dashboard", icon: <FaChartLine />, isActive: activeId === "dashboard", action: () => setActiveId("dashboard") },
-      { id: "users", label: "Usuarios", icon: <FaUsers />, isActive: activeId === "users", action: () => setActiveId("users"), badge: 4 },
+      { id: "dashboard", label: t("showcase.structure.navDashboard"), icon: <FaChartLine />, isActive: activeId === "dashboard", action: () => setActiveId("dashboard") },
+      { id: "users", label: t("showcase.structure.navUsers"), icon: <FaUsers />, isActive: activeId === "users", action: () => setActiveId("users"), badge: 4 },
       {
         id: "sales",
-        label: "Ventas",
+        label: t("showcase.structure.navSales"),
         icon: <FaShoppingCart />,
         isActive: activeId === "sales" || activeId === "orders" || activeId === "quotes",
         subitems: [
           {
             id: "sales-gestion",
-            label: "Gestión",
+            label: t("showcase.structure.navManagement"),
             items: [
-              { id: "orders", label: "Órdenes", action: () => setActiveId("orders") },
-              { id: "invoices", label: "Facturas", action: () => setActiveId("invoices") },
+              { id: "orders", label: t("showcase.structure.navOrders"), action: () => setActiveId("orders") },
+              { id: "invoices", label: t("showcase.structure.navInvoices"), action: () => setActiveId("invoices") },
             ],
           },
           {
             id: "sales-catalogo",
-            label: "Catálogo",
+            label: t("showcase.structure.navCatalog"),
             items: [
-              { id: "quotes", label: "Cotizaciones", action: () => setActiveId("quotes") },
+              { id: "quotes", label: t("showcase.structure.navQuotes"), action: () => setActiveId("quotes") },
             ],
           },
         ],
       },
-      { id: "products", label: "Productos", icon: <FaBoxOpen />, isActive: activeId === "products", action: () => setActiveId("products"), badge: 12 },
-      { id: "settings", label: "Configuración", icon: <FaCog />, isActive: activeId === "settings", action: () => setActiveId("settings"), badge: 3, badgeProps: { color: "warning", variant: "outlined" } },
+      { id: "products", label: t("showcase.structure.navProducts"), icon: <FaBoxOpen />, isActive: activeId === "products", action: () => setActiveId("products"), badge: 12 },
+      { id: "settings", label: t("showcase.structure.navConfiguration"), icon: <FaCog />, isActive: activeId === "settings", action: () => setActiveId("settings"), badge: 3, badgeProps: { color: "warning", variant: "outlined" } },
     ],
     isCollapsed: collapsed,
     header: (
@@ -976,7 +981,7 @@ export const LayoutShowcase = () => {
     notification: {
       count: 5,
       icon: <FaBell />,
-      label: "Notificaciones",
+      label: t("sandbox.notifications"),
       onClick: () => setActiveId("notifications"),
       badgeProps: { color: "danger" },
     },
@@ -1027,9 +1032,9 @@ export const LayoutShowcase = () => {
 </ITLayout>`;
 
   const navbarItems = [
-    { id: "1", label: "Inicio", icon: <FaHome />, isActive: navActiveId === "1", action: () => setNavActiveId("1") },
-    { id: "2", label: "Documentos", icon: <FaFileAlt />, isActive: navActiveId === "2", action: () => setNavActiveId("2") },
-    { id: "3", label: "Alertas", icon: <FaBell />, isActive: navActiveId === "3", action: () => setNavActiveId("3") },
+    { id: "1", label: t("showcase.common.home"), icon: <FaHome />, isActive: navActiveId === "1", action: () => setNavActiveId("1") },
+    { id: "2", label: t("showcase.structure.navDocuments"), icon: <FaFileAlt />, isActive: navActiveId === "2", action: () => setNavActiveId("2") },
+    { id: "3", label: t("showcase.structure.navAlerts"), icon: <FaBell />, isActive: navActiveId === "3", action: () => setNavActiveId("3") },
   ];
 
   const navbarCode = `<ITNavbar
@@ -1056,28 +1061,28 @@ export const LayoutShowcase = () => {
           <ITLayout topBar={topBar} sidebar={sidebar}>
             <ITStack spacing={5}>
               <ITPageHeader
-                title="Dashboard"
-                description="Resumen general del sistema"
+                title={t("showcase.structure.navDashboard")}
+                description={t("showcase.structure.dashboardDesc")}
                 icon={<FaChartLine size={20} />}
                 iconColor="#6366f1"
               />
               <ITGrid container spacing={3}>
                 <ITGrid item xs={12} sm={6} lg={3}>
-                  <ITStatCard label="Usuarios" value="1,245" trend="+12%" trendDirection="up" />
+                  <ITStatCard label={t("showcase.structure.navUsers")} value="1,245" trend="+12%" trendDirection="up" />
                 </ITGrid>
                 <ITGrid item xs={12} sm={6} lg={3}>
-                  <ITStatCard label="Ventas Hoy" value="$4,320" trend="+5.4%" trendDirection="up" color="bg-blue-50 dark:bg-blue-950/20" />
+                  <ITStatCard label={t("showcase.structure.statSalesToday")} value="$4,320" trend="+5.4%" trendDirection="up" color="bg-blue-50 dark:bg-blue-950/20" />
                 </ITGrid>
                 <ITGrid item xs={12} sm={6} lg={3}>
-                  <ITStatCard label="Órdenes" value="89" trend="-2.1%" trendDirection="down" color="bg-amber-50 dark:bg-amber-950/20" />
+                  <ITStatCard label={t("showcase.structure.navOrders")} value="89" trend="-2.1%" trendDirection="down" color="bg-amber-50 dark:bg-amber-950/20" />
                 </ITGrid>
                 <ITGrid item xs={12} sm={6} lg={3}>
-                  <ITStatCard label="Tickets" value="12" trend="-8%" trendDirection="down" color="bg-rose-50 dark:bg-rose-950/20" />
+                  <ITStatCard label={t("showcase.structure.statTickets")} value="12" trend="-8%" trendDirection="down" color="bg-rose-50 dark:bg-rose-950/20" />
                 </ITGrid>
               </ITGrid>
-              <ITCard title="Actividad reciente">
+              <ITCard title={t("showcase.structure.recentActivity")}>
                 <ITText className="text-sm text-slate-600 dark:text-slate-300">
-                  El layout se adapta al colapsar/expandir el sidebar y muestra un drawer en móvil.
+                  {t("showcase.structure.layoutBody")}
                 </ITText>
               </ITCard>
             </ITStack>
@@ -1087,18 +1092,18 @@ export const LayoutShowcase = () => {
       controls={
         <ITStack spacing={4}>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Sidebar colapsado</span>
+            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.structure.sidebarCollapsed")}</span>
             <ITSlideToggle isOn={collapsed} onToggle={setCollapsed} size="sm" />
           </div>
           <div className="text-xs text-slate-500">
-            En móvil (&lt;lg) el sidebar se abre como drawer con un fondo oscuro. Usa el botón ☰ del topbar. En desktop el riel colapsado se expande al pasar el cursor; no hay botón de colapso en el sidebar.
+            {t("showcase.structure.layoutHint")}
           </div>
         </ITStack>
       }
       gallery={
         <ITStack spacing={6}>
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">ITNavbar (standalone)</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.structure.galleryNavbarStandalone")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden h-[420px]">
               <ITNavbar
                 logoText="AXZY"
@@ -1107,13 +1112,13 @@ export const LayoutShowcase = () => {
                   userName: "Auditor AXZY",
                   userEmail: "auditor@axzy.dev",
                   menuItems: [
-                    { label: "Ajustes", onClick: () => {} },
-                    { label: "Cerrar sesión", onClick: () => {} },
+                    { label: t("showcase.structure.navSettings"), onClick: () => {} },
+                    { label: t("showcase.structure.navLogout"), onClick: () => {} },
                   ],
                 }}
               >
                 <div className="p-8 text-center text-slate-500 text-sm">
-                  {navActiveId ? `Item activo: "${navbarItems.find(i => i.isActive)?.label}"` : "Selecciona un item en la navegación"}
+                  {navActiveId ? t("showcase.structure.activeItem", { label: navbarItems.find(i => i.isActive)?.label ?? "" }) : t("showcase.structure.selectNavItem")}
                 </div>
               </ITNavbar>
             </div>
@@ -1123,58 +1128,58 @@ export const LayoutShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">ITNavbar con submenús</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.structure.galleryNavbarSubmenus")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden h-[420px]">
               <ITNavbar
                 logoText="Admin"
                 navigationItems={[
-                  { id: "u", label: "Usuarios", icon: <FaUsers /> },
+                  { id: "u", label: t("showcase.structure.navUsers"), icon: <FaUsers /> },
                   {
                     id: "s",
-                    label: "Ventas",
+                    label: t("showcase.structure.navSales"),
                     icon: <FaShoppingCart />,
                     subitems: [
-                      { id: "o", label: "Órdenes", action: () => {} },
-                      { id: "i", label: "Facturas", action: () => {} },
+                      { id: "o", label: t("showcase.structure.navOrders"), action: () => {} },
+                      { id: "i", label: t("showcase.structure.navInvoices"), action: () => {} },
                     ],
                   },
-                  { id: "c", label: "Configuración", icon: <FaCog /> },
+                  { id: "c", label: t("showcase.structure.navConfiguration"), icon: <FaCog /> },
                 ]}
                 userMenu={{
                   userName: "Admin",
                   userEmail: "admin@axzy.dev",
-                  menuItems: [{ label: "Salir", onClick: () => {} }],
+                  menuItems: [{ label: t("showcase.structure.navExit"), onClick: () => {} }],
                 }}
               >
                 <div className="p-8 text-center text-slate-500 text-sm">
-                  Haz clic en "Ventas" para expandir/colapsar el submenú
+                  {t("showcase.structure.submenuHint")}
                 </div>
               </ITNavbar>
             </div>
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">ITSidebar — badges + notificación</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.structure.gallerySidebarBadges")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden h-[420px] flex">
               <ITSidebar
                 visibleOnMobile
                 className="h-full"
                 subitemConnector="dot"
                 navigationItems={[
-                  { id: "home", label: "Inicio", icon: <FaHome />, isActive: true, action: () => {} },
-                  { id: "inbox", label: "Bandeja", icon: <FaUsers />, badge: 12, action: () => {} },
-                  { id: "alerts", label: "Alertas", icon: <FaBell />, badge: 3, badgeProps: { color: "warning", variant: "outlined" }, action: () => {} },
-                  { id: "settings", label: "Configuración", icon: <FaCog />, action: () => {} },
+                  { id: "home", label: t("showcase.common.home"), icon: <FaHome />, isActive: true, action: () => {} },
+                  { id: "inbox", label: t("showcase.structure.navInbox"), icon: <FaUsers />, badge: 12, action: () => {} },
+                  { id: "alerts", label: t("showcase.structure.navAlerts"), icon: <FaBell />, badge: 3, badgeProps: { color: "warning", variant: "outlined" }, action: () => {} },
+                  { id: "settings", label: t("showcase.structure.navConfiguration"), icon: <FaCog />, action: () => {} },
                 ]}
                 notification={{
                   count: 5,
                   icon: <FaBell />,
-                  label: "Notificaciones",
+                  label: t("sandbox.notifications"),
                   onClick: () => {},
                 }}
               />
               <div className="flex-1 p-6 text-sm text-slate-500">
-                Cada ítem puede llevar un contador con <code className="font-mono text-xs">badge</code> + <code className="font-mono text-xs">badgeProps</code>, y el sidebar admite una fila <code className="font-mono text-xs">notification</code> con icono + ITBadget.
+                {t("showcase.structure.sidebarItemsHint1")} <code className="font-mono text-xs">badge</code> + <code className="font-mono text-xs">badgeProps</code>{t("showcase.structure.sidebarItemsHint2")} <code className="font-mono text-xs">notification</code> {t("showcase.structure.sidebarItemsHint3")}
               </div>
             </div>
           </div>
@@ -1215,13 +1220,14 @@ export const LayoutShowcase = () => {
 // ITAccordion Showcase
 // ─────────────────────────────────────────
 export const AccordionShowcase = () => {
+  const { t } = useITTranslation();
   const [allowMultiple, setAllowMultiple] = useState(false);
 
   const items = [
-    { id: "what", title: "¿Qué es AXZY UI System?", content: "Una librería de componentes React + TypeScript con Tailwind CSS v4." },
-    { id: "install", title: "¿Cómo lo instalo?", content: "pnpm add @axzydev/axzy_ui_system" },
-    { id: "theme", title: "¿Puedo personalizar el tema?", content: "Sí, usa ITThemeProvider para definir la paleta y los tokens." },
-    { id: "disabled", title: "Sección deshabilitada", content: "No se puede abrir.", disabled: true },
+    { id: "what", title: t("showcase.structure.accWhat"), content: t("showcase.structure.accWhatBody") },
+    { id: "install", title: t("showcase.structure.accInstall"), content: "pnpm add @axzydev/axzy_ui_system" },
+    { id: "theme", title: t("showcase.structure.accTheme"), content: t("showcase.structure.accThemeBody") },
+    { id: "disabled", title: t("showcase.structure.accDisabled"), content: t("showcase.structure.accDisabledBody"), disabled: true },
   ];
 
   const code = `<ITAccordion\n  allowMultiple={${allowMultiple}}\n  defaultOpenIds={['what']}\n  items={[\n    { id: 'what', title: '¿Qué es AXZY?', content: '...' },\n    { id: 'install', title: '¿Cómo lo instalo?', content: '...' },\n  ]}\n/>`;
@@ -1229,7 +1235,7 @@ export const AccordionShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITAccordion"
-      description="Secciones plegables para FAQs, paneles de configuración y contenido largo. Controlado o no controlado, single o multiple, con animación CSS grid-rows."
+      description={t("showcase.structure.accordionDesc")}
       code={code}
       demo={
         <div className="w-full max-w-xl">
@@ -1238,18 +1244,18 @@ export const AccordionShowcase = () => {
       }
       controls={
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-700">Permitir múltiples abiertas</span>
+          <span className="text-sm font-semibold text-gray-700">{t("showcase.structure.allowMultiple")}</span>
           <ITSlideToggle isOn={allowMultiple} onToggle={setAllowMultiple} size="sm" />
         </div>
       }
       gallery={
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Bordered</p>
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">{t("showcase.structure.accordionBordered")}</p>
             <ITAccordion items={items.slice(0, 3)} variant="bordered" defaultOpenIds={["install"]} />
           </div>
           <div>
-            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Separated (default)</p>
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">{t("showcase.structure.accordionSeparated")}</p>
             <ITAccordion items={items.slice(0, 3)} defaultOpenIds={["theme"]} />
           </div>
         </div>

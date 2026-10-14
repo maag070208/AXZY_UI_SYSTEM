@@ -2,6 +2,7 @@ import { theme } from "@/theme/theme";
 import { LoaderSize, sizeClasses } from "@/types/loader.types";
 import { LoaderProps } from "./loader.props";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Loading indicators with multiple animation types: spinner, dots, pulse,
@@ -26,6 +27,7 @@ export default function ITLoader({
   color = "primary", // Default to semantic primary
   className = "",
 }: LoaderProps) {
+  const { t } = useITTranslation();
   
   // Resolve color: Check if it's a semantic color in theme, otherwise use as-is
   const isSemantic = color in theme.colors;
@@ -51,7 +53,7 @@ export default function ITLoader({
         style={style}
       >
         <ITText as="span" className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-          Loading...
+          {t("common.loading")}
         </ITText>
       </div>
     );

@@ -1,11 +1,6 @@
 import { useId, useMemo, useState } from "react";
 import type { ITLineBarChartProps } from "./line-bar-chart.props";
-
-/** Número compacto para los ejes (`104 k`). */
-const compact = (value: number): string =>
-  new Intl.NumberFormat("es-MX", { notation: "compact", maximumFractionDigits: 1 }).format(value);
-
-const plain = (value: number): string => new Intl.NumberFormat("es-MX").format(value);
+import { useITTranslation } from "@/i18n";
 
 /**
  * Barras + línea en SVG puro (sin librería de gráficas). Pensado para comparar
@@ -17,15 +12,25 @@ const plain = (value: number): string => new Intl.NumberFormat("es-MX").format(v
 export function ITLineBarChart({
   data,
   ariaLabel,
-  lineLabel = "Serie A",
-  barLabel = "Serie B",
+  lineLabel,
+  barLabel,
   lineColor = "#10b981",
   barColor = "#3b82f6",
   height = 240,
-  formatValue = plain,
-  formatAxis = compact,
+  formatValue,
+  formatAxis,
   className = "",
 }: ITLineBarChartProps) {
+  const { t, formatNumber } = useITTranslation();
+  const resolvedLineLabel = lineLabel ?? t("lineBarChart.lineLabel");
+  const resolvedBarLabel = barLabel ?? t("lineBarChart.barLabel");
+  /** Número compacto para los ejes (`104 k`). */
+  const resolvedFormatAxis =
+    formatAxis ??
+    ((value: number) =>
+      formatNumber(value, { notation: "compact", maximumFractionDigits: 1 }));
+  const resolvedFormatValue = formatValue ?? ((value: number) => formatNumber(value));
+
   const gradientId = useId().replace(/[:]/g, "");
   const [hover, setHover] = useState<number | null>(null);
 
@@ -93,7 +98,7 @@ export function ITLineBarChart({
               strokeDasharray={i === 0 ? undefined : "3 4"}
             />
             <text x={padding.left - 8} y={y(value) + 3} textAnchor="end" fontSize={10} fill="#94a3b8">
-              {formatAxis(Math.round(value))}
+              {resolvedFormatAxis(Math.round(value))}
             </text>
           </g>
         ))}
@@ -153,10 +158,10 @@ export function ITLineBarChart({
         >
           <p className="text-[10px] font-semibold" style={{ color: "#e2e8f0" }}>{active.label}</p>
           <p className="text-[11px] tabular-nums" style={{ color: lineColor }}>
-            {lineLabel}: {formatValue(active.line)}
+            {resolvedLineLabel}: {resolvedFormatValue(active.line)}
           </p>
           <p className="text-[11px] tabular-nums" style={{ color: "#93c5fd" }}>
-            {barLabel}: {formatValue(active.bar)}
+            {resolvedBarLabel}: {resolvedFormatValue(active.bar)}
           </p>
         </div>
       )}
@@ -164,11 +169,11 @@ export function ITLineBarChart({
       <ul className="flex flex-wrap items-center gap-4 text-[11px]" style={{ color: "#475569" }}>
         <li>
           <span className="h-2.5 w-2.5 rounded-sm" style={{ background: lineColor }} aria-hidden />
-          {lineLabel}
+          {resolvedLineLabel}
         </li>
         <li>
           <span className="h-2.5 w-2.5 rounded-sm" style={{ background: barColor }} aria-hidden />
-          {barLabel}
+          {resolvedBarLabel}
         </li>
       </ul>
     </div>

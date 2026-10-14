@@ -13,7 +13,7 @@ Respetar estructura estricta para cada componente nuevo.
 - **Archivos obligatorios**:
   - `[name].tsx`: Lógica y renderizado.
   - `[name].props.ts`: Definición de interfaces/tipos con JSDoc.
-  - `[name].stories.tsx`: Historias para Storybook.
+- **Documentación**: referencia por componente en `docs/<capa>/<kebab-name>.md` y ejemplo en `src/showcases/*.tsx` (sandbox).
 
 ## 2. Estilo y Tematización
 - **Theme First**: Prohibido hardcodear colores. Usar `import { theme } from "@/theme/theme"`.
@@ -61,7 +61,8 @@ Every default export MUST have a JSDoc block with `@description` (implicit first
 
 After creating or modifying a component, update:
 
-1. **`DOCUMENTACION_COMPONENTES.txt`** — canonical reference with:
+1. **`docs/<capa>/<nombre>.md`** — ficha por componente (props, defaults, ejemplo y notas), y
+   **`DOCUMENTACION_DETALLADA_COMPONENTES.txt`** — canonical reference with:
    - Props interface block with comments.
    - All literal/enum values listed explicitly.
    - Real-world usage example with state hooks.

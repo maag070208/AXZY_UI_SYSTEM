@@ -4,6 +4,7 @@ import { chipSizes } from "@/types/chip.types";
 import { theme } from "@/theme/theme";
 import { FaTimes } from "react-icons/fa";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Compact tag / pill used for labels, active filters, and multi-value selections.
@@ -63,6 +64,7 @@ export default function ITChip({
     style.borderColor = palette[500];
   }
 
+  const { t } = useITTranslation();
   const interactive = Boolean(onClick) && !disabled;
 
   return (
@@ -96,7 +98,7 @@ export default function ITChip({
       {removable && (
         <button
           type="button"
-          aria-label={label ? `Quitar ${label}` : "Quitar"}
+          aria-label={label ? t("chip.remove", { label }) : t("chip.remove", { label: "" }).trim()}
           disabled={disabled}
           onClick={(e) => {
             e.stopPropagation();

@@ -54,9 +54,7 @@ const resolveTarget = (fromFile, spec) => {
 
 const violations = [];
 for (const [targetPath, { layer, name }] of componentOf) {
-  const isStory = /\.stories\./.test(targetPath);
-  if (isStory) continue;
-  const files = walk(targetPath).filter((f) => !/\.stories\./.test(f) && !/\.doc\.mdx/.test(f) && !/\.props\./.test(f));
+  const files = walk(targetPath).filter((f) => !/\.props\./.test(f));
   for (const file of files) {
     const content = readFileSync(file, "utf8");
     for (const m of content.matchAll(/(?:from|import)\s*\(?\s*["']([^"']+)["']/g)) {

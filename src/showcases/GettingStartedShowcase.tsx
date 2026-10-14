@@ -8,8 +8,10 @@ import ITFlex from "../components/atoms/flex/flex";
 import ITGrid from "../components/atoms/grid/grid";
 import ITStack from "../components/atoms/stack/stack";
 import ITText from "../components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 const CopyButton = ({ text }: { text: string }) => {
+  const { t } = useITTranslation();
   const [copied, setCopied] = useState(false);
   return (
     <ITButton
@@ -20,7 +22,7 @@ const CopyButton = ({ text }: { text: string }) => {
     >
       <ITFlex align="center" gap={1.5}>
         {copied ? <FaCheck size={10} className="text-emerald-400" /> : <FaNpm size={10} />}
-        {copied ? "Copiado" : "Copiar"}
+        {copied ? t("showcase.common.copied") : t("showcase.common.copy")}
       </ITFlex>
     </ITButton>
   );
@@ -62,15 +64,15 @@ const stepStyles = [
 const steps = [
   {
     icon: <FaNpm size={14} />,
-    title: "Instalar dependencias",
-    desc: "Tailwind v4 y su plugin para Vite.",
+    titleKey: "showcase.gettingStarted.step1Title",
+    descKey: "showcase.gettingStarted.step1Desc",
     filename: "terminal",
     code: "npm install @axzydev/axzy_ui_system\nnpm install -D tailwindcss @tailwindcss/vite @vitejs/plugin-react-swc",
   },
   {
     icon: <SiVite size={14} />,
-    title: "Configurar Vite",
-    desc: "Agrega Tailwind como plugin de Vite.",
+    titleKey: "showcase.gettingStarted.step2Title",
+    descKey: "showcase.gettingStarted.step2Desc",
     filename: "vite.config.ts",
     code: `import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react-swc"
@@ -82,16 +84,16 @@ export default defineConfig({
   },
   {
     icon: <SiTailwindcss size={14} />,
-    title: "Agregar Tailwind",
-    desc: "Importa Tailwind en tu archivo CSS.",
+    titleKey: "showcase.gettingStarted.step3Title",
+    descKey: "showcase.gettingStarted.step3Desc",
     filename: "src/index.css",
     code: `@import "tailwindcss";
 @variant dark (&:is(.dark &));`,
   },
   {
     icon: <FaReact size={14} />,
-    title: "Importar estilos",
-    desc: "Envuelve tu app con el provider.",
+    titleKey: "showcase.gettingStarted.step4Title",
+    descKey: "showcase.gettingStarted.step4Desc",
     filename: "src/main.tsx",
     code: `import { ITThemeProvider } from "@axzydev/axzy_ui_system"
 import "@axzydev/axzy_ui_system/dist/index.css"
@@ -102,8 +104,8 @@ import "@axzydev/axzy_ui_system/dist/index.css"
   },
   {
     icon: <SiTypescript size={14} />,
-    title: "Declaración de tipos",
-    desc: "Para que TS acepte imports CSS.",
+    titleKey: "showcase.gettingStarted.step5Title",
+    descKey: "showcase.gettingStarted.step5Desc",
     filename: "src/vite-env.d.ts",
     code: `/// <reference types="vite/client" />
 
@@ -114,8 +116,8 @@ declare module "*.css" {
   },
   {
     icon: <FaReact size={14} />,
-    title: "Primer componente",
-    desc: "Ya puedes usar cualquier componente.",
+    titleKey: "showcase.gettingStarted.step6Title",
+    descKey: "showcase.gettingStarted.step6Desc",
     filename: "src/App.tsx",
     code: `import { ITButton } from "@axzydev/axzy_ui_system"
 
@@ -126,6 +128,7 @@ export default function App() {
 ];
 
 export const GettingStartedShowcase = () => {
+  const { t } = useITTranslation();
   return (
     <ITStack spacing={10}>
       {/* ─── HERO ─── */}
@@ -141,7 +144,7 @@ export const GettingStartedShowcase = () => {
                 AXZY UI System
               </ITText>
               <ITText as="p" muted className="!text-base !leading-relaxed max-w-xl">
-                Librería de componentes React con Tailwind CSS v4. Diseñada para apps enterprise con experiencia de desarrollo fluida.
+                {t("showcase.gettingStarted.heroDesc")}
               </ITText>
             </ITStack>
 
@@ -169,8 +172,8 @@ export const GettingStartedShowcase = () => {
                     {step.icon}
                   </div>
                   <div>
-                    <ITText as="p" className="!text-sm !font-semibold">{step.title}</ITText>
-                    <ITText as="p" className="!text-xs !text-slate-400">{step.desc}</ITText>
+                    <ITText as="p" className="!text-sm !font-semibold">{t(step.titleKey)}</ITText>
+                    <ITText as="p" className="!text-xs !text-slate-400">{t(step.descKey)}</ITText>
                   </div>
                 </ITFlex>
                 <CodeBlock code={step.code} filename={step.filename} color={codeFileColors[i]} />
@@ -181,10 +184,10 @@ export const GettingStartedShowcase = () => {
       </ITGrid>
 
       {/* ─── THEMING ─── */}
-      <ITCard title="Theming" className="border-purple-200/60 dark:border-purple-800/60 shadow-sm">
+      <ITCard title={t("showcase.gettingStarted.themingTitle")} className="border-purple-200/60 dark:border-purple-800/60 shadow-sm">
         <ITStack spacing={4}>
           <ITText as="p" className="!text-sm" muted>
-            Personaliza colores en runtime. Solo necesitas los que quieras cambiar.
+            {t("showcase.gettingStarted.themingDesc")}
           </ITText>
           <div className="bg-gradient-to-r from-purple-50 via-fuchsia-50 to-pink-50 dark:from-purple-950/20 dark:via-fuchsia-950/20 dark:to-pink-950/20 rounded-xl p-5 border border-purple-200 dark:border-purple-800/30">
             <CodeBlock

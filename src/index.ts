@@ -138,6 +138,10 @@ import { createValidationSchema } from "./types/yup.types";
 
 import { getContrastTextColor, isLightColor, resolveCssColor } from "./utils/color.utils";
 
+// I18N
+import { ITI18nProvider, useITTranslation, esMessages, enMessages } from "./i18n";
+import type { ITI18nProviderProps, ITI18nValue, ITLocale, ITMessages, ITMessagesByLocale } from "./i18n";
+
 export {
   // Hooks
   useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useTableState,
@@ -157,10 +161,12 @@ export {
   ITTable, ITTabs, ITText, ITTextarea, ITTripleFilter, ITThemeProvider,
   useITTheme, useITThemeSafe, useITFlatAppearance, ITTimePicker, ITToast, ITWysiwyg,
   UploadStatus, FileTypeEnum,
-  getContrastTextColor, isLightColor, resolveCssColor
+  getContrastTextColor, isLightColor, resolveCssColor,
+  ITI18nProvider, useITTranslation, esMessages, enMessages
 };
 
   export type {
+    ITI18nProviderProps, ITI18nValue, ITLocale, ITMessages, ITMessagesByLocale,
     Column, ColumnFilters, ColumnFilterMode, ColumnFilterValue, FieldConfig,
     FieldConfigV2,
     ITAccordionItem, ITAccordionProps,

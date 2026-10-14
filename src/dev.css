@@ -2,10 +2,49 @@
 @import "./index.css";
 
 /* ──────────────────────────────────────────────
+   DESIGN TOKENS — SANDBOX & PORTFOLIO (dev.css)
+   See DESIGN.md. Dev-only: never reach dist/index.css.
+   ────────────────────────────────────────────── */
+
+@theme {
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-display: "Bricolage Grotesque", "IBM Plex Sans", ui-sans-serif,
+    system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* ──────────────────────────────────────────────
    SANDBOX-ONLY ANIMATIONS (dev.css)
    Never shipped: only src/main.tsx imports this file and `pnpm bundle`
    builds from src/index.ts, so these never reach dist/index.css.
    ────────────────────────────────────────────── */
+
+/* Blueprint grid: technical 1px ruling, masked to fade from the top. */
+.it-blueprint {
+  background-image: linear-gradient(to right, currentColor 1px, transparent 1px),
+    linear-gradient(to bottom, currentColor 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse at top, black 18%, transparent 72%);
+  mask-image: radial-gradient(ellipse at top, black 18%, transparent 72%);
+}
+
+/* Staggered entrance: fade + translateY. `--it-delay` offsets each item. */
+@keyframes it-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.it-reveal {
+  animation: it-reveal 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: var(--it-delay, 0ms);
+}
 
 @keyframes it-landing-rise {
   from {
@@ -53,7 +92,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .it-landing-rise,
-  .it-landing-float {
+  .it-landing-float,
+  .it-reveal {
     animation: none;
   }
 }

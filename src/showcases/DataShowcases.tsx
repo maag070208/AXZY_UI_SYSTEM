@@ -14,6 +14,7 @@ import {
   ITDataTableResponse
 } from "../index";
 import { ShowcaseLayout } from "./ShowcaseLayout";
+import { useITTranslation } from "@/i18n";
 
 const TABLE_DATA: Record<string, unknown>[] = [
   { id: 1, name: "Sofía Castillo", email: "sofia@axzy.dev", role: "Admin", status: "active", lastLogin: "2026-07-18T09:30:00", sales: 28400 },
@@ -148,6 +149,7 @@ const roleColor = (r: string) =>
 
 // 1. ITTable Showcase
 export const TableShowcase = () => {
+  const { t } = useITTranslation();
   const [variant, setVariant] = useState<any>("default");
   const [size, setSize] = useState<any>("sm");
   const [useCustomCard, setUseCustomCard] = useState(true);
@@ -231,10 +233,10 @@ export const TableShowcase = () => {
       type: "actions",
       actions: () => (
         <div className="flex gap-1">
-          <button className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-primary-600 transition-colors" title="View">
+          <button className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-primary-600 transition-colors" title={t("showcase.common.view")}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
-          <button className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-blue-600 transition-colors" title="Edit">
+          <button className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-blue-600 transition-colors" title={t("showcase.common.edit")}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           </button>
         </div>
@@ -289,20 +291,20 @@ export const TableShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITTable"
-      description="Tabla con vista responsive Table / Cards, paginación, filtros y template de card personalizable."
+      description={t("showcase.data.tableDesc")}
       code={code}
       demo={
         <div className="w-full space-y-2">
           <div className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
             {selectedRow
-              ? `Selected: ${selectedRow.name as string}`
-              : "Click a row/card or press Enter/Space to select"}
+              ? t("showcase.data.selectedName", { name: selectedRow.name as string })
+              : t("showcase.data.clickToSelect")}
           </div>
           <div className="w-full bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm">
             <ITTable
               columns={columns}
               data={TABLE_DATA}
-              title="Team members"
+              title={t("showcase.data.teamMembers")}
               variant={variant}
               size={size}
               defaultItemsPerPage={5}
@@ -316,7 +318,7 @@ export const TableShowcase = () => {
         <>
           <ITSelect
             name="var_ctrl"
-            label="Table variant"
+            label={t("showcase.data.tableVariant")}
             value={variant}
             onChange={(e: any) => setVariant(e.target.value)}
             options={[
@@ -327,7 +329,7 @@ export const TableShowcase = () => {
           />
           <ITSelect
             name="sz_ctrl"
-            label="Row size"
+            label={t("showcase.data.rowSize")}
             value={size}
             onChange={(e: any) => setSize(e.target.value)}
             options={[
@@ -337,12 +339,12 @@ export const TableShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">Custom card template</span>
+            <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.data.customCardTemplate")}</span>
             <ITSlideToggle isOn={useCustomCard} onToggle={setUseCustomCard} size="sm" />
           </div>
           {!useCustomCard && (
             <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded text-xs text-slate-500">
-              Default card active — shows all columns as label-value pairs
+              {t("showcase.data.defaultCardActive")}
             </div>
           )}
         </>
@@ -414,7 +416,7 @@ export const TableShowcase = () => {
       gallery={
         <div className="space-y-6">
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Custom cards with hover</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryCustomCardsHover")}</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {TABLE_DATA.slice(0, 4).map((row, i) => {
                 const initials = (row.name as string).split(" ").map((w: string) => w[0]).join("");
@@ -451,7 +453,7 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">ITTable with default cards</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryDefaultCards")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITTable
                 columns={columns}
@@ -465,13 +467,13 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">ITTable with custom cards + pagination</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryCustomCardsPagination")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITTable
                 columns={columns}
                 data={TABLE_DATA}
                 size="sm"
-                title="All members"
+                title={t("showcase.data.galleryAllMembers")}
                 defaultItemsPerPage={4}
                 renderCard={(row: any) => {
                   const initials = (row.name as string).split(" ").map((w: string) => w[0]).join("");
@@ -497,12 +499,12 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Compact fixed layout — no horizontal scroll</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryCompactFixed")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden" style={{ maxWidth: 560 }}>
               <ITTable
                 columns={fixedColumns}
                 data={TABLE_DATA}
-                title="Fixed layout"
+                title={t("showcase.data.galleryFixedLayout")}
                 layout="fixed"
                 density="compact"
                 defaultItemsPerPage={5}
@@ -511,12 +513,12 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Pinned columns — left (Name) &amp; right (Actions)</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryPinnedNameActions")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden" style={{ maxWidth: 520 }}>
               <ITTable
                 columns={pinnedColumns}
                 data={TABLE_DATA}
-                title="Pinned columns"
+                title={t("showcase.data.galleryPinnedColumns")}
                 layout="fixed"
                 density="compact"
                 defaultItemsPerPage={5}
@@ -528,12 +530,12 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Auto cards fallback (&lt; 640px container)</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryAutoCards")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden" style={{ maxWidth: 420 }}>
               <ITTable
                 columns={columns}
                 data={TABLE_DATA.slice(0, 6)}
-                title="Narrow container"
+                title={t("showcase.data.galleryNarrowContainer")}
                 autoCardBreakpoint={640}
                 defaultItemsPerPage={6}
               />
@@ -541,12 +543,12 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Virtualized table — 300 rows (only visible window mounted)</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryVirtualized")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITTable
                 columns={virtualColumns}
                 data={virtualData}
-                title="Virtualized · 300 rows"
+                title={t("showcase.data.galleryVirtualizedTitle")}
                 virtualized
                 stickyHeader
                 layout="fixed"
@@ -559,12 +561,12 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Column filters: ITSearchSelect + ITDatePicker (single &amp; range)</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryColumnFilters")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITTable
                 columns={filterDemoColumns}
                 data={filterDemoData}
-                title="Filter demo"
+                title={t("showcase.data.galleryFilterDemo")}
                 size="sm"
                 defaultItemsPerPage={8}
               />
@@ -575,12 +577,12 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Design overrides — colors + design slots, sin switch</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryDesignOverrides")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITTable
                 columns={columns}
                 data={TABLE_DATA.slice(0, 5)}
-                title="Custom design"
+                title={t("showcase.data.galleryCustomDesign")}
                 defaultItemsPerPage={5}
                 showViewToggle={false}
                 colors={{
@@ -605,7 +607,7 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Per-column design — header y celda por columna</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryPerColumnDesign")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITTable
                 columns={columns.map((col: any) =>
@@ -616,7 +618,7 @@ export const TableShowcase = () => {
                       : col
                 )}
                 data={TABLE_DATA.slice(0, 5)}
-                title="Per-column"
+                title={t("showcase.data.galleryPerColumnTitle")}
                 defaultItemsPerPage={5}
                 showViewToggle={false}
               />
@@ -633,6 +635,7 @@ export const TableShowcase = () => {
 
 // 2. ITDataTable Showcase
 export const DataTableShowcase = () => {
+  const { t } = useITTranslation();
   const [useCustomCard, setUseCustomCard] = useState(true);
   const [apiState, setApiState] = useState<"normal" | "loading" | "empty" | "error">("normal");
   const [reloadKey, setReloadKey] = useState(0);
@@ -815,21 +818,21 @@ export const DataTableShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITDataTable"
-      description="Tabla auto-suficiente con carga dinámica, filtros, paginación y vista responsive Cards/Table."
+      description={t("showcase.data.dataTableDesc")}
       code={code}
       demo={
         <div className="w-full space-y-2">
           <div className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
             {selectedRow
-              ? `Selected: ${selectedRow.name as string} (id ${selectedRow.id as number})`
-              : "Click a row/card or press Enter/Space to select"}
+              ? t("showcase.data.selectedNameId", { name: selectedRow.name as string, id: selectedRow.id as number })
+              : t("showcase.data.clickToSelect")}
           </div>
           <div className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-md">
             <ITDataTable
               key={reloadKey}
               columns={userColumns}
               fetchData={fetchData}
-              title={apiState === "error" ? "Connection error" : apiState === "empty" ? "No data" : "Users"}
+              title={apiState === "error" ? t("showcase.data.titleConnectionError") : apiState === "empty" ? t("showcase.data.titleNoData") : t("showcase.data.titleUsers")}
               defaultItemsPerPage={4}
               size={dtSize}
               layout={dtLayout}
@@ -849,7 +852,7 @@ export const DataTableShowcase = () => {
                     </div>
                     <span className={`px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-md ${
                       row.active ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
-                    }`}>{row.active ? "Active" : "Inactive"}</span>
+                    }`}>{row.active ? t("showcase.common.active") : t("showcase.data.inactive")}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className={`px-1.5 py-0.5 text-[10px] font-bold rounded ${
@@ -869,7 +872,7 @@ export const DataTableShowcase = () => {
       controls={
         <div className="space-y-3">
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">API state</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">{t("showcase.data.apiState")}</p>
             <div className="flex flex-wrap gap-2">
               {(["normal", "loading", "empty", "error"] as const).map((s) => (
                 <button
@@ -881,22 +884,22 @@ export const DataTableShowcase = () => {
                       : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
                   }`}
                 >
-                  {s === "normal" ? "✅ Normal" : s === "loading" ? "⏳ Loading" : s === "empty" ? "📭 Empty" : "💥 Error"}
+                  {s === "normal" ? `✅ ${t("showcase.data.stateNormal")}` : s === "loading" ? `⏳ ${t("showcase.data.stateLoading")}` : s === "empty" ? `📭 ${t("showcase.data.stateEmpty")}` : `💥 ${t("showcase.data.stateError")}`}
                 </button>
               ))}
             </div>
           </div>
           <div className="flex items-center justify-between pt-1">
-            <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">Custom card template</span>
+            <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.data.customCardTemplate")}</span>
             <ITSlideToggle isOn={useCustomCard} onToggle={setUseCustomCard} size="sm" />
           </div>
           {!useCustomCard && (
             <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded text-xs text-slate-500">
-              Default card active — shows all columns as label-value pairs
+              {t("showcase.data.defaultCardActive")}
             </div>
           )}
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Borders</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">{t("showcase.data.borders")}</p>
             <div className="flex flex-wrap gap-2">
               {(["default", "blue", "rose", "none"] as const).map((s) => (
                 <button
@@ -911,16 +914,16 @@ export const DataTableShowcase = () => {
                       : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
                   }`}
                 >
-                  {s === "default" ? "Gray" : s === "blue" ? "Blue" : s === "rose" ? "Rose" : "None"}
+                  {s === "default" ? t("showcase.data.borderGray") : s === "blue" ? t("showcase.data.borderBlue") : s === "rose" ? t("showcase.data.borderRose") : t("showcase.data.borderNone")}
                 </button>
               ))}
             </div>
           </div>
           <div className="space-y-3">
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Table capabilities</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">{t("showcase.data.tableCapabilities")}</p>
             <ITSelect
               name="dt_size"
-              label="Size"
+              label={t("showcase.common.size")}
               value={dtSize}
               onChange={(e: any) => setDtSize(e.target.value as "sm" | "md" | "lg")}
               options={[
@@ -931,7 +934,7 @@ export const DataTableShowcase = () => {
             />
             <ITSelect
               name="dt_density"
-              label="Density"
+              label={t("showcase.data.density")}
               value={dtDensity}
               onChange={(e: any) => setDtDensity(e.target.value as "compact" | "normal" | "comfortable")}
               options={[
@@ -942,7 +945,7 @@ export const DataTableShowcase = () => {
             />
             <ITSelect
               name="dt_layout"
-              label="Layout"
+              label={t("showcase.data.layout")}
               value={dtLayout}
               onChange={(e: any) => setDtLayout(e.target.value as "auto" | "fixed")}
               options={[
@@ -952,7 +955,7 @@ export const DataTableShowcase = () => {
             />
             <ITSelect
               name="dt_autocards"
-              label="Auto cards below (px)"
+              label={t("showcase.data.autoCardsBelow")}
               value={String(dtAutoCardBreakpoint)}
               onChange={(e: any) => setDtAutoCardBreakpoint(Number(e.target.value))}
               options={[
@@ -963,16 +966,16 @@ export const DataTableShowcase = () => {
               ]}
             />
             <div className="flex items-center justify-between pt-2">
-              <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">Virtualized (gallery)</span>
+              <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.data.virtualizedGallery")}</span>
               <ITSlideToggle isOn={dtVirtualized} onToggle={setDtVirtualized} size="sm" />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">Sticky header</span>
+              <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.data.stickyHeader")}</span>
               <ITSlideToggle isOn={dtStickyHeader} onToggle={setDtStickyHeader} size="sm" disabled={!dtVirtualized} />
             </div>
             {dtVirtualized && (
               <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded text-xs text-slate-500">
-                size, density, layout y auto-cards aplican al demo principal; virtualized y sticky header solo al bloque "Server-side virtualization" de la galería. Ese bloque no recibe autoCardBreakpoint: las cards nunca se virtualizan y el fallback de auto-cards desactivaría la virtualización en silencio.
+                {t("showcase.data.capabilitiesHint")}
               </div>
             )}
           </div>
@@ -1051,10 +1054,10 @@ export const DataTableShowcase = () => {
       gallery={
         <div className="space-y-6">
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Custom cards with hover</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryCustomCardsHover")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <GalleryDataTable
-                title="Team members"
+                title={t("showcase.data.teamMembers")}
                 defaultItemsPerPage={4}
                 renderCard={(row: any) => {
                   const initials = (row.name as string).split(" ").map((w: string) => w[0]).join("");
@@ -1070,7 +1073,7 @@ export const DataTableShowcase = () => {
                         </div>
                         <span className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md ${
                           row.active ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
-                        }`}>{row.active ? "Active" : "Inactive"}</span>
+                        }`}>{row.active ? t("showcase.common.active") : t("showcase.data.inactive")}</span>
                       </div>
                       <div className="flex items-center gap-2 text-xs text-slate-500 mb-3">
                         <span className={`px-2 py-0.5 rounded-md font-semibold ${
@@ -1094,7 +1097,7 @@ export const DataTableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Default cards with pagination</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryDefaultCardsPagination")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <GalleryDataTable
                 size="sm"
@@ -1105,12 +1108,12 @@ export const DataTableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Design overrides — colors + design slots, sin switch</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryDesignOverrides")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITDataTable
                 columns={userColumns}
                 fetchData={fetchData}
-                title="Custom design"
+                title={t("showcase.data.galleryCustomDesign")}
                 defaultItemsPerPage={4}
                 debounceMs={0}
                 showViewToggle={false}
@@ -1129,12 +1132,12 @@ export const DataTableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Pinned columns — left (ID) &amp; right (Active)</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryPinnedIdActive")}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden" style={{ maxWidth: 520 }}>
               <ITDataTable
                 columns={pinnedColumns}
                 fetchData={fetchData}
-                title="Pinned columns"
+                title={t("showcase.data.galleryPinnedColumns")}
                 layout="fixed"
                 density="compact"
                 defaultItemsPerPage={4}
@@ -1147,13 +1150,13 @@ export const DataTableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Server-side virtualization — 240 rows {dtVirtualized ? "(page 200)" : "(page 10)"}</h4>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryServerVirtualization", { page: dtVirtualized ? 200 : 10 })}</h4>
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
               <ITDataTable
                 key={dtVirtualized ? "dt-virt-on" : "dt-virt-off"}
                 columns={virtualUserColumns}
                 fetchData={virtualFetchData}
-                title="Virtualized users"
+                title={t("showcase.data.galleryVirtualizedUsers")}
                 defaultItemsPerPage={dtVirtualized ? 200 : 10}
                 itemsPerPageOptions={dtVirtualized ? [50, 100, 200] : [5, 10, 20]}
                 size={dtSize}
@@ -1233,6 +1236,7 @@ function GalleryDataTable({ title, size, defaultItemsPerPage, defaultView, rende
 
 // 3. ITBadget Showcase
 export const BadgetShowcase = () => {
+  const { t } = useITTranslation();
   const [color, setColor] = useState<any>("success");
   const [size, setSize] = useState<any>("medium");
   const [labelText, setLabelText] = useState("Activo");
@@ -1242,7 +1246,7 @@ export const BadgetShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITBadget"
-      description="Badges (etiquetas) estilizados para representar estados o categorías de items."
+      description={t("showcase.data.badgetDesc")}
       code={code}
       demo={
         <ITBadget label={labelText} color={color} size={size} />
@@ -1251,14 +1255,14 @@ export const BadgetShowcase = () => {
         <>
           <ITInput
             name="label"
-            label="Texto"
+            label={t("showcase.data.textLabel")}
             value={labelText}
             onChange={(e: any) => setLabelText(e.target.value)}
             onBlur={() => { }}
           />
           <ITSelect
             name="color"
-            label="Color"
+            label={t("showcase.common.color")}
             value={color}
             onChange={(e: any) => setColor(e.target.value)}
             options={[
@@ -1272,7 +1276,7 @@ export const BadgetShowcase = () => {
           />
           <ITSelect
             name="size"
-            label="Tamaño"
+            label={t("showcase.common.size")}
             value={size}
             onChange={(e: any) => setSize(e.target.value)}
             options={[
@@ -1303,6 +1307,7 @@ export const BadgetShowcase = () => {
 
 // 4. ITImage Showcase
 export const ImageShowcase = () => {
+  const { t } = useITTranslation();
   const [broken, setBroken] = useState(false);
   const src = broken ? "https://nonexistent.image.site/broken.jpg" : "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80";
 
@@ -1311,25 +1316,25 @@ export const ImageShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITImage"
-      description="Componente de renderizado de imágenes inteligente con cargador interno y fallback automático ante fallas de red."
+      description={t("showcase.data.imageDesc")}
       code={code}
       demo={
         <div className="w-full max-w-sm flex flex-col items-center gap-3">
           <ITImage
             src={src}
-            alt="Demo abstracta"
+            alt={t("showcase.data.imageAlt")}
             fallback="https://placehold.co/400x200?text=Error+Carga+Imagen"
             className="rounded-xl object-cover h-40 w-full shadow-md"
           />
           <span className="text-xs text-slate-500 font-mono">
-            {broken ? "Cargando URL Rota (Fallback Activo)" : "Cargando URL Correcta"}
+            {broken ? t("showcase.data.imageBroken") : t("showcase.data.imageOk")}
           </span>
         </div>
       }
       controls={
         <>
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">Forzar Error de Carga (URL rota)</span>
+            <span className="text-sm font-semibold text-gray-700">{t("showcase.data.forceError")}</span>
             <ITSlideToggle isOn={broken} onToggle={setBroken} activeColor="danger" size="sm" />
           </div>
         </>
@@ -1340,6 +1345,7 @@ export const ImageShowcase = () => {
 
 // ITChip Showcase
 export const ChipShowcase = () => {
+  const { t } = useITTranslation();
   const [active, setActive] = useState<string[]>(["mx"]);
 
   const toggle = (id: string) =>
@@ -1356,7 +1362,7 @@ export const ChipShowcase = () => {
   return (
     <ShowcaseLayout
       title="ITChip"
-      description="Etiqueta compacta (tag / pill) para labels, filtros activos y selecciones múltiples. Variantes soft, filled y outlined, icono, botón de quitar (X) y estado seleccionado."
+      description={t("showcase.data.chipDesc")}
       code={code}
       demo={
         <div className="w-full max-w-lg space-y-5">
@@ -1378,13 +1384,13 @@ export const ChipShowcase = () => {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <ITChip label="México" color="danger" variant="outlined" removable onRemove={() => {}} />
-            <ITChip label="Deshabilitado" color="secondary" disabled />
+            <ITChip label={t("showcase.data.chipDisabled")} color="secondary" disabled />
           </div>
         </div>
       }
       controls={
         <p className="text-xs text-slate-500">
-          Los chips con onClick son toggles de filtro (role=button, Enter/Space). Los chips removibles muestran una X.
+          {t("showcase.data.chipHint")}
         </p>
       }
       doc={{

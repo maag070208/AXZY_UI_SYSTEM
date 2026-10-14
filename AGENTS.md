@@ -9,13 +9,12 @@
 ## Commands
 
 - `pnpm dev` — Vite sandbox at http://localhost:5173
-- `pnpm storybook` — Storybook at http://localhost:6006
 - `pnpm lint` — ESLint + `check:atomic` + `check:css`. Must end with `0 errors` (the many `no-explicit-any` warnings are intentional).
 - `pnpm check:atomic` / `pnpm check:css` — run a single check
 - `pnpm bundle` — build the published package: tsup (JS + `.d.ts`) then `scripts/build-css.mjs` → `dist/`
 - `pnpm build` — **alias of `pnpm bundle`** (tsup + CSS). Trust `package.json`.
 - `pnpm build:app` — build the sandbox into `dist-app/`
-- No `test` script. Tests are Storybook interaction tests run through Vitest + Playwright Chromium (`pnpm exec vitest run`; config in `vite.config.ts` under `test.projects`).
+- No `test` script and no test runner: Storybook (and its Vitest project) was removed. Examples and manual checks live in the sandbox.
 - `pnpm ext:catalog` / `pnpm ext:typecheck` / `pnpm ext:build` / `pnpm ext:package` — VS Code extension in `vscode-extension/` (see below).
 
 ## VS Code extension (`vscode-extension/`)
@@ -48,11 +47,17 @@
 
 ## Component conventions
 
-- New component lives at `src/components/<layer>/<kebab-name>/` with `<name>.tsx`, `<name>.props.ts`, `<name>.stories.tsx` (optional `.doc.mdx`). Name is `IT` + PascalCase.
+- New component lives at `src/components/<layer>/<kebab-name>/` with `<name>.tsx` and `<name>.props.ts`. Name is `IT` + PascalCase.
 - Every prop needs a JSDoc comment; every default export needs a JSDoc block with at least one `@example`.
 - Register the component and its props type in `src/index.ts` (`import` + `export type`).
-- After changing a component, update `DOCUMENTACION_DETALLADA_COMPONENTES.txt`, `LLM_DOCS.md`, and the matching `src/showcases/*.tsx` (`ShowcaseLayout` `doc` prop). Full standard: `.agents/skills/component-gen/SKILL.md`.
-- **Examples live in the dev sandbox** (`pnpm dev` → `src/showcases/*.tsx`) and that is the primary example surface. Storybook stories (`.stories.tsx` / `.doc.mdx`) still exist and must keep compiling, but they are deliberately not the primary place for examples.
+- After changing a component, update `docs/<layer>/<component>.md`, `DOCUMENTACION_DETALLADA_COMPONENTES.txt`, `LLM_DOCS.md`, and the matching `src/showcases/*.tsx` (`ShowcaseLayout` `doc` prop). Full standard: `.agents/skills/component-gen/SKILL.md`.
+- **Examples live in the dev sandbox** (`pnpm dev` → `src/showcases/*.tsx`) and that is the only example surface (Storybook was removed). Per-component Markdown reference lives in `docs/`.
+
+## i18n
+
+- Every visible string comes from `useITTranslation()` → `t("namespace.key")`; never hardcode UI text. Formatting goes through the hook too (`formatNumber`, `formatCurrency`, `formatDate`, `dateLocale`).
+- Add new keys to **both** `src/i18n/locales/es.ts` and `src/i18n/locales/en.ts` (same key names, `namespace.camelCase`; see `docs/i18n/conventions.md`).
+- Runtime lives in `src/i18n/` and is exported from `src/index.ts`; docs in `docs/i18n/`. Without `ITI18nProvider` the output is identical to the Spanish default, and explicit component props always win over the catalog.
 
 ## CSS gotchas
 

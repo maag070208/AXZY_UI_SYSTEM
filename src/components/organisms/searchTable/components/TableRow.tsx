@@ -6,6 +6,7 @@ import { FaCheck, FaTimes } from "react-icons/fa";
 import { SearchColumn } from "../searchTable.props";
 import EditableCell from "./EditableCell";
 import * as yup from "yup";
+import { useITTranslation, toIntlLocale } from "@/i18n";
 
 interface TableRowProps<T> {
   row: T;
@@ -31,6 +32,7 @@ export default function TableRow<T>({
   isEditing = false,
   onEdit,
 }: TableRowProps<T>) {
+  const { t, locale } = useITTranslation();
   const {
     editedRow,
     errors,
@@ -55,18 +57,18 @@ export default function TableRow<T>({
     switch (col.type) {
       case "number":
         return typeof value === "number" && col.currencyMX
-          ? formatCurrencyMX(value)
+          ? formatCurrencyMX(value, toIntlLocale(locale))
           : (value as React.ReactNode);
 
       case "boolean":
         return value ? (
           <FaCheck
             className="text-green-500"
-            aria-label="Verdadero"
-            title="Verdadero"
+            aria-label={t("common.true")}
+            title={t("common.true")}
           />
         ) : (
-          <FaTimes className="text-danger-500" aria-label="Falso" title="Falso" />
+          <FaTimes className="text-danger-500" aria-label={t("common.false")} title={t("common.false")} />
         );
 
       case "actions":

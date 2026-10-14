@@ -7,7 +7,7 @@ import {
   FaSlidersH,
   FaTable,
 } from "react-icons/fa";
-import { ITLayout, ITThemeProvider, useDebouncedSearch } from "./index";
+import { ITLayout, ITThemeProvider, ITI18nProvider, ITSegmentedControl, useITTranslation, useDebouncedSearch } from "./index";
 import type { ITNavigationItem } from "./index";
 import "./index.css";
 
@@ -82,6 +82,7 @@ import { useHashRoute } from "./sandbox/useHashRoute";
 import TopbarSearch from "./sandbox/TopbarSearch";
 import { LandingShowcase } from "./sandbox/LandingShowcase";
 import NotFoundShowcase from "./sandbox/NotFoundShowcase";
+import { sandboxMessages, translateLabel } from "./sandbox/i18n";
 
 // Icons per sandbox group (icons stay here; navigation.ts is plain data).
 const GROUP_ICONS: Record<string, React.ReactNode> = {
@@ -93,7 +94,38 @@ const GROUP_ICONS: Record<string, React.ReactNode> = {
   feed: <FaRegBell />,
 };
 
-function App() {
+/** Dev-only language switcher for the sandbox; lives inside `ITI18nProvider`. */
+function LocaleSwitcher({
+  locale,
+  onChange,
+}: {
+  locale: "es" | "en";
+  onChange: (locale: "es" | "en") => void;
+}) {
+  const { t } = useITTranslation();
+  return (
+    <div role="group" aria-label={t("sandbox.language")}>
+      <ITSegmentedControl
+        size="sm"
+        options={[
+          { value: "es", label: "ES" },
+          { value: "en", label: "EN" },
+        ]}
+        value={locale}
+        onChange={(value) => onChange(value === "en" ? "en" : "es")}
+      />
+    </div>
+  );
+}
+
+function AppShell({
+  locale,
+  onLocaleChange,
+}: {
+  locale: "es" | "en";
+  onLocaleChange: (locale: "es" | "en") => void;
+}) {
+  const { t } = useITTranslation();
   const { route, goToItem, goToLanding, goToPortfolio } = useHashRoute();
   const [subitemConnector] = useState<"dot" | "|" | "none">("dot");
 
@@ -127,13 +159,13 @@ function App() {
       return SANDBOX_GROUPS.map((group) => {
         const subitems = group.subitems.map((sub) => ({
           id: sub.id,
-          label: sub.label,
+          label: translateLabel(sub.id, sub.label, t),
           isActive: showroomActive === sub.id,
           action: () => goToItem(group.id, sub.id),
         }));
         return {
           id: group.id,
-          label: group.label,
+          label: translateLabel(group.id, group.label, t),
           icon: GROUP_ICONS[group.id],
           isActive: subitems.some((sub) => sub.isActive),
           subitems,
@@ -143,22 +175,23 @@ function App() {
 
     const flat: ITNavigationItem[] = [];
     SANDBOX_GROUPS.forEach((group) => {
+      const groupLabel = translateLabel(group.id, group.label, t);
       const groupMatches =
-        group.label.toLowerCase().includes(term) ||
+        groupLabel.toLowerCase().includes(term) ||
         group.id.toLowerCase().includes(term);
-      const groupBadge = group.label.split(" ")[0];
+      const groupBadge = groupLabel.split(" ")[0];
 
       group.subitems
         .filter(
           (sub) =>
             groupMatches ||
-            sub.label.toLowerCase().includes(term) ||
+            translateLabel(sub.id, sub.label, t).toLowerCase().includes(term) ||
             sub.id.toLowerCase().includes(term),
         )
         .forEach((sub) => {
           flat.push({
             id: sub.id,
-            label: sub.label,
+            label: translateLabel(sub.id, sub.label, t),
             icon: GROUP_ICONS[group.id],
             badge: groupBadge,
             isActive: showroomActive === sub.id,
@@ -167,7 +200,7 @@ function App() {
         });
     });
     return flat;
-  }, [debouncedTerm, showroomActive, goToItem]);
+  }, [debouncedTerm, showroomActive, goToItem, t]);
 
   // Sidebar is UNCONTROLLED: ITLayout's internal default is the 88px rail and the
   // rail expands automatically on hover. No toggle button — the hover is the control.
@@ -190,16 +223,19 @@ function App() {
     ),
     // The topbar places `children` in its right area, right before the user menu.
     children: (
-      <button
-        type="button"
-        aria-label="Notificaciones"
-        title="Notificaciones"
-        className="relative flex items-center justify-center p-2.5 rounded-xl transition-colors duration-200 hover:bg-[var(--it-topbar-user-hover,#f1f5f9)] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
-        style={{ color: "var(--it-topbar-icon, #94a3b8)" }}
-      >
-        <FaRegBell className="w-5 h-5" aria-hidden="true" />
-        <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white" />
-      </button>
+      <>
+        <LocaleSwitcher locale={locale} onChange={onLocaleChange} />
+        <button
+          type="button"
+          aria-label={t("sandbox.notifications")}
+          title={t("sandbox.notifications")}
+          className="relative flex items-center justify-center p-2.5 rounded-xl transition-colors duration-200 hover:bg-[var(--it-topbar-user-hover,#f1f5f9)] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
+          style={{ color: "var(--it-topbar-icon, #94a3b8)" }}
+        >
+          <FaRegBell className="w-5 h-5" aria-hidden="true" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white" />
+        </button>
+      </>
     ),
     navItems: [
       {
@@ -209,7 +245,7 @@ function App() {
       },
       {
         id: "portfolio",
-        label: "Portafolio",
+        label: t("sandbox.nav.portfolio"),
         action: () => goToPortfolio(),
       },
     ],
@@ -222,7 +258,7 @@ function App() {
       userEmail: "alex@axzy.dev",
       menuItems: [
         {
-          label: "Ir al Portafolio",
+          label: t("sandbox.userMenu.portfolio"),
           onClick: () => goToPortfolio(),
         },
       ],
@@ -340,31 +376,49 @@ function App() {
 
   return (
     <ITThemeProvider showFab={false} density={0.98} radius={10} shadow={2}>
-      {route.view === "home" ? (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-10 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-6xl mx-auto">
-            <HomeShowcase />
+        {route.view === "home" ? (
+          <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-10 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto">
+              <HomeShowcase />
+            </div>
           </div>
-        </div>
-      ) : (
-        <ITLayout sidebar={sidebarProps} topBar={topBarProps}>
-          {!route.valid ? (
-            <NotFoundShowcase
-              attempted={route.raw}
-              onGoLanding={() => goToLanding()}
-              onGoPortfolio={goToPortfolio}
-            />
-          ) : !route.group && !route.item ? (
-            <LandingShowcase
-              onOpenItem={goToItem}
-              onOpenPortfolio={goToPortfolio}
-            />
-          ) : (
-            renderShowcase(showroomActive)
-          )}
-        </ITLayout>
-      )}
-    </ITThemeProvider>
+        ) : (
+          <ITLayout sidebar={sidebarProps} topBar={topBarProps}>
+            {!route.valid ? (
+              <NotFoundShowcase
+                attempted={route.raw}
+                onGoLanding={() => goToLanding()}
+                onGoPortfolio={goToPortfolio}
+              />
+            ) : !route.group && !route.item ? (
+              <LandingShowcase
+                onOpenItem={goToItem}
+                onOpenPortfolio={goToPortfolio}
+              />
+            ) : (
+              renderShowcase(showroomActive)
+            )}
+          </ITLayout>
+        )}
+      </ITThemeProvider>
+  );
+}
+
+/** Sandbox root: owns the locale state and provides i18n to the whole showroom. */
+function App() {
+  const [locale, setLocale] = useState<"es" | "en">(() => {
+    if (typeof window === "undefined") return "es";
+    return window.localStorage.getItem("it-locale") === "en" ? "en" : "es";
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem("it-locale", locale);
+  }, [locale]);
+
+  return (
+    <ITI18nProvider locale={locale} messages={sandboxMessages}>
+      <AppShell locale={locale} onLocaleChange={setLocale} />
+    </ITI18nProvider>
   );
 }
 

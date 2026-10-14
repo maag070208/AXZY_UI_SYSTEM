@@ -26,7 +26,7 @@ export interface ITDropdownMenuProps {
   items: ITDropdownMenuItem[];
   /** Custom trigger content. Defaults to a vertical ellipsis icon. */
   trigger?: ReactNode;
-  /** Accessible label for the trigger button. @default "Abrir menú" */
+  /** Accessible label for the trigger button. @default i18n `dropdownMenu.open` ("Abrir menú") */
   triggerLabel?: string;
   /** Placement of the menu relative to the trigger. Valid values: `"bottom-start"`, `"bottom-end"`, `"top-start"`, `"top-end"`. @default "bottom-end" */
   placement?: "bottom-start" | "bottom-end" | "top-start" | "top-end";

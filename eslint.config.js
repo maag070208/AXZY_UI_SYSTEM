@@ -1,13 +1,10 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
-
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 
-export default tseslint.config({ ignores: ['dist', 'storybook-static', 'dist-app', 'dist-tmp-css', 'vscode-extension'] }, {
+export default tseslint.config({ ignores: ['dist', 'dist-app', 'dist-tmp-css', 'vscode-extension'] }, {
   extends: [js.configs.recommended, ...tseslint.configs.recommended],
   files: ['**/*.{ts,tsx}'],
   languageOptions: {
@@ -28,9 +25,4 @@ export default tseslint.config({ ignores: ['dist', 'storybook-static', 'dist-app
     // Se degrada a warning (no bloqueante) para mantener lint verde.
     '@typescript-eslint/no-explicit-any': 'warn',
   },
-}, storybook.configs["flat/recommended"], {
-  // Storybook permite importar tipos desde @storybook/react en stories.
-  // La regla firea en imports `import type` (falso positivo).
-  files: ['**/*.stories.tsx', '**/*.stories.ts'],
-  rules: { 'storybook/no-renderer-packages': 'off' },
 });

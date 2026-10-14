@@ -11,6 +11,7 @@ import {
 import ITBadget from "@/components/atoms/badget/badget";
 import ITText from "@/components/atoms/text/text";
 import { useITFlatAppearance } from "@/theme/theme-context";
+import { useITTranslation } from "@/i18n";
 
 /** Narrows a submenu entry to a titled group. */
 function isSubItemGroup(
@@ -73,6 +74,7 @@ export default function ITSidebar({
 }: ITSidebarProps) {
   // Flat appearance: plain surface, no glow/accent bar, narrower panel.
   const flat = useITFlatAppearance();
+  const { t } = useITTranslation();
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [isHovering, setIsHovering] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -251,7 +253,7 @@ export default function ITSidebar({
     const {
       count,
       icon,
-      label = "Notificaciones",
+      label = t("sidebar.notifications"),
       onClick,
       badgeProps,
     } = notification;
@@ -371,7 +373,7 @@ export default function ITSidebar({
       )}
 
       {/* Navigation Items */}
-      <nav aria-label="Componentes de la librería" className={`flex-1 py-4 custom-scrollbar ${fixedRail ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"} ${flat && isSidebarCollapsed ? "px-3" : "px-4"}`}>
+      <nav aria-label={t("sidebar.navAria")} className={`flex-1 py-4 custom-scrollbar ${fixedRail ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"} ${flat && isSidebarCollapsed ? "px-3" : "px-4"}`}>
         <ul className="space-y-1">
           {navigationItems.map((item) => {
             const hasSubmenu = !!item.subitems && item.subitems.length > 0;
@@ -525,7 +527,7 @@ export default function ITSidebar({
                       ))}
                     </div>
                   ) : (
-                    <ITText as="div" className="px-5 py-3 text-sm italic" style={{ color: "var(--it-sidebar-label-color, var(--color-secondary-400))" }}>No hay submenú</ITText>
+                    <ITText as="div" className="px-5 py-3 text-sm italic" style={{ color: "var(--it-sidebar-label-color, var(--color-secondary-400))" }}>{t("sidebar.noSubmenu")}</ITText>
                   )}
                 </div>
               )}

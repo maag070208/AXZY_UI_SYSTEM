@@ -3,6 +3,7 @@ import { ITPageHeaderProps } from "./page-header.props";
 import ITBreadcrumbs from "@/components/molecules/breadcrumbs/breadcrumbs";
 import ITText from "@/components/atoms/text/text";
 import { useITFlatAppearance } from "@/theme/theme-context";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Page title bar with breadcrumbs, description, back button, and action buttons.
@@ -29,6 +30,7 @@ export default function ITPageHeader({
   iconColor,
   className,
 }: ITPageHeaderProps) {
+  const { t } = useITTranslation();
   const showTopRow = breadcrumbs?.length || backAction;
   // Flat appearance: compact title, no decorative icon tile.
   const flat = useITFlatAppearance();
@@ -43,7 +45,7 @@ export default function ITPageHeader({
               <button
                 onClick={backAction}
                 className="flex items-center justify-center w-9 h-9 rounded-full border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-all duration-200 flex-shrink-0"
-                aria-label="Volver"
+                aria-label={t("pageHeader.back")}
               >
                 <FaChevronLeft size={14} />
               </button>

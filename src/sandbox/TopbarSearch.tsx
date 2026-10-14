@@ -2,6 +2,7 @@ import type { ChangeEvent } from "react";
 import { FaSearch, FaTimes } from "react-icons/fa";
 import ITButton from "@/components/atoms/button/button";
 import ITInput from "@/components/atoms/input/input";
+import { useITTranslation } from "@/i18n";
 
 /** Props for the sandbox topbar search filter. */
 export interface TopbarSearchProps {
@@ -37,6 +38,7 @@ export default function TopbarSearch({
   pending = false,
   className = "w-full",
 }: TopbarSearchProps) {
+  const { t } = useITTranslation();
   const isActive = value.trim().length > 0;
   const showCount = isActive && !pending;
 
@@ -50,9 +52,9 @@ export default function TopbarSearch({
         <div className="flex-1 min-w-0">
           <ITInput
             name="sandbox-topbar-search"
-            label="Buscar componentes"
+            label={t("sandbox.search.label")}
             labelClassName="sr-only"
-            placeholder="Buscar componente…"
+            placeholder={t("sandbox.search.placeholder")}
             value={value}
             onChange={(event: ChangeEvent<HTMLInputElement>) =>
               onChange(event.target.value)
@@ -68,7 +70,7 @@ export default function TopbarSearch({
             variant="text"
             color="danger"
             size="sm"
-            ariaLabel="Limpiar búsqueda"
+            ariaLabel={t("sandbox.search.clear")}
             onClick={onClear}
             className="flex-shrink-0"
           >
@@ -78,7 +80,7 @@ export default function TopbarSearch({
       </div>
 
       <span role="status" aria-live="polite" className="sr-only">
-        {showCount ? `${resultCount} resultados` : ""}
+        {showCount ? t("sandbox.search.results", { count: resultCount }) : ""}
       </span>
     </form>
   );

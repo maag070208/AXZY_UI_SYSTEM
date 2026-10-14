@@ -5,6 +5,7 @@ import ITSkeleton from "@/components/atoms/skeleton/skeleton";
 import ITEmptyState from "@/components/molecules/empty-state/empty-state";
 import ITButton from "@/components/atoms/button/button";
 import ITStack from "@/components/atoms/stack/stack";
+import { useITTranslation } from "@/i18n";
 
 const hasHeader = (props: ITPageProps) =>
   !!(props.title || props.description || props.breadcrumbs || props.actions || props.backAction || props.icon);
@@ -51,6 +52,7 @@ const renderHeader = (props: ITPageProps) => {
  * ```
  */
 export default function ITPage(props: ITPageProps) {
+  const { t } = useITTranslation();
   const {
     loading = false,
     error = null,
@@ -95,12 +97,12 @@ export default function ITPage(props: ITPageProps) {
       <div className={wrapperClass}>
         {renderHeader(props)}
         <ITEmptyState
-          title={errorTitle || "Error"}
+          title={errorTitle || t("common.error")}
           description={error}
           action={
             onRetry ? (
               <ITButton
-                label={errorActionLabel || "Reintentar"}
+                label={errorActionLabel || t("common.retry")}
                 onClick={onRetry}
                 size="sm"
               />
@@ -116,8 +118,8 @@ export default function ITPage(props: ITPageProps) {
       <div className={wrapperClass}>
         {renderHeader(props)}
         <ITEmptyState
-          title={emptyTitle || "Sin datos"}
-          description={emptyDescription || "No hay información para mostrar"}
+          title={emptyTitle || t("common.noData")}
+          description={emptyDescription || t("common.empty")}
           action={emptyAction}
         />
       </div>

@@ -8,6 +8,7 @@ import { useFloatingPanel } from "@/hooks/useFloatingPanel";
 import { inputFieldStyle } from "@/utils/styles";
 import ITChip from "@/components/atoms/chip/chip";
 import ITText from "@/components/atoms/text/text";
+import { useITTranslation } from "@/i18n";
 
 /**
  * Multi-value select with searchable dropdown, removable chips, and keyboard navigation.
@@ -39,7 +40,7 @@ import ITText from "@/components/atoms/text/text";
 export default function ITMultiSelect({
   name,
   label,
-  placeholder = "Selecciona opciones",
+  placeholder,
   options,
   value,
   onChange,
@@ -57,10 +58,11 @@ export default function ITMultiSelect({
   searchable = true,
   onSearch,
   isLoading = false,
-  noResultsMessage = "No se encontraron resultados",
+  noResultsMessage,
   renderOption,
   className,
 }: ITMultiSelectProps) {
+  const { t } = useITTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -110,13 +112,13 @@ export default function ITMultiSelect({
   const effectiveError =
     error !== undefined && error !== false
       ? error === true
-        ? "Este campo es requerido"
+        ? t("field.required")
         : error
       : required && isEmpty
-      ? "Este campo es requerido"
+      ? t("field.required")
       : undefined;
   const hasError = isTouched && !!effectiveError;
-  const errorMessage = typeof effectiveError === "string" ? effectiveError : "Este campo es requerido";
+  const errorMessage = typeof effectiveError === "string" ? effectiveError : t("field.required");
 
   const getControlStyle = (): React.CSSProperties => {
     const style = inputFieldStyle(inputTheme, size, { width: "100%", cursor: "text" });
@@ -284,7 +286,7 @@ export default function ITMultiSelect({
             onBlur={handleBlur}
             disabled={disabled}
             readOnly={readOnly || !searchable}
-            placeholder={selectedOptions.length === 0 ? placeholder : ""}
+            placeholder={selectedOptions.length === 0 ? (placeholder ?? t("multiSelect.placeholder")) : ""}
             autoComplete="off"
             aria-autocomplete="list"
             aria-activedescendant={activeIndex >= 0 ? `it-multiselect-opt-${activeIndex}` : undefined}
@@ -298,8 +300,8 @@ export default function ITMultiSelect({
             ) : showClear ? (
               <button
                 type="button"
-                aria-label="Limpiar selección"
-                title="Limpiar selección"
+                aria-label={t("common.clearSelection")}
+                title={t("common.clearSelection")}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -370,7 +372,7 @@ export default function ITMultiSelect({
                   })
                 ) : (
                   <ITText as="div" className="px-4 py-6 text-sm text-center text-secondary-500 italic">
-                    {isLoading ? "Cargando..." : noResultsMessage}
+                    {isLoading ? t("common.loading") : (noResultsMessage ?? t("select.noResults"))}
                   </ITText>
                 )}
               </div>
@@ -385,3 +387,4 @@ export default function ITMultiSelect({
     </div>
   );
 }
+

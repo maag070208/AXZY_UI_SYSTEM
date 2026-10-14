@@ -13,6 +13,7 @@ import ITSearchSelect from "@/components/molecules/search-select/search-select";
 import ITDatePicker from "@/components/molecules/date-picker/datePicker";
 import { Column } from "@/components/molecules/table/table.props";
 import { formatCurrencyMX, getPinnedColumnMeta, isInteractiveTarget } from "@/utils/table.utils";
+import { useITTranslation, toIntlLocale } from "@/i18n";
 import { ITDataTableProps } from "./dataTable.props";
 import ITText from "@/components/atoms/text/text";
 import {
@@ -106,6 +107,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
   footerClassName,
   footerStyle,
 }: ITDataTableProps<T>) {
+  const { t, locale } = useITTranslation();
   const [viewMode, setViewMode] = useState<"table" | "cards">(defaultView || "table");
   const { ref: rootRef, width: containerWidth } = useElementSize<HTMLDivElement>();
   const [data, setData] = useState<T[]>([]);
@@ -239,17 +241,21 @@ export default function ITDataTable<T extends Record<string, unknown>>({
         currentValue === undefined ? true : currentValue === true ? false : undefined;
 
       const getToggleLabel = () => {
-        if (currentValue === undefined) return "Mostrar todos";
-        if (currentValue === true) return "Filtrar solo verdaderos";
-        return "Filtrar solo falsos";
+        if (currentValue === undefined) return t("table.showAll");
+        if (currentValue === true) return t("table.filterTrue");
+        return t("table.filterFalse");
       };
+      const toggleLabel = t("table.filterToggle", {
+        action: getToggleLabel(),
+        label: col.label,
+      });
 
       return (
         <button
           className="flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 rounded-full p-1 transition-all duration-200"
           onClick={() => handleFilterChange(col.key, nextValue)}
-          aria-label={`${getToggleLabel()} para ${col.label}`}
-          title={`${getToggleLabel()} para ${col.label}`}
+          aria-label={toggleLabel}
+          title={toggleLabel}
           disabled={isLoading}
         >
           <div className="relative w-10 h-5 bg-secondary-300 rounded-full">
@@ -270,16 +276,16 @@ export default function ITDataTable<T extends Record<string, unknown>>({
 
     if (col.filter === "catalog" && col.catalogOptions) {
       if (col.catalogOptions.loading) {
-        return <FaSpinner className="animate-spin" aria-label="Cargando opciones" title="Cargando opciones" />;
+        return <FaSpinner className="animate-spin" aria-label={t("common.loadingOptions")} title={t("common.loadingOptions")} />;
       }
       if (col.catalogOptions.error) {
-        return <ITText as="span" className="text-danger-500 text-xs">Error cargando</ITText>;
+        return <ITText as="span" className="text-danger-500 text-xs">{t("common.loadError")}</ITText>;
       }
       return (
         <ITSelect
           name={`filter-${col.key}`}
           options={[
-            { value: "", label: "Todos" },
+            { value: "", label: t("common.all") },
             ...col.catalogOptions.data.map((item) => ({
               value: String(item.id),
               label: item.name,
@@ -299,10 +305,10 @@ export default function ITDataTable<T extends Record<string, unknown>>({
 
     if (col.filter === "search" && col.catalogOptions) {
       if (col.catalogOptions.loading) {
-        return <FaSpinner className="animate-spin" aria-label="Cargando opciones" title="Cargando opciones" />;
+        return <FaSpinner className="animate-spin" aria-label={t("common.loadingOptions")} title={t("common.loadingOptions")} />;
       }
       if (col.catalogOptions.error) {
-        return <ITText as="span" className="text-danger-500 text-xs">Error cargando</ITText>;
+        return <ITText as="span" className="text-danger-500 text-xs">{t("common.loadError")}</ITText>;
       }
       const searchValue = filters[col.key];
       return (
@@ -321,7 +327,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
           onSearch={col.catalogOptions.onSearch}
           isLoading={col.catalogOptions.loading}
           size="sm"
-          placeholder="Buscar..."
+          placeholder={t("common.search")}
           clearable
           className="w-full"
           onBlur={() => {}}
@@ -340,7 +346,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
           minDate={col.dateFilterOptions?.minDate}
           maxDate={col.dateFilterOptions?.maxDate}
           size="sm"
-          placeholder="dd/mm/aaaa"
+          placeholder={t("datePicker.placeholder")}
           className="w-full"
           disabled={isLoading}
         />
@@ -360,7 +366,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
           minDate={col.dateFilterOptions?.minDate}
           maxDate={col.dateFilterOptions?.maxDate}
           size="sm"
-          placeholder="dd/mm/aaaa - dd/mm/aaaa"
+          placeholder={t("datePicker.rangePlaceholder")}
           className="w-full"
           disabled={isLoading}
         />
@@ -371,7 +377,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
       <ITInput
         name={`filter-${col.key}`}
         className="w-full text-xs"
-        placeholder="Buscar..."
+        placeholder={t("common.search")}
         value={String(filters[col.key] || "")}
         onChange={(e) => handleFilterChange(col.key, e.target.value)}
         onBlur={() => {}}
@@ -386,12 +392,12 @@ export default function ITDataTable<T extends Record<string, unknown>>({
 
     switch (col.type) {
       case "number":
-        return typeof value === "number" && col.currencyMX ? formatCurrencyMX(value) : value;
+        return typeof value === "number" && col.currencyMX ? formatCurrencyMX(value, toIntlLocale(locale)) : value;
       case "boolean":
         return value ? (
-          <FaCheck className="text-success-500" aria-label="Verdadero" title="Verdadero" />
+          <FaCheck className="text-success-500" aria-label={t("common.true")} title={t("common.true")} />
         ) : (
-          <FaTimes className="text-danger-500" aria-label="Falso" title="Falso" />
+          <FaTimes className="text-danger-500" aria-label={t("common.false")} title={t("common.false")} />
         );
       case "actions":
         return col.actions ? col.actions(row) : null;
@@ -464,11 +470,11 @@ export default function ITDataTable<T extends Record<string, unknown>>({
     <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-700/50">
       <button onClick={() => setViewMode("table")} disabled={forcedCards} className={segCtrlClass("table")}>
         <FaTable size={11} />
-        Table
+        {t("table.viewTable")}
       </button>
       <button onClick={() => setViewMode("cards")} className={segCtrlClass("cards")}>
         <FaThLarge size={11} />
-        Cards
+        {t("table.viewCards")}
       </button>
     </div>
   );
@@ -550,7 +556,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                           ? "bg-secondary-200 text-secondary-900"
                           : "hover:bg-secondary-200 text-secondary-400 hover:text-secondary-700"
                       } disabled:opacity-50`}
-                      title={`Ordenar por ${col.label}`}
+                      title={t("table.sortBy", { label: col.label })}
                     >
                       <MdOutlineSwapVert className="w-4 h-4" aria-hidden="true" />
                     </button>
@@ -648,8 +654,8 @@ export default function ITDataTable<T extends Record<string, unknown>>({
             <td colSpan={columns.length} className="px-6 py-12 text-center">
               {!isLoading && (
                 <div className={tableEmptyContent}>
-                  <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
-                  <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
+                  <ITText as="span" className="text-lg">{t("table.noResults")}</ITText>
+                  <ITText as="span" className="text-sm mt-1">{t("table.adjustFilters")}</ITText>
                 </div>
               )}
             </td>
@@ -699,7 +705,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                   {loadingIndicator || (
                     <>
                       <FaSpinner className="animate-spin text-primary-500 text-4xl" />
-                      <ITText as="span" className="text-sm font-semibold text-secondary-600 animate-pulse">Cargando datos...</ITText>
+                      <ITText as="span" className="text-sm font-semibold text-secondary-600 animate-pulse">{t("table.loading")}</ITText>
                     </>
                   )}
                </div>
@@ -724,8 +730,8 @@ export default function ITDataTable<T extends Record<string, unknown>>({
               ) : (
                 !isLoading && (
                   <div className={clsx(tableEmptyContent, "py-12")}>
-                    <ITText as="span" className="text-lg">No se encontraron resultados</ITText>
-                    <ITText as="span" className="text-sm mt-1">Intenta ajustar los filtros</ITText>
+                    <ITText as="span" className="text-lg">{t("table.noResults")}</ITText>
+                    <ITText as="span" className="text-sm mt-1">{t("table.adjustFilters")}</ITText>
                   </div>
                 )
               )}
