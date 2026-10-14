@@ -13,6 +13,8 @@ import "./index.css";
 
 // Import Showcases
 import { HomeShowcase } from "./showcases/HomeShowcase";
+import ProductoDetalle from "./showcases/ProductoDetalle";
+import { PRODUCTOS } from "./showcases/productos";
 import { GettingStartedShowcase } from "./showcases/GettingStartedShowcase";
 import { HelpShowcase } from "./showcases/HelpShowcase";
 import { SizesShowcase } from "./showcases/SizesShowcase";
@@ -126,7 +128,7 @@ function AppShell({
   onLocaleChange: (locale: "es" | "en") => void;
 }) {
   const { t } = useITTranslation();
-  const { route, goToItem, goToLanding, goToPortfolio } = useHashRoute();
+  const { route, goToItem, goToLanding, goToProducto, goToPortfolio } = useHashRoute();
   const [subitemConnector] = useState<"dot" | "|" | "none">("dot");
 
   // Debounced term drives filtering; `searchValue` is the live input value.
@@ -376,11 +378,24 @@ function AppShell({
 
   return (
     <ITThemeProvider showFab={false} density={0.98} radius={10} shadow={2}>
-        {route.view === "home" ? (
-          <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-10 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-6xl mx-auto">
-              <HomeShowcase />
-            </div>
+        {route.view === "producto" ? (
+          <div className="min-h-[100dvh] bg-slate-50 dark:bg-slate-950">
+            {route.valid ? (
+              <ProductoDetalle
+                producto={PRODUCTOS.find((producto) => producto.id === route.producto)!}
+                onBack={() => goToPortfolio()}
+              />
+            ) : (
+              <NotFoundShowcase
+                attempted={route.raw}
+                onGoLanding={() => goToLanding()}
+                onGoPortfolio={goToPortfolio}
+              />
+            )}
+          </div>
+        ) : route.view === "home" ? (
+          <div className="min-h-[100dvh] bg-slate-50 dark:bg-slate-950">
+            <HomeShowcase onOpenProducto={goToProducto} />
           </div>
         ) : (
           <ITLayout sidebar={sidebarProps} topBar={topBarProps}>

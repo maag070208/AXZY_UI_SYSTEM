@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { GROUP_SLUGS, groupBySlug, isValidItem } from "./navigation";
+import { PRODUCTOS } from "../showcases/productos";
 
-/** Top-level sandbox views. `home` is the untouched portfolio. */
-export type SandboxView = "home" | "ui-system";
+/** Top-level sandbox views. `home` is the portfolio, `producto` a project detail page. */
+export type SandboxView = "home" | "ui-system" | "producto";
 
 /** Parsed representation of `window.location.hash`. */
 export interface HashRoute {
@@ -12,20 +13,28 @@ export interface HashRoute {
   group: string | null;
   /** Item id (`input`, `table`, …) or `null` for a group-only route. */
   item: string | null;
+  /** Product id when `view === "producto"`. */
+  producto: string | null;
   /** Raw hash exactly as read from the URL (used by the 404 page). */
   raw: string;
   /** Whether the route resolved to a real page. `false` → render 404. */
   valid: boolean;
 }
 
+/** Whether a product id exists in the portfolio catalog. */
+function isValidProducto(id: string): boolean {
+  return PRODUCTOS.some((producto) => producto.id === id);
+}
+
 /**
  * Parse a location hash into a `HashRoute`.
  *
  * Rules:
- * - empty / first segment !== `ui-system` → portfolio (`home`).
+ * - empty / first segment not in `{ui-system, proyecto}` → portfolio (`home`).
  * - `#ui-system` → landing.
  * - `#ui-system/<group-slug>` → group landing (valid, `item` null).
  * - `#ui-system/<group-slug>/<item-id>` → page (valid) or 404 when unknown.
+ * - `#proyecto/<product-id>` → project detail page (valid) or 404 when unknown.
  * - more than 3 segments → 404.
  */
 export function parseHash(hash: string): HashRoute {
@@ -33,20 +42,32 @@ export function parseHash(hash: string): HashRoute {
   const clean = hash.startsWith("#") ? hash.slice(1) : hash;
   const parts = clean.split("/").filter(Boolean);
 
+  if (parts[0] === "proyecto") {
+    const producto = parts[1] ?? null;
+    return {
+      view: "producto",
+      group: null,
+      item: null,
+      producto,
+      raw,
+      valid: Boolean(producto) && isValidProducto(producto as string),
+    };
+  }
+
   if (parts.length === 0 || parts[0] !== "ui-system") {
-    return { view: "home", group: null, item: null, raw, valid: true };
+    return { view: "home", group: null, item: null, producto: null, raw, valid: true };
   }
 
   if (parts.length === 1) {
-    return { view: "ui-system", group: null, item: null, raw, valid: true };
+    return { view: "ui-system", group: null, item: null, producto: null, raw, valid: true };
   }
 
   if (parts.length === 2) {
     const group = groupBySlug(parts[1]);
     if (!group) {
-      return { view: "ui-system", group: null, item: null, raw, valid: false };
+      return { view: "ui-system", group: null, item: null, producto: null, raw, valid: false };
     }
-    return { view: "ui-system", group: group.id, item: null, raw, valid: true };
+    return { view: "ui-system", group: group.id, item: null, producto: null, raw, valid: true };
   }
 
   if (parts.length === 3) {
@@ -56,20 +77,26 @@ export function parseHash(hash: string): HashRoute {
         view: "ui-system",
         group: group?.id ?? null,
         item: null,
+        producto: null,
         raw,
         valid: false,
       };
     }
-    return { view: "ui-system", group: group.id, item: parts[2], raw, valid: true };
+    return { view: "ui-system", group: group.id, item: parts[2], producto: null, raw, valid: true };
   }
 
-  return { view: "ui-system", group: null, item: null, raw, valid: false };
+  return { view: "ui-system", group: null, item: null, producto: null, raw, valid: false };
 }
 
 /** Build a hash for a group/item pair, translating the group id to its slug. */
 export function buildHash(group: string, item?: string): string {
   const slug = GROUP_SLUGS[group] ?? group;
   return item ? `#ui-system/${slug}/${item}` : `#ui-system/${slug}`;
+}
+
+/** Build the hash of a project detail page. */
+export function buildProductoHash(id: string): string {
+  return `#proyecto/${id}`;
 }
 
 /** Navigation options shared by every `goTo*` helper. */
@@ -86,6 +113,8 @@ export interface UseHashRouteResult {
   goToItem: (group: string, item: string, options?: GoToOptions) => void;
   /** Navigate to the `#ui-system` landing. */
   goToLanding: (options?: GoToOptions) => void;
+  /** Navigate to a project detail page. */
+  goToProducto: (id: string, options?: GoToOptions) => void;
   /** Navigate back to the portfolio (strips the hash). */
   goToPortfolio: (options?: GoToOptions) => void;
 }
@@ -135,6 +164,13 @@ export function useHashRoute(): UseHashRouteResult {
     [navigate],
   );
 
+  const goToProducto = useCallback(
+    (id: string, options?: GoToOptions) => {
+      navigate(buildProductoHash(id), options);
+    },
+    [navigate],
+  );
+
   const goToPortfolio = useCallback((options?: GoToOptions) => {
     const url = `${window.location.pathname}${window.location.search}`;
     if (options?.replace) {
@@ -145,5 +181,5 @@ export function useHashRoute(): UseHashRouteResult {
     setRoute(parseHash(""));
   }, []);
 
-  return { route, goToItem, goToLanding, goToPortfolio };
+  return { route, goToItem, goToLanding, goToProducto, goToPortfolio };
 }

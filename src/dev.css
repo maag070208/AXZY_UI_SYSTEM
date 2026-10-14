@@ -29,6 +29,17 @@
   mask-image: radial-gradient(ellipse at top, black 18%, transparent 72%);
 }
 
+/* Smooth in-page navigation for the portfolio anchors. */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 /* Staggered entrance: fade + translateY. `--it-delay` offsets each item. */
 @keyframes it-reveal {
   from {

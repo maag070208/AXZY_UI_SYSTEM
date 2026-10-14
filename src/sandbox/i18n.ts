@@ -92,6 +92,9 @@ export const sandboxMessages: ITMessagesByLocale = {
     "showcase.producto.whatItSolves": "Qué resuelve",
     "showcase.producto.stack": "Stack",
     "showcase.producto.specSheet": "Ficha técnica",
+    "showcase.producto.back": "Volver al portafolio",
+    "showcase.producto.gallery": "Galería",
+    "showcase.producto.cta": "¿Te interesa este proyecto?",
 
     // Getting started
     "showcase.gettingStarted.heroDesc":
@@ -192,6 +195,15 @@ export const sandboxMessages: ITMessagesByLocale = {
 
     // Home (portfolio)
     "showcase.home.ariaStats": "Métricas del perfil",
+    "showcase.home.sectionNav": "Navegación del portafolio",
+    "showcase.home.navAbout": "Sobre mí",
+    "showcase.home.navStack": "Stack",
+    "showcase.home.navProjects": "Proyectos",
+    "showcase.home.navContact": "Contacto",
+    "showcase.home.navUiSystem": "UI System",
+    "showcase.home.moreStack": "+{count} más",
+    "showcase.home.noPreview": "Sin capturas",
+    "showcase.home.footerBuiltWith": "Hecho con AXZY UI System",
     "showcase.home.badge": "Portafolio · 2026",
     "showcase.home.hello": "Hola, soy",
     "showcase.home.bio":
@@ -999,6 +1011,9 @@ export const sandboxMessages: ITMessagesByLocale = {
     "showcase.producto.whatItSolves": "What it solves",
     "showcase.producto.stack": "Stack",
     "showcase.producto.specSheet": "Technical sheet",
+    "showcase.producto.back": "Back to portfolio",
+    "showcase.producto.gallery": "Gallery",
+    "showcase.producto.cta": "Interested in this project?",
 
     // Getting started
     "showcase.gettingStarted.heroDesc":
@@ -1099,6 +1114,15 @@ export const sandboxMessages: ITMessagesByLocale = {
 
     // Home (portfolio)
     "showcase.home.ariaStats": "Profile metrics",
+    "showcase.home.sectionNav": "Portfolio navigation",
+    "showcase.home.navAbout": "About",
+    "showcase.home.navStack": "Stack",
+    "showcase.home.navProjects": "Projects",
+    "showcase.home.navContact": "Contact",
+    "showcase.home.navUiSystem": "UI System",
+    "showcase.home.moreStack": "+{count} more",
+    "showcase.home.noPreview": "No preview",
+    "showcase.home.footerBuiltWith": "Built with AXZY UI System",
     "showcase.home.badge": "Portfolio · 2026",
     "showcase.home.hello": "Hi, I'm",
     "showcase.home.bio":
