@@ -74,9 +74,50 @@ export default function ITTable<T extends Record<string, unknown>>({
   rowHeight,
   overscan = 5,
   stickyHeader = false,
+  showViewToggle = true,
+  design,
+  colors,
+  containerStyle,
+  cardClassName,
+  cardStyle,
+  toolbarClassName,
+  toolbarStyle,
+  headerClassName,
+  headerStyle,
+  headerCellClassName,
+  headerCellStyle,
+  rowClassName,
+  rowStyle,
+  cellClassName,
+  cellStyle,
+  cardsClassName,
+  cardsStyle,
+  footerClassName,
+  footerStyle,
 }: ITTableProps<T>) {
   const [viewMode, setViewMode] = useState<"table" | "cards">(defaultView);
   const { ref: rootRef, width: containerWidth } = useElementSize<HTMLDivElement>();
+
+  // Per-instance color overrides written as local `--color-table-*` variables.
+  // Declared on the wrapper (an ancestor), they beat the global theme's
+  // `:root` values for this subtree only.
+  const colorVars = {
+    ...(colors?.headerBg ? { "--color-table-headerBg": colors.headerBg } : {}),
+    ...(colors?.headerText ? { "--color-table-headerText": colors.headerText } : {}),
+    ...(colors?.rowBg ? { "--color-table-rowBg": colors.rowBg } : {}),
+    ...(colors?.rowText ? { "--color-table-rowText": colors.rowText } : {}),
+    ...(colors?.rowHover ? { "--color-table-rowHover": colors.rowHover } : {}),
+  } as React.CSSProperties;
+
+  /** Merge a `design` slot with its flat shortcut (flat wins) into className/style. */
+  const mergeSlot = (
+    slot: { className?: string; style?: React.CSSProperties } | undefined,
+    flatClassName?: string,
+    flatStyle?: React.CSSProperties
+  ) => ({
+    className: clsx(slot?.className, flatClassName),
+    style: { ...slot?.style, ...flatStyle } as React.CSSProperties,
+  });
 
   const isFixed = layout === "fixed";
   const forcedCards =
@@ -468,73 +509,73 @@ export default function ITTable<T extends Record<string, unknown>>({
     onRowClick(row, event);
   };
 
+  const containerSlot = mergeSlot(design?.container, containerClassName, containerStyle);
+  const cardSlot = mergeSlot(design?.card, cardClassName, cardStyle);
+  const toolbarSlot = mergeSlot(design?.toolbar, toolbarClassName, toolbarStyle);
+  const headerSlot = mergeSlot(design?.header, headerClassName, headerStyle);
+  const headerCellSlot = mergeSlot(design?.headerCell, headerCellClassName, headerCellStyle);
+  const rowSlot = mergeSlot(design?.row, rowClassName, rowStyle);
+  const cellSlot = mergeSlot(design?.cell, cellClassName, cellStyle);
+  const cardsSlot = mergeSlot(design?.cards, cardsClassName, cardsStyle);
+  const footerSlot = mergeSlot(design?.footer, footerClassName, footerStyle);
+
+  const viewToggle = (
+    <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-700/50">
+      <button
+        onClick={() => setViewMode("table")}
+        disabled={forcedCards}
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+          effectiveView === "table"
+            ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
+            : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+        }`}
+      >
+        <FaTable size={11} />
+        Table
+      </button>
+      <button
+        onClick={() => setViewMode("cards")}
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+          effectiveView === "cards"
+            ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
+            : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+        }`}
+      >
+        <FaThLarge size={11} />
+        Cards
+      </button>
+    </div>
+  );
+
   return (
-    <div ref={rootRef} className={clsx("space-y-4 w-full", containerClassName)}>
-      <div className={tableContainer} style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
+    <div
+      ref={rootRef}
+      className={clsx("space-y-4 w-full", containerSlot.className)}
+      style={{ ...colorVars, ...containerSlot.style }}
+    >
+      <div
+        className={clsx(tableContainer, cardSlot.className)}
+        style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)', ...cardSlot.style }}
+      >
         {/* Header outside overflow */}
         {title && (
-          <div className="px-6 py-5 flex items-center justify-between" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
+          <div
+            className={clsx("px-6 py-5 flex items-center justify-between", toolbarSlot.className)}
+            style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)', ...toolbarSlot.style }}
+          >
             <ITText as="h2" className="text-xl font-bold text-secondary-900 leading-tight">{title}</ITText>
-            <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-700/50">
-              <button
-                onClick={() => setViewMode("table")}
-                disabled={forcedCards}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
-                  effectiveView === "table"
-                    ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
-                    : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
-                }`}
-              >
-                <FaTable size={11} />
-                Table
-              </button>
-              <button
-                onClick={() => setViewMode("cards")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
-                  effectiveView === "cards"
-                    ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
-                    : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
-                }`}
-              >
-                <FaThLarge size={11} />
-                Cards
-              </button>
-            </div>
+            {showViewToggle && viewToggle}
           </div>
         )}
 
-        {!title && (
-          <div className="flex justify-end px-4 pt-3">
-            <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-700/50">
-              <button
-                onClick={() => setViewMode("table")}
-                disabled={forcedCards}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
-                  effectiveView === "table"
-                    ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
-                    : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
-                }`}
-              >
-                <FaTable size={11} />
-                Table
-              </button>
-              <button
-                onClick={() => setViewMode("cards")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
-                  effectiveView === "cards"
-                    ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
-                    : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
-                }`}
-              >
-                <FaThLarge size={11} />
-                Cards
-              </button>
-            </div>
+        {!title && showViewToggle && (
+          <div className={clsx("flex justify-end px-4 pt-3", toolbarSlot.className)} style={toolbarSlot.style}>
+            {viewToggle}
           </div>
         )}
 
         {effectiveView === "cards" ? (
-          <div className="p-4 space-y-3 max-h-[400px] overflow-y-auto">
+          <div className={clsx("p-4 space-y-3 max-h-[400px] overflow-y-auto", cardsSlot.className)} style={cardsSlot.style}>
             {currentData.length > 0 ? (
               currentData.map((row, i) => (
                 <div
@@ -588,7 +629,8 @@ export default function ITTable<T extends Record<string, unknown>>({
               )}
               <thead>
                 <tr
-                  className={clsx(tableHeaderRow, "dark:text-slate-200")}
+                  className={clsx(tableHeaderRow, "dark:text-slate-200", headerSlot.className)}
+                  style={headerSlot.style}
                   aria-rowindex={isTableVirtual ? 1 : undefined}
                 >
                   {columns.map((col) => {
@@ -604,23 +646,23 @@ export default function ITTable<T extends Record<string, unknown>>({
                         isPinned && "sticky",
                         isStickyHeader && "sticky top-0 bg-secondary-50",
                         isPinned ? "z-[15]" : isStickyHeader && "z-10",
-                        isPinned && (col.pinned === "left" ? "it-table-pinned-left" : "it-table-pinned-right")
+                        isPinned && (col.pinned === "left" ? "it-table-pinned-left" : "it-table-pinned-right"),
+                        headerCellSlot.className,
+                        col.headerClassName
                       )}
-                      style={
-                        col.minWidth != null || isStickyHeader || isPinned
-                          ? {
-                              ...(col.minWidth != null ? { minWidth: `${col.minWidth}px` } : {}),
-                              ...(isStickyHeader || isPinned
-                                ? { backgroundColor: "var(--color-table-headerBg, #f8fafc)" }
-                                : {}),
-                              ...(isPinned
-                                ? pin.side === "left"
-                                  ? { left: pin.offset }
-                                  : { right: pin.offset }
-                                : {}),
-                            }
-                          : undefined
-                      }
+                      style={{
+                        ...(col.minWidth != null ? { minWidth: `${col.minWidth}px` } : {}),
+                        ...(isStickyHeader || isPinned
+                          ? { backgroundColor: "var(--color-table-headerBg, #f8fafc)" }
+                          : {}),
+                        ...(isPinned
+                          ? pin.side === "left"
+                            ? { left: pin.offset }
+                            : { right: pin.offset }
+                          : {}),
+                        ...headerCellSlot.style,
+                        ...col.headerStyle,
+                      }}
                     >
                       <div className={isFixed ? "flex flex-col gap-3" : "flex flex-col gap-3 min-w-[150px]"}>
                         <div className="flex items-center justify-between gap-2">
@@ -664,8 +706,10 @@ export default function ITTable<T extends Record<string, unknown>>({
                           className={clsx(
                             tableRow,
                             variant === "striped" && absoluteIndex % 2 === 0 && "bg-secondary-50/40 dark:bg-slate-800/20",
-                            onRowClick && tableRowClickable
+                            onRowClick && tableRowClickable,
+                            rowSlot.className
                           )}
+                          style={rowSlot.style}
                           tabIndex={onRowClick ? 0 : undefined}
                           onClick={onRowClick ? handleRowClick(row) : undefined}
                           onKeyDown={onRowClick ? handleRowKeyDown(row) : undefined}
@@ -687,20 +731,20 @@ export default function ITTable<T extends Record<string, unknown>>({
                                   col.align && tableAlignClasses[col.align],
                                   isPinned && "sticky bg-[var(--color-table-rowBg,white)] group-hover:bg-[var(--color-table-rowHover,var(--color-secondary-50))]",
                                   isPinned && (col.pinned === "left" ? "it-table-pinned-left" : "it-table-pinned-right"),
-                                  isPinned && "z-[1]"
+                                  isPinned && "z-[1]",
+                                  cellSlot.className,
+                                  col.cellClassName
                                 )}
-                                style={
-                                  col.minWidth != null || isPinned
-                                    ? {
-                                        ...(col.minWidth != null ? { minWidth: `${col.minWidth}px` } : {}),
-                                        ...(isPinned
-                                          ? pin.side === "left"
-                                            ? { left: pin.offset }
-                                            : { right: pin.offset }
-                                          : {}),
-                                      }
-                                    : undefined
-                                }
+                                style={{
+                                  ...(col.minWidth != null ? { minWidth: `${col.minWidth}px` } : {}),
+                                  ...(isPinned
+                                    ? pin.side === "left"
+                                      ? { left: pin.offset }
+                                      : { right: pin.offset }
+                                    : {}),
+                                  ...cellSlot.style,
+                                  ...col.cellStyle,
+                                }}
                                 title={truncateTitle}
                               >
                                 {col.type === "actions" ? (
@@ -740,7 +784,10 @@ export default function ITTable<T extends Record<string, unknown>>({
         )}
 
         {/* Pagination */}
-        <div className="rounded-b-xl px-6 py-4" style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)' }}>
+        <div
+          className={clsx("rounded-b-xl px-6 py-4", footerSlot.className)}
+          style={{ backgroundColor: 'var(--color-table-rowBg, #ffffff)', ...footerSlot.style }}
+        >
           <ITPagination
             currentPage={currentPage}
             totalPages={computedTotalPages}

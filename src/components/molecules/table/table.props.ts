@@ -1,4 +1,4 @@
-import { TableDensity, TableSize, TableVariants } from "@/types/table.types";
+import { TableDensity, TableDesignProps, TableSize, TableVariants } from "@/types/table.types";
 
 /** Data type of a table column, controls default rendering, filter UI, and sort comparison. */
 export type ColumnType = "string" | "date" | "number" | "boolean" | "actions" | "catalog";
@@ -31,6 +31,14 @@ export interface Column<T = any> {
   label: string;
   /** Additional CSS classes applied to both the header (`<th>`) and body (`<td>`) cells of this column. */
   className?: string;
+  /** Extra CSS classes applied only to this column's header (`<th>`), merged after `className`. */
+  headerClassName?: string;
+  /** Inline styles applied only to this column's header (`<th>`), merged after the table-level header-cell style. */
+  headerStyle?: React.CSSProperties;
+  /** Extra CSS classes applied only to this column's body cells (`<td>`), merged after `className`. */
+  cellClassName?: string;
+  /** Inline styles applied only to this column's body cells (`<td>`), merged after the table-level cell style. */
+  cellStyle?: React.CSSProperties;
   /** Formats numeric values as Mexican pesos (MXN) via `Intl`-based currency formatting. Only applies when `type` is `"number"`. @default false */
   currencyMX?: boolean;
   /** Custom action buttons/content rendered for a `"actions"`-type column. Receives the full row object. */
@@ -109,7 +117,7 @@ export interface Column<T = any> {
   pinned?: "left" | "right";
 }
 
-export interface ITTableProps<T> {
+export interface ITTableProps<T> extends TableDesignProps {
   /** Column definitions: key, label, type, sortable behavior, filters, and custom rendering. */
   columns: Column<T>[];
   /** Additional CSS classes for the outermost container. */

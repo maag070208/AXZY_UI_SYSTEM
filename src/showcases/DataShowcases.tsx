@@ -358,6 +358,9 @@ export const TableShowcase = () => {
           '// ITSearchSelect typeahead (server-side search opcional vía catalogOptions.onSearch)\n{ key: "role", label: "Role", type: "string", filter: "search", catalogOptions: { data: roles } }',
           '// ITDatePicker fecha única\n{ key: "lastLogin", label: "Last login", type: "date", filter: "date", dateFilterOptions: { maxDate: new Date() } }',
           '// ITDatePicker rango\n{ key: "hiredAt", label: "Hired", type: "date", filter: "date-range", dateFilterOptions: { maxDate: new Date() } }',
+          '// Diseño por instancia: colors pisa el tema; design estiliza cada región\n<ITTable columns={cols} data={rows} showViewToggle={false}\n  colors={{ headerBg: "#0f172a", headerText: "#e2e8f0", rowHover: "#e0f2fe" }}\n  design={{ card: { className: "rounded-2xl border-2 border-primary-200" }, headerCell: { className: "py-4" }, cell: { className: "font-semibold" } }} />',
+          '// Atajos planos equivalentes (ganan sobre design)*\n<ITTable columns={cols} data={rows} cardClassName="rounded-2xl" headerCellStyle={{ letterSpacing: "0.1em" }} rowClassName="border-b border-slate-100" cellClassName="font-semibold" />',
+          '// Diseño por columna\n{ key: "sales", label: "Sales", type: "number", headerClassName: "text-right", cellClassName: "text-right", cellStyle: { fontVariantNumeric: "tabular-nums" } }',
         ],
         props: [
           { name: "columns", type: "Column<T>[]", description: "Definiciones de columna: key, label, type, sortable, filter, render, actions." },
@@ -382,11 +385,24 @@ export const TableShowcase = () => {
           { name: "rowHeight", type: "number", default: "getRowHeight(size, density)", description: "Alto de fila asumido (px). Size-aware: baseline size=\"md\" = 33/45/53 según densidad; size lo desplaza por el line box (sm 16 / md 20 / lg 28 px)." },
           { name: "overscan", type: "number", default: "5", description: "Filas extra renderizadas arriba/abajo del viewport." },
           { name: "stickyHeader", type: "boolean", default: "false", description: "Header sticky mientras scrollea el cuerpo virtualizado." },
+          { name: "showViewToggle", type: "boolean", default: "true", description: "Muestra/oculta el switch Table|Cards. Ocultarlo no desactiva defaultView ni autoCardBreakpoint." },
+          { name: "colors", type: "TableColors", description: "Colores por instancia (headerBg, headerText, rowBg, rowText, rowHover); pisan el tema global solo en esta tabla." },
+          { name: "design", type: "TableDesign", description: "Estilo por región: container, card, toolbar, header, headerCell, row, cell, cards, footer. Cada uno con className y style." },
+          { name: "cardClassName / cardStyle", type: "string / CSSProperties", description: "Superficie tipo card (borde, radio, sombra, fondo)." },
+          { name: "toolbarClassName / toolbarStyle", type: "string / CSSProperties", description: "Barra con el título y el switch Table/Cards." },
+          { name: "headerClassName / headerStyle", type: "string / CSSProperties", description: "Fila de títulos (<thead> <tr>)." },
+          { name: "headerCellClassName / headerCellStyle", type: "string / CSSProperties", description: "Cada celda de encabezado (<th>)." },
+          { name: "rowClassName / rowStyle", type: "string / CSSProperties", description: "Cada fila del cuerpo (<tr>)." },
+          { name: "cellClassName / cellStyle", type: "string / CSSProperties", description: "Cada celda del cuerpo (<td>)." },
+          { name: "cardsClassName / cardsStyle", type: "string / CSSProperties", description: "Contenedor de la vista de cards." },
+          { name: "footerClassName / footerStyle", type: "string / CSSProperties", description: "Franja de paginación." },
+          { name: "containerStyle", type: "CSSProperties", description: "Estilos inline del contenedor externo." },
         ],
         notes: [
           "onRowClick funciona en ambas vistas (tabla y cards).",
           "Cuando se omite no se agrega cursor-pointer, foco, tabIndex ni role.",
-          "Column acepta width (number=px | string CSS), minWidth (px), align (left/center/right) y truncate (ellipsis + title nativo).",
+          "Column acepta width (number=px | string CSS), minWidth (px), align (left/center/right) y truncate (ellipsis + title nativo). Diseño por columna: headerClassName, headerStyle, cellClassName y cellStyle (className aplica a th y td).",
+          "Diseño por instancia: design (o los atajos planos <slot>ClassName/<slot>Style) estiliza container, card, toolbar, header, headerCell, row, cell, cards y footer; el atajo plano gana sobre design. colors instala --color-table-* locales y pisa el tema global. showViewToggle controla el switch Table|Cards y autoCardBreakpoint (px) fuerza la vista cards bajo ese ancho.",
           "Columna fija: Column acepta pinned: \"left\" | \"right\" (opt-in; omitir = sin cambios). Los offsets sticky acumulan el width en px de cada columna pinneada previa del mismo lado; una columna sin width en px aporta 0px, así que declara width en px en todas las columnas pinneadas de un lado. La celda pinneada pinta fondo opaco (rowBg + rowHover) y un separador de 1px en el borde congelado. Una columna pinneada por lado es el contrato probado. Limitación: con variant=\"striped\" el fondo opaco tapa el tinte de la franja de esa columna.",
           "Anti scroll horizontal: layout=\"fixed\" + width por columna + truncate + density.",
           "Virtualización: solo vista tabla; rinde con page size grande; filas de alto uniforme; el scroll no se reinicia al cambiar filtros.",
@@ -555,6 +571,58 @@ export const TableShowcase = () => {
             </div>
             <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
               Role uses <code>filter: "search"</code> (ITSearchSelect). Last login uses <code>filter: "date"</code> and Hired uses <code>filter: "date-range"</code> (ITDatePicker), with <code>dateFilterOptions</code> bounds.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Design overrides — colors + design slots, sin switch</h4>
+            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+              <ITTable
+                columns={columns}
+                data={TABLE_DATA.slice(0, 5)}
+                title="Custom design"
+                defaultItemsPerPage={5}
+                showViewToggle={false}
+                colors={{
+                  headerBg: "#0f172a",
+                  headerText: "#e2e8f0",
+                  rowBg: "#ffffff",
+                  rowText: "#0f172a",
+                  rowHover: "#e0f2fe",
+                }}
+                design={{
+                  card: { className: "rounded-2xl border-2 border-primary-200 shadow-lg" },
+                  header: { className: "tracking-widest" },
+                  headerCell: { className: "py-4" },
+                  row: { className: "border-b border-slate-100" },
+                  cell: { className: "font-semibold" },
+                }}
+              />
+            </div>
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              <code>colors</code> pisa el tema global solo para esta instancia; <code>design</code> (o los atajos <code>cardClassName</code>, <code>headerCellStyle</code>, <code>rowClassName</code>, <code>cellStyle</code>…) estiliza cada región. <code>showViewToggle=&#123;false&#125;</code> oculta el switch Table/Cards.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Per-column design — header y celda por columna</h4>
+            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+              <ITTable
+                columns={columns.map((col: any) =>
+                  col.key === "sales"
+                    ? { ...col, headerClassName: "text-right", cellClassName: "text-right", cellStyle: { fontVariantNumeric: "tabular-nums" } }
+                    : col.key === "name"
+                      ? { ...col, headerStyle: { letterSpacing: "0.1em" } }
+                      : col
+                )}
+                data={TABLE_DATA.slice(0, 5)}
+                title="Per-column"
+                defaultItemsPerPage={5}
+                showViewToggle={false}
+              />
+            </div>
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              Cada <code>Column</code> acepta <code>headerClassName</code>, <code>headerStyle</code>, <code>cellClassName</code> y <code>cellStyle</code>, aplicados solo a esa columna.
             </p>
           </div>
         </div>
@@ -950,11 +1018,24 @@ export const DataTableShowcase = () => {
           { name: "rowHeight", type: "number", default: "getRowHeight(size, density)", description: "Alto de fila asumido (px). Size-aware: baseline size=\"md\" = 33/45/53 según densidad; size lo desplaza por el line box (sm 16 / md 20 / lg 28 px)." },
           { name: "overscan", type: "number", default: "5", description: "Filas extra renderizadas arriba/abajo del viewport." },
           { name: "stickyHeader", type: "boolean", default: "false", description: "Header sticky mientras scrollea el cuerpo virtualizado." },
+          { name: "showViewToggle", type: "boolean", default: "true", description: "Muestra/oculta el switch Table|Cards. Ocultarlo no desactiva defaultView ni autoCardBreakpoint." },
+          { name: "colors", type: "TableColors", description: "Colores por instancia (headerBg, headerText, rowBg, rowText, rowHover); pisan el tema global solo en esta tabla." },
+          { name: "design", type: "TableDesign", description: "Estilo por región: container, card, toolbar, header, headerCell, row, cell, cards, footer. Cada uno con className y style." },
+          { name: "cardClassName / cardStyle", type: "string / CSSProperties", description: "Superficie tipo card (borde, radio, sombra, fondo)." },
+          { name: "toolbarClassName / toolbarStyle", type: "string / CSSProperties", description: "Barra con el título y el switch Table/Cards." },
+          { name: "headerClassName / headerStyle", type: "string / CSSProperties", description: "Fila de títulos (<thead> <tr>)." },
+          { name: "headerCellClassName / headerCellStyle", type: "string / CSSProperties", description: "Cada celda de encabezado (<th>)." },
+          { name: "rowClassName / rowStyle", type: "string / CSSProperties", description: "Cada fila del cuerpo (<tr>)." },
+          { name: "cellClassName / cellStyle", type: "string / CSSProperties", description: "Cada celda del cuerpo (<td>)." },
+          { name: "cardsClassName / cardsStyle", type: "string / CSSProperties", description: "Contenedor de la vista de cards." },
+          { name: "footerClassName / footerStyle", type: "string / CSSProperties", description: "Franja de paginación." },
+          { name: "containerStyle", type: "CSSProperties", description: "Estilos inline del contenedor externo." },
         ],
         notes: [
           "onRowClick funciona en ambas vistas (tabla y cards).",
           "Interacciones que inician en botones, links o inputs no disparan onRowClick.",
-          "Column acepta width (number=px | string CSS), minWidth (px), align (left/center/right) y truncate (ellipsis + title nativo).",
+          "Column acepta width (number=px | string CSS), minWidth (px), align (left/center/right) y truncate (ellipsis + title nativo). Diseño por columna: headerClassName, headerStyle, cellClassName y cellStyle (className aplica a th y td).",
+          "Diseño por instancia: design (o los atajos planos <slot>ClassName/<slot>Style) estiliza container, card, toolbar, header, headerCell, row, cell, cards y footer; el atajo plano gana sobre design. colors instala --color-table-* locales y pisa el tema global. showViewToggle controla el switch Table|Cards y autoCardBreakpoint (px) fuerza la vista cards bajo ese ancho.",
           "Columna fija: Column acepta pinned: \"left\" | \"right\" (opt-in; omitir = sin cambios). Los offsets sticky acumulan el width en px de cada columna pinneada previa del mismo lado; una columna sin width en px aporta 0px, así que declara width en px en todas las columnas pinneadas de un lado. La celda pinneada pinta fondo opaco (rowBg + rowHover) y un separador de 1px en el borde congelado. Una columna pinneada por lado es el contrato probado. Limitación: con variant=\"striped\" el fondo opaco tapa el tinte de la franja de esa columna.",
           "Anti scroll horizontal: layout=\"fixed\" + width por columna + truncate + density.",
           "Virtualización: solo vista tabla; rinde con page size grande; filas de alto uniforme; el scroll no se reinicia al cambiar filtros.",
@@ -1021,6 +1102,30 @@ export const DataTableShowcase = () => {
                 defaultView="cards"
               />
             </div>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Design overrides — colors + design slots, sin switch</h4>
+            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+              <ITDataTable
+                columns={userColumns}
+                fetchData={fetchData}
+                title="Custom design"
+                defaultItemsPerPage={4}
+                debounceMs={0}
+                showViewToggle={false}
+                colors={{ headerBg: "#0f172a", headerText: "#e2e8f0", rowHover: "#e0f2fe" }}
+                design={{
+                  card: { className: "rounded-2xl border-2 border-primary-200 shadow-lg" },
+                  headerCell: { className: "py-4" },
+                  row: { className: "border-b border-slate-100" },
+                  cell: { className: "font-semibold" },
+                }}
+              />
+            </div>
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              <code>colors</code> pisa el tema global solo para esta instancia; <code>design</code> (o <code>cardClassName</code>, <code>headerCellStyle</code>, <code>rowClassName</code>, <code>cellStyle</code>…) estiliza cada región. <code>showViewToggle=&#123;false&#125;</code> oculta el switch.
+            </p>
           </div>
 
           <div>

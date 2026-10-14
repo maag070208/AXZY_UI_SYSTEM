@@ -1,4 +1,114 @@
+import type { CSSProperties } from "react";
+
 export type TableVariants = "default" | "striped" | "bordered";
+
+/**
+ * A single, optional style slot for one region of a table. Both fields are
+ * merged *after* the component's built-in values.
+ */
+export interface TableDesignSlot {
+  /**
+   * Extra CSS classes merged after the built-in ones. Note that Tailwind
+   * resolves conflicts by utility order (not class order), so use inline
+   * `style` (or `!` modifiers) when a value must always win.
+   */
+  className?: string;
+  /** Inline CSS merged after the built-in values; wins over classes unless the global theme forces a value with `!important`. */
+  style?: CSSProperties;
+}
+
+/**
+ * Per-instance visual overrides for a table. Every region is optional and, when
+ * present, is applied on top of the built-in styles. The global
+ * `ITThemeProvider` colors (`--color-table-*`) still apply underneath, so use
+ * `TableColors` for this-instance color changes instead of `style`.
+ */
+export interface TableDesign {
+  /** Outermost wrapper (`space-y-4 w-full`). Prefer `containerClassName` for width/spacing. */
+  container?: TableDesignSlot;
+  /** The rounded card surface that wraps the toolbar, table and footer (border, radius, shadow, background). */
+  card?: TableDesignSlot;
+  /** Toolbar strip holding the title and/or the Table|Cards toggle. */
+  toolbar?: TableDesignSlot;
+  /** The `<thead>` row that carries the column titles. */
+  header?: TableDesignSlot;
+  /** Every `<th>` header cell. */
+  headerCell?: TableDesignSlot;
+  /** Every body `<tr>`. */
+  row?: TableDesignSlot;
+  /** Every body `<td>`. */
+  cell?: TableDesignSlot;
+  /** Scroll wrapper of the cards view (the responsive card list). */
+  cards?: TableDesignSlot;
+  /** Pagination footer strip. */
+  footer?: TableDesignSlot;
+}
+
+/**
+ * Per-instance color overrides. They are written as local `--color-table-*`
+ * variables on the table wrapper, so they beat the global theme for this
+ * instance only, without touching `ITThemeProvider`.
+ */
+export interface TableColors {
+  /** Header row background. Overrides the theme's `table.headerBg` for this instance. */
+  headerBg?: string;
+  /** Header text color. Overrides the theme's `table.headerText` for this instance. */
+  headerText?: string;
+  /** Body row background. Overrides the theme's `table.rowBg` for this instance. */
+  rowBg?: string;
+  /** Body text color. Overrides the theme's `table.rowText` for this instance. */
+  rowText?: string;
+  /** Body row hover background. Overrides the theme's `table.rowHover` for this instance. */
+  rowHover?: string;
+}
+
+/**
+ * Shared design props for ITTable and ITDataTable. `design` exposes every
+ * region as an object; the flat `*ClassName` / `*Style` shortcuts are merged
+ * after it, so the flat prop wins when both are provided.
+ */
+export interface TableDesignProps {
+  /** Whether to render the Table|Cards view switcher in the toolbar. Hiding it still honors `defaultView` and `autoCardBreakpoint`. @default true */
+  showViewToggle?: boolean;
+  /** Per-region visual overrides (classes + inline styles). */
+  design?: TableDesign;
+  /** Per-instance color overrides for header and rows, beating the global theme. */
+  colors?: TableColors;
+  /** Inline styles for the outermost wrapper. */
+  containerStyle?: CSSProperties;
+  /** Extra classes for the card surface (the rounded container). */
+  cardClassName?: string;
+  /** Inline styles for the card surface. */
+  cardStyle?: CSSProperties;
+  /** Extra classes for the toolbar strip (title + view toggle). */
+  toolbarClassName?: string;
+  /** Inline styles for the toolbar strip. */
+  toolbarStyle?: CSSProperties;
+  /** Extra classes for the header row. */
+  headerClassName?: string;
+  /** Inline styles for the header row. */
+  headerStyle?: CSSProperties;
+  /** Extra classes for every header cell. */
+  headerCellClassName?: string;
+  /** Inline styles for every header cell. */
+  headerCellStyle?: CSSProperties;
+  /** Extra classes for every body row. */
+  rowClassName?: string;
+  /** Inline styles for every body row. */
+  rowStyle?: CSSProperties;
+  /** Extra classes for every body cell. */
+  cellClassName?: string;
+  /** Inline styles for every body cell. */
+  cellStyle?: CSSProperties;
+  /** Extra classes for the cards-view scroll wrapper. */
+  cardsClassName?: string;
+  /** Inline styles for the cards-view scroll wrapper. */
+  cardsStyle?: CSSProperties;
+  /** Extra classes for the pagination footer strip. */
+  footerClassName?: string;
+  /** Inline styles for the pagination footer strip. */
+  footerStyle?: CSSProperties;
+}
 
 /**
  * Value stored for a single column filter.

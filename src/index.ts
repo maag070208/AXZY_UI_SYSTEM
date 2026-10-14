@@ -119,7 +119,7 @@ import type { ITTripleFilterProps, ITTripleFilterOption } from "./components/org
 import type { ITToastProps } from "./components/organisms/toast/toast.props";
 import type { ITWysiwygProps } from "./components/molecules/wysiwyg/wysiwyg.props";
 import type { FieldConfig, FieldConfigV2 } from "./types/field.types";
-import type { ColumnFilters, ColumnFilterValue, TableDensity } from "./types/table.types";
+import type { ColumnFilters, ColumnFilterValue, TableColors, TableDensity, TableDesign, TableDesignProps, TableDesignSlot } from "./types/table.types";
 
 // UTILS
 import ITDropfile, { UploadStatus, FileTypeEnum } from "./components/organisms/dropfile/dropfile";
@@ -185,7 +185,7 @@ export {
     ITSegmentedControlProps, ITSidebarProps, ITSkeletonProps, ITSlideToggleProps, ITSliderProps,
     ITStackProps, ITStatCardProps, ITStepperProps, ITLineBarChartProps, ITLineBarDatum,
     ITTableProps, ITTabsProps, ITTabItem, ITTextProps, ITTextareaProps,
-    TableDensity,
+    TableColors, TableDensity, TableDesign, TableDesignProps, TableDesignSlot,
     ITTripleFilterProps, ITTripleFilterOption, ITThemeConfig, ITThemeProviderProps, ITThemePalette, ITThemeAppearance,
     ITTimePickerProps, ITToastProps,
     ITWysiwygProps,

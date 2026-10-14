@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Column } from "@/components/molecules/table/table.props";
-import { ColumnFilters, TableDensity } from "@/types/table.types";
+import { ColumnFilters, TableDensity, TableDesignProps } from "@/types/table.types";
 
 /** Parameters passed to `fetchData` every time pagination, filters, or sorting change. */
 export interface ITDataTableFetchParams {
@@ -31,7 +31,8 @@ export interface ITDataTableResponse<T> {
   total: number;
 }
 
-export interface ITDataTableProps<T extends Record<string, unknown>> {
+export interface ITDataTableProps<T extends Record<string, unknown>>
+  extends TableDesignProps {
   /**
    * The column configuration array matching ITTable but adapted for Server-Side processing
    */

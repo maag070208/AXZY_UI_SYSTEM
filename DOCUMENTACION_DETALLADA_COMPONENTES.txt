@@ -1262,7 +1262,44 @@ export interface Column<T = any> {
   align?: 'left' | 'center' | 'right';      // default 'left'
   truncate?: boolean;                       // default false; ellipsis + title nativo
   pinned?: 'left' | 'right';                // opt-in; congela la columna al borde izquierdo/derecho (sticky)
+  headerClassName?: string;                 // diseno: clases solo del <th> de esta columna
+  headerStyle?: React.CSSProperties;        // diseno: estilos inline del <th> (gana sobre design.headerCell)
+  cellClassName?: string;                   // diseno: clases de los <td> de esta columna
+  cellStyle?: React.CSSProperties;          // diseno: estilos inline de los <td> (ganan sobre design.cell)
 }
+
+// Diseño por instancia (compartido por ITTable e ITDataTable; ver TableDesignProps)
+export interface TableDesignSlot {
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+export interface TableDesign {
+  container?: TableDesignSlot;   // wrapper externo (space-y-4 w-full)
+  card?: TableDesignSlot;        // superficie tipo card (borde, radio, sombra, fondo)
+  toolbar?: TableDesignSlot;     // barra con título y switch Table|Cards
+  header?: TableDesignSlot;      // fila de títulos (<thead> <tr>)
+  headerCell?: TableDesignSlot;  // cada <th>
+  row?: TableDesignSlot;         // cada <tr> del body
+  cell?: TableDesignSlot;        // cada <td> del body
+  cards?: TableDesignSlot;       // wrapper de la vista de cards
+  footer?: TableDesignSlot;      // franja de paginación
+}
+
+export interface TableColors {
+  headerBg?: string;            // pisa table.headerBg del tema para esta instancia
+  headerText?: string;          // pisa table.headerText
+  rowBg?: string;               // pisa table.rowBg
+  rowText?: string;             // pisa table.rowText
+  rowHover?: string;            // pisa table.rowHover
+}
+
+// ITTableProps<T> e ITDataTableProps<T> extienden TableDesignProps:
+// showViewToggle? (default true), design?, colors?, containerStyle?,
+// cardClassName?/cardStyle?, toolbarClassName?/toolbarStyle?,
+// headerClassName?/headerStyle?, headerCellClassName?/headerCellStyle?,
+// rowClassName?/rowStyle?, cellClassName?/cellStyle?,
+// cardsClassName?/cardsStyle?, footerClassName?/footerStyle?
 
 export interface ITTableProps<T> {
   columns: Column<T>[];
@@ -1295,6 +1332,19 @@ export interface ITTableProps<T> {
   rowHeight?: number;                            // default getRowHeight(size, density); baseline size="md" 33/45/53
   overscan?: number;                             // default 5; filas extra arriba/abajo
   stickyHeader?: boolean;                        // default false; solo efectivo si virtualized
+  // --- Diseño (TableDesignProps; compartido por ITTable y ITDataTable) ---
+  showViewToggle?: boolean;                      // default true; muestra/oculta el switch Table|Cards
+  design?: TableDesign;                          // estilo por región (container/card/toolbar/header/headerCell/row/cell/cards/footer)
+  colors?: TableColors;                          // colores por instancia; pisan el tema global vía variables --color-table-*
+  containerStyle?: React.CSSProperties;          // inline del contenedor externo
+  cardClassName?: string; cardStyle?: React.CSSProperties;             // superficie card
+  toolbarClassName?: string; toolbarStyle?: React.CSSProperties;       // barra título + switch
+  headerClassName?: string; headerStyle?: React.CSSProperties;         // fila de títulos
+  headerCellClassName?: string; headerCellStyle?: React.CSSProperties; // cada <th>
+  rowClassName?: string; rowStyle?: React.CSSProperties;               // cada <tr>
+  cellClassName?: string; cellStyle?: React.CSSProperties;             // cada <td>
+  cardsClassName?: string; cardsStyle?: React.CSSProperties;           // vista cards
+  footerClassName?: string; footerStyle?: React.CSSProperties;         // paginación
 }
 ```
 
@@ -1313,6 +1363,36 @@ export interface ITTableProps<T> {
   El alto asumido es EXACTO solo para celdas de UNA línea. Una celda de dos líneas (avatar + texto) mide ~50px real y desalinea los spacers de la virtualización.
 - `autoCardBreakpoint`: cae a la vista cards cuando el CONTENEDOR (no el viewport) mide menos que el valor en px. Mientras está forzado, el toggle "Table" queda deshabilitado y "Cards" sigue habilitado. `0` desactiva. Como la vista cards nunca se virtualiza, `autoCardBreakpoint` desactiva `virtualized` en silencio al dispararse: NO combinar `virtualized` + `autoCardBreakpoint`.
 - `virtualized`: renderiza solo la ventana visible de filas con spacer rows que preservan la altura total. Aplica SOLO a la vista tabla; la vista cards NUNCA se virtualiza. El toggle interno Table/Cards también desactiva la virtualización al pasar a cards.
+
+### Guía de diseño (colores y estilos por instancia)
+
+- `design` estiliza cada región con `{ className?, style? }`: `container` (wrapper externo), `card` (superficie redondeada), `toolbar` (barra de título + switch), `header` (`<thead> <tr>`), `headerCell` (cada `<th>`), `row` (cada `<tr>`), `cell` (cada `<td>`), `cards` (vista de cards) y `footer` (paginación).
+- Atajos planos equivalentes, que GANAN sobre `design` si se pasan ambos: `containerStyle`, `cardClassName`/`cardStyle`, `toolbarClassName`/`toolbarStyle`, `headerClassName`/`headerStyle`, `headerCellClassName`/`headerCellStyle`, `rowClassName`/`rowStyle`, `cellClassName`/`cellStyle`, `cardsClassName`/`cardsStyle`, `footerClassName`/`footerStyle`.
+- Por columna, `Column` añade `headerClassName`, `headerStyle`, `cellClassName` y `cellStyle` (se aplican solo a esa columna y ganan sobre los slots `headerCell` / `cell`). El `className` de columna existente sigue aplicándose a `th` y `td`.
+- `colors` (`{ headerBg, headerText, rowBg, rowText, rowHover }`) escribe variables locales `--color-table-*` en el wrapper de esa tabla, por lo que PISA el tema global de `ITThemeProvider` solo para esa instancia, sin tocar el FAB ni `localStorage`. Usar `colors` (no `style`) para cambiar colores: el tema fija los colores de tabla con `!important` en `thead tr` / `tbody tr` / `th span` / `td div`, y las variables locales sí ganan porque se declaran en un ancestro.
+- `showViewToggle={false}` oculta el switch Table|Cards sin cambiar la vista efectiva (que sigue dependiendo de `defaultView` y `autoCardBreakpoint`).
+- Precedencia: dentro de cada `<th>`/`<td>` el orden de fusión de `style` es base → `design.headerCell`/`design.cell` → atajo plano (`headerCellStyle`/`cellStyle`) → columna (`Column.headerStyle`/`Column.cellStyle`); el último gana.
+
+```tsx
+<ITTable
+  columns={[
+    { key: 'name',  label: 'Nombre', type: 'string' },
+    { key: 'sales', label: 'Ventas', type: 'number',
+      headerClassName: 'text-right', cellClassName: 'text-right', cellStyle: { fontVariantNumeric: 'tabular-nums' } },
+  ]}
+  data={rows}
+  showViewToggle={false}
+  colors={{ headerBg: '#0f172a', headerText: '#e2e8f0', rowHover: '#e0f2fe' }}
+  design={{
+    card: { className: 'rounded-2xl border-2 border-primary-200 shadow-lg' },
+    headerCell: { className: 'py-4' },
+    row: { className: 'border-b border-slate-100' },
+    cell: { className: 'font-semibold' },
+  }}
+  cardClassName="rounded-2xl"           // gana sobre design.card.className
+  headerCellStyle={{ letterSpacing: '0.1em' }}
+/>
+```
 
 ### Receta para eliminar el scroll horizontal
 
@@ -1497,11 +1577,24 @@ export interface ITDataTableProps<T extends Record<string, unknown>> {
   rowHeight?: number;                            // default getRowHeight(size, density); baseline size="md" 33/45/53
   overscan?: number;                             // default 5; filas extra arriba/abajo
   stickyHeader?: boolean;                        // default false; solo efectivo si virtualized
+  // --- Diseño (TableDesignProps; compartido por ITTable y ITDataTable) ---
+  showViewToggle?: boolean;                      // default true; muestra/oculta el switch Table|Cards
+  design?: TableDesign;                          // estilo por región (container/card/toolbar/header/headerCell/row/cell/cards/footer)
+  colors?: TableColors;                          // colores por instancia; pisan el tema global vía variables --color-table-*
+  containerStyle?: React.CSSProperties;          // inline del contenedor externo
+  cardClassName?: string; cardStyle?: React.CSSProperties;             // superficie card
+  toolbarClassName?: string; toolbarStyle?: React.CSSProperties;       // barra título + switch
+  headerClassName?: string; headerStyle?: React.CSSProperties;         // fila de títulos
+  headerCellClassName?: string; headerCellStyle?: React.CSSProperties; // cada <th>
+  rowClassName?: string; rowStyle?: React.CSSProperties;               // cada <tr>
+  cellClassName?: string; cellStyle?: React.CSSProperties;             // cada <td>
+  cardsClassName?: string; cardsStyle?: React.CSSProperties;           // vista cards
+  footerClassName?: string; footerStyle?: React.CSSProperties;         // paginación
 }
 ```
 ### Guía de layout, densidad y virtualización
 
-ITDataTable comparte exactamente las mismas props de configuración que ITTable (ver §16 para el detalle completo): `layout` (`'auto'` default | `'fixed'`), `density` (`'compact' | 'normal' | 'comfortable'`, default `'normal'`), `autoCardBreakpoint` (px, default `0`), `virtualized` (default `false`), `virtualizedMaxHeight` (default `400`), `rowHeight` (default `getRowHeight(size, density)`, size-aware), `overscan` (default `5`) y `stickyHeader` (default `false`). `Column<T>` también acepta `width` / `minWidth` / `align` / `truncate` / `pinned` (`'left' | 'right'`, default sin congelar).
+ITDataTable comparte exactamente las mismas props de configuración que ITTable (ver §16 para el detalle completo): `layout` (`'auto'` default | `'fixed'`), `density` (`'compact' | 'normal' | 'comfortable'`, default `'normal'`), `autoCardBreakpoint` (px, default `0`), `virtualized` (default `false`), `virtualizedMaxHeight` (default `400`), `rowHeight` (default `getRowHeight(size, density)`, size-aware), `overscan` (default `5`) y `stickyHeader` (default `false`). También hereda las props de diseño (`showViewToggle`, `design`, `colors` y los atajos planos `cardClassName` / `headerCellStyle` / `rowClassName` / `cellStyle`…; ver §16 "Guía de diseño"). `Column<T>` también acepta `width` / `minWidth` / `align` / `truncate` / `pinned` (`'left' | 'right'`, default sin congelar) más `headerClassName` / `headerStyle` / `cellClassName` / `cellStyle`.
 
 Receta anti-scroll-horizontal: `layout="fixed"` + `width` por columna + `truncate` en texto largo + `density` para compactar. `width` number = px, string = longitud CSS. El `<colgroup>` solo se emite si alguna columna define `width`. Para congelar columnas al borde durante el scroll horizontal usa `Column.pinned: 'left' | 'right'` (ver §16, "Columnas fijas (pinned)").
 
