@@ -534,6 +534,33 @@ export const CardShowcase = () => {
           </GallerySection>
         </ITStack>
       }
+      doc={{
+        summary: "Contenedor de tarjeta con imagen, título, cuerpo y pie de acciones opcionales; con onClick se vuelve interactivo.",
+        description: "Pieza base de composición para agrupar contenido relacionado. Borde, radio y sombra se adaptan al aspecto del tema (flat / soft).",
+        examples: [
+          '<ITCard title="Ingresos del mes" actions={<ITButton label="Ver detalle" size="sm" />}>$48.230</ITCard>',
+          '<ITCard title="Curso" image="/courses/ts.jpg" imageClassName="h-32" onClick={() => open(course.id)}>…</ITCard>',
+          '<ITCard className="max-w-sm"><ITText muted>Tarjeta estática, sin cabecera ni acciones.</ITText></ITCard>',
+        ],
+        props: [
+          { name: "onClick", type: "() => void", default: "—", description: "Al recibirlo la tarjeta se vuelve clicable: cursor pointer, transición de sombra y elevación en hover. Sin él es estática." },
+          { name: "title", type: "string", default: "—", description: "Título de la cabecera; se renderiza como h3 mediante ITText." },
+          { name: "image", type: "string", default: "—", description: "URL de la imagen superior, a ancho completo con h-48 object-cover." },
+          { name: "alt", type: "string", default: "t(\"card.imageAlt\")", description: "Texto alternativo de la imagen; si se omite usa la key i18n card.imageAlt." },
+          { name: "children", type: "ReactNode", default: "—", description: "Contenido del cuerpo, debajo del título." },
+          { name: "actions", type: "ReactNode", default: "—", description: "Pie de acciones separado por un borde superior y anclado al fondo con mt-auto." },
+          { name: "className", type: "string", default: "—", description: "Clases del contenedor de la tarjeta." },
+          { name: "imageClassName", type: "string", default: "—", description: "Clases de la imagen; permite sobreescribir el h-48 por defecto." },
+          { name: "titleClassName", type: "string", default: "—", description: "Clases del título de la cabecera." },
+          { name: "contentClassName", type: "string", default: "—", description: "Clases del contenedor del cuerpo." },
+          { name: "actionClassName", type: "string", default: "—", description: "Clases del pie de acciones." },
+        ],
+        notes: [
+          "El aspecto del tema decide borde y sombra: en flat el borde es un hairline y solo hay sombra en hover si la tarjeta es clicable; en soft flota con --shadow-sm y sube a --shadow-lg con translateY(-2px).",
+          "Variables CSS: --it-card-bg, --it-card-border, --it-card-flat-border y --it-card-radius.",
+          "El padding es fijo (cuerpo 1.25rem, pie 1rem): no hay prop de tamaño.",
+        ],
+      }}
     />
   );
 };
@@ -910,6 +937,27 @@ export const TextShowcase = () => {
           </GallerySection>
         </ITStack>
       }
+      doc={{
+        summary: "Wrapper tipográfico semántico que renderiza cualquier elemento HTML (p, span, h1, label…) y reenvía los atributos estándar.",
+        description: "Aporta la capa de texto del sistema con el token muted; no impone clases tipográficas, así que tamaño, peso y color los define el className del consumidor.",
+        examples: [
+          '<ITText as="h1" className="text-2xl font-bold">Bienvenido</ITText>',
+          '<ITText as="p" muted className="text-sm">Descripción secundaria del panel.</ITText>',
+          '<ITText as="label" htmlFor="email">Correo electrónico</ITText>',
+        ],
+        props: [
+          { name: "children", type: "ReactNode", default: "—", description: "Contenido renderizado dentro del elemento." },
+          { name: "as", type: "ElementType", default: '"p"', description: "Elemento HTML a renderizar: p, span, h1, h2, label, code, etc." },
+          { name: "muted", type: "boolean", default: "false", description: "Aplica el color de texto atenuado (--color-text-muted) mediante style inline." },
+          { name: "htmlFor", type: "string", default: "—", description: "Asocia el texto con un campo de formulario; se reenvía como htmlFor cuando as es label." },
+          { name: "className", type: "string", default: "—", description: "Clases del elemento: definen tamaño, peso y color, porque el componente no añade ninguna." },
+        ],
+        notes: [
+          "Extiende HTMLAttributes<HTMLElement>, así que id, style, title, onClick, role y aria-* se reenvían al elemento renderizado.",
+          "muted se combina con el style propio: si el consumidor define color, gana el del consumidor.",
+          "Lo usan internamente otros componentes (avatar, button, badget, chip, checkbox, loader, radio, segmented-control, slider, textarea, tooltip) para etiquetas y textos.",
+        ],
+      }}
     />
   );
 };

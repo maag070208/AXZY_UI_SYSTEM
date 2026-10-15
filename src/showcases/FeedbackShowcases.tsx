@@ -74,6 +74,28 @@ export const DialogShowcase = () => {
           </div>
         </>
       }
+      doc={{
+        summary: "Modal montado en un portal sobre `document.body` para confirmaciones, formularios o detalle, con cierre por Escape o clic fuera.",
+        description: "Con `title` dibuja una barra propia o un `ITFormHeader` si `useFormHeader` está activo, y con `fullScreen` ocupa todo el viewport.",
+        examples: [
+          '<ITDialog isOpen={open} onClose={() => setOpen(false)} title="Confirmación de auditoría"><p>¿Registrar la auditoría?</p></ITDialog>',
+          '<ITDialog isOpen={open} onClose={close} title="Nuevo usuario" useFormHeader>…</ITDialog>',
+          '<ITDialog isOpen={open} onClose={close} fullScreen><ITDataTable columns={cols} fetchData={api.page} /></ITDialog>',
+        ],
+        props: [
+          { name: "isOpen", type: "boolean", required: true, description: "Controla la visibilidad; con `false` no renderiza nada." },
+          { name: "onClose", type: "() => void", required: true, description: "Se dispara al pulsar Escape, hacer clic fuera del panel o usar el botón de cerrar." },
+          { name: "children", type: "React.ReactNode", required: true, description: "Contenido del cuerpo del diálogo." },
+          { name: "className", type: "string", description: "Clases adicionales del panel; se ignoran en `fullScreen`." },
+          { name: "title", type: "string", description: "Encabezado opcional mostrado en la parte superior." },
+          { name: "useFormHeader", type: "boolean", default: "false", description: "Con `title`, renderiza un `ITFormHeader` en lugar de la barra por defecto." },
+          { name: "fullScreen", type: "boolean", default: "false", description: "Hace que el diálogo ocupe todo el viewport (sin radio, borde ni sombra)." },
+        ],
+        notes: [
+          "Los paneles flotantes que abre su contenido (selects, pickers, menús) viven en su propio portal, así que elegir una opción no cierra el diálogo.",
+          "No trae `role=\"dialog\"`, `aria-modal`, focus trap ni retorno de foco: esa gestión queda en el consumidor.",
+        ],
+      }}
     />
   );
 };
@@ -130,6 +152,24 @@ export const ToastShowcase = () => {
           <ITButton label={t("showcase.feedback.toastInfo")} color="info" size="sm" onClick={() => { setMsg(t("showcase.feedback.msgInfo")); setType("info"); setVisible(true); }} />
         </div>
       }
+      doc={{
+        summary: "Notificación flotante que se autocierra y colorea según su severidad, colocada en una de seis posiciones.",
+        examples: [
+          '<ITToast message="Cambios guardados" type="success" duration={2000} position="bottom-right" onClose={() => setVisible(false)} />',
+          '<ITToast message="No se pudo conectar" type="error" />',
+        ],
+        props: [
+          { name: "message", type: "string", required: true, description: "Texto que muestra el toast." },
+          { name: "type", type: '"success" | "error" | "warning" | "info" | "primary" | "danger" | string', default: '"info"', description: "Severidad; define el icono y el color de fondo." },
+          { name: "duration", type: "number", default: "1500", description: "Milisegundos antes del autocierre." },
+          { name: "position", type: '"top-right" | "top-center" | "top-left" | "bottom-right" | "bottom-center" | "bottom-left"', default: '"top-right"', description: "Posición fija en pantalla." },
+          { name: "onClose", type: "() => void", description: "Se invoca 300 ms después del autocierre o del cierre manual, al terminar la transición." },
+        ],
+        notes: [
+          "`type` acepta cualquier string: se resuelve contra `theme.colors`; si la clave no existe, cae al `primary[500]` del tema.",
+          "El contenedor lleva `role=\"alert\"`, `fixed z-[80]` y un ancho mínimo de 300 px. Sin `onClose` el toast se desvanece igual, pero el padre no puede desmontarlo.",
+        ],
+      }}
     />
   );
 };
@@ -204,6 +244,25 @@ export const LoaderShowcase = () => {
           <ITLoader variant="pulse" size="md" color="purple" />
         </div>
       }
+      doc={{
+        summary: "Indicador de carga con cuatro animaciones (spinner, dots, bar y pulse) y color semántico del tema o valor CSS.",
+        examples: [
+          '<ITLoader variant="spinner" size="md" color="primary" />',
+          '<ITLoader variant="dots" size="sm" color="success" />',
+          '<div className="w-48"><ITLoader variant="bar" color="#06b6d4" /></div>',
+        ],
+        props: [
+          { name: "size", type: '"sm" | "md" | "lg" | "xl"', default: '"md"', description: "Tamaño del indicador." },
+          { name: "variant", type: '"spinner" | "dots" | "bar" | "pulse"', default: '"spinner"', description: "Tipo de animación." },
+          { name: "color", type: "string", default: '"primary"', description: "Clave semántica del tema, valor CSS (`#rrggbb`, `rgb(...)`) o clase CSS por compatibilidad." },
+          { name: "className", type: "string", default: '""', description: "Clases adicionales (en `bar` define el ancho)." },
+        ],
+        notes: [
+          "Resolución de color: si es clave de `theme.colors` usa el tono 500; si empieza por `#` o `rgb` lo usa tal cual; cualquier otro string se inyecta como clase.",
+          "`spinner` lleva `role=\"status\"` con un texto oculto para lectores de pantalla; `bar` ocupa todo el ancho de su contenedor, así que conviene acotarlo con `className`.",
+          "En `dots` el tamaño se deriva quitando la primera `l`/`g` a `size`, por lo que solo `sm` y `md` producen clases válidas.",
+        ],
+      }}
     />
   );
 };
@@ -285,6 +344,29 @@ export const ThemeProviderShowcase = () => {
           </p>
         </ITStack>
       }
+      doc={{
+        summary: "Provider raíz del tema: inyecta las variables CSS de color, resuelve el modo claro/oscuro y aplica densidad, radio y sombras globales.",
+        description: "Envuelve la app (o la parte que usa componentes AXZY) una sola vez. Expone `useITTheme()` con `palette`, `colors`, `setPalette`, `updateColor`, `resetTheme`, `applyPreset`, `resolvedTheme`, `darkModeMode`, `setDarkModeMode` y `appearance`, y opcionalmente un FAB con diseñador de temas en vivo.",
+        examples: [
+          '<ITThemeProvider><App /></ITThemeProvider>',
+          '<ITThemeProvider theme={{ primary: "#3b82f6", layout: { sidebarBg: "#0f172a" } }} showFab={false}><App /></ITThemeProvider>',
+          '<ITThemeProvider density={0.9} radius={8} shadow={1} appearance="flat"><App /></ITThemeProvider>',
+        ],
+        props: [
+          { name: "theme", type: "Partial<ITThemePalette>", description: "Overrides de paleta fusionados (deep merge) con el tema por defecto: `primary`, `secondary`, `ternary`, `danger`, `success`, `info`, `alert`, `warning`, `layout` y `table`." },
+          { name: "children", type: "React.ReactNode", required: true, description: "Subárbol que recibe el contexto y las variables CSS." },
+          { name: "showFab", type: "boolean", default: "true", description: "Muestra el botón flotante que abre el diseñador de temas y persiste la paleta; en producción se suele poner en `false`." },
+          { name: "density", type: "number", default: "1", description: "Factor de densidad global: escala el `font-size` raíz para compactar todo lo basado en `rem`. Se limita a `0.5`–`1.5`." },
+          { name: "radius", type: "number", default: "—", description: "Radio global en px aplicado a toda la escala `--radius-*`; `0` deja las esquinas totalmente cuadradas." },
+          { name: "shadow", type: "number", default: "—", description: "Fuerza global de sombras: `0` ninguna, `1` sutiles, `2` look actual, `3` marcadas." },
+          { name: "appearance", type: '"soft" | "flat"', default: '"soft"', description: "Lenguaje visual del sistema; `\"flat\"` usa superficies planas con bordes de 1 px y fija `data-it-appearance` en `<html>`." },
+        ],
+        notes: [
+          "`useITTheme()` lanza error si se usa fuera del provider; `useITThemeSafe()` devuelve `undefined` en ese caso.",
+          "Con `showFab` la paleta, el modo y los presets se persisten en `localStorage` (`it-theme-palette`, `it-theme-dark-mode`, `it-theme-custom-presets`); con `showFab={false}` el estado se sincroniza con la prop `theme`.",
+          "`radius={0}` no significa «sin override»: deja todas las esquinas cuadradas. Para no tocar la escala hay que omitir la prop.",
+        ],
+      }}
     />
   );
 };

@@ -16,6 +16,9 @@
 - `pnpm build:app` — build the sandbox into `dist-app/`
 - No `test` script and no test runner: Storybook (and its Vitest project) was removed. Examples and manual checks live in the sandbox.
 - `pnpm ext:catalog` / `pnpm ext:typecheck` / `pnpm ext:build` / `pnpm ext:package` — VS Code extension in `vscode-extension/` (see below).
+- `pnpm docs:llm` — regenerates the AI documentation: `pnpm ext:catalog` → `docs/llm/` (`catalogo.md` + `catalogo.json`) → `ai/` bundle.
+- `pnpm docs:ai` — only the `ai/` bundle (requires `docs/llm/` to exist).
+- `pnpm audit:sandbox` — serves `dist-app/` and audits all sandbox routes with axe (full rule set) + clipped-content detection. Run `pnpm build:app` first.
 
 ## VS Code extension (`vscode-extension/`)
 
@@ -24,6 +27,13 @@
 - Data comes from `vscode-extension/src/generated/catalog.json`, generated with the TypeScript compiler API by `vscode-extension/scripts/generate-catalog.mjs` (`pnpm ext:catalog`). Regenerate it after changing component props, then `pnpm ext:build`.
 - `pnpm ext:build` runs `vscode-extension/esbuild.mjs`: esbuild for the extension host and the preview webview, plus a Tailwind (vite) build for `media/axzy.css`. The preview imports the built library from `dist/index.js`, so run `pnpm bundle` first.
 - DevDeps `@types/vscode` (pinned to `1.85.0` to match `engines.vscode`) and `esbuild` live in the root `package.json` so the subfolder resolves them from the ancestor `node_modules`.
+
+## Documentation surfaces
+
+- `docs/<layer>/<component>.md` — per-component reference (props, example, i18n keys).
+- `docs/llm/GUIA.md` + `docs/llm/ejemplos-reales.md` — hand-written AI guide and real production patterns (from CYC ERP). **Edit these, never the generated files.**
+- `docs/llm/catalogo.md` / `catalogo.json` — generated from `src/components/**/*.props.ts` via the TS compiler API.
+- `ai/` — **generated** copy-paste bundle for models: `AXZY-UI-SYSTEM.md` (all-in-one), `-compacto.md`, `catalogo.md|json`, and `plantillas/` (Cursor/Copilot/Claude rules + starter prompt). Regenerate with `pnpm docs:ai`.
 
 ## Architecture and boundaries
 

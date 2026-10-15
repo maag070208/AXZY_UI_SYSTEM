@@ -84,3 +84,9 @@ export function Shell() {
 | `common.userAvatar` | `Usuario actual` | `Current user` | `:295` (alt del avatar, modo nuevo) |
 
 El resto del texto visible entra por `logoText`, `navigationItems` y `userMenu`.
+
+## Altura (importante al embeberlo)
+
+`ITNavbar` trae `h-screen` en su raíz: es un layout completo de página. Para mostrarlo dentro de otra caja
+usa un contenedor con altura y `className`-equivalente por CSS (`[&>div]:h-full`), o envuélvelo en un
+`div` con altura fija y `overflow-hidden`.

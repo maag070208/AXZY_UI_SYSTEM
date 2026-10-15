@@ -65,6 +65,26 @@ export const TabsShowcase = () => {
           />
         </>
       }
+      doc={{
+        summary:
+          "Navegación por pestañas con dos variantes visuales (`line` y `pill`) que gestiona internamente cuál está activa.",
+        examples: [
+          '<ITTabs items={[{ id: "general", label: "General", content: <GeneralPanel /> }]} />',
+          '<ITTabs variant="pill" defaultActiveId="security" onChange={setActive} items={tabs} />',
+        ],
+        props: [
+          { name: "items", type: "ITTabItem[]", required: true, description: "Pestañas a renderizar: { id, label, content, icon?, disabled? }." },
+          { name: "defaultActiveId", type: "string", default: "primer item", description: "`id` de la pestaña activa al montar." },
+          { name: "onChange", type: "(id: string) => void", description: "Se dispara al cambiar de pestaña, con el nuevo `id`." },
+          { name: "variant", type: '"line" | "pill"', default: '"line"', description: "`line` = indicador inferior; `pill` = fondo redondeado." },
+          { name: "className", type: "string", default: '""', description: "Clases adicionales de la fila de pestañas." },
+          { name: "containerClassName", type: "string", default: '""', description: "Clases adicionales del contenedor externo." },
+        ],
+        notes: [
+          "Estado no controlado: no existe `activeId`; si el `id` activo desaparece de `items`, el contenido queda vacío.",
+          'Los botones son `<button>` nativos, pero sin roles de pestañas (`role="tab"`, `aria-selected`) ni navegación con flechas.',
+        ],
+      }}
     />
   );
 };
@@ -115,6 +135,35 @@ export const StepperShowcase = () => {
           </div>
         </>
       }
+      doc={{
+        summary:
+          "Asistente paso a paso (wizard) con indicador de progreso, panel de contenido y botones Atrás / Siguiente (Finalizar en el último paso).",
+        description:
+          "El paso activo es controlado (`currentStep`): cada paso define su propio contenido y el panel lo monta con transición.",
+        examples: [
+          "<ITStepper steps={steps} currentStep={step} onStepChange={setStep} onFinish={save} />",
+          '<ITStepper steps={steps} currentStep={0} useIcons scrollableContent maxContentHeight="320px" />',
+        ],
+        props: [
+          { name: "steps", type: "Step[]", required: true, description: "Pasos del flujo: { label, content, icon? }." },
+          { name: "currentStep", type: "number", required: true, description: "Índice base 0 del paso activo." },
+          { name: "onFinish", type: "() => void", description: "Se llama al pulsar «Finalizar» en el último paso." },
+          { name: "onStepChange", type: "(step: number) => void", description: "Se dispara en cada cambio de paso, con el nuevo índice." },
+          { name: "allowClickToJump", type: "boolean", default: "true", description: "Permite saltar a pasos completados o al actual desde sus indicadores." },
+          { name: "useIcons", type: "boolean", default: "false", description: "Muestra el icono de cada paso en lugar del número." },
+          { name: "disableNext", type: "boolean", default: "false", description: "Deshabilita «Siguiente» / «Finalizar»." },
+          { name: "scrollableContent", type: "boolean", default: "false", description: "Hace desplazable el panel de contenido." },
+          { name: "maxContentHeight", type: "string", default: '"400px"', description: "Altura máxima del panel desplazable (valor CSS)." },
+          { name: "color", type: "string", default: '"primary"', description: "Color semántico del tema para paso activo y botones; acepta también un color crudo." },
+          { name: "containerClassName", type: "string", description: "Clases adicionales del contenedor externo." },
+          { name: "stepClassName", type: "string", description: "Clases adicionales del panel de contenido." },
+        ],
+        notes: [
+          "«Atrás» se deshabilita en el primer paso; en el último, «Siguiente» pasa a «Finalizar» y dispara `onFinish`.",
+          "El contador «Paso N de M» se oculta por debajo del breakpoint `sm`.",
+          'El panel usa `role="region"` con `aria-labelledby` y los indicadores `aria-current="step"`.',
+        ],
+      }}
     />
   );
 };
@@ -162,6 +211,32 @@ export const PaginationShowcase = () => {
           />
         </>
       }
+      doc={{
+        summary:
+          "Paginador con anterior/siguiente, números de página (con elipsis si hay muchas) y selector opcional de filas por página.",
+        examples: [
+          "<ITPagination currentPage={page} totalPages={10} onPageChange={setPage} />",
+          '<ITPagination currentPage={page} totalPages={20} onPageChange={setPage} color="secondary" siblingCount={2} />',
+          "<ITPagination currentPage={page} totalPages={20} onPageChange={setPage} itemsPerPageOptions={[10, 25, 50]} itemsPerPage={10} onItemsPerPageChange={setSize} totalItems={95} />",
+        ],
+        props: [
+          { name: "currentPage", type: "number", required: true, description: "Página activa (indexada en 1)." },
+          { name: "totalPages", type: "number", required: true, description: "Número total de páginas." },
+          { name: "onPageChange", type: "(page: number) => void", required: true, description: "Se dispara al pulsar una página o anterior/siguiente." },
+          { name: "siblingCount", type: "number", default: "1", description: "Páginas visibles antes y después de la actual." },
+          { name: "color", type: "string", default: '"primary"', description: "Color semántico del tema (primary, secondary, success, danger, warning, info, purple) o un valor crudo." },
+          { name: "className", type: "string", description: "Clases adicionales del contenedor." },
+          { name: "itemsPerPageOptions", type: "number[]", description: "Opciones del selector de filas por página; activa la variante con resumen." },
+          { name: "itemsPerPage", type: "number", description: "Valor actual de filas por página. Requerido junto a `itemsPerPageOptions`." },
+          { name: "onItemsPerPageChange", type: "(value: number) => void", description: "Se dispara al cambiar las filas por página." },
+          { name: "totalItems", type: "number", description: "Total de elementos; alimenta el resumen «X - Y de Z»." },
+        ],
+        notes: [
+          "Se auto-oculta (devuelve `null`) si `currentPage === 0` o si, sin selector, el rango tiene menos de 2 páginas.",
+          "La variante con `itemsPerPageOptions` monta un `ITSelect` y el resumen «X - Y de Z», que solo aparece si se pasa `totalItems`.",
+          'Se envuelve en `<nav aria-label>`; anterior/siguiente usan `role="button"` con `aria-disabled` en los extremos.',
+        ],
+      }}
     />
   );
 };
@@ -197,6 +272,25 @@ export const TripleFilterShowcase = () => {
           <p className="text-slate-500">{t("showcase.nav.tripleFilterHint")}</p>
         </div>
       }
+      doc={{
+        summary:
+          "Filtro segmentado genérico estilo pill: solo una opción está activa y admite valores `string` o `boolean`.",
+        examples: [
+          '<ITTripleFilter value={filter} onChange={setFilter} options={[{ label: "Todos", value: "all" }, { label: "Activos", value: "active" }]} />',
+          '<ITTripleFilter value={onlyActive} onChange={setOnlyActive} options={[{ label: "Sí", value: true }, { label: "No", value: false }]} color="success" />',
+        ],
+        props: [
+          { name: "value", type: "T", required: true, description: "Valor seleccionado; debe coincidir con uno de `options[].value`." },
+          { name: "onChange", type: "(value: T) => void", required: true, description: "Se dispara al elegir otra opción, con el nuevo valor." },
+          { name: "options", type: "ITTripleFilterOption<T>[]", required: true, description: "Opciones a renderizar: { label, value }." },
+          { name: "color", type: "ColorsTypes", default: '"primary"', description: "Color del botón activo (primary, secondary, success, danger, warning, info, purple, error, gray)." },
+          { name: "className", type: "string", description: "Clases adicionales del contenedor." },
+        ],
+        notes: [
+          "Genérico sobre `T extends string | boolean`, así que el mismo componente sirve para estados y para banderas true/false.",
+          "Los botones no exponen `aria-pressed` ni `role`, por lo que el estado activo no se anuncia a lectores de pantalla.",
+        ],
+      }}
     />
   );
 };

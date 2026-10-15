@@ -1309,6 +1309,27 @@ export const BadgetShowcase = () => {
           <ITBadget label="Large" color="primary" size="lg" />
         </div>
       }
+      doc={{
+        summary: "Etiqueta compacta de estado o categoría, con colores del tema y variantes filled/outlined.",
+        examples: [
+          '<ITBadget label="Activo" color="success" />',
+          '<ITBadget label="Pendiente" color="warning" variant="outlined" size="sm" />',
+          '<ITBadget color="danger" size="lg">\n  <span className="flex items-center gap-1">3 nuevos</span>\n</ITBadget>',
+        ],
+        props: [
+          { name: "label", type: "string", description: "Texto mostrado dentro del badge. Se ignora si se pasa children." },
+          { name: "children", type: "ReactNode", description: "Contenido personalizado; tiene prioridad sobre label." },
+          { name: "color", type: "ColorsTypes", default: '"primary"', description: 'Clave de color semántica: "primary", "secondary", "success", "danger", "warning", "info", "purple", "error" o "gray".' },
+          { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Tamaño del badge (padding y tamaño de fuente)." },
+          { name: "variant", type: '"filled" | "outlined"', default: '"filled"', description: "Estilo visual: fondo sólido del tema o fondo transparente con borde y texto del color." },
+          { name: "className", type: "string", description: "Clases CSS adicionales del elemento." },
+        ],
+        notes: [
+          "Renderiza un <span> inline-flex centrado; la apariencia sale de theme.badge[color] (radio completo, borde de 1px), no de clases Tailwind. Una clave inexistente en el tema cae en la configuración de primary.",
+          "Para color=\"primary\" el color se resuelve con utilidades (primary-700 en claro, primary-500 en oscuro) para que el contraste pase AA; el resto de colores del tema se respetan tal cual.",
+          "No declara role ni atributos ARIA propios: es un span textual/decorativo, no un control.",
+        ],
+      }}
     />
   );
 };
@@ -1349,6 +1370,26 @@ export const ImageShowcase = () => {
           </div>
         </>
       }
+      doc={{
+        summary: "Imagen con fallback automático: si el src principal falla al cargar, muestra la imagen de respaldo.",
+        description: "El tamaño y la forma se controlan por completo desde className; las imágenes internas ocupan el 100% del contenedor con object-cover.",
+        examples: [
+          '<ITImage src="/foto.jpg" alt="Foto de usuario" />',
+          '<ITImage\n  src={user.avatar}\n  alt={user.name}\n  fallback="/placeholder.png"\n  className="h-32 w-32 rounded-full"\n/>',
+          '<ITImage src={logo} alt="Logo" fallback="/logo-fallback.svg" className="h-40 w-full rounded-xl object-cover" />',
+        ],
+        props: [
+          { name: "src", type: "string", required: true, description: "URL de la imagen principal." },
+          { name: "alt", type: "string", description: "Texto alternativo de la imagen principal (accesibilidad)." },
+          { name: "fallback", type: "string", default: '""', description: "URL de la imagen mostrada cuando el src principal dispara onError." },
+          { name: "className", type: "string", default: '""', description: "Clases del contenedor externo; definen el tamaño de la imagen." },
+        ],
+        notes: [
+          "El className se aplica al <div> contenedor (flex items-center justify-center) y las <img> internas usan w-full h-full object-cover: sin alto/ancho en className la imagen no toma tamaño propio.",
+          "El fallback se renderiza con alt fijo traducido (image.fallbackAlt, \"Fallback\") en lugar del alt del componente, y el cambio a fallback es permanente: si el src vuelve a estar disponible hay que remontar el componente.",
+          "No reenvía atributos nativos del <img> (loading, width, height, onClick…): onClick está declarado en las props, pero la implementación actual no lo conecta.",
+        ],
+      }}
     />
   );
 };

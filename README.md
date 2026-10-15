@@ -4,6 +4,37 @@ Librería de componentes React enterprise-ready con **Tailwind CSS v4**. Diseña
 
 ---
 
+## Documentación para IA
+
+Si vas a generar código con esta librería (Copilot, Claude, Cursor, un agente propio), pásale:
+
+| Archivo | Qué contiene |
+| --- | --- |
+| [`docs/llm/GUIA.md`](docs/llm/GUIA.md) | Guía de uso: reglas, composición de pantallas, theming, i18n, accesibilidad, trampas conocidas y recetas |
+| [`docs/llm/catalogo.md`](docs/llm/catalogo.md) | **Generado desde el código**: 61 componentes con props, tipos, defaults y ejemplo |
+| [`docs/llm/catalogo.json`](docs/llm/catalogo.json) | El mismo catálogo en JSON, para indexar |
+| [`docs/llm/ejemplos-reales.md`](docs/llm/ejemplos-reales.md) | **Así se usa en producción** (CYC ERP): capas de CSS, provider real, chassis, listados, formularios, tablas con API y toasts |
+| [`LLM_DOCS.md`](LLM_DOCS.md) | Theming a fondo: variables CSS `--it-*`, escalas y chassis de layout |
+
+### Carpeta [`ai/`](ai/) — copiar y pegar
+
+Si no quieres ir archivo por archivo, la carpeta [`ai/`](ai/) trae el paquete **autocontenido** listo para
+pegar en un chat o subir como conocimiento del proyecto:
+
+| Archivo | Tamaño | Contenido |
+| --- | --- | --- |
+| [`ai/AXZY-UI-SYSTEM.md`](ai/AXZY-UI-SYSTEM.md) | ~150 KB (~38k tokens) | Todo en uno: guía + ejemplos reales + catálogo completo |
+| [`ai/AXZY-UI-SYSTEM-compacto.md`](ai/AXZY-UI-SYSTEM-compacto.md) | ~65 KB (~17k tokens) | Igual, con el catálogo sin descripciones de props |
+| `ai/catalogo.md` · `ai/catalogo.json` | — | Solo el catálogo |
+| `ai/plantillas/` | — | Reglas para Cursor (`.mdc`), Copilot, Claude Code y prompt inicial |
+
+```bash
+pnpm docs:llm        # regenera el catálogo (compilador de TS sobre src/index.ts), docs/llm/ y ai/
+pnpm docs:ai         # solo el paquete ai/ (usa docs/llm/ ya generado)
+pnpm audit:sandbox   # audita el sandbox: axe (set completo) + contenido recortado, 45 páginas
+```
+
+
 ## Instalación en un proyecto nuevo
 
 ### 1. Crear proyecto Vite + React + TypeScript
@@ -61,6 +92,18 @@ capas explícitamente, para que el reset/tema de AXZY nunca dependa del orden de
 ```
 
 Con esto **ya no** se importa `dist/index.css` desde `main.tsx` — todo entra por `index.css`.
+
+> **Orden alternativo (y su consecuencia):** si colocas `axzy-ui-system` *después* de `utilities`,
+> los estilos de la librería ganan a tus utilidades y tendrás que forzarlas con el sufijo `!` de
+> Tailwind v4 (`m-0! px-4! max-w-screen!`). El orden de arriba te ahorra esos `!`.
+
+**Modo oscuro por defecto:** el provider arranca en `system` y guarda la preferencia en la clave
+`it-theme-dark-mode` (`"light" | "dark" | "system"`). Si quieres otro default, escríbela **antes** de
+montar la app:
+
+```tsx
+if (!localStorage.getItem("it-theme-dark-mode")) localStorage.setItem("it-theme-dark-mode", "light");
+```
 
 ### 5. Envolver con ITThemeProvider
 

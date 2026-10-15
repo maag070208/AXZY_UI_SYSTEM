@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T00:35:54.368Z",
-  "libraryVersion": "1.3.4",
+  "generatedAt": "2026-10-15T06:40:43.791Z",
+  "libraryVersion": "1.5.0",
   "layers": {
     "atoms": "Atoms",
     "molecules": "Molecules",
@@ -1495,6 +1495,20 @@
           "description": "Size of the switch: \"sm\" | \"md\" | \"lg\". Default: \"md\"."
         },
         {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Texto visible del interruptor. Se asocia al control como nombre accesible\n(`aria-label`) cuando no hay un `<label>` externo que lo nombre."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Nombre accesible cuando la etiqueta visible vive fuera del componente.\nTiene prioridad sobre `label`."
+        },
+        {
           "name": "className",
           "type": "string",
           "required": false,
@@ -2367,7 +2381,7 @@
           "name": "triggerLabel",
           "type": "string",
           "required": false,
-          "default": "\"Abrir menú\"",
+          "default": "i18n `dropdownMenu.open` (\"Abrir menú\")",
           "description": "Accessible label for the trigger button."
         },
         {
@@ -2550,6 +2564,85 @@
           "required": false,
           "default": "",
           "description": "Additional CSS classes"
+        }
+      ]
+    },
+    {
+      "name": "ITLineBarChart",
+      "layer": "molecules",
+      "description": "Barras + línea en SVG puro (sin librería de gráficas). Pensado para comparar\ndos series por periodo —ingresos contra gastos, cobrado contra proyectado—:\nlas barras van al fondo y la línea con su área encima, con tooltip al pasar\nel cursor. El SVG escala con `viewBox`, así que el trazo y el texto no se\ndeforman al cambiar el ancho del contenedor.",
+      "example": "",
+      "source": "src/components/molecules/line-bar-chart/line-bar-chart.tsx",
+      "props": [
+        {
+          "name": "data",
+          "type": "ITLineBarDatum[]",
+          "required": true,
+          "default": "",
+          "description": ""
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "required": true,
+          "default": "",
+          "description": "Etiqueta accesible del gráfico."
+        },
+        {
+          "name": "lineLabel",
+          "type": "string",
+          "required": false,
+          "default": "i18n `lineBarChart.lineLabel` (\"Serie A\")",
+          "description": "Nombre de la serie de la línea (leyenda y tooltip)."
+        },
+        {
+          "name": "barLabel",
+          "type": "string",
+          "required": false,
+          "default": "i18n `lineBarChart.barLabel` (\"Serie B\")",
+          "description": "Nombre de la serie de barras (leyenda y tooltip)."
+        },
+        {
+          "name": "lineColor",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Color de la línea (por defecto el verde de la casa)."
+        },
+        {
+          "name": "barColor",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Color de las barras."
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "required": false,
+          "default": "",
+          "description": ""
+        },
+        {
+          "name": "formatValue",
+          "type": "(value: number) => string",
+          "required": false,
+          "default": "",
+          "description": "Formatea los valores del tooltip; por defecto número con separadores."
+        },
+        {
+          "name": "formatAxis",
+          "type": "(value: number) => string",
+          "required": false,
+          "default": "",
+          "description": "Texto del eje Y; por defecto número compacto."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": ""
         }
       ]
     },
@@ -3574,6 +3667,146 @@
           "required": false,
           "default": "false",
           "description": "Makes the header cells sticky while the virtualized body scrolls. Only\neffective when `virtualized` is true."
+        },
+        {
+          "name": "showViewToggle",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Whether to render the Table|Cards view switcher in the toolbar. Hiding it still honors `defaultView` and `autoCardBreakpoint`."
+        },
+        {
+          "name": "design",
+          "type": "TableDesign",
+          "required": false,
+          "default": "",
+          "description": "Per-region visual overrides (classes + inline styles)."
+        },
+        {
+          "name": "colors",
+          "type": "TableColors",
+          "required": false,
+          "default": "",
+          "description": "Per-instance color overrides for header and rows, beating the global theme."
+        },
+        {
+          "name": "containerStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for the outermost wrapper."
+        },
+        {
+          "name": "cardClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for the card surface (the rounded container)."
+        },
+        {
+          "name": "cardStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for the card surface."
+        },
+        {
+          "name": "toolbarClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for the toolbar strip (title + view toggle)."
+        },
+        {
+          "name": "toolbarStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for the toolbar strip."
+        },
+        {
+          "name": "headerClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for the header row."
+        },
+        {
+          "name": "headerStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for the header row."
+        },
+        {
+          "name": "headerCellClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for every header cell."
+        },
+        {
+          "name": "headerCellStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for every header cell."
+        },
+        {
+          "name": "rowClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for every body row."
+        },
+        {
+          "name": "rowStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for every body row."
+        },
+        {
+          "name": "cellClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for every body cell."
+        },
+        {
+          "name": "cellStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for every body cell."
+        },
+        {
+          "name": "cardsClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for the cards-view scroll wrapper."
+        },
+        {
+          "name": "cardsStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for the cards-view scroll wrapper."
+        },
+        {
+          "name": "footerClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for the pagination footer strip."
+        },
+        {
+          "name": "footerStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for the pagination footer strip."
         }
       ]
     },
@@ -3867,28 +4100,28 @@
           "name": "title",
           "type": "string",
           "required": false,
-          "default": "\"Confirmar acción\"",
+          "default": "i18n `confirmDialog.title` (\"Confirmar acción\")",
           "description": "Heading text displayed at the top of the dialog."
         },
         {
           "name": "message",
           "type": "React.ReactNode",
           "required": false,
-          "default": "\"¿Estás seguro de que deseas continuar?\"",
+          "default": "i18n `confirmDialog.message` (\"¿Estás seguro de que deseas continuar?\")",
           "description": "Body content — accepts plain strings or React nodes."
         },
         {
           "name": "confirmLabel",
           "type": "string",
           "required": false,
-          "default": "\"Confirmar\"",
+          "default": "i18n `common.confirm` (\"Confirmar\")",
           "description": "Label for the confirm button."
         },
         {
           "name": "cancelLabel",
           "type": "string",
           "required": false,
-          "default": "\"Cancelar\"",
+          "default": "i18n `common.cancel` (\"Cancelar\")",
           "description": "Label for the cancel button."
         },
         {
@@ -4102,6 +4335,146 @@
           "required": false,
           "default": "false",
           "description": "Makes the header cells sticky while the virtualized body scrolls. Only\neffective when `virtualized` is true."
+        },
+        {
+          "name": "showViewToggle",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Whether to render the Table|Cards view switcher in the toolbar. Hiding it still honors `defaultView` and `autoCardBreakpoint`."
+        },
+        {
+          "name": "design",
+          "type": "TableDesign",
+          "required": false,
+          "default": "",
+          "description": "Per-region visual overrides (classes + inline styles)."
+        },
+        {
+          "name": "colors",
+          "type": "TableColors",
+          "required": false,
+          "default": "",
+          "description": "Per-instance color overrides for header and rows, beating the global theme."
+        },
+        {
+          "name": "containerStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for the outermost wrapper."
+        },
+        {
+          "name": "cardClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for the card surface (the rounded container)."
+        },
+        {
+          "name": "cardStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for the card surface."
+        },
+        {
+          "name": "toolbarClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for the toolbar strip (title + view toggle)."
+        },
+        {
+          "name": "toolbarStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for the toolbar strip."
+        },
+        {
+          "name": "headerClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for the header row."
+        },
+        {
+          "name": "headerStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for the header row."
+        },
+        {
+          "name": "headerCellClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for every header cell."
+        },
+        {
+          "name": "headerCellStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for every header cell."
+        },
+        {
+          "name": "rowClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for every body row."
+        },
+        {
+          "name": "rowStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for every body row."
+        },
+        {
+          "name": "cellClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for every body cell."
+        },
+        {
+          "name": "cellStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for every body cell."
+        },
+        {
+          "name": "cardsClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for the cards-view scroll wrapper."
+        },
+        {
+          "name": "cardsStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for the cards-view scroll wrapper."
+        },
+        {
+          "name": "footerClassName",
+          "type": "string",
+          "required": false,
+          "default": "",
+          "description": "Extra classes for the pagination footer strip."
+        },
+        {
+          "name": "footerStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "default": "",
+          "description": "Inline styles for the pagination footer strip."
         }
       ]
     },
@@ -4767,7 +5140,7 @@
       "name": "ITSidebar",
       "layer": "organisms",
       "description": "Vertical navigation sidebar with submenu expand/collapse, hover tooltips in collapsed mode,\nand glassmorphism styling. The collapsed rail expands automatically on pointer hover — there\nis no toggle button; the hover is the only way to expand and collapse it.",
-      "example": "```tsx\n<ITSidebar\n  navigationItems={[\n    { id: \"dashboard\", label: \"Dashboard\", icon: <FaHome />, isActive: true },\n    {\n      id: \"settings\", label: \"Settings\", icon: <FaCog />,\n      subitems: [\n        { id: \"profile\", label: \"Profile\", action: () => navigate(\"/profile\") },\n        { id: \"billing\", label: \"Billing\", isActive: true },\n      ],\n    },\n  ]}\n  isCollapsed\n/>\n```",
+      "example": "```tsx\n<ITSidebar\n  navigationItems={[\n    { id: \"dashboard\", label: \"Dashboard\", icon: <FaHome />, isActive: true },\n    {\n      id: \"settings\", label: \"Settings\", icon: <FaCog />,\n      subitems: [\n        { id: \"profile\", label: \"Profile\", action: () => navigate(\"/profile\") },\n        { id: \"billing\", label: \"Billing\", isActive: true },\n      ],\n    },\n    { id: \"inbox\", label: \"Inbox\", icon: <FaEnvelope />, badge: 12 },\n  ]}\n  notification={{\n    count: 5,\n    icon: <FaBell />,\n    label: \"Notificaciones\",\n    onClick: () => navigate(\"/notifications\"),\n  }}\n  isCollapsed\n/>\n```",
       "source": "src/components/organisms/sidebar/sidebar.tsx",
       "props": [
         {
@@ -4789,7 +5162,14 @@
           "type": "() => void",
           "required": false,
           "default": "",
-          "description": "Callback when the user toggles collapse via the toggle button."
+          "description": "Callback that flips `isCollapsed`. `ITLayout` calls it from the top bar's\nmenu button when `expandOnHover` is `false`; the sidebar itself calls it\nwhen a collapsed parent item is clicked, so its submenu can be shown."
+        },
+        {
+          "name": "expandOnHover",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "How the collapsed rail opens. `true`: it expands over the content while\nthe pointer is on it (no button). `false`: it stays an icon-only rail —\nthe item name shows in a tooltip on hover — and it only opens through\n`onToggleCollapse` (the top bar's menu button in `ITLayout`)."
         },
         {
           "name": "visibleOnMobile",
@@ -4832,6 +5212,20 @@
           "required": false,
           "default": "",
           "description": "Optional content rendered above the navigation list (e.g. a wordmark).\nHidden while the sidebar is collapsed, so it only shows on hover."
+        },
+        {
+          "name": "notification",
+          "type": "ITSidebarNotification",
+          "required": false,
+          "default": "",
+          "description": "Optional notification entry pinned above the navigation (icon + label +\n`ITBadget` counter). Unlike {@link ITSidebarProps.header} it stays visible\nwhile collapsed, showing just the icon and the counter."
+        },
+        {
+          "name": "brand",
+          "type": "ITSidebarBrand",
+          "required": false,
+          "default": "",
+          "description": "Brand (logo + wordmark) pinned at the very top of the sidebar, in a 64px\nrow that lines up with the top bar. Unlike {@link ITSidebarProps.header}\nthe logo stays visible while collapsed. `ITLayout` fills it from\n`topBar.logo` / `topBar.logoText` when `sidebarFullHeight` is set."
         }
       ]
     },
@@ -4964,6 +5358,13 @@
           "required": false,
           "default": "",
           "description": "Additional CSS classes for the content container"
+        },
+        {
+          "name": "sidebarFullHeight",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "App-shell arrangement. `false` (default): the top bar spans the full width\nand the sidebar sits below it. `true`: the sidebar spans the full viewport\nheight and shows the brand (`topBar.logo` + `topBar.logoText`) at its top,\nwhile the top bar covers only the content column and drops the logo from\nthe `lg` breakpoint up. Mobile is unchanged."
         }
       ]
     },
@@ -5042,14 +5443,14 @@
           "type": "string",
           "required": false,
           "default": "",
-          "description": "Custom title for the error state. Default: \"Error\"."
+          "description": "Custom title for the error state. Default: i18n `common.error` (\"Error\")."
         },
         {
           "name": "errorActionLabel",
           "type": "string",
           "required": false,
           "default": "",
-          "description": "Label for the retry button in the error state. Default: \"Reintentar\"."
+          "description": "Label for the retry button in the error state. Default: i18n `common.retry` (\"Reintentar\")."
         },
         {
           "name": "onRetry",
@@ -5070,14 +5471,14 @@
           "type": "string",
           "required": false,
           "default": "",
-          "description": "Custom title for the empty state. Default: \"Sin datos\"."
+          "description": "Custom title for the empty state. Default: i18n `common.noData` (\"Sin datos\")."
         },
         {
           "name": "emptyDescription",
           "type": "string",
           "required": false,
           "default": "",
-          "description": "Custom description for the empty state."
+          "description": "Custom description for the empty state. Default: i18n `common.empty` (\"No hay información para mostrar\")."
         },
         {
           "name": "emptyAction",
@@ -5120,6 +5521,43 @@
           "required": false,
           "default": "\"px-4 sm:px-6 lg:px-8\"",
           "description": "Tailwind classes for the page wrapper's horizontal padding. Pass `\"px-0\"`\nfor edge-to-edge content, or a responsive scale like `\"px-2 sm:px-4\"`.\n\nMust be written as a literal: Tailwind scans source files, so a value\nassembled at runtime will not be generated into the stylesheet."
+        }
+      ]
+    },
+    {
+      "name": "ITI18nProvider",
+      "layer": "others",
+      "description": "Provee locale y mensajes al árbol de componentes.\n\nSin provider, los componentes usan el catálogo base en español. Con provider,\ncualquier prop de texto explícita de un componente sigue teniendo prioridad\nsobre el catálogo.",
+      "example": "```tsx\n<ITThemeProvider>\n  <ITI18nProvider locale=\"en\">\n    <App />\n  </ITI18nProvider>\n</ITThemeProvider>\n```",
+      "source": "src/i18n/provider.tsx",
+      "props": [
+        {
+          "name": "locale",
+          "type": "string",
+          "required": false,
+          "default": "\"es\"",
+          "description": "Active locale."
+        },
+        {
+          "name": "fallbackLocale",
+          "type": "string",
+          "required": false,
+          "default": "\"es\"",
+          "description": "Fallback locale for missing keys."
+        },
+        {
+          "name": "messages",
+          "type": "ITMessagesByLocale",
+          "required": false,
+          "default": "",
+          "description": "Custom messages merged over the built-in catalog, keyed by locale."
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "required": true,
+          "default": "",
+          "description": "Application tree."
         }
       ]
     },
@@ -5171,6 +5609,13 @@
           "required": false,
           "default": "2 (keeps current default when omitted)",
           "description": "Global shadow strength level. `0` ⇒ no shadows, `1` ⇒ subtle, `2` ⇒ default current look, `3` ⇒ pronounced. Shadows are injected as `--shadow-*`/`.shadow-*` overrides so cards, dropdowns and dialogs follow the level."
+        },
+        {
+          "name": "appearance",
+          "type": "ITThemeAppearance",
+          "required": false,
+          "default": "\"soft\"",
+          "description": "Visual language of the whole system. `\"soft\"` keeps the current look (floating cards, tinted shadows, glass sidebar/top bar). `\"flat\"` switches the app shell and surfaces to flat ones: hairline borders instead of shadows on `ITCard`, a plain `ITSidebar` (no glow, no accent bar, narrower), a plain `ITTopBar` (no shadow, initials avatar) and a compact `ITPageHeader` without the icon tile. It also s…"
         }
       ]
     }
@@ -5231,6 +5676,22 @@
       "signature": "(): import(\"/Users/axzy/DEV/AXZY/AXZY_UI_SYSTEM/src/theme/theme-context\").ITThemeContextType | undefined",
       "source": "src/theme/theme-context.ts",
       "example": ""
+    },
+    {
+      "name": "useITFlatAppearance",
+      "layer": "hooks",
+      "description": "`true` cuando el provider pide el lenguaje visual plano (`appearance=\"flat\"`).\nFuera de un ITThemeProvider devuelve `false` (aspecto por defecto).",
+      "signature": "(): boolean",
+      "source": "src/theme/theme-context.ts",
+      "example": ""
+    },
+    {
+      "name": "useITTranslation",
+      "layer": "hooks",
+      "description": "Devuelve el traductor y los formateadores de la locale activa.\n\nFunciona aunque no exista `ITI18nProvider` (cae al catálogo base en español).",
+      "signature": "(): ITI18nValue",
+      "source": "src/i18n/useITTranslation.ts",
+      "example": "```tsx\nconst { t, formatCurrency } = useITTranslation();\nreturn <ITButton label={t(\"common.cancel\")} onClick={onCancel} />;\n```"
     }
   ],
   "otherExports": [
@@ -5270,12 +5731,19 @@
     "ITFormBuilderProps",
     "ITFormHeaderProps",
     "ITGridProps",
+    "ITI18nProviderProps",
+    "ITI18nValue",
     "ITImageProps",
     "ITInputNumberProps",
     "ITInputProps",
     "ITLayoutProps",
+    "ITLineBarChartProps",
+    "ITLineBarDatum",
     "ITLoaderProps",
+    "ITLocale",
     "ITMaskedInputProps",
+    "ITMessages",
+    "ITMessagesByLocale",
     "ITMultiSelectOption",
     "ITMultiSelectProps",
     "ITNavbarProps",
@@ -5294,6 +5762,8 @@
     "ITSearchTableProps",
     "ITSegmentedControlProps",
     "ITSelectProps",
+    "ITSidebarBrand",
+    "ITSidebarNotification",
     "ITSidebarProps",
     "ITSkeletonProps",
     "ITSlideToggleProps",
@@ -5306,6 +5776,7 @@
     "ITTabsProps",
     "ITTextProps",
     "ITTextareaProps",
+    "ITThemeAppearance",
     "ITThemeConfig",
     "ITThemePalette",
     "ITThemeProviderProps",
@@ -5314,11 +5785,17 @@
     "ITTripleFilterOption",
     "ITTripleFilterProps",
     "ITWysiwygProps",
+    "TableColors",
     "TableDensity",
+    "TableDesign",
+    "TableDesignProps",
+    "TableDesignSlot",
     "UploadStatus",
     "UseTableStateOptions",
     "UseTableStateResult",
     "createValidationSchema",
+    "enMessages",
+    "esMessages",
     "getContrastTextColor",
     "isLightColor",
     "resolveCssColor"

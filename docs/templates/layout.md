@@ -67,3 +67,17 @@ export function Shell() {
 ## Textos (i18n)
 
 Este componente no renderiza textos propios; todo el texto visible entra por `topBar`, `sidebar` y `children` (y sus respectivos componentes internos).
+
+## Altura (importante al embeberlo)
+
+`ITLayout` ocupa la altura del viewport (`h-screen`) por diseño: es el chassis de una app completa. Si lo
+metes dentro de otra superficie (una página de documentación, un preview, una tarjeta), dale un contenedor
+con altura y pásale `className="!h-full"`; de lo contrario se estirará a 100vh y se saldrá de su caja.
+
+```tsx
+<div className="h-[640px] overflow-hidden rounded-xl border">
+  <ITLayout className="!h-full" topBar={{ ... }} sidebar={{ ... }}>
+    <TuContenido />
+  </ITLayout>
+</div>
+```

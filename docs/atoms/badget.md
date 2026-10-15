@@ -27,6 +27,13 @@ import { ITBadget } from "@axzydev/axzy_ui_system";
 | `variant` | `keyof typeof badgeVariants` (`"filled" \| "outlined"`) | `"filled"` | Estilo visual. |
 | `className` | `string` | — | Clases CSS adicionales del elemento. |
 
+## Color y contraste
+
+Para `color="primary"` el badge **no** usa el acento base de la paleta: resuelve el relleno y el
+borde/texto con `primary-700` (claro) y `primary-500` (oscuro), que sí cumplen AA (el acento base se
+quedaba en 2.4:1 con texto blanco y 3.3:1 como texto sobre blanco). El resto de colores semánticos se
+respetan tal cual vienen del tema.
+
 ## Ejemplo
 
 ```tsx

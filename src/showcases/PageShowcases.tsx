@@ -389,6 +389,30 @@ export const PageHeaderShowcase = () => {
           </div>
         </ITStack>
       }
+      doc={{
+        summary: "Barra de título de página con breadcrumbs, descripción, botón de volver y acciones.",
+        description:
+          "Es la cabecera que ITPage delega por defecto. Cuando hay breadcrumbs o backAction dibuja una fila superior con el botón de volver y las migas a la izquierda, y mueve `actions` a esa fila; sin fila superior las acciones quedan en la fila del título.",
+        examples: [
+          '<ITPageHeader title="Team members" description="Manage invitations, roles and permissions" />',
+          '<ITPageHeader\n  title="Usuarios"\n  icon={<FaUsers size={20} />}\n  iconColor="#6366f1"\n  breadcrumbs={[{ label: "Admin", href: "#" }, { label: "Usuarios" }]}\n  backAction={() => history.back()}\n  actions={<ITButton label="Invitar" size="sm" />}\n/>',
+          '<ITPageHeader title="Reportes" actions={<ITButton label="Exportar" variant="outlined" size="sm" />} />',
+        ],
+        props: [
+          { name: "title", type: "string", required: true, description: "Título principal, renderizado como <h1>." },
+          { name: "description", type: "string", description: "Texto descriptivo bajo el título." },
+          { name: "breadcrumbs", type: "ITBreadcrumbItem[]", description: "Migas de pan ({ label, href?, onClick? }); el último ítem se pinta como texto plano." },
+          { name: "actions", type: "ReactNode", description: "Botones o elementos alineados a la derecha." },
+          { name: "backAction", type: "() => void", description: "Se dispara al pulsar el botón de volver; su presencia basta para mostrar la fila superior." },
+          { name: "icon", type: "ReactNode", description: "Icono mostrado dentro del recuadro redondo junto al título." },
+          { name: "iconColor", type: "string", description: "Color CSS aplicado al recuadro del icono (style.color)." },
+          { name: "className", type: "string", description: "Clases adicionales del contenedor." },
+        ],
+        notes: [
+          "El recuadro del icono (w-12 h-12 redondo) no se renderiza en aspecto flat (`useITFlatAppearance()`); con ese aspecto el título se reduce y `iconColor` deja de tener efecto.",
+          "El botón de volver es un círculo de 9×9 con aria-label \"Volver\" (i18n `pageHeader.back`).",
+        ],
+      }}
     />
   );
 };
@@ -957,6 +981,44 @@ export const PageShowcase = () => {
           </div>
         </ITStack>
       }
+      doc={{
+        summary: "Plantilla de página: ancho máximo, cabecera opcional (ITPageHeader) y estados integrados de carga, error y vacío.",
+        description:
+          "Envuelve el contenido con el ancho y el padding de página y, si hay algo que mostrar, delega la cabecera en ITPageHeader. Los tres estados sustituyen a los children y también conservan la cabecera.",
+        examples: [
+          '<ITPage title="Team members" description="Manage your organization workspace" actions={<ITButton label="Invite" size="sm" />}>\n  <ITTable columns={columns} data={users} />\n</ITPage>',
+          '<ITPage title="Reportes" loading={loading} error={error} errorTitle="Error de carga" onRetry={refetch} maxWidth="6xl">\n  <ReportBody />\n</ITPage>',
+          '<ITPage title="Tablero" horizontalPadding="px-0">\n  <div>Contenido a sangre</div>\n</ITPage>',
+        ],
+        props: [
+          { name: "title", type: "string", description: "Título de la página, se pasa a la cabecera." },
+          { name: "description", type: "string", description: "Descripción bajo el título." },
+          { name: "breadcrumbs", type: "ITBreadcrumbItem[]", description: "Migas de pan para dar contexto de navegación." },
+          { name: "actions", type: "ReactNode", description: "Botones de acción de la cabecera." },
+          { name: "backAction", type: "() => void", description: "Callback del botón de volver." },
+          { name: "icon", type: "ReactNode", description: "Icono opcional junto al título." },
+          { name: "iconColor", type: "string", description: "Color CSS del icono." },
+          { name: "loading", type: "boolean", default: "false", description: "Muestra placeholders de esqueleto (tres skeletons rectangulares)." },
+          { name: "error", type: "string | null", default: "null", description: "Mensaje del estado de error; dibuja un ITEmptyState con botón de reintento si hay onRetry." },
+          { name: "errorTitle", type: "string", default: 'i18n common.error ("Error")', description: "Título del estado de error." },
+          { name: "errorActionLabel", type: "string", default: 'i18n common.retry ("Reintentar")', description: "Etiqueta del botón de reintento." },
+          { name: "onRetry", type: "() => void", description: "Callback del botón de reintento; solo se pinta si hay error." },
+          { name: "empty", type: "boolean", default: "false", description: "Muestra el estado vacío." },
+          { name: "emptyTitle", type: "string", default: 'i18n common.noData ("Sin datos")', description: "Título del estado vacío." },
+          { name: "emptyDescription", type: "string", default: 'i18n common.empty ("No hay información para mostrar")', description: "Descripción del estado vacío." },
+          { name: "emptyAction", type: "ReactNode", description: "Acción personalizada del estado vacío." },
+          { name: "children", type: "ReactNode", required: true, description: "Contenido renderizado dentro del wrapper." },
+          { name: "maxWidth", type: '"2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl"', default: '"7xl"', description: "Ancho máximo del contenido." },
+          { name: "noPadding", type: "boolean", default: "false", description: "Quita el padding por defecto y gana sobre horizontalPadding (también omite el py-6)." },
+          { name: "horizontalPadding", type: "string", default: '"px-4 sm:px-6 lg:px-8"', description: "Clases Tailwind del gutter horizontal; debe ser un literal que Tailwind pueda escanear." },
+          { name: "className", type: "string", description: "Clases adicionales del wrapper." },
+        ],
+        notes: [
+          "Prioridad de estados: loading > error > empty; si ninguno aplica se renderizan los children. La cabecera se incluye en los cuatro casos si hay título, descripción, breadcrumbs, acciones, backAction o icono.",
+          "Con noPadding se omiten a la vez el gutter horizontal y el py-6; horizontalPadding montado en runtime no llega al CSS generado por Tailwind, así que pásalo siempre literal.",
+          "maxWidth se compone como `max-w-${maxWidth}` en runtime; los literales max-w-2xl…max-w-7xl están en el código fuente y Tailwind los genera.",
+        ],
+      }}
     />
   );
 };

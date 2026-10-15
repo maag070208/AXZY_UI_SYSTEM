@@ -669,6 +669,37 @@ export const FlexShowcase = () => {
       title="ITFlex"
       description={t("showcase.layoutPrimitives.flexDesc")}
       code={buildCode()}
+      doc={{
+        summary:
+          "Contenedor flexbox completo: dirección, alineación, distribución, wrap y factores flex (grow/shrink/basis) en un solo componente.",
+        description:
+          "Es el primitivo de layout con más control; úsalo cuando ITStack no llegue (reparto por ejes, hijos que crecen o se encogen, wrap con alineación). La separación se mide en unidades de 0.25rem y se emite como `gap`.",
+        examples: [
+          '<ITFlex justify="between" align="center" gap={3}>\n  <h2>Panel</h2>\n  <ITButton label="Exportar" variant="outlined" />\n</ITFlex>',
+          '<ITFlex direction="column" gap={2} as="section">\n  <header>Título</header>\n  <main>Contenido</main>\n</ITFlex>',
+          '<ITFlex gap={2}>\n  <ITFlex grow basis={56}>Contenido flexible</ITFlex>\n  <span>Fijo</span>\n</ITFlex>',
+        ],
+        props: [
+          { name: "children", type: "ReactNode", description: "Elementos hijos del contenedor." },
+          { name: "direction", type: '"row" | "column" | "row-reverse" | "column-reverse"', default: '"row"', description: "Dirección del eje principal." },
+          { name: "align", type: '"start" | "end" | "center" | "stretch" | "baseline"', description: "Alineación en el eje transversal." },
+          { name: "justify", type: '"start" | "end" | "center" | "between" | "around" | "evenly"', description: "Reparto de los hijos en el eje principal." },
+          { name: "wrap", type: '"nowrap" | "wrap" | "wrap-reverse"', description: "Si los hijos saltan a la siguiente línea." },
+          { name: "gap", type: "number", default: "0", description: "Separación entre hijos en unidades de 0.25rem." },
+          { name: "grow", type: "boolean | number", description: "Factor flex-grow: `true` = 1, `false` = 0, un número se usa tal cual." },
+          { name: "shrink", type: "boolean | number", description: "Factor flex-shrink: `true` = 1, `false` = 0, un número se usa tal cual." },
+          { name: "basis", type: "string | number", description: "flex-basis: los números se multiplican por 0.25rem, los strings se usan tal cual." },
+          { name: "className", type: "string", description: "Clases CSS adicionales." },
+          { name: "style", type: "CSSProperties", description: "Estilos inline; se aplican después de gap/grow/shrink/basis, así que pueden sobrescribirlos." },
+          { name: "as", type: "ElementType", default: '"div"', description: "Elemento HTML a renderizar en lugar del `div` por defecto." },
+          { name: "onClick", type: "(e: React.MouseEvent) => void", description: "Handler de click del contenedor." },
+        ],
+        notes: [
+          "gap, grow, shrink y basis se resuelven como estilos inline, no como clases Tailwind: el `style` propio tiene la última palabra.",
+          "align, justify y wrap no traen valor por defecto: si se omiten no se emite clase y valen los valores iniciales de CSS (stretch, flex-start, nowrap).",
+          "El contenedor siempre es `display: flex`; para una sola dirección con separación uniforme, ITStack es más corto.",
+        ],
+      }}
       demo={
         <div className="w-full max-w-xl flex flex-col">
           <div className="min-h-[360px]">
@@ -939,6 +970,37 @@ export const GridShowcase = () => {
       title="ITGrid"
       description={t("showcase.layoutPrimitives.gridDesc")}
       code={buildCode()}
+      doc={{
+        summary:
+          "Sistema de grid CSS responsivo de 12 columnas con el patrón container/item: el contenedor fija columnas y gap, y cada item declara su span por breakpoint.",
+        description:
+          "Como `container` renderiza `display: grid` con `grid-cols-{columns}`; como `item` calcula el `col-span` base y los spans de sm/md/lg/xl. Si no se pasa ninguno de los dos, renderiza un `div` normal.",
+        examples: [
+          '<ITGrid container spacing={4}>\n  <ITGrid item xs={12} md={6}>Sidebar</ITGrid>\n  <ITGrid item xs={12} md={6}>Contenido</ITGrid>\n</ITGrid>',
+          '<ITGrid container columns={3} spacing={2}>\n  {plans.map((plan) => (\n    <ITGrid key={plan.id} item>{plan.name}</ITGrid>\n  ))}\n</ITGrid>',
+          '<ITGrid container spacing={4} as="section">\n  <ITGrid item xs={12} lg={8}>Gráfico</ITGrid>\n  <ITGrid item xs={12} lg={4}>Actividad</ITGrid>\n</ITGrid>',
+        ],
+        props: [
+          { name: "children", type: "ReactNode", description: "Elementos hijos." },
+          { name: "container", type: "boolean", description: "Renderiza el padre: `display: grid` + `grid-cols-{columns}`." },
+          { name: "item", type: "boolean", description: "Renderiza un hijo con `col-span` según los breakpoints. Si `container` también está activo, gana `container`." },
+          { name: "spacing", type: "number", default: "0", description: "Gap entre hijos en unidades de 0.25rem; solo aplica con `container` y si es mayor que 0." },
+          { name: "columns", type: "number", default: "12", description: "Columnas del contenedor (se acota a 1–12); también limita el span de los items." },
+          { name: "xs", type: "number", description: "Span en el breakpoint base; si falta se usa `sm` y, si tampoco hay, el item ocupa todo (`col-span-full`)." },
+          { name: "sm", type: "number", description: "Span a partir del breakpoint `sm`." },
+          { name: "md", type: "number", description: "Span a partir del breakpoint `md`." },
+          { name: "lg", type: "number", description: "Span a partir del breakpoint `lg`." },
+          { name: "xl", type: "number", description: "Span a partir del breakpoint `xl`." },
+          { name: "className", type: "string", description: "Clases CSS adicionales." },
+          { name: "style", type: "CSSProperties", description: "Estilos inline." },
+          { name: "as", type: "ElementType", default: '"div"', description: "Elemento HTML a renderizar en lugar del `div` por defecto." },
+        ],
+        notes: [
+          "El span base es `xs ?? sm` y, si no se define ninguno, cae en `col-span-full` (las 12 columnas).",
+          "Los spans se redondean y se acotan entre 1 y `columns`: con 3 columnas, `md={99}` acaba en `md:col-span-3`.",
+          "Tailwind no ve clases construidas en runtime: `grid-cols-{n}` y `col-span-{n}` están en el safelist `@source inline(...)` de src/index.css.",
+        ],
+      }}
       demo={
         <div className="w-full max-w-xl flex flex-col">
           <div className="min-h-[360px]">
@@ -1351,6 +1413,30 @@ export const GridShowcase = () => {
       title={t("showcase.layoutPrimitives.screensTitle")}
       description={t("showcase.layoutPrimitives.screensSubtitle")}
       code={code}
+      doc={{
+        summary:
+          "Receta de pantalla: un dashboard de una columna que compone ITStack, ITFlex, ITGrid, ITStatCard, ITAvatar e ITButton para armar cabecera, KPIs y bloque de gráfico + actividad.",
+        description:
+          "No es un componente de la librería, sino un patrón de composición: primero la cabecera con su acción, después la fila de métricas y por último el contenido a dos columnas, apilado en móvil.",
+        examples: [
+          '<ITGrid container spacing={3}>\n  <ITGrid item xs={12} sm={6} lg={3}>\n    <ITStatCard label="Usuarios activos" value="1,245" trend="+12%" trendDirection="up" />\n  </ITGrid>\n</ITGrid>',
+          '<ITFlex gap={3} align="center">\n  <ITAvatar initials="AL" size="sm" color="bg-primary-500" />\n  <p>Ana López creó un reporte</p>\n</ITFlex>',
+        ],
+        props: [
+          { name: "ITStack", type: "componente", description: "Columna raíz (`spacing={6}`) que separa cabecera, métricas y gráficos." },
+          { name: "ITFlex", type: "componente", description: "Cabecera con `justify=\"between\" align=\"center\"` y cada fila de actividad con `gap={3} align=\"center\"`." },
+          { name: "ITGrid (container)", type: "componente", description: "Rejilla de 12 columnas (`spacing={3}`) para la fila de KPIs y para el bloque de gráfico/actividad." },
+          { name: "ITGrid (item)", type: "componente", description: "Reparto responsive: `xs={12} sm={6} lg={3}` en las métricas y `xs={12} lg={8}` / `lg={4}` en el contenido." },
+          { name: "ITStatCard", type: "componente", description: "Cada KPI, con `label`, `value`, `trend`, `trendDirection` y `color` para el fondo." },
+          { name: "ITAvatar", type: "componente", description: "Iniciales del usuario en la actividad reciente, con `size=\"sm\"` y `color`." },
+          { name: "ITButton", type: "componente", description: "Acción de la cabecera (“Exportar”), con `variant=\"outlined\" size=\"sm\"`." },
+        ],
+        notes: [
+          "Es una receta, no un componente: no tiene props propias; en la tabla se documentan las piezas que la componen.",
+          "Criterio de composición: cabecera → KPIs en 4 columnas (`lg={3}`) → contenido 8/4 (`lg={8}` + `lg={4}`); todo a ancho completo por debajo de `sm` y `lg`.",
+          "El demo usa `demoMinAncho={780}` y textos de `useITTranslation()`; los colores salen de tokens (`bg-primary-500`), no de valores sueltos.",
+        ],
+      }}
       demo={
         <div className="w-full">
           <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
@@ -1462,6 +1548,30 @@ export const ScreenFormShowcase = () => {
       title={t("showcase.layoutPrimitives.screensTitle")}
       description={t("showcase.layoutPrimitives.screensSubtitle")}
       code={formCode}
+      doc={{
+        summary:
+          "Receta de pantalla: un formulario responsive que compone ITStack, ITGrid, ITInput, ITSelect, ITFlex e ITButton para armar encabezado, campos y barra de acciones.",
+        description:
+          "Tampoco es un componente: es el patrón de un formulario controlado dentro de una tarjeta. La rejilla de 12 columnas coloca los campos cortos en pareja y los largos a fila completa.",
+        examples: [
+          '<ITGrid container spacing={4}>\n  <ITGrid item xs={12} md={6}>\n    <ITInput name="nombre" label="Nombre" onChange={() => {}} />\n  </ITGrid>\n  <ITGrid item xs={12}>\n    <ITInput name="email" label="Email" onChange={() => {}} />\n  </ITGrid>\n</ITGrid>',
+          '<ITFlex justify="end" gap={3}>\n  <ITButton label="Cancelar" variant="outlined" size="sm" />\n  <ITButton label="Guardar" size="sm" />\n</ITFlex>',
+        ],
+        props: [
+          { name: "ITStack", type: "componente", description: "Columna raíz (`spacing={6}`) que separa el encabezado de la rejilla de campos." },
+          { name: "ITGrid (container)", type: "componente", description: "Rejilla de 12 columnas con `spacing={4}` para repartir los campos." },
+          { name: "ITGrid (item)", type: "componente", description: "`xs={12} md={6}` para los campos en pareja y `xs={12}` para los largos (email) y la fila de botones." },
+          { name: "ITInput", type: "componente", description: "Campos de texto controlados con `name`, `label`, `placeholder` y `onChange`." },
+          { name: "ITSelect", type: "componente", description: "Listas de opciones con `name`, `label` y `options` (`{ label, value }`)." },
+          { name: "ITFlex", type: "componente", description: "Barra de acciones alineada a la derecha (`justify=\"end\" gap={3}`)." },
+          { name: "ITButton", type: "componente", description: "“Cancelar” (`variant=\"outlined\"`) y “Guardar”; ambos con `size=\"sm\"`." },
+        ],
+        notes: [
+          "Es una receta de composición: las props de la tabla son las piezas que usa, no una API propia.",
+          "Formulario controlado: cada ITInput/ITSelect recibe `name` y `onChange`; ITInput los exige, aunque en el ejemplo el handler sea un no-op.",
+          "Mismo criterio responsive que el dashboard: 1 columna en móvil (`xs={12}`) y 2 a partir de `md` (`md={6}`), con las acciones a ancho completo al final.",
+        ],
+      }}
       demo={
         <div className="w-full">
           <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">

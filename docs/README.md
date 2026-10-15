@@ -17,6 +17,14 @@ atómicas. Cada fichero describe props, tipos, defaults, un ejemplo y notas de c
 | `docs/templates/` | Shells de página. |
 | `docs/provider/` | `ITThemeProvider`. |
 | `docs/i18n/` | i18n (runtime en `src/i18n/`): API, convenciones y catálogo de textos (ver abajo). |
+| `docs/llm/` | **Documentación para IA**: guía de uso (`GUIA.md`) + catálogo de componentes generado desde el código (`catalogo.md`, `catalogo.json`). |
+| `docs/sandbox-audit.md` | Estado de la auditoría del sandbox (axe + recortes de contenido) y pendientes por grupo. |
+
+## Documentación para IA
+
+`pnpm docs:llm` regenera `docs/llm/catalogo.md` y `catalogo.json` a partir del código (compilador de
+TypeScript sobre `src/index.ts`), así que props, tipos y defaults no se quedan viejos. Empieza por
+[`docs/llm/GUIA.md`](llm/GUIA.md).
 
 ## Índice de componentes
 

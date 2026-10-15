@@ -1,5 +1,10 @@
 # AXZY UI SYSTEM — Documentación para LLMs
 
+> **Empieza por `docs/llm/GUIA.md`** (guía de uso: reglas, composición, theming, i18n, accesibilidad,
+> trampas y recetas) y por **`docs/llm/catalogo.md`** (61 componentes con todos sus props, generado desde
+> el código con `pnpm docs:llm`). Este archivo sigue siendo la referencia profunda del **theming**
+> (variables `--it-*`, escalas, chassis de layout) y de los patrones internos.
+
 ## Identidad del Proyecto
 
 - **Nombre**: `@axzydev/axzy_ui_system`

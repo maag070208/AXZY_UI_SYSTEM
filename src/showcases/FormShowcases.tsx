@@ -183,6 +183,35 @@ export const ButtonShowcase = () => {
           </div>
         </div>
       }
+      doc={{
+        summary:
+          "Botón de acción con colores semánticos, ocho variantes visuales, tres tamaños e icono opcional.",
+        description:
+          "La apariencia base sale de theme.button[color] y el tamaño de buttonSizes; admite label o children y mantiene sus propios estados de hover y focus.",
+        examples: [
+          '<ITButton label="Guardar" color="success" onClick={handleSave} />',
+          '<ITButton label="Sincronizar" icon={<FaSync />} variant="outlined" color="gray" size="sm" />',
+          '<ITButton variant="icon-only" color="danger" ariaLabel="Eliminar">🗑</ITButton>',
+        ],
+        props: [
+          { name: "label", type: "string", description: "Texto del botón. Se ignora si se pasa children." },
+          { name: "children", type: "ReactNode", description: "Contenido propio; tiene prioridad sobre label e icon." },
+          { name: "icon", type: "ReactNode", description: "Icono renderizado antes del label (no se usa con children)." },
+          { name: "onClick", type: "() => void", description: "Handler de click del botón." },
+          { name: "color", type: '"primary" | "secondary" | "success" | "danger" | "warning" | "info" | "purple" | "error" | "gray"', default: '"primary"', description: "Clave de color semántica del tema." },
+          { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Tamaño del botón (padding y tipografía)." },
+          { name: "variant", type: '"filled" | "outlined" | "raised" | "rounded" | "text" | "raised-text" | "icon-only" | "link"', default: '"filled"', description: "Estilo visual del botón." },
+          { name: "disabled", type: "boolean", default: "false", description: "Deshabilita la interacción y aplica opacidad reducida." },
+          { name: "type", type: '"submit" | "reset" | "button"', default: '"button"', description: "Atributo type del elemento button nativo." },
+          { name: "ariaLabel", type: "string", description: "Nombre accesible para lectores de pantalla; si falta cae en label." },
+          { name: "title", type: "string", description: "Tooltip nativo; si falta cae en ariaLabel o label." },
+          { name: "className", type: "string", description: "Clases CSS adicionales del botón." },
+        ],
+        notes: [
+          "Con children no se renderizan label ni icon.",
+          'Usa variant="icon-only" junto a ariaLabel cuando el botón no tenga texto visible.',
+        ],
+      }}
     />
   );
 };
@@ -712,6 +741,55 @@ export const InputShowcase = () => {
             </div>
           ) : undefined
         }
+        doc={{
+          summary:
+            "Campo de entrada con label, validación y slots de iconos; cubre text, password, email, number (con moneda o miles), checkbox, radio y textarea.",
+          description:
+            "Comparte el tema theme.input con el resto del sistema: el error solo se muestra cuando el campo está tocado y los tipos numéricos se reformatean al perder el foco.",
+          examples: [
+            '<ITInput name="email" label="Correo" value={email} onChange={(e) => setEmail(e.target.value)} onBlur={() => {}} />',
+            '<ITInput name="monto" label="Monto" type="number" currencyFormat value={monto} onChange={onChange} onBlur={() => {}} />',
+            '<ITInput name="nota" label="Nota" type="textarea" rows={4} maxLength={200} showHintLength value={nota} onChange={onChange} onBlur={() => {}} />',
+          ],
+          props: [
+            { name: "name", type: "string", required: true, description: "Nombre del campo; se usa como id del control y del label." },
+            { name: "type", type: '"text" | "password" | "number" | "email" | "checkbox" | "radio" | "textarea"', default: '"text"', description: "Tipo de control a renderizar." },
+            { name: "label", type: "string", description: "Etiqueta mostrada encima del campo." },
+            { name: "value", type: "any", description: "Valor actual del campo (controlado)." },
+            { name: "onChange", type: "(event: any) => void", required: true, description: "Handler de cambio; recibe un evento con target.name y target.value." },
+            { name: "onBlur", type: "(event: FocusEvent) => void", description: "Handler de blur; también dispara el formateo numérico." },
+            { name: "placeholder", type: "string", description: "Texto de ayuda dentro del campo." },
+            { name: "touched", type: "boolean", description: "Marca el campo como tocado; sin él se usa el blur interno para decidir cuándo mostrar el error." },
+            { name: "error", type: "string | boolean", description: "Mensaje de error propio, o true para el mensaje genérico de campo requerido." },
+            { name: "required", type: "boolean", default: "false", description: "Asterisco y error automático si el campo está vacío." },
+            { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Tamaño del campo." },
+            { name: "disabled", type: "boolean", default: "false", description: "Deshabilita el campo." },
+            { name: "readOnly", type: "boolean", default: "false", description: "Renderiza el campo en modo solo lectura." },
+            { name: "currencyFormat", type: "boolean", default: "false", description: "Formatea el número como moneda (locale es-MX)." },
+            { name: "decimals", type: "number", default: "currencyFormat ? 2 : 0", description: "Decimales permitidos; 0 restringe a enteros." },
+            { name: "formatNumber", type: "boolean", default: "true", description: "Activa el formateo de miles al perder el foco." },
+            { name: "maxLength", type: "number", description: "Longitud máxima permitida." },
+            { name: "minLength", type: "number", description: "Longitud mínima permitida." },
+            { name: "showHintLength", type: "boolean", default: "false", description: "Muestra el contador de caracteres (requiere minLength o maxLength)." },
+            { name: "iconLeft", type: "ReactNode", description: "Icono a la izquierda del campo." },
+            { name: "iconRight", type: "ReactNode", description: "Icono a la derecha del campo." },
+            { name: "rows", type: "number", default: "4", description: "Filas visibles cuando type es textarea." },
+            { name: "min", type: "number", description: "Valor numérico mínimo; se recorta al salir del campo." },
+            { name: "max", type: "number", description: "Valor numérico máximo; se recorta al salir del campo." },
+            { name: "checked", type: "boolean", description: "Estado marcado para checkbox y radio." },
+            { name: "autoFocus", type: "boolean", default: "false", description: "Enfoca el campo al montar." },
+            { name: "focusContent", type: "boolean", description: "Selecciona todo el contenido al hacer click." },
+            { name: "onKeyDown", type: "(event: KeyboardEvent) => void", description: "Handler de keydown del control." },
+            { name: "containerClassName", type: "string", description: "Clases CSS del contenedor externo." },
+            { name: "labelClassName", type: "string", description: "Clases CSS de la etiqueta." },
+            { name: "className", type: "string", description: "Clases CSS del control." },
+          ],
+          notes: [
+            "El error solo aparece cuando el campo está tocado (touched explícito o blur interno); con required y vacío se usa el mensaje genérico del sistema.",
+            'En type="number" el control real es un input de texto con inputMode y filtrado de teclas; en blur se recorta a min/max y se reformatea.',
+            "El tipo password incluye un botón de ojo con aria-label traducido.",
+          ],
+        }}
       />
     </div>
   );
@@ -772,6 +850,39 @@ export const SelectShowcase = () => {
           <ITSelect name="s2" label={t("showcase.forms.selectWithError")} options={[]} error={t("showcase.forms.requiredFieldError2")} touched onChange={() => { }} />
         </div>
       }
+      doc={{
+        summary:
+          "Selector desplegable basado en el select nativo, estilizado con los tokens de input del sistema.",
+        description:
+          "Admite label, opción vacía, validación con touched/error/required y modo solo lectura; los colores y estados se resuelven desde theme.input.",
+        examples: [
+          '<ITSelect name="role" label="Rol" value={role} options={roles} onChange={(e) => setRole(e.target.value)} />',
+          '<ITSelect name="pais" label="País" placeholder="Elige un país" options={countries} required touched error={!pais ? "Requerido" : undefined} onChange={onChange} />',
+        ],
+        props: [
+          { name: "name", type: "string", required: true, description: "Atributo name del select nativo (también su id)." },
+          { name: "options", type: "OptionType[]", required: true, description: "Arreglo de objetos clave-valor con value/label." },
+          { name: "valueField", type: "string", default: '"value"', description: "Clave de cada opción usada como valor." },
+          { name: "labelField", type: "string", default: '"label"', description: "Clave de cada opción usada como etiqueta visible." },
+          { name: "label", type: "string", description: "Etiqueta sobre el select (vinculada por htmlFor)." },
+          { name: "placeholder", type: "string", description: "Texto de la opción vacía; sin él se usa el mensaje traducido del sistema." },
+          { name: "value", type: "string", description: "Valor seleccionado (controlado)." },
+          { name: "onChange", type: "(event: ChangeEvent<HTMLSelectElement>) => void", description: "Se llama al cambiar la selección; recibe el evento nativo." },
+          { name: "onBlur", type: "(event: FocusEvent<HTMLSelectElement>) => void", description: "Se llama al perder el foco." },
+          { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Tamaño del control." },
+          { name: "disabled", type: "boolean", default: "false", description: "Deshabilita el select." },
+          { name: "readOnly", type: "boolean", default: "false", description: "Muestra el valor actual como una única opción deshabilitada." },
+          { name: "touched", type: "boolean", description: "Marca el campo como tocado para mostrar el error." },
+          { name: "error", type: "string | boolean", description: "Mensaje de error, o true para el error por defecto." },
+          { name: "required", type: "boolean", description: "Marca el campo como requerido (asterisco y error por defecto)." },
+          { name: "className", type: "string", description: "Clases extra aplicadas al elemento select." },
+        ],
+        notes: [
+          "Es un select nativo con appearance none y un icono absoluto: conserva el comportamiento del navegador, incluido el teclado.",
+          "La opción vacía se renderiza siempre como primera opción con value vacío.",
+          "El error solo se muestra cuando el campo está tocado (touched explícito o blur interno).",
+        ],
+      }}
     />
   );
 };
@@ -879,6 +990,47 @@ export const SearchSelectShowcase = () => {
           </div>
         </>
       }
+      doc={{
+        summary:
+          "Combobox de selección única con búsqueda, filtrado local o remoto y plantilla de opción personalizable.",
+        description:
+          "En modo local filtra las options en cliente; con onSearch delega la búsqueda al consumidor (debounce de 500 ms) y muestra el estado de carga. El panel se renderiza en un portal.",
+        examples: [
+          '<ITSearchSelect name="country" label="País" value={country} options={countries} onChange={(value) => setCountry(value)} />',
+          '<ITSearchSelect name="cliente" label="Cliente" options={results} onSearch={fetchClients} isLoading={loading} onChange={setClient} />',
+          '<ITSearchSelect name="pais" label="País" value={country} options={countries} renderOption={(option) => <span>{option.flag} {option.label}</span>} onChange={setCountry} />',
+        ],
+        props: [
+          { name: "name", type: "string", description: "Atributo name para integración con formularios." },
+          { name: "label", type: "string", description: "Etiqueta mostrada sobre el campo." },
+          { name: "placeholder", type: "string", description: "Texto cuando no hay valor seleccionado." },
+          { name: "value", type: "string | number", description: "Valor seleccionado actual." },
+          { name: "options", type: "ITSearchSelectOption[]", description: "Opciones para el modo local (filtrado en cliente)." },
+          { name: "valueField", type: "string", default: '"value"', description: "Campo usado como valor de la opción." },
+          { name: "labelField", type: "string", default: '"label"', description: "Campo usado como etiqueta de la opción." },
+          { name: "onChange", type: "(value: string | number, option?: ITSearchSelectOption) => void", description: "Se llama al cambiar el valor; recibe el valor y la opción completa." },
+          { name: "onBlur", type: "(e: FocusEvent) => void", description: "Se llama al perder el foco el input." },
+          { name: "onSearch", type: "(query: string) => void", description: "Búsqueda en servidor con debounce de 500 ms; desactiva el filtrado local." },
+          { name: "isLoading", type: "boolean", default: "false", description: "Muestra el spinner mientras llegan las opciones." },
+          { name: "noResultsMessage", type: "string", description: "Mensaje mostrado cuando no hay resultados." },
+          { name: "renderOption", type: "(option, state: { isSelected, searchTerm }) => ReactNode", description: "Plantilla personalizada de cada opción del desplegable." },
+          { name: "clearable", type: "boolean", default: "true", description: "Muestra el botón de limpiar (X) dentro del campo." },
+          { name: "onClear", type: "() => void", description: "Se llama al pulsar el botón de limpiar." },
+          { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Tamaño del campo." },
+          { name: "disabled", type: "boolean", default: "false", description: "Deshabilita el componente." },
+          { name: "readOnly", type: "boolean", default: "false", description: "Modo solo lectura." },
+          { name: "touched", type: "boolean", description: "Indica que el campo fue interactuado (validación)." },
+          { name: "required", type: "boolean", description: "Marca el campo como requerido (asterisco rojo)." },
+          { name: "error", type: "string | boolean", description: "Mensaje de error, o true para el estado de error." },
+          { name: "className", type: "string", description: "Clases adicionales del contenedor." },
+        ],
+        notes: [
+          "Con onSearch el componente no filtra options: el consumidor debe devolver la lista ya filtrada.",
+          "El panel vive en un portal sobre document.body, así que no se recorta en contenedores con overflow oculto.",
+          "Los ítems del desplegable son divs clicables sin role de listbox/option ni navegación por teclado declarada.",
+          "Al limpiar se emite onChange con valor vacío y después onClear.",
+        ],
+      }}
     />
   );
 };
@@ -955,6 +1107,42 @@ export const DatePickerShowcase = () => {
           </div>
         </>
       }
+      doc={{
+        summary:
+          "Selector de fecha con modo simple y modo rango, entrada manual DD/MM/AAAA y popover de calendario.",
+        description:
+          "Emite el cambio como un evento con name y value en target (un Date, o una tupla [inicio, fin] en modo rango) y permite acotar los días con minDate y maxDate.",
+        examples: [
+          '<ITDatePicker name="fecha" label="Fecha" value={date} onChange={(e) => setDate(e.target.value)} />',
+          '<ITDatePicker name="rango" label="Periodo" range value={range} minDate={hoy} onChange={(e) => setRange(e.target.value)} />',
+          '<ITDatePicker name="fecha" label="Fecha" value={date} variant="success" size="sm" onChange={onChange} />',
+        ],
+        props: [
+          { name: "name", type: "string", required: true, description: "Atributo name del input subyacente." },
+          { name: "value", type: "Date | [Date | null, Date | null]", description: "Fecha única, o tupla [inicio, fin] cuando range es true." },
+          { name: "onChange", type: "(event: { target: { name, value } }) => void", required: true, description: "Se dispara al cambiar la fecha; el evento lleva name y value en target." },
+          { name: "onBlur", type: "(event: { target: { name, value } }) => void", description: "Se dispara al perder el foco el input." },
+          { name: "range", type: "boolean", default: "false", description: "Activa la selección por rango; value pasa a ser la tupla inicio-fin." },
+          { name: "variant", type: "ColorsTypes", default: '"primary"', description: "Variante de color del sistema." },
+          { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Tamaño del campo." },
+          { name: "disabled", type: "boolean", default: "false", description: "Deshabilita el date picker, incluido el popover." },
+          { name: "placeholder", type: "string", description: "Texto cuando no hay fecha; por defecto dd/mm/aaaa (o el equivalente de rango)." },
+          { name: "label", type: "string", description: "Etiqueta sobre el input." },
+          { name: "required", type: "boolean", description: "Marca el campo como requerido." },
+          { name: "touched", type: "boolean", description: "Indica visualmente que el campo fue interactuado." },
+          { name: "error", type: "string | boolean", description: "Mensaje de error, o true para el estilo de error por defecto." },
+          { name: "minDate", type: "Date", description: "Fecha mínima seleccionable." },
+          { name: "maxDate", type: "Date", description: "Fecha máxima seleccionable." },
+          { name: "className", type: "string", description: "Clases CSS adicionales del contenedor." },
+          { name: "calendarClassName", type: "string", description: "Clases CSS adicionales del popover del calendario." },
+        ],
+        notes: [
+          "El texto solo acepta dígitos (máximo 8) y se enmascara como DD/MM/AAAA; en modo simple, una fecha inválida se sustituye por hoy al salir del campo.",
+          "En modo rango, al elegir la segunda fecha se emite el cambio y el popover se cierra; con solo la fecha de inicio el valor queda pendiente y se muestra como inicio - ...",
+          "El calendario interno se instancia con selectionMode range/single y recibe minDate, maxDate y variant.",
+          "Limitación conocida: al teclear a mano una fecha válida, onChange se invoca dos veces.",
+        ],
+      }}
     />
   );
 };
@@ -1014,6 +1202,37 @@ export const TimePickerShowcase = () => {
           </div>
         </>
       }
+      doc={{
+        summary:
+          "Campo de hora con formato 24 h y desplegable de doble columna (horas y minutos).",
+        description:
+          "Permite escribir a mano con autoformato HH:MM o elegir del panel; el desplegable se renderiza en un portal para no recortarse.",
+        examples: [
+          '<ITTimePicker name="inicio" label="Hora de inicio" value={time} onChange={(e) => setTime(e.target.value)} />',
+          '<ITTimePicker name="fin" label="Hora de fin" value={time} color="success" size="sm" onBlur={() => {}} onChange={onChange} />',
+        ],
+        props: [
+          { name: "name", type: "string", required: true, description: "Atributo name del campo y clave del evento de cambio." },
+          { name: "value", type: "string", description: "Hora controlada en formato HH:MM." },
+          { name: "label", type: "string", description: "Etiqueta mostrada sobre el input." },
+          { name: "placeholder", type: "string", default: '"HH:MM"', description: "Texto cuando no hay valor." },
+          { name: "onChange", type: "(e: any) => void", required: true, description: "Se dispara solo con una hora válida; recibe target.name y target.value." },
+          { name: "onBlur", type: "(e: any) => void", description: "Se llama al perder el foco el input." },
+          { name: "required", type: "boolean", description: "Marca el campo como requerido." },
+          { name: "touched", type: "boolean", description: "Indica que el campo fue interactuado." },
+          { name: "error", type: "string | boolean", description: "Mensaje de error, o true para mostrar el estado de error." },
+          { name: "disabled", type: "boolean", description: "Deshabilita el time picker." },
+          { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Tamaño del campo." },
+          { name: "variant", type: '"primary" | "secondary" | "danger" | "success" | "warning" | "info" | "purple"', default: '"primary"', description: "Variante de estilo del input." },
+          { name: "color", type: "string", default: '"primary"', description: "Color del resaltado del desplegable y del botón de confirmación; acepta claves semánticas o un hex." },
+          { name: "className", type: "string", description: "Clases CSS adicionales del wrapper." },
+        ],
+        notes: [
+          "El input solo acepta dígitos (máximo 4) e inserta los dos puntos automáticamente: 0930 se convierte en 09:30.",
+          "Valida el formato 24 h; mientras el texto es inválido muestra Hora inválida y no emite onChange.",
+          "El desplegable se monta en un portal sobre document.body, con columnas de 24 horas y 60 minutos.",
+        ],
+      }}
     />
   );
 };
@@ -1087,6 +1306,39 @@ export const CalendarShowcase = () => {
           />
         </>
       }
+      doc={{
+        summary:
+          "Calendario y planificador con vistas de mes, semana y día, eventos, selección simple o por rango y arrastre de franjas.",
+        description:
+          "Con events y los callbacks de evento/franja funciona como scheduler; con onChange y selectionMode entra en modo date picker. Usa date-fns con locale es.",
+        examples: [
+          '<ITCalendar events={events} mode="month" onEventClick={(evt) => openEvent(evt)} />',
+          '<ITCalendar events={events} mode="week" variant="success" onSlotClick={(date) => createEvent(date)} />',
+          '<ITCalendar value={date} selectionMode="range" startDate={inicio} endDate={fin} onChange={setDate} />',
+        ],
+        props: [
+          { name: "events", type: "CalendarEvent[]", description: "Eventos del planificador: id, title, start, end, color y data." },
+          { name: "mode", type: '"week" | "day" | "month"', description: "Vista inicial. Si se omite, es month cuando hay onChange y week en caso contrario." },
+          { name: "selectionMode", type: '"single" | "range"', default: '"single"', description: "Modo de selección del date picker." },
+          { name: "value", type: "Date", description: "Fecha seleccionada en modo picker." },
+          { name: "onChange", type: "(date: Date) => void", description: "Se llama al seleccionar una fecha en modo picker." },
+          { name: "startDate", type: "Date", description: "Inicio del rango seleccionado." },
+          { name: "endDate", type: "Date", description: "Fin del rango seleccionado." },
+          { name: "onEventClick", type: "(event: CalendarEvent) => void", description: "Se llama al hacer click en un evento." },
+          { name: "onSlotClick", type: "(date: Date) => void", description: "Se llama al hacer click en una franja vacía." },
+          { name: "onSlotHover", type: "(date: Date) => void", description: "Se llama cuando el cursor entra en una franja." },
+          { name: "onSelectRange", type: "(start: Date, end: Date) => void", description: "Se llama al confirmar un rango seleccionado por arrastre." },
+          { name: "minDate", type: "Date", description: "Fecha mínima seleccionable (solo aplica en la vista de mes)." },
+          { name: "maxDate", type: "Date", description: "Fecha máxima seleccionable (solo aplica en la vista de mes)." },
+          { name: "variant", type: "ColorsTypes", default: '"primary"', description: "Color de acento de la selección y del día de hoy." },
+          { name: "className", type: "string", description: "Clases CSS adicionales del contenedor." },
+        ],
+        notes: [
+          "Necesita un contenedor con altura definida: el calendario ocupa el 100% de la altura de su padre.",
+          "Las vistas de semana y día cubren de 6:00 a 22:00 en franjas de 30 minutos; la línea de la hora actual solo aparece si el día mostrado es hoy.",
+          "onSelectRange habilita el arrastre y suma 30 minutos al final de la franja elegida.",
+        ],
+      }}
     />
   );
 };
@@ -1182,6 +1434,33 @@ export const SlideToggleShowcase = () => {
           />
         </div>
       }
+      doc={{
+        summary:
+          "Interruptor estilo iOS con colores del tema, tres tamaños y modos controlado o no controlado.",
+        description:
+          "Expone role switch y aria-checked; funciona con isOn (controlado) o con initialState más onToggle (no controlado).",
+        examples: [
+          '<ITSlideToggle isOn={enabled} onToggle={setEnabled} ariaLabel="Notificaciones" />',
+          '<ITSlideToggle initialState activeColor="primary" size="lg" label="Modo oscuro" onToggle={setDark} />',
+          '<ITSlideToggle isOn={false} disabled size="sm" ariaLabel="No disponible" />',
+        ],
+        props: [
+          { name: "isOn", type: "boolean", description: "Estado controlado; si se pasa, el valor externo manda." },
+          { name: "initialState", type: "boolean", default: "false", description: "Estado inicial en uso no controlado." },
+          { name: "onToggle", type: "(value: boolean) => void", description: "Se llama al cambiar el interruptor con el nuevo estado." },
+          { name: "activeColor", type: "string", default: '"success"', description: "Color activo: clave semántica del tema o valor hex." },
+          { name: "inactiveColor", type: "string", default: '"#9ca3af"', description: "Color inactivo: clave semántica del tema o valor hex." },
+          { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Tamaño del interruptor." },
+          { name: "disabled", type: "boolean", default: "false", description: "Deshabilita el interruptor." },
+          { name: "label", type: "string", description: "Texto visible del interruptor, que también sirve como nombre accesible." },
+          { name: "ariaLabel", type: "string", description: "Nombre accesible cuando la etiqueta visible vive fuera; tiene prioridad sobre label." },
+          { name: "className", type: "string", description: "Clases CSS adicionales del contenedor." },
+        ],
+        notes: [
+          "Renderiza role switch y responde a Enter y Space; sin label ni ariaLabel el lector de pantalla no sabe qué se está activando.",
+          "Con disabled aplica opacidad reducida y su tabIndex pasa a -1.",
+        ],
+      }}
     />
   );
 };
@@ -1231,6 +1510,38 @@ export const DropfileShowcase = () => {
           />
         </>
       }
+      doc={{
+        summary:
+          "Zona de carga por arrastrar y soltar con previsualización, badge de estado y flujo seleccionar-confirmar-subir.",
+        description:
+          "Admite tipos MIME configurables, vista previa de imágenes y dos presentaciones: la zona de drop inline o un botón que la abre dentro de un ITDialog.",
+        examples: [
+          '<ITDropfile onFileSelect={setFile} onSubmit={(file) => upload(file)} acceptedFileTypes={[FileTypeEnum.PDF, FileTypeEnum.XLSX]} />',
+          '<ITDropfile onFileSelect={setFile} uploadStatus={status} onStatusChange={setStatus} showStatusBadge />',
+          '<ITDropfile view="button" buttonLabel="Subir archivo" onFileSelect={setFile} />',
+        ],
+        props: [
+          { name: "onFileSelect", type: "(file: File | null) => void", required: true, description: "Se llama al confirmar o limpiar la selección (null al cancelar)." },
+          { name: "onSubmit", type: "(file: File) => void", description: "Se llama al confirmar el archivo para subirlo." },
+          { name: "onCancel", type: "() => void", description: "Se llama cuando el usuario cancela la selección actual." },
+          { name: "acceptedFileTypes", type: "FileTypeEnum[]", default: "[PDF, XLS, XLSX, JPG, PNG, JPEG]", description: "Tipos MIME aceptados." },
+          { name: "uploadStatus", type: "UploadStatus", description: "Estado controlado; sin él el componente gestiona el suyo (pendiente, subiendo, subido, error)." },
+          { name: "onStatusChange", type: "(status: UploadStatus) => void", description: "Se llama en cada cambio de estado de subida." },
+          { name: "showStatusBadge", type: "boolean", default: "true", description: "Muestra el badge de estado sobre la previsualización." },
+          { name: "initialPreviewUrl", type: "string | null", description: "Previsualización inicial; si existe se asume el estado subido." },
+          { name: "view", type: '"drop" | "button"', default: '"drop"', description: "Presentación: zona de drop inline o botón que abre la zona en un modal." },
+          { name: "buttonLabel", type: "string", default: '"Subir archivo"', description: "Etiqueta del botón cuando view es button y aún no hay archivo." },
+          { name: "modalTitle", type: "string", description: "Título del modal; si falta usa buttonLabel." },
+          { name: "contentClassName", type: "string", description: "Clases adicionales del área de previsualización." },
+          { name: "containerClassName", type: "string", description: "Clases adicionales del contenedor externo." },
+        ],
+        notes: [
+          "Flujo de tres pasos: al soltar el archivo queda pendiente, al confirmar pasa a subiendo y tras una simulación de 1.5 s a subido.",
+          "Un archivo fuera de acceptedFileTypes muestra un alert y reinicia la selección.",
+          "Con view button, el modal se cierra y la selección se limpia 900 ms después de una subida correcta, listo para el siguiente archivo.",
+          "La vista previa embebida de PDF está deshabilitada: los PDF muestran el icono de documento.",
+        ],
+      }}
     />
   );
 };

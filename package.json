@@ -42,7 +42,9 @@
     "ext:build": "node vscode-extension/esbuild.mjs",
     "ext:typecheck": "tsc --noEmit -p vscode-extension/tsconfig.json",
     "ext:package": "node vscode-extension/esbuild.mjs && cd vscode-extension && npx --yes @vscode/vsce package --no-dependencies",
-    "audit:sandbox": "node scripts/audit-sandbox.mjs"
+    "audit:sandbox": "node scripts/audit-sandbox.mjs",
+    "docs:llm": "pnpm ext:catalog && node scripts/build-llm-docs.mjs && node scripts/build-ai-bundle.mjs",
+    "docs:ai": "node scripts/build-ai-bundle.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
