@@ -83,8 +83,10 @@ export function Nav() {
 - Los `subitems` aceptan entradas planas o grupos con título. Los grupos solo añaden un encabezado: no son clicables ni abren un tercer nivel (el sidebar soporta **un** nivel de anidamiento).
 - Si un subítem está activo, su padre se auto-expande (`useEffect` sobre `navigationItems`).
 - `subitemConnector`: `"dot"` (punto), `"|"` (barra vertical sobre el borde) o `"none"`.
-- `brand` mantiene el logo visible al colapsar (el texto solo se ve expandido); `header` se oculta por completo al colapsar; `notification` conserva icono + contador.
-- Los badges usan `ITBadget`: `item.badge` con color `primary` y el contador de `notification` con color `danger` (`size="sm"`).
+- `brand` mantiene el logo visible al colapsar (el texto solo se ve expandido); `notification` conserva icono + contador.
+- `header` se oculta al colapsar pero **reserva su altura** (se maqueta invisible, con el ancho expandido y recortado) para que la navegación no se desplace verticalmente al abrir/cerrar; usa un header compacto si te importa el hueco que deja en el riel.
+- Geometría estable: riel y panel comparten columna de iconos y alto de fila (`h-10`; `px-5` en soft, `px-3` en flat; nav `px-4` en ambos estados), así que ningún icono cambia de posición al expandir.
+- Los badges usan `ITBadget`: `item.badge` con color `primary` y el contador de `notification` con color `danger` (`size="sm"`). `badge` es un **contador**: en el riel colapsado solo caben valores cortos (≤3 caracteres: `12`, `99+`); un texto más largo se dibuja como punto en la esquina, así no deforma el riel ni tapa el icono (el nombre completo sigue en el tooltip).
 - Aspecto flat (`appearance="flat"`): sin sombra/glow, sin barra de acento, ancho menor y tooltips simples.
 - Accesibilidad: `<nav aria-label="Componentes de la librería">`; los ítems son `role="button"` con `tabIndex={0}`, `aria-expanded`/`aria-controls` cuando tienen submenú y responden a Enter/Space; el submenú es `role="group"`; el subítem activo lleva `aria-current="page"`; notification expone `aria-label`/`title={label}`.
 

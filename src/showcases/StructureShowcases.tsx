@@ -1304,7 +1304,7 @@ export const LayoutShowcase = () => {
           { name: "children", type: "React.ReactNode", required: true, description: "Contenido principal." },
           { name: "className", type: "string", description: "Clases del wrapper externo." },
           { name: "contentClassName", type: "string", description: "Clases del contenedor de contenido." },
-          { name: "sidebar.header", type: "React.ReactNode", description: "Slot opcional sobre la navegación (ej. wordmark o filtro). Oculto al colapsar." },
+          { name: "sidebar.header", type: "React.ReactNode", description: "Slot opcional sobre la navegación (ej. wordmark o filtro). Oculto al colapsar, pero reserva su altura." },
           { name: "sidebar.notification", type: "ITSidebarNotification", description: "Fila de notificación (icono + label + ITBadget) sobre la navegación: { count, icon?, label?, onClick?, badgeProps? }. Visible también al colapsar." },
           { name: "sidebar.navigationItems[].badge", type: "number | string", description: "Contador que se renderiza con ITBadget en el ítem." },
           { name: "sidebar.navigationItems[].badgeProps", type: "ITBadgetProps", description: "Estilo del badge del ítem (color, size, variant, className para padding)." },
@@ -1312,9 +1312,10 @@ export const LayoutShowcase = () => {
         notes: [
           "`subitems` acepta entradas planas o grupos con `label`+`items`; el título del grupo no es foco ni un tercer nivel y cada grupo se nombra por `aria-labelledby`. En el riel colapsado el flyout aplana los grupos (sin títulos).",
           "El sidebar hereda aria-current/aria-expanded y acepta un slot header opcional.",
-          "Los badges por ítem (`badge` + `badgeProps`) y la fila `notification` se dibujan con el átomo `ITBadget`; el padding se ajusta con `badgeProps.className`.",
+          "Los badges por ítem (`badge` + `badgeProps`) y la fila `notification` se dibujan con el átomo `ITBadget`; el padding se ajusta con `badgeProps.className`. `badge` es un contador: en el riel colapsado solo caben ≤3 caracteres y un texto largo se degrada a un punto.",
           "Con `sidebar.isCollapsed` omitido el contenido reserva 88px (hover expande sobre el contenido). Si lo controlas a `false`, reserva 280px y no tapa el contenido.",
           "El riel colapsado se expande automáticamente al pasar el cursor por encima; no hay botón de colapso.",
+          "Riel y panel comparten columna de iconos y alto de fila: los iconos no se mueven al expandir/colapsar. El slot `header` reserva su altura (invisible) en el riel por el mismo motivo.",
         ],
       }}
     />

@@ -29,6 +29,28 @@ function flattenSubItems(
   );
 }
 
+/** Caracteres que caben en el badge del riel (`max-w-[2.1rem]`). */
+const RAIL_BADGE_MAX_CHARS = 3;
+
+/**
+ * Contenido del badge cuando el sidebar está colapsado.
+ *
+ * En el riel solo cabe un valor corto (contadores tipo `12` o `99+`). Un texto
+ * largo deformaría el riel y taparía el icono, así que se degrada a un punto que
+ * conserva el aviso de color; el nombre completo sigue disponible en el tooltip.
+ */
+function RailBadge({ value }: { value: number | string }) {
+  const text = String(value);
+  if (text.length <= RAIL_BADGE_MAX_CHARS) return <>{text}</>;
+  return (
+    <span
+      aria-hidden="true"
+      className="block w-1.5 h-1.5 rounded-full"
+      style={{ backgroundColor: "currentColor" }}
+    />
+  );
+}
+
 /**
  * Vertical navigation sidebar with submenu expand/collapse, hover tooltips in collapsed mode,
  * and glassmorphism styling. The collapsed rail expands automatically on pointer hover — there
@@ -137,9 +159,9 @@ export default function ITSidebar({
   }, [navigationItems]);
 
   const isSidebarCollapsed = visibleOnMobile ? false : isCollapsed && !(expandOnHover && isHovering);
-  const sidebarWidth = isSidebarCollapsed
-    ? flat ? "w-[72px]" : "w-[88px]"
-    : flat ? "w-[248px]" : "w-[280px]";
+  const collapsedWidth = flat ? "w-[72px]" : "w-[88px]";
+  const expandedWidth = flat ? "w-[248px]" : "w-[280px]";
+  const sidebarWidth = isSidebarCollapsed ? collapsedWidth : expandedWidth;
   // Icon-only rail that never expands on hover: names show in a tooltip.
   const fixedRail = isSidebarCollapsed && !expandOnHover;
 
@@ -266,7 +288,7 @@ export default function ITSidebar({
         {...badgeRest}
         className={clsx("shadow-md", badgeClassName)}
       >
-        {String(count)}
+        {isSidebarCollapsed ? <RailBadge value={count} /> : String(count)}
       </ITBadget>
     );
 
@@ -277,7 +299,7 @@ export default function ITSidebar({
           aria-label={label}
           title={label}
           onClick={onClick}
-          className="relative flex items-center justify-center w-full p-2 mb-1 rounded-xl transition-all duration-300"
+          className={`relative flex items-center w-full h-10 mb-1 rounded-xl transition-all duration-300 ${flat ? "px-3" : "px-5"}`}
           style={{ color: "var(--it-sidebar-icon-color, var(--color-secondary-500))" }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = "var(--it-sidebar-hover-bg, var(--color-secondary-100))";
@@ -289,7 +311,7 @@ export default function ITSidebar({
           {icon && (
             <span className="flex items-center justify-center text-[1.05rem]">{icon}</span>
           )}
-          <span className="absolute top-0.5 right-0.5 pointer-events-none">{badge}</span>
+          <span className="absolute top-0.5 right-0.5 max-w-[2.1rem] overflow-hidden pointer-events-none">{badge}</span>
         </button>
       );
     }
@@ -300,7 +322,7 @@ export default function ITSidebar({
         aria-label={label}
         title={label}
         onClick={onClick}
-        className="flex items-center gap-2.5 w-full text-left px-3 py-2 mb-1 rounded-xl transition-all duration-300"
+        className={`flex items-center gap-2.5 w-full text-left h-10 mb-1 rounded-xl transition-all duration-300 ${flat ? "px-3" : "px-5"}`}
         style={{ color: "var(--it-sidebar-label-color, var(--color-secondary-600))" }}
         onMouseEnter={(e) => {
           e.currentTarget.style.backgroundColor = "var(--it-sidebar-hover-bg, var(--color-secondary-100))";
@@ -364,8 +386,19 @@ export default function ITSidebar({
         </div>
       )}
 
-      {header && !isSidebarCollapsed && (
-        <div className="px-4 pt-4 pb-1 flex-shrink-0">{header}</div>
+      {/* El header reserva su altura también en el riel para que la navegación no
+          salte en vertical al expandir. Se maqueta con el ancho expandido (oculto
+          y recortado) para que el texto no se reparta en más líneas en el riel. */}
+      {header && (
+        <div className={`px-4 pt-4 pb-1 flex-shrink-0 ${isSidebarCollapsed ? "overflow-hidden" : ""}`}>
+          {isSidebarCollapsed ? (
+            <div className={`${expandedWidth} invisible`} aria-hidden="true">
+              {header}
+            </div>
+          ) : (
+            header
+          )}
+        </div>
       )}
 
       {notification && (
@@ -373,7 +406,7 @@ export default function ITSidebar({
       )}
 
       {/* Navigation Items */}
-      <nav aria-label={t("sidebar.navAria")} className={`flex-1 py-4 custom-scrollbar ${fixedRail ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"} ${flat && isSidebarCollapsed ? "px-3" : "px-4"}`}>
+      <nav aria-label={t("sidebar.navAria")} className={`flex-1 py-4 px-4 custom-scrollbar ${fixedRail ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}>
         <ul className="space-y-1">
           {navigationItems.map((item) => {
             const hasSubmenu = !!item.subitems && item.subitems.length > 0;
@@ -396,7 +429,9 @@ export default function ITSidebar({
                 className={`flex items-center cursor-pointer 
                   transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)]
                   rounded-xl relative overflow-visible
-                  ${isSidebarCollapsed ? (flat ? "justify-center h-10 mb-1" : "justify-center p-2 mb-1") : "justify-between px-3 py-2 mb-0.5"}
+                  h-10
+                  ${flat ? "px-3" : "px-5"}
+                  ${isSidebarCollapsed ? "justify-start" : "justify-between"}
                 `}
                 style={{
                   backgroundColor: active ? "var(--it-sidebar-active-bg, var(--color-secondary-50))" : 'transparent',
@@ -424,7 +459,7 @@ export default function ITSidebar({
                   />
                 )}
 
-                <div className={`flex items-center ${!isSidebarCollapsed ? "gap-2.5" : "justify-center"} relative z-10 w-full`}>
+                <div className="flex items-center gap-2.5 relative z-10 w-full">
                   {item.icon && (
                     <div
                       className={`transition-all duration-300 flex-shrink-0 flex items-center justify-center`}
@@ -467,13 +502,15 @@ export default function ITSidebar({
                     {...badgeRest}
                     className={clsx(
                       "absolute shadow-md",
+                      // En el riel no hay ancho para una etiqueta larga: el badge se
+                      // ancla a la esquina y se recorta, así nunca desborda ni tapa el icono.
                       isSidebarCollapsed
-                        ? "top-0.5 right-0.5"
+                        ? "top-0.5 right-0.5 max-w-[2.1rem] overflow-hidden"
                         : "right-3 top-1/2 -translate-y-1/2",
                       badgeClassName,
                     )}
                   >
-                    {String(item.badge)}
+                    {isSidebarCollapsed ? <RailBadge value={item.badge} /> : String(item.badge)}
                   </ITBadget>
                 )}
               </div>
