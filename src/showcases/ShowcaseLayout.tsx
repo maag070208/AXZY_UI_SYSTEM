@@ -1,20 +1,28 @@
 /**
- * Marco de las páginas de componente del sandbox (`#ui-system/<grupo>/<item>`):
- * cabecera de la hoja, vitrina interactiva (vista previa / código), panel de
- * propiedades y documentación, y galería de variaciones.
+ * Marco de las páginas de componente del sandbox (`#ui-system/<grupo>/<item>`).
  *
- * Sigue `DESIGN.md` (AXZY Console): el bloque lo separan filetes de 1px, no
- * cajas dentro de cajas; los controles vienen del kit compartido
- * (`@/sandbox/ui` y `@/sandbox/controls`) para que el marco no introduzca
- * colores que no pasan AA.
+ * Diseño «documentación viva»: cada ejemplo es un **contenedor con cabecera
+ * propia** (número, título y la acción de ver el código siempre a la vista), el
+ * código se despliega dentro del mismo contenedor, los controles viven en un
+ * grid compacto bajo el demo y la API (props, ejemplos, notas) está **siempre
+ * visible** en la columna derecha, sin pestañas.
+ *
+ * Sigue `DESIGN.md` (AXZY Console): filetes de 1px, mono para metadatos y un
+ * solo acento.
  */
 
 import React, { useState } from "react";
-import { FaBookOpen, FaCheck, FaCode, FaCog, FaCopy, FaEye } from "react-icons/fa";
+import { FaBookOpen, FaCheck, FaCode, FaCopy, FaEye } from "react-icons/fa";
 import ITGrid from "../components/atoms/grid/grid";
 import { useITTheme } from "../components/theme-provider/themeProvider";
 import { ControlSegmentado } from "@/sandbox/controls";
-import { EYEBROW, FILETE, FOCO_CTA } from "@/sandbox/ui";
+import {
+  BotonCopiar,
+  EYEBROW,
+  EjemploContenedor,
+  FILETE,
+  FOCO_CTA,
+} from "@/sandbox/ui";
 import { useITTranslation } from "@/i18n";
 
 /**
@@ -52,6 +60,7 @@ export const CodeViewer: React.FC<{ code: string; compact?: boolean }> = ({ code
         </button>
       </div>
       <pre
+        tabIndex={0}
         className={`overflow-x-auto whitespace-pre-wrap p-4 font-mono text-xs leading-relaxed ${
           compact ? "max-h-[420px]" : ""
         } overflow-y-auto`}
@@ -98,32 +107,27 @@ export interface ShowcaseLayoutProps {
   description: string;
   /** Demo interactiva. */
   demo: React.ReactNode;
-  /**
-   * Panel de controles (lo construye cada showcase). Si se omite, la vitrina
-   * ocupa todo el ancho y no se pinta panel: para páginas que solo muestran un
-   * ejemplo o una receta.
-   */
+  /** Controles del ejemplo (lo construye cada showcase). */
   controls?: React.ReactNode;
-  /** Código fuente que se muestra en la pestaña de código. */
+  /** Código fuente del ejemplo principal. */
   code: string;
   /** Galería de variaciones y estados. */
   gallery?: React.ReactNode;
-  /** Documentación opcional (añade la pestaña "Docs"). */
+  /** Documentación opcional (columna derecha). */
   doc?: ComponentDoc;
   /**
-   * Ancho de la vitrina. `"columna"` (por defecto) la deja en 8/12 columnas con
-   * el panel al lado; `"completo"` la lleva a las 12 y baja el panel, para demos
-   * que son un layout entero (ITLayout, pantallas de ejemplo) y se recortaban.
-   * @default "columna"
+   * Ancho mínimo (px) del demo dentro de la vitrina. Los demos que son un layout
+   * entero (`ITLayout`, pantallas de ejemplo) lo necesitan: por debajo de ~780px
+   * su propio contenido se recorta. La vitrina desplaza en horizontal lo que
+   * sobre.
+   * @default 0
    */
-  demoAncho?: "columna" | "completo";
+  demoMinAncho?: number;
 }
 
-type SandboxView = "preview" | "code";
-
 /**
- * Página de un componente del sandbox: cabecera, vitrina con vista previa y
- * código, panel lateral de propiedades/documentación y galería.
+ * Página de un componente del sandbox: cabecera, ejemplo principal con su código,
+ * controles en grid, API en la columna derecha y galería de variaciones.
  *
  * @example
  * ```tsx
@@ -139,20 +143,18 @@ export const ShowcaseLayout: React.FC<ShowcaseLayoutProps> = ({
   code,
   gallery,
   doc,
-  demoAncho = "columna",
+  demoMinAncho = 0,
 }) => {
-  const completo = demoAncho === "completo";
   const { t } = useITTranslation();
   const { resolvedTheme } = useITTheme();
-  const [activeTab, setActiveTab] = useState<"controls" | "docs">(controls ? "controls" : "docs");
-  const [sandboxView, setSandboxView] = useState<SandboxView>("preview");
-  // Sin controles la vitrina se queda con todo el ancho.
-  const hayPanel = Boolean(controls) || Boolean(doc);
+  const [sandboxView, setSandboxView] = useState<"preview" | "code">("preview");
+
+  const hayApi = Boolean(doc);
 
   return (
     <div className="animate-fadeIn pb-4">
-      {/* ─── CABECERA DE LA HOJA ─── */}
-      <header className={`border-b pb-7 ${FILETE}`}>
+      {/* ─── CABECERA ─── */}
+      <header className={`border-b pb-6 ${FILETE}`}>
         <p className={EYEBROW}>{t("showcase.layout.eyebrow")}</p>
         <h1 className="mt-2.5 font-display text-[32px] font-bold tracking-[-0.02em] text-slate-900 dark:text-white sm:text-[40px]">
           {title}
@@ -162,18 +164,21 @@ export const ShowcaseLayout: React.FC<ShowcaseLayoutProps> = ({
         </p>
       </header>
 
-      <div className="pt-8">
+      <div className="pt-6">
         <ITGrid container columns={12} spacing={8}>
-          {/* ── VITRINA ── */}
-          <ITGrid item xs={12} md={completo || !hayPanel ? 12 : 8}>
-            <section
-              aria-label={t("showcase.layout.sandbox")}
-              className={`overflow-hidden rounded-[10px] border ${FILETE}`}
+          {/* ── EJEMPLO PRINCIPAL + CONTROLES ── */}
+          <ITGrid item xs={12} md={hayApi ? 8 : 12}>
+            <EjemploContenedor
+              numero="01"
+              titulo={t("showcase.layout.sandbox")}
+              nota={doc?.summary}
+              sangrado
             >
-              {/* Barra de la vitrina */}
-              <div className={`flex flex-wrap items-center justify-between gap-3 border-b px-4 py-2.5 ${FILETE}`}>
-                <h2 className={EYEBROW}>{t("showcase.layout.sandbox")}</h2>
-
+              {/* Barra del ejemplo: vista previa / código, siempre visible */}
+              <div
+                className={`flex flex-wrap items-center justify-between gap-3 border-b px-4 py-2.5 ${FILETE}`}
+              >
+                <span className={EYEBROW}>{t("showcase.layout.preview")}</span>
                 <ControlSegmentado
                   etiqueta={t("showcase.layout.sandbox")}
                   valor={sandboxView}
@@ -189,145 +194,118 @@ export const ShowcaseLayout: React.FC<ShowcaseLayoutProps> = ({
                 />
               </div>
 
-              {/* Contenido */}
               {sandboxView === "preview" ? (
                 <div
                   data-theme={resolvedTheme}
-                  className="flex min-h-[280px] items-center justify-center overflow-x-auto bg-white p-6 dark:bg-slate-950 md:p-10"
+                  tabIndex={0}
+                  className="flex min-h-[220px] items-center justify-center overflow-x-auto bg-white p-6 dark:bg-slate-950 md:p-8"
                 >
-                  <div className="flex w-full justify-center">{demo}</div>
+                  <div
+                    className="flex w-full justify-center"
+                    style={demoMinAncho ? { minWidth: `${demoMinAncho}px` } : undefined}
+                  >
+                    {demo}
+                  </div>
                 </div>
               ) : (
-                <div className="p-3">
+                <div className="p-4">
                   <CodeViewer code={code} compact />
                 </div>
               )}
-            </section>
+            </EjemploContenedor>
+
+            {controls && (
+              <section className={`mt-6 overflow-hidden rounded-[10px] border ${FILETE}`}>
+                <header
+                  className={`flex items-center justify-between gap-3 border-b bg-slate-50/70 px-4 py-2.5 dark:bg-slate-950/40 ${FILETE}`}
+                >
+                  <h2 className={EYEBROW}>{t("showcase.layout.controls")}</h2>
+                </header>
+                <div className="grid gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3">{controls}</div>
+              </section>
+            )}
           </ITGrid>
 
-          {/* ── PANEL LATERAL ── */}
-          {hayPanel && (
-          <ITGrid item xs={12} md={completo ? 12 : 4}>
-            <div className={completo ? "" : "md:sticky md:top-4"}>
-              <section
-                aria-label={t("showcase.layout.properties")}
-                className={`overflow-hidden rounded-[10px] border ${FILETE} ${
-                  completo ? "max-w-[880px]" : ""
-                }`}
-              >
-                {doc ? (
-                  <div
-                    role="tablist"
-                    aria-label={t("showcase.layout.properties")}
-                    className={`flex items-stretch gap-1 border-b px-2 ${FILETE}`}
+          {/* ── API (siempre visible, sin pestañas) ── */}
+          {hayApi && (
+            <ITGrid item xs={12} md={4}>
+              <div className="md:sticky md:top-4">
+                <section className={`overflow-hidden rounded-[10px] border ${FILETE}`}>
+                  <header
+                    className={`flex items-center gap-2 border-b bg-slate-50/70 px-4 py-2.5 dark:bg-slate-950/40 ${FILETE}`}
                   >
-                    {(
-                      [
-                        { id: "controls", label: t("showcase.layout.properties"), icono: <FaCog size={10} /> },
-                        { id: "docs", label: t("showcase.layout.docs"), icono: <FaBookOpen size={10} /> },
-                      ] as const
-                    ).map((tab) => {
-                      const activa = activeTab === tab.id;
-                      return (
-                        <button
-                          key={tab.id}
-                          type="button"
-                          role="tab"
-                          aria-selected={activa}
-                          onClick={() => setActiveTab(tab.id)}
-                          className={`-mb-px inline-flex items-center gap-2 border-b-2 px-3 py-2.5 font-mono text-[10px] font-medium uppercase tracking-[0.14em] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/60 ${
-                            activa
-                              ? "border-primary-700 text-primary-700 dark:border-primary-500 dark:text-primary-500"
-                              : "border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-                          }`}
-                        >
-                          {tab.icono}
-                          {tab.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                ) : null}
+                    <FaBookOpen size={11} className="text-primary-700 dark:text-primary-500" />
+                    <h2 className={EYEBROW}>{t("showcase.layout.api")}</h2>
+                  </header>
 
-                {activeTab === "controls" && (
-                  <div
-                    className={`max-h-[calc(100vh-200px)] space-y-4 overflow-y-auto p-5 ${
-                      completo ? "it-panel-ancho max-w-[880px]" : ""
-                    }`}
-                  >
-                    {controls}
-                  </div>
-                )}
-
-                {doc && activeTab === "docs" && (
-                  <div
-                    className={`max-h-[calc(100vh-200px)] space-y-6 overflow-y-auto p-5 ${
-                      completo ? "it-panel-ancho max-w-[880px]" : ""
-                    }`}
-                  >
-                    <div>
-                      <h2 className={EYEBROW}>{t("showcase.layout.overview")}</h2>
-                      <p className="mt-2.5 text-[13px] leading-relaxed text-slate-700 dark:text-slate-300">
-                        {doc.summary}
+                  <div tabIndex={0} className="max-h-[calc(100vh-220px)] space-y-6 overflow-y-auto p-4">
+                    {doc?.description && (
+                      <p className="text-[12.5px] leading-relaxed text-slate-600 dark:text-slate-300">
+                        {doc.description}
                       </p>
-                      {doc.description && (
-                        <p className="mt-2 text-[12px] leading-relaxed text-slate-500 dark:text-slate-400">
-                          {doc.description}
-                        </p>
-                      )}
-                    </div>
+                    )}
 
-                    <div>
-                      <h2 className={EYEBROW}>{t("showcase.layout.props")}</h2>
-                      <dl className={`mt-3 border-t ${FILETE}`}>
-                        {doc.props.map((prop) => (
-                          <div key={prop.name} className={`border-b py-3 ${FILETE}`}>
-                            <dt className="flex flex-wrap items-baseline gap-x-2 font-mono text-[11px] font-semibold text-primary-700 dark:text-primary-500">
-                              {prop.name}
-                              {prop.required ? (
-                                <span className="text-danger-500" title={t("showcase.common.required")}>
-                                  *
-                                </span>
-                              ) : null}
-                              <span className="font-mono text-[10px] font-normal text-slate-500 dark:text-slate-400">
-                                {prop.type}
-                              </span>
-                              <span className="font-mono text-[10px] font-normal text-slate-500 dark:text-slate-400">
-                                {`= ${prop.default || "—"}`}
-                              </span>
-                            </dt>
-                            <dd className="mt-1.5 text-[12px] leading-relaxed text-slate-600 dark:text-slate-300">
-                              {prop.description}
-                            </dd>
-                          </div>
-                        ))}
-                      </dl>
-                    </div>
-
-                    {doc.examples && doc.examples.length > 0 && (
+                    {!!doc?.props.length && (
                       <div>
-                        <h2 className={EYEBROW}>{t("showcase.layout.usageExamples")}</h2>
-                        <div className="mt-3 space-y-2">
+                        <h3 className={EYEBROW}>{t("showcase.layout.props")}</h3>
+                        <dl className={`mt-2.5 border-t ${FILETE}`}>
+                          {doc.props.map((prop) => (
+                            <div key={prop.name} className={`border-b py-2.5 ${FILETE}`}>
+                              <dt className="flex flex-wrap items-baseline gap-x-2 font-mono text-[11px] font-semibold text-primary-700 dark:text-primary-500">
+                                {prop.name}
+                                {prop.required ? (
+                                  <span
+                                    className="text-danger-500"
+                                    title={t("showcase.common.required")}
+                                  >
+                                    *
+                                  </span>
+                                ) : null}
+                                <span className="font-mono text-[10px] font-normal text-slate-500 dark:text-slate-400">
+                                  {prop.type}
+                                </span>
+                                <span className="font-mono text-[10px] font-normal text-slate-500 dark:text-slate-400">
+                                  {`= ${prop.default || "—"}`}
+                                </span>
+                              </dt>
+                              <dd className="mt-1 text-[12px] leading-relaxed text-slate-600 dark:text-slate-300">
+                                {prop.description}
+                              </dd>
+                            </div>
+                          ))}
+                        </dl>
+                      </div>
+                    )}
+
+                    {doc?.examples && doc.examples.length > 0 && (
+                      <div>
+                        <h3 className={EYEBROW}>{t("showcase.layout.usageExamples")}</h3>
+                        <div className="mt-2.5 space-y-2">
                           {doc.examples.map((example, i) => (
-                            <pre
-                              key={i}
-                              className="overflow-x-auto rounded-[10px] border border-slate-800 bg-slate-950 p-3 font-mono text-[10px] leading-relaxed text-slate-200"
-                            >
-                              <code>{example}</code>
-                            </pre>
+                            <div key={i} className="relative">
+                              <pre tabIndex={0} className="overflow-x-auto rounded-[10px] border border-slate-800 bg-slate-950 p-3 pr-10 font-mono text-[10px] leading-relaxed text-slate-200">
+                                <code>{example}</code>
+                              </pre>
+                              <span className="absolute right-1.5 top-1.5">
+                                <BotonCopiar
+                                  texto={example}
+                                  className="text-slate-500 hover:bg-slate-800 hover:text-white dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-white"
+                                />
+                              </span>
+                            </div>
                           ))}
                         </div>
                       </div>
                     )}
 
-                    {doc.notes && doc.notes.length > 0 && (
+                    {doc?.notes && doc.notes.length > 0 && (
                       <div>
-                        <h2 className={EYEBROW}>{t("showcase.layout.notes")}</h2>
-                        <ul className={`mt-3 border-t ${FILETE}`}>
+                        <h3 className={EYEBROW}>{t("showcase.layout.notes")}</h3>
+                        <ul className={`mt-2.5 border-t ${FILETE}`}>
                           {doc.notes.map((note, i) => (
                             <li
                               key={i}
-                              className={`border-b py-2.5 text-[12px] leading-relaxed text-slate-600 dark:text-slate-300 ${FILETE}`}
+                              className={`border-b py-2 text-[12px] leading-relaxed text-slate-600 dark:text-slate-300 ${FILETE}`}
                             >
                               {note}
                             </li>
@@ -336,19 +314,24 @@ export const ShowcaseLayout: React.FC<ShowcaseLayoutProps> = ({
                       </div>
                     )}
                   </div>
-                )}
-              </section>
-            </div>
-          </ITGrid>
+                </section>
+              </div>
+            </ITGrid>
           )}
         </ITGrid>
       </div>
 
-      {/* ─── GALERÍA ─── */}
+      {/* ─── MÁS EJEMPLOS ─── */}
       {gallery && (
-        <section className={`mt-12 border-t pt-8 ${FILETE}`} aria-label={t("showcase.layout.gallery")}>
-          <h2 className={EYEBROW}>{t("showcase.layout.gallery")}</h2>
-          <div className="mt-5">{gallery}</div>
+        <section
+          className={`mt-12 border-t pt-8 ${FILETE}`}
+          aria-label={t("showcase.layout.gallery")}
+        >
+          <p className={EYEBROW}>{t("showcase.layout.gallery")}</p>
+          <h2 className="mt-2 font-display text-[22px] font-bold tracking-[-0.02em] text-slate-900 dark:text-white">
+            {t("showcase.layout.galleryTitle")}
+          </h2>
+          <div className="mt-6 space-y-6">{gallery}</div>
         </section>
       )}
     </div>

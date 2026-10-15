@@ -116,19 +116,3 @@ html {
     animation: none;
   }
 }
-
-/* ──────────────────────────────────────────────
-   PANEL DE PROPIEDADES A ANCHO COMPLETO (dev.css)
-   Cuando la vitrina ocupa las 12 columnas, las filas `justify-between` de los
-   controles dejaban la etiqueta a un lado y el control a 800px del otro. Aquí
-   el control se agrupa junto a su etiqueta.
-   ────────────────────────────────────────────── */
-.it-panel-ancho .justify-between {
-  justify-content: flex-start;
-  gap: 0.75rem;
-}
-
-/* Las notas del panel no se estiran a 100+ caracteres por línea. */
-.it-panel-ancho p {
-  max-width: 72ch;
-}

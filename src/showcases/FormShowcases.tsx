@@ -33,7 +33,7 @@ const CodeExampleBlock = ({ title, desc, code, children }: { title: string; desc
       <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
         <ITFlex justify="between" align="center">
           <div>
-            <h3 className="text-sm font-bold text-slate-800 dark:text-white">{title}</h3>
+            <h3 className="w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{title}</h3>
             <p className="text-xs text-slate-500 mt-1">{desc}</p>
           </div>
           <ITButton variant="outlined" color="gray" size="sm" onClick={() => setShowCode(!showCode)}>
@@ -150,7 +150,7 @@ export const ButtonShowcase = () => {
       gallery={
         <div className="space-y-6">
           <div>
-            <h3 className="text-sm font-bold text-slate-700 mb-3">{t("showcase.forms.galleryWithIcon")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.forms.galleryWithIcon")}</h3>
             <div className="flex flex-wrap gap-3">
               <ITButton label={t("showcase.common.save")} icon={<FaSave />} color="success" />
               <ITButton label={t("showcase.common.edit")} icon={<FaEdit />} color="info" />
@@ -159,7 +159,7 @@ export const ButtonShowcase = () => {
             </div>
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-700 mb-3">{t("showcase.forms.galleryVariants")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.forms.galleryVariants")}</h3>
             <div className="flex flex-wrap gap-3">
               <ITButton label="Filled" variant="filled" />
               <ITButton label="Outlined" variant="outlined" />
@@ -170,7 +170,7 @@ export const ButtonShowcase = () => {
             </div>
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-700 mb-3">{t("showcase.forms.gallerySemanticColors")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.forms.gallerySemanticColors")}</h3>
             <div className="flex flex-wrap gap-3">
               <ITButton label="Primary" color="primary" />
               <ITButton label="Secondary" color="secondary" />
@@ -2006,7 +2006,7 @@ const MaskedDemo = ({
   const [complete, setComplete] = useState<string | null>(null);
   return (
     <div>
-      <h3 className="text-sm font-bold text-slate-700 mb-2">{title}</h3>
+      <h3 className="mb-2 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{title}</h3>
       <ITMaskedInput
         name={title.toLowerCase().replace(/\s+/g, "_")}
         label={mask}

@@ -188,14 +188,18 @@ Las tres piezas del sandbox siguen la misma hoja que el portafolio:
 - **Landing** (`src/sandbox/LandingShowcase.tsx`): masthead (sello `v… · Tailwind v4 · MIT` + GitHub y
   npm + titular display + CTAs + comando de instalación), banda de métricas con filetes, catálogo como
   datasheet (`NN | familia + chips | nº →`) y quickstart con código + "incluido de fábrica".
-- **Página de componente** (`src/showcases/ShowcaseLayout.tsx`): cabecera con filete, vitrina
-  (vista previa / código) como superficie plana **sin los tres puntitos de ventana falsa**, panel lateral
-  con Propiedades/Docs, y galería separada por filete. Los encabezados no saltan niveles (la galería se
-  rotula con un `<p>` mono, no con `h4`) y la página **no añade otro `<main>`/`<aside>`**: los landmarks
-  son los del `ITLayout`.
-  - `demoAncho="completo"` da toda la anchura a la vitrina y baja el panel: obligatorio para demos que
-    son un layout entero (`ITLayout`, pantallas de ejemplo), que antes se recortaban dentro de la caja.
-  - `controls` es opcional: las páginas de ejemplo/receta usan la vitrina a ancho completo sin panel.
+- **Página de componente** (`src/showcases/ShowcaseLayout.tsx`) — diseño «documentación viva»:
+  - **Contenedor de ejemplo** (`EjemploContenedor`): cabecera propia con número, título mono y la acción
+    de **ver el código siempre visible**; el código se despliega dentro del mismo contenedor (no en una
+    pestaña que oculta el demo). La superficie del demo va limpia, sin cromo falso.
+  - **Controles** en un grid de 2–3 columnas bajo el demo, con su propio filete y cabecera: dejan de ser
+    un panel lateral y nunca empujan el contenido.
+  - **API siempre visible** en la columna derecha (props, ejemplos con copiar y notas). Sin pestañas: la
+    documentación no compite con la vista previa.
+  - `demoMinAncho` (px) para demos que son un layout entero (`ITLayout`, pantallas de ejemplo): la
+    vitrina desplaza en horizontal lo que sobre y el panel no se mueve de su columna.
+  - **Más ejemplos** (galería) con la misma jerarquía: eyebrow mono + título display, y cada variación
+    en su `EjemploContenedor` con su propio botón de código.
 - **Páginas de contenido**: la puesta en marcha (`GettingStartedShowcase`) y la ayuda (`HelpShowcase`)
   siguen el mismo patrón — masthead con sello real, pasos numerados con filete y bloques de código
   compartidos; fuera los degradados decorativos, los blobs y los cuadros de color por paso.

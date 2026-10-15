@@ -43,19 +43,36 @@ el demo renderiza un `ITLayout` dentro del `ITLayout` del sandbox, así que hay 
 `<aside>`. El patrón correcto para una maqueta es sacarla del árbol de accesibilidad
 (`aria-hidden` + `inert`) o aislarla en un iframe.
 
+**F. `ITNavbar`/`ITLayout` fuerzan `h-screen`** — el componente trae `h-screen` escrito a mano, así que
+no se puede embeber: dentro de la galería (sin altura) se estiraba a 100vh y dejaba una caja vacía
+enorme, y en la vitrina se salía de su marco de 640px. El sandbox lo esquiva desde fuera
+(`className="!h-full"` en `ITLayout` y `[&>div]:!h-full` en los marcos del navbar), pero lo correcto es
+que el componente llene a su contenedor (`h-full`) o acepte `className`.
+
+**G. Encabezados dentro de los demos** — `heading-order` en las páginas de layout/pantallas porque
+`ITPageHeader` rotula con `<h1>` y `ITCard` con `<h3>`: al demostrar una página completa dentro de la
+página de documentación se saltan niveles. Se arregla dando nivel configurable a esos dos componentes.
+
 **E. Puntuales** — `aria-progressbar-name` (`structure/card`), `aria-input-field-name`
 (`forms/wysiwyg`), `color-contrast` ×1 (`forms/formbuilder`), `heading-order` en `pageheader`, `page`
 y `layout`, y `landmark-unique` por navs repetidos (breadcrumbs y paginaciones clonadas en los demos).
 
 ## Ya resuelto en esta pasada
 
-- **Galerías**: rótulos en mono (28), marcos uniformes de 10px con el filete de la hoja, y fuera los
-  bloques de código dentro de la galería (el código ya vive en la pestaña «Código» de la vitrina).
-- **Panel de propiedades**: la tarjeta se acota a 880px cuando la vitrina es a ancho completo (antes se
-  estiraba a 1180px con un switch y una línea, y parecía vacía); en ese modo las filas de control ya no
-  se estiran (`.it-panel-ancho` agrupa el control junto a su etiqueta en vez de dejarlo a 800px) y las
-  notas se limitan a 72ch. Los rótulos de los controles que viven en los showcases (61 en total)
-  pasaron al mono de metadatos. Los que renderiza la propia
+- **Página de componente rediseñada** («documentación viva»): contenedor de ejemplo con cabecera y
+  botón de código visible, controles en grid, API siempre visible en la columna derecha (sin pestañas)
+  y galería con el mismo contenedor por variación. La auditoría mide ahora esa columna de API.
+- **Galerías**: jerarquía en dos niveles — eyebrow mono + **título display** para la sección, y cada
+  variación con **barra de acento** + etiqueta en mono más oscura (antes las dos se veían iguales).
+  Marcos uniformes de 10px y fuera los bloques de código dentro de la galería (el código ya vive en la
+  pestaña «Código» de la vitrina).
+  Los marcos de `ITNavbar`/`ITSidebar` tienen altura propia (380/320px) y el componente los llena, así
+  que ya no hay cajas de 100vh vacías.
+- **Panel de propiedades**: vuelve a su **columna derecha** en todas las páginas. Antes, las cinco
+  páginas con demo ancho lo bajaban al medio de la hoja (entre la vitrina y la galería) y ahí se veía
+  como un bloque suelto. Ahora los demos que necesitan anchura usan `demoMinAncho` (780px) y la
+  vitrina desplaza en horizontal lo que sobre: el panel nunca se mueve de su sitio.
+- Los rótulos de los controles que viven en los showcases (61 en total) pasaron al mono de metadatos. Los que renderiza la propia
   librería (`label` de `ITSelect`/`ITInput`/`ITSlideToggle`) siguen en sans a propósito: la jerarquía
   queda «grupo en mono, control en sans».
 

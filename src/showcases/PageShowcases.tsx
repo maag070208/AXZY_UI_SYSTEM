@@ -219,7 +219,7 @@ export const PageHeaderShowcase = () => {
         <ITStack spacing={6}>
           {/* 1. Team management — full header + search + filter bar + user rows */}
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryTeamManagement")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.pages.galleryTeamManagement")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
               <div className="p-5 pb-3">
                 <ITPageHeader
@@ -282,7 +282,7 @@ export const PageHeaderShowcase = () => {
 
           {/* 2. Detail page — back + breadcrumbs + back button + save/cancel */}
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryDetailEdit")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.pages.galleryDetailEdit")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
               <div className="p-5 pb-3">
                 <ITPageHeader
@@ -319,7 +319,7 @@ export const PageHeaderShowcase = () => {
 
           {/* 3. Dashboard header — icon + title + desc + date range + refresh */}
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryDashboard")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.pages.galleryDashboard")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
               <div className="p-5">
                 <ITPageHeader
@@ -345,7 +345,7 @@ export const PageHeaderShowcase = () => {
 
           {/* 4. Settings header — no icon, no breadcrumbs, just title + desc + save */}
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.gallerySettingsPrefs")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.pages.gallerySettingsPrefs")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
               <div className="p-5">
                 <ITPageHeader
@@ -364,7 +364,7 @@ export const PageHeaderShowcase = () => {
 
           {/* 5. Users list — icon + breadcrumbs + search in actions + add button */}
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryUsersList")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.pages.galleryUsersList")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
               <div className="p-5">
                 <ITPageHeader
@@ -712,7 +712,7 @@ export const PageShowcase = () => {
         <ITStack spacing={6}>
           {/* 1. Users list with ITTable */}
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryUsersTable")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.pages.galleryUsersTable")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITPage
                 horizontalPadding={hPaddingValue}
@@ -740,7 +740,7 @@ export const PageShowcase = () => {
 
           {/* 2. Product detail */}
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryProductDetail")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.pages.galleryProductDetail")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITPage
                 horizontalPadding={hPaddingValue}
@@ -788,7 +788,7 @@ export const PageShowcase = () => {
 
           {/* 3. Edit profile form */}
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryEditProfile")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.pages.galleryEditProfile")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITPage
                 horizontalPadding={hPaddingValue}
@@ -839,7 +839,7 @@ export const PageShowcase = () => {
 
           {/* 4. Orders with table */}
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryOrdersTable")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.pages.galleryOrdersTable")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITPage
                 horizontalPadding={hPaddingValue}
@@ -892,7 +892,7 @@ export const PageShowcase = () => {
 
           {/* 5. Settings with tabs */}
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.gallerySettings")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.pages.gallerySettings")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITPage
                 horizontalPadding={hPaddingValue}

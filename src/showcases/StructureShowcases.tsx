@@ -35,6 +35,7 @@ import {
 } from "../index";
 import type { ITSidebarProps } from "../index";
 import { ShowcaseLayout, CodeViewer } from "./ShowcaseLayout";
+import { EjemploContenedor } from "@/sandbox/ui";
 import { useITTranslation } from "@/i18n";
 
 // ─────────────────────────────────────────
@@ -1050,13 +1051,13 @@ export const LayoutShowcase = () => {
 
   return (
     <ShowcaseLayout
-  demoAncho="completo"
+  demoMinAncho={780}
       title="ITLayout & ITNavbar"
       description="Chasis estructural del portal con barra superior y lateral colapsable. Totalmente responsivo con drawer móvil."
       code={code}
       demo={
         <div className="w-full h-[640px] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-md">
-          <ITLayout topBar={topBar} sidebar={sidebar}>
+          <ITLayout className="!h-full" topBar={topBar} sidebar={sidebar}>
             <ITStack spacing={5}>
               <ITPageHeader
                 title={t("showcase.structure.navDashboard")}
@@ -1102,11 +1103,23 @@ export const LayoutShowcase = () => {
       }
       gallery={
         <ITStack spacing={8}>
-          <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
-              {t("showcase.structure.galleryNavbarStandalone")}
-            </h3>
-            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
+          <EjemploContenedor
+            numero="02"
+            titulo={t("showcase.structure.galleryNavbarStandalone")}
+            codigo={`<ITNavbar
+  logoText="AXZY"
+  navigationItems={[
+    { id: "1", label: "Inicio", icon: <FaHome />, isActive: true },
+    { id: "2", label: "Documentos", icon: <FaFileAlt /> },
+    { id: "3", label: "Alertas", icon: <FaBell /> },
+  ]}
+  userMenu={{ userName: "Auditor AXZY", userEmail: "auditor@axzy.dev" }}
+>
+  <Dashboard />
+</ITNavbar>`}
+            sangrado
+          >
+            <div className="h-[380px] overflow-hidden [&>div]:!h-full">
               <ITNavbar
                 logoText="AXZY"
                 navigationItems={navbarItems}
@@ -1130,13 +1143,29 @@ export const LayoutShowcase = () => {
                 </div>
               </ITNavbar>
             </div>
-          </div>
+          </EjemploContenedor>
 
-          <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
-              {t("showcase.structure.galleryNavbarSubmenus")}
-            </h3>
-            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
+          <EjemploContenedor
+            numero="03"
+            titulo={t("showcase.structure.galleryNavbarSubmenus")}
+            codigo={`<ITNavbar
+  logoText="Admin"
+  navigationItems={[
+    { id: "u", label: "Usuarios", icon: <FaUsers /> },
+    {
+      id: "s",
+      label: "Ventas",
+      icon: <FaShoppingCart />,
+      subitems: [
+        { id: "o", label: "Órdenes", action: () => {} },
+        { id: "i", label: "Facturas", action: () => {} },
+      ],
+    },
+  ]}
+/>`}
+            sangrado
+          >
+            <div className="h-[380px] overflow-hidden [&>div]:!h-full">
               <ITNavbar
                 logoText="Admin"
                 navigationItems={[
@@ -1165,13 +1194,23 @@ export const LayoutShowcase = () => {
                 </div>
               </ITNavbar>
             </div>
-          </div>
+          </EjemploContenedor>
 
-          <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
-              {t("showcase.structure.gallerySidebarBadges")}
-            </h3>
-            <div className="flex h-[320px] overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
+          <EjemploContenedor
+            numero="04"
+            titulo={t("showcase.structure.gallerySidebarBadges")}
+            codigo={`<ITSidebar
+  subitemConnector="dot"
+  navigationItems={[
+    { id: "home", label: "Inicio", icon: <FaHome />, isActive: true },
+    { id: "inbox", label: "Bandeja", icon: <FaUsers />, badge: 12 },
+    { id: "alerts", label: "Alertas", icon: <FaBell />, badge: 3 },
+  ]}
+  notification={{ count: 5, icon: <FaBell /> }}
+/>`}
+            sangrado
+          >
+            <div className="flex h-[320px] overflow-hidden [&>div]:!h-full">
               <ITSidebar
                 visibleOnMobile
                 className="h-full"
@@ -1200,7 +1239,7 @@ export const LayoutShowcase = () => {
                 </p>
               </div>
             </div>
-          </div>
+          </EjemploContenedor>
         </ITStack>
       }
       doc={{

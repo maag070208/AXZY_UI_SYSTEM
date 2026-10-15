@@ -231,7 +231,11 @@ const CORRER_AXE = `(async () => {
 })()`;
 
 const MEDIR_DOCS = `(() => {
-  const panel = [...document.querySelectorAll('[role="tabpanel"]')][0] || document;
+  // La API vive siempre visible en la columna derecha (sin pestañas).
+  const encabezados = [...document.querySelectorAll("h2")];
+  const api = encabezados.find((h) => /API del componente|Component API/i.test(h.textContent));
+  if (!api) return JSON.stringify(null);
+  const panel = api.closest("section");
   const props = panel.querySelectorAll("dl > div").length;
   const ejemplos = panel.querySelectorAll("pre").length;
   const notas = panel.querySelectorAll("ul li").length;
@@ -302,16 +306,7 @@ async function principal() {
       const recortes = JSON.parse((await evaluar(ws, DETECTOR_RECORTES)) ?? "[]");
       const violaciones = JSON.parse((await evaluar(ws, CORRER_AXE, { promesa: true })) ?? "[]");
 
-      const hayDocs = await evaluar(
-        ws,
-        `!!document.querySelector('[role="tab"]')`,
-      );
-      let docs = null;
-      if (hayDocs) {
-        await evaluar(ws, `document.querySelectorAll('[role="tab"]')[1]?.click()`);
-        await dormir(400);
-        docs = JSON.parse((await evaluar(ws, MEDIR_DOCS)) ?? "null");
-      }
+      const docs = JSON.parse((await evaluar(ws, MEDIR_DOCS)) ?? "null");
 
       filas.push({ ruta, titulo, recortes, violaciones, docs });
     }
@@ -329,7 +324,7 @@ async function principal() {
       const resumen = f.violaciones.map((v) => `${v.id}×${v.n}`).join(", ");
       console.log(`   ${f.ruta.padEnd(46)} ${f.titulo.padEnd(26)} ${resumen}`);
     }
-    console.log(`\nPáginas con pestaña de documentación: ${conDocs.length}`);
+    console.log(`\nPáginas con columna de API: ${conDocs.length}`);
     for (const f of conDocs) {
       const { props, ejemplos, notas, vacio } = f.docs;
       console.log(

@@ -418,7 +418,7 @@ export const TableShowcase = () => {
       gallery={
         <div className="space-y-6">
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryCustomCardsHover")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.data.galleryCustomCardsHover")}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {TABLE_DATA.slice(0, 4).map((row, i) => {
                 const initials = (row.name as string).split(" ").map((w: string) => w[0]).join("");
@@ -455,7 +455,7 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryDefaultCards")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.data.galleryDefaultCards")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITTable
                 columns={columns}
@@ -469,7 +469,7 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryCustomCardsPagination")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.data.galleryCustomCardsPagination")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITTable
                 columns={columns}
@@ -501,7 +501,7 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryCompactFixed")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.data.galleryCompactFixed")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800" style={{ maxWidth: 560 }}>
               <ITTable
                 columns={fixedColumns}
@@ -515,7 +515,7 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryPinnedNameActions")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.data.galleryPinnedNameActions")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800" style={{ maxWidth: 520 }}>
               <ITTable
                 columns={pinnedColumns}
@@ -532,7 +532,7 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryAutoCards")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.data.galleryAutoCards")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800" style={{ maxWidth: 420 }}>
               <ITTable
                 columns={columns}
@@ -545,7 +545,7 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryVirtualized")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.data.galleryVirtualized")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITTable
                 columns={virtualColumns}
@@ -563,7 +563,7 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryColumnFilters")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.data.galleryColumnFilters")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITTable
                 columns={filterDemoColumns}
@@ -579,7 +579,7 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryDesignOverrides")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.data.galleryDesignOverrides")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITTable
                 columns={columns}
@@ -609,7 +609,7 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryPerColumnDesign")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.data.galleryPerColumnDesign")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITTable
                 columns={columns.map((col: any) =>
@@ -1062,7 +1062,7 @@ export const DataTableShowcase = () => {
       gallery={
         <div className="space-y-6">
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryCustomCardsHover")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.data.galleryCustomCardsHover")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <GalleryDataTable
                 title={t("showcase.data.teamMembers")}
@@ -1105,7 +1105,7 @@ export const DataTableShowcase = () => {
           </div>
 
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryDefaultCardsPagination")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.data.galleryDefaultCardsPagination")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <GalleryDataTable
                 size="sm"
@@ -1116,7 +1116,7 @@ export const DataTableShowcase = () => {
           </div>
 
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryDesignOverrides")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.data.galleryDesignOverrides")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITDataTable
                 columns={userColumns}
@@ -1140,7 +1140,7 @@ export const DataTableShowcase = () => {
           </div>
 
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryPinnedIdActive")}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.data.galleryPinnedIdActive")}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800" style={{ maxWidth: 520 }}>
               <ITDataTable
                 columns={pinnedColumns}
@@ -1158,7 +1158,7 @@ export const DataTableShowcase = () => {
           </div>
 
           <div>
-            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryServerVirtualization", { page: dtVirtualized ? 200 : 10 })}</h3>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.data.galleryServerVirtualization", { page: dtVirtualized ? 200 : 10 })}</h3>
             <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITDataTable
                 key={dtVirtualized ? "dt-virt-on" : "dt-virt-off"}

@@ -13,7 +13,7 @@
  */
 
 import { useState, type ReactNode } from "react";
-import { FaCheck, FaCopy } from "react-icons/fa";
+import { FaCheck, FaCode, FaCopy } from "react-icons/fa";
 import { useITTranslation } from "@/i18n";
 
 /** Eyebrow mono apagado: encabezados de sección y etiquetas de metadato. */
@@ -367,6 +367,7 @@ export const BloqueCodigo = ({
       />
     </div>
     <pre
+      tabIndex={0}
       className={`overflow-x-auto whitespace-pre-wrap p-4 font-mono text-xs leading-relaxed text-slate-200 ${
         compact ? "max-h-[420px] overflow-y-auto" : ""
       }`}
@@ -375,3 +376,99 @@ export const BloqueCodigo = ({
     </pre>
   </div>
 );
+
+/** Props de `EjemploContenedor`. */
+export interface EjemploContenedorProps {
+  /** Número del ejemplo (`01`, `02`…). Opcional. */
+  numero?: string;
+  /** Título del ejemplo (mono, mayúsculas). */
+  titulo: string;
+  /** El demo. */
+  children: ReactNode;
+  /** Código fuente del ejemplo: si se pasa, aparece el botón «Código». */
+  codigo?: string;
+  /** Nota al pie, bajo el demo. */
+  nota?: string;
+  /** Superficie del demo sin padding (layouts completos). */
+  sangrado?: boolean;
+  /** Clases extra de la superficie del demo. */
+  className?: string;
+}
+
+/**
+ * Contenedor de un ejemplo del sandbox: cabecera con número, título y la acción
+ * de ver el código (siempre visible), superficie del demo y nota opcional. El
+ * código se despliega **dentro** del mismo contenedor, no en una pestaña aparte.
+ *
+ * @example
+ * ```tsx
+ * <EjemploContenedor numero="01" titulo="Con icono" codigo={code}>
+ *   <ITButton icon={<FaSave />}>Guardar</ITButton>
+ * </EjemploContenedor>
+ * ```
+ */
+export const EjemploContenedor = ({
+  numero,
+  titulo,
+  children,
+  codigo,
+  nota,
+  sangrado = false,
+  className = "",
+}: EjemploContenedorProps) => {
+  const { t } = useITTranslation();
+  const [verCodigo, setVerCodigo] = useState(false);
+
+  return (
+    <section className={`overflow-hidden rounded-[10px] border ${FILETE}`}>
+      <header
+        className={`flex flex-wrap items-center gap-x-3 gap-y-2 border-b bg-slate-50/70 px-4 py-2.5 dark:bg-slate-950/40 ${FILETE}`}
+      >
+        {numero && (
+          <span className="font-mono text-[10px] tabular-nums text-slate-400 dark:text-slate-500">
+            {numero}
+          </span>
+        )}
+        <h2 className="min-w-0 flex-1 truncate font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:text-slate-200">
+          {titulo}
+        </h2>
+
+        {codigo && (
+          <button
+            type="button"
+            onClick={() => setVerCodigo(!verCodigo)}
+            aria-expanded={verCodigo}
+            className={`inline-flex items-center gap-1.5 rounded-[8px] border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/60 ${
+              verCodigo
+                ? "border-primary-700 text-primary-700 dark:border-primary-500 dark:text-primary-500"
+                : "border-slate-200 text-slate-500 hover:text-slate-900 dark:border-slate-700 dark:text-slate-400 dark:hover:text-white"
+            }`}
+          >
+            <FaCode size={10} />
+            {verCodigo ? t("showcase.layout.hideCode") : t("showcase.layout.viewCode")}
+          </button>
+        )}
+      </header>
+
+      <div
+        className={`bg-white dark:bg-slate-950 ${sangrado ? "" : "p-5 sm:p-6"} ${className}`}
+      >
+        {children}
+      </div>
+
+      {nota && (
+        <p
+          className={`border-t px-4 py-2.5 font-mono text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 ${FILETE}`}
+        >
+          {nota}
+        </p>
+      )}
+
+      {codigo && verCodigo && (
+        <div className={`border-t p-3 ${FILETE}`}>
+          <BloqueCodigo code={codigo} compact />
+        </div>
+      )}
+    </section>
+  );
+};

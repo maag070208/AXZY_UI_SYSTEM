@@ -1347,7 +1347,7 @@ export const GridShowcase = () => {
 
   return (
     <ShowcaseLayout
-      demoAncho="completo"
+      demoMinAncho={780}
       title={t("showcase.layoutPrimitives.screensTitle")}
       description={t("showcase.layoutPrimitives.screensSubtitle")}
       code={code}
@@ -1458,7 +1458,7 @@ export const ScreenFormShowcase = () => {
 
   return (
     <ShowcaseLayout
-      demoAncho="completo"
+      demoMinAncho={780}
       title={t("showcase.layoutPrimitives.screensTitle")}
       description={t("showcase.layoutPrimitives.screensSubtitle")}
       code={formCode}
