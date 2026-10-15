@@ -13,8 +13,9 @@ import {
   FaTerminal,
   FaWrench,
 } from "react-icons/fa";
-import { ITAccordion, ITBadget, ITButton, ITCard, ITFlex, ITGrid, ITStack, ITText } from "../index";
+import { ITAccordion, ITButton, ITFlex, ITGrid, ITStack, ITText } from "../index";
 import type { ITAccordionItem } from "../index";
+import { BotonAccion } from "@/sandbox/ui";
 import { useITTranslation } from "@/i18n";
 
 const GITHUB_URL = "https://github.com/maag070208/AXZY_UI_SYSTEM";
@@ -323,58 +324,44 @@ export const HelpShowcase = () => {
   const { t } = useITTranslation();
   return (
     <ITStack spacing={10} className="animate-fadeIn">
-      {/* ─── HERO ─── */}
-      <ITCard className="overflow-hidden border-0 bg-gradient-to-br from-primary-50 via-white to-purple-50 dark:from-primary-950/20 dark:via-slate-900 dark:to-purple-950/20 shadow-sm">
-        <div className="relative">
-          <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-primary-500/10 rounded-full blur-[120px] pointer-events-none" />
-          <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
-          <ITStack spacing={5} className="relative z-10">
-            <ITStack spacing={2}>
-              <ITBadget label={t("showcase.help.badge")} color="purple" variant="outlined" className="w-fit" />
-              <ITText as="h1" className="!text-4xl !font-bold !tracking-tight">
-                {t("showcase.help.title")}
-              </ITText>
-              <ITText as="p" muted className="!text-base !leading-relaxed max-w-2xl">
-                {t("showcase.help.subtitle")}
-              </ITText>
-            </ITStack>
-            <ITFlex gap={3} wrap="wrap" align="center">
-              <ITButton
-                variant="filled"
-                color="primary"
-                icon={<FaBug size={13} />}
-                onClick={() => window.open(ISSUE_URL, "_blank", "noopener,noreferrer")}
-              >
-                {t("showcase.help.reportBug")}
-              </ITButton>
-              <ITButton
-                variant="outlined"
-                color="secondary"
-                icon={<FaBook size={13} />}
-                onClick={() => window.open(GITHUB_URL, "_blank", "noopener,noreferrer")}
-              >
-                {t("showcase.help.viewRepo")}
-              </ITButton>
-            </ITFlex>
-          </ITStack>
-        </div>
-      </ITCard>
+      {/* ─── MASTHEAD ─── */}
+      <header className="border-b border-slate-200 pb-8 dark:border-slate-800">
+        <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+          {t("showcase.help.badge")}
+        </p>
+        <h1 className="mt-2.5 font-display text-[34px] font-bold leading-[1.06] tracking-[-0.015em] text-slate-900 dark:text-white sm:text-[44px]">
+          {t("showcase.help.title")}
+        </h1>
+        <p className="mt-5 max-w-[68ch] text-[15.5px] leading-[1.75] text-slate-600 dark:text-slate-300">
+          {t("showcase.help.subtitle")}
+        </p>
+        <ITFlex gap={3} wrap="wrap" align="center" className="!mt-7">
+          <BotonAccion
+            variante="filled"
+            icono={<FaBug size={12} />}
+            onClick={() => window.open(ISSUE_URL, "_blank", "noopener,noreferrer")}
+          >
+            {t("showcase.help.reportBug")}
+          </BotonAccion>
+          <BotonAccion
+            variante="neutral"
+            icono={<FaBook size={12} />}
+            onClick={() => window.open(GITHUB_URL, "_blank", "noopener,noreferrer")}
+          >
+            {t("showcase.help.viewRepo")}
+          </BotonAccion>
+        </ITFlex>
+      </header>
 
       {/* ─── DIAGNÓSTICO RÁPIDO ─── */}
       <section>
-        <ITFlex align="center" gap={2.5} className="!mb-4">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-            <FaTerminal size={13} />
-          </span>
-          <ITStack spacing={0}>
-            <ITText as="h2" className="!text-lg !font-bold">
-              {t("showcase.help.quickDiagnosis")}
-            </ITText>
-            <ITText as="p" muted className="!text-xs">
-              {t("showcase.help.quickDiagnosisHint")}
-            </ITText>
-          </ITStack>
-        </ITFlex>
+        <div className="!mb-5 border-b border-slate-200 pb-4 dark:border-slate-800">
+          <h2 className="flex items-center gap-2.5 font-display text-[20px] font-bold tracking-[-0.02em] text-slate-900 dark:text-white">
+            <span className="text-primary-700 dark:text-primary-500"><FaTerminal size={13} /></span>
+            {t("showcase.help.quickDiagnosis")}
+          </h2>
+          <p className="mt-1.5 text-[13px] text-slate-500 dark:text-slate-400">{t("showcase.help.quickDiagnosisHint")}</p>
+        </div>
         <div className="relative">
           <div className="absolute top-2 right-2 z-10">
             <CopyButton text={DIAGNOSTICS} />
@@ -385,78 +372,85 @@ export const HelpShowcase = () => {
 
       {/* ─── ERRORES COMUNES ─── */}
       <section>
-        <ITFlex align="center" gap={2.5} className="!mb-4">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-danger-100 dark:bg-danger-950/40 text-danger-600 dark:text-danger-400">
-            <FaExclamationTriangle size={13} />
-          </span>
-          <ITStack spacing={0}>
-            <ITText as="h2" className="!text-lg !font-bold">
-              {t("showcase.help.commonErrors")}
-            </ITText>
-            <ITText as="p" muted className="!text-xs">
-              {t("showcase.help.commonErrorsHint")}
-            </ITText>
-          </ITStack>
-        </ITFlex>
+        <div className="!mb-5 border-b border-slate-200 pb-4 dark:border-slate-800">
+          <h2 className="flex items-center gap-2.5 font-display text-[20px] font-bold tracking-[-0.02em] text-slate-900 dark:text-white">
+            <span className="text-primary-700 dark:text-primary-500"><FaExclamationTriangle size={13} /></span>
+            {t("showcase.help.commonErrors")}
+          </h2>
+          <p className="mt-1.5 text-[13px] text-slate-500 dark:text-slate-400">{t("showcase.help.commonErrorsHint")}</p>
+        </div>
         <ITAccordion items={COMMON_ERRORS} allowMultiple variant="separated" />
       </section>
 
       {/* ─── FAQ ─── */}
       <section>
-        <ITFlex align="center" gap={2.5} className="!mb-4">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-info-100 dark:bg-info-950/40 text-info-600 dark:text-info-400">
-            <FaQuestionCircle size={13} />
-          </span>
-          <ITStack spacing={0}>
-            <ITText as="h2" className="!text-lg !font-bold">
-              {t("showcase.help.faq")}
-            </ITText>
-            <ITText as="p" muted className="!text-xs">
-              {t("showcase.help.faqHint")}
-            </ITText>
-          </ITStack>
-        </ITFlex>
+        <div className="!mb-5 border-b border-slate-200 pb-4 dark:border-slate-800">
+          <h2 className="flex items-center gap-2.5 font-display text-[20px] font-bold tracking-[-0.02em] text-slate-900 dark:text-white">
+            <span className="text-primary-700 dark:text-primary-500"><FaQuestionCircle size={13} /></span>
+            {t("showcase.help.faq")}
+          </h2>
+          <p className="mt-1.5 text-[13px] text-slate-500 dark:text-slate-400">{t("showcase.help.faqHint")}</p>
+        </div>
         <ITAccordion items={FAQ} allowMultiple variant="bordered" />
       </section>
 
       {/* ─── CÓMO REPORTAR UN BUG ─── */}
-      <ITCard title={t("showcase.help.howToReport")} className="border-purple-200/60 dark:border-purple-800/60 shadow-sm">
+      <section className="border-t border-slate-200 pt-8 dark:border-slate-800">
         <ITStack spacing={6}>
-          <ITText as="p" className="!text-sm" muted>
-            {t("showcase.help.reportIntro")}
-          </ITText>
+          <div className="border-b border-slate-200 pb-4 dark:border-slate-800">
+            <h2 className="flex items-center gap-2.5 font-display text-[20px] font-bold tracking-[-0.02em] text-slate-900 dark:text-white">
+              <span className="text-primary-700 dark:text-primary-500">
+                <FaBug size={13} />
+              </span>
+              {t("showcase.help.howToReport")}
+            </h2>
+            <p className="mt-1.5 max-w-[70ch] text-[13px] leading-relaxed text-slate-500 dark:text-slate-400">
+              {t("showcase.help.reportIntro")}
+            </p>
+          </div>
 
           <ITGrid container spacing={6}>
             <ITGrid item xs={12} md={6}>
               <ITStack spacing={3}>
-                <ITText as="h3" className="!text-[11px] !font-bold uppercase !tracking-wider text-slate-400 dark:text-slate-500">
+                <ITText as="h3" className="font-mono !text-[11px] !font-medium uppercase !tracking-[0.14em] text-slate-500 dark:text-slate-400">
                   {t("showcase.help.steps")}
                 </ITText>
-                {REPORT_STEPS.map((step, index) => (
-                  <ITFlex key={step} align="start" gap={3}>
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-100 dark:bg-primary-950/40 text-[11px] font-bold text-primary-600 dark:text-primary-400">
-                      {index + 1}
-                    </span>
-                    <ITText as="p" className="!text-sm text-slate-600 dark:text-slate-300">
-                      {step}
-                    </ITText>
-                  </ITFlex>
-                ))}
+                <ol className="border-t border-slate-200 dark:border-slate-800">
+                  {REPORT_STEPS.map((step, index) => (
+                    <li
+                      key={step}
+                      className="flex items-start gap-3 border-b border-slate-200 py-3 dark:border-slate-800"
+                    >
+                      <span className="font-mono text-[11px] tabular-nums text-slate-500 dark:text-slate-400">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <ITText as="p" className="!text-[13.5px] !leading-relaxed text-slate-600 dark:text-slate-300">
+                        {step}
+                      </ITText>
+                    </li>
+                  ))}
+                </ol>
               </ITStack>
             </ITGrid>
 
             <ITGrid item xs={12} md={6}>
-              <div className="h-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 p-5">
-                <ITText as="h3" className="!mb-4 !text-[11px] !font-bold uppercase !tracking-wider text-slate-400 dark:text-slate-500">
+              <div>
+                <ITText as="h3" className="font-mono !text-[11px] !font-medium uppercase !tracking-[0.14em] text-slate-500 dark:text-slate-400">
                   {t("showcase.help.includeInReport")}
                 </ITText>
-                <ul className="space-y-3">
+                <ul className="mt-3 border-t border-slate-200 dark:border-slate-800">
                   {REPORT_CHECKLIST.map((item) => (
-                    <li key={item} className="flex items-start gap-3">
-                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success-100 dark:bg-success-950/40 text-success-600 dark:text-success-400">
-                        <FaCheck size={10} />
+                    <li
+                      key={item}
+                      className="flex items-start gap-3 border-b border-slate-200 py-3 dark:border-slate-800"
+                    >
+                      <FaCheck
+                        size={10}
+                        className="mt-1.5 shrink-0 text-primary-700 dark:text-primary-500"
+                      />
+                      <span className="text-[13.5px] leading-relaxed text-slate-600 dark:text-slate-300">
+                        {item}
                       </span>
-                      <span className="text-sm text-slate-600 dark:text-slate-300">{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -472,22 +466,22 @@ export const HelpShowcase = () => {
               </ITText>
             </ITFlex>
             <ITFlex gap={3} wrap="wrap">
-              <ITButton
-                variant="filled"
-                color="primary"
-                icon={<FaBug size={13} />}
+              <BotonAccion
+                variante="filled"
+                icono={<FaBug size={12} />}
                 onClick={() => window.open(ISSUE_URL, "_blank", "noopener,noreferrer")}
               >
                 {t("showcase.help.openIssue")}
-              </ITButton>
-              <ITButton
-                variant="outlined"
-                color="secondary"
-                icon={<FaSyncAlt size={13} />}
-                onClick={() => window.open(`${GITHUB_URL}/blob/main/AGENTS.md`, "_blank", "noopener,noreferrer")}
+              </BotonAccion>
+              <BotonAccion
+                variante="neutral"
+                icono={<FaSyncAlt size={12} />}
+                onClick={() =>
+                  window.open(`${GITHUB_URL}/blob/main/AGENTS.md`, "_blank", "noopener,noreferrer")
+                }
               >
                 {t("showcase.help.viewAgents")}
-              </ITButton>
+              </BotonAccion>
             </ITFlex>
           </ITFlex>
 
@@ -495,7 +489,7 @@ export const HelpShowcase = () => {
             <FixPill>{t("showcase.help.fixPill")}</FixPill>
           </ITFlex>
         </ITStack>
-      </ITCard>
+      </section>
     </ITStack>
   );
 };

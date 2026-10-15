@@ -10,6 +10,8 @@
 
 Interruptor estilo iOS con soporte de colores del tema. Funciona en modo controlado (`isOn`) o no controlado (`initialState`).
 
+Renderiza `role="switch"`: **dale un nombre accesible** con `label` (o `ariaLabel` si la etiqueta visible está fuera) para que un lector de pantalla anuncie qué se está activando.
+
 ## Import
 
 ```tsx
@@ -27,6 +29,8 @@ import { ITSlideToggle } from "@axzydev/axzy_ui_system";
 | `inactiveColor` | `string` | `"#9ca3af"` | Color cuando está inactivo: clave semántica del tema o valor hex. |
 | `disabled` | `boolean` | `false` | Deshabilita el switch. |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Tamaño del switch. |
+| `label` | `string` | — | Texto visible del interruptor; se usa como nombre accesible (`aria-label`) cuando no hay un `<label>` externo. |
+| `ariaLabel` | `string` | — | Nombre accesible cuando la etiqueta visible vive fuera del componente. Tiene prioridad sobre `label`. |
 | `className` | `string` | `""` | Clases CSS adicionales del contenedor. |
 
 ## Ejemplo

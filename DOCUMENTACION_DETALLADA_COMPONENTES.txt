@@ -921,13 +921,17 @@ Switch elegante para activar/desactivar opciones.
 ### Props (ITSlideToggleProps)
 ```typescript
 export interface ITSlideToggleProps {
-  checked?: boolean;
-  defaultChecked?: boolean;
-  onChange?: (checked: boolean) => void;
-  label?: string;
+  onToggle?: (value: boolean) => void;
+  isOn?: boolean;
+  initialState?: boolean;
+  activeColor?: string;
+  inactiveColor?: string;
   disabled?: boolean;
   size?: 'sm' | 'md' | 'lg';
-  color?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'purple';
+  /** Nombre accesible cuando no hay un `<label>` externo. */
+  label?: string;
+  /** Nombre accesible cuando la etiqueta visible está fuera del componente. */
+  ariaLabel?: string;
   className?: string;
 }
 ```

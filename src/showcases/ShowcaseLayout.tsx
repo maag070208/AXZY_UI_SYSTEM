@@ -1,74 +1,136 @@
+/**
+ * Marco de las páginas de componente del sandbox (`#ui-system/<grupo>/<item>`):
+ * cabecera de la hoja, vitrina interactiva (vista previa / código), panel de
+ * propiedades y documentación, y galería de variaciones.
+ *
+ * Sigue `DESIGN.md` (AXZY Console): el bloque lo separan filetes de 1px, no
+ * cajas dentro de cajas; los controles vienen del kit compartido
+ * (`@/sandbox/ui` y `@/sandbox/controls`) para que el marco no introduzca
+ * colores que no pasan AA.
+ */
+
 import React, { useState } from "react";
-import { FaCheck, FaCopy, FaBookOpen, FaCog, FaCode, FaEye } from "react-icons/fa";
+import { FaBookOpen, FaCheck, FaCode, FaCog, FaCopy, FaEye } from "react-icons/fa";
 import ITGrid from "../components/atoms/grid/grid";
 import { useITTheme } from "../components/theme-provider/themeProvider";
+import { ControlSegmentado } from "@/sandbox/controls";
+import { EYEBROW, FILETE, FOCO_CTA } from "@/sandbox/ui";
 import { useITTranslation } from "@/i18n";
 
+/**
+ * Bloque de código con botón de copiar. Fondo tinta, mono y el acento de señal
+ * (`cyan-400`) reservado a la etiqueta, como manda el spec.
+ *
+ * @example
+ * ```tsx
+ * <CodeViewer code={`<ITButton>Guardar</ITButton>`} compact />
+ * ```
+ */
 export const CodeViewer: React.FC<{ code: string; compact?: boolean }> = ({ code, compact }) => {
   const { t } = useITTranslation();
   const [copied, setCopied] = useState(false);
+
   const handleCopy = () => {
-    navigator.clipboard.writeText(code);
+    navigator.clipboard?.writeText(code);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    window.setTimeout(() => setCopied(false), 2000);
   };
+
   return (
-    <div className="relative overflow-hidden rounded-[14px] border border-slate-800 bg-slate-950 text-slate-200">
-      <div className="flex items-center justify-between border-b border-slate-800 bg-slate-950 px-4 py-2">
+    <div className="relative overflow-hidden rounded-[10px] border border-slate-800 bg-slate-950 text-slate-200">
+      <div className="flex items-center justify-between border-b border-slate-800 px-4 py-2.5">
         <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-cyan-400">
-          ▍ {t("showcase.layout.jsxCode")}
+          {t("showcase.layout.jsxCode")}
         </span>
         <button
+          type="button"
           onClick={handleCopy}
-          className="flex items-center gap-1.5 rounded-[6px] px-2 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-slate-400 transition-colors hover:bg-slate-800 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
+          className={`flex items-center gap-1.5 rounded-[6px] px-2 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-slate-400 transition-colors hover:bg-slate-800 hover:text-white ${FOCO_CTA}`}
         >
           {copied ? <FaCheck size={11} className="text-cyan-400" /> : <FaCopy size={11} />}
           <span>{copied ? t("showcase.layout.copied") : t("showcase.layout.copy")}</span>
         </button>
       </div>
-      <pre className={`overflow-x-auto whitespace-pre-wrap p-4 font-mono text-xs leading-relaxed ${compact ? "max-h-[420px]" : ""} overflow-y-auto`}>
+      <pre
+        className={`overflow-x-auto whitespace-pre-wrap p-4 font-mono text-xs leading-relaxed ${
+          compact ? "max-h-[420px]" : ""
+        } overflow-y-auto`}
+      >
         <code>{code}</code>
       </pre>
     </div>
   );
 };
 
+/** Una fila de la tabla de props. */
 export interface PropDocEntry {
+  /** Nombre del prop. */
   name: string;
+  /** Tipo TypeScript. */
   type: string;
+  /** Valor por defecto. */
   default?: string;
+  /** Descripción para el panel de documentación. */
   description: string;
+  /** Marca el prop como obligatorio. */
   required?: boolean;
 }
 
+/** Documentación de un componente, si el showcase la declara. */
 export interface ComponentDoc {
+  /** Resumen de una línea. */
   summary: string;
+  /** Descripción larga opcional. */
   description?: string;
+  /** Ejemplos de uso (código). */
   examples?: string[];
+  /** Tabla de props. */
   props: PropDocEntry[];
+  /** Notas al pie. */
   notes?: string[];
 }
 
+/** Props de `ShowcaseLayout`. */
 export interface ShowcaseLayoutProps {
+  /** Nombre del componente. */
   title: string;
+  /** Descripción corta bajo el título. */
   description: string;
+  /** Demo interactiva. */
   demo: React.ReactNode;
-  controls: React.ReactNode;
+  /**
+   * Panel de controles (lo construye cada showcase). Si se omite, la vitrina
+   * ocupa todo el ancho y no se pinta panel: para páginas que solo muestran un
+   * ejemplo o una receta.
+   */
+  controls?: React.ReactNode;
+  /** Código fuente que se muestra en la pestaña de código. */
   code: string;
+  /** Galería de variaciones y estados. */
   gallery?: React.ReactNode;
+  /** Documentación opcional (añade la pestaña "Docs"). */
   doc?: ComponentDoc;
+  /**
+   * Ancho de la vitrina. `"columna"` (por defecto) la deja en 8/12 columnas con
+   * el panel al lado; `"completo"` la lleva a las 12 y baja el panel, para demos
+   * que son un layout entero (ITLayout, pantallas de ejemplo) y se recortaban.
+   * @default "columna"
+   */
+  demoAncho?: "columna" | "completo";
 }
 
 type SandboxView = "preview" | "code";
 
-/** Muted mono eyebrow used by the frame's labels and metadata. */
-const EYEBROW =
-  "font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400";
-
-/** Technical card surface: 1px border, 14px radius, shadow only on hover. */
-const CARD =
-  "rounded-[14px] border border-slate-200 bg-white transition-shadow duration-200 hover:shadow-[0_8px_30px_-12px_rgba(15,23,42,0.25)] dark:border-slate-800 dark:bg-slate-900";
-
+/**
+ * Página de un componente del sandbox: cabecera, vitrina con vista previa y
+ * código, panel lateral de propiedades/documentación y galería.
+ *
+ * @example
+ * ```tsx
+ * <ShowcaseLayout title="ITButton" description="…" demo={<ITButton>Guardar</ITButton>}
+ *   controls={<ITSelect … />} code={code} gallery={<Gallery />} doc={doc} />
+ * ```
+ */
 export const ShowcaseLayout: React.FC<ShowcaseLayoutProps> = ({
   title,
   description,
@@ -76,244 +138,218 @@ export const ShowcaseLayout: React.FC<ShowcaseLayoutProps> = ({
   controls,
   code,
   gallery,
-  doc
+  doc,
+  demoAncho = "columna",
 }) => {
+  const completo = demoAncho === "completo";
   const { t } = useITTranslation();
   const { resolvedTheme } = useITTheme();
-  const [activeTab, setActiveTab] = useState<"controls" | "docs">("controls");
+  const [activeTab, setActiveTab] = useState<"controls" | "docs">(controls ? "controls" : "docs");
   const [sandboxView, setSandboxView] = useState<SandboxView>("preview");
+  // Sin controles la vitrina se queda con todo el ancho.
+  const hayPanel = Boolean(controls) || Boolean(doc);
+
   return (
-    <div className="space-y-6 animate-fadeIn">
-      {/* Title block */}
-      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-        <div className="flex-1 min-w-0">
-          <p className={EYEBROW}>{`// ${t("showcase.layout.eyebrow")}`}</p>
-          <h1 className="mt-1.5 flex items-center gap-3 font-display text-3xl font-bold -tracking-[0.02em] text-slate-900 dark:text-white">
-            {title}
-          </h1>
-          <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400 md:text-base">{description}</p>
-        </div>
+    <div className="animate-fadeIn pb-4">
+      {/* ─── CABECERA DE LA HOJA ─── */}
+      <header className={`border-b pb-7 ${FILETE}`}>
+        <p className={EYEBROW}>{t("showcase.layout.eyebrow")}</p>
+        <h1 className="mt-2.5 font-display text-[32px] font-bold tracking-[-0.02em] text-slate-900 dark:text-white sm:text-[40px]">
+          {title}
+        </h1>
+        <p className="mt-3 max-w-[70ch] text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">
+          {description}
+        </p>
+      </header>
 
+      <div className="pt-8">
+        <ITGrid container columns={12} spacing={8}>
+          {/* ── VITRINA ── */}
+          <ITGrid item xs={12} md={completo || !hayPanel ? 12 : 8}>
+            <section
+              aria-label={t("showcase.layout.sandbox")}
+              className={`overflow-hidden rounded-[10px] border ${FILETE}`}
+            >
+              {/* Barra de la vitrina */}
+              <div className={`flex flex-wrap items-center justify-between gap-3 border-b px-4 py-2.5 ${FILETE}`}>
+                <h2 className={EYEBROW}>{t("showcase.layout.sandbox")}</h2>
 
-      </div>
-
-      <ITGrid container columns={12} spacing={6}>
-        {/* ── MAIN: Unified Sandbox (Preview / Code tabs) ── */}
-        <ITGrid item as="main" xs={12} md={8} className="space-y-4">
-          {/* Unified Sandbox */}
-          <div className={`overflow-hidden ${CARD}`}>
-            {/* Sandbox header */}
-            <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2 dark:border-slate-800 dark:bg-slate-950/60">
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-slate-300 dark:bg-slate-700" />
-                <span className="h-2 w-2 rounded-full bg-slate-300 dark:bg-slate-700" />
-                <span className="h-2 w-2 rounded-full bg-slate-300 dark:bg-slate-700" />
-                <span className={`ml-2 ${EYEBROW}`}>
-                  {t("showcase.layout.sandbox")}
-                </span>
+                <ControlSegmentado
+                  etiqueta={t("showcase.layout.sandbox")}
+                  valor={sandboxView}
+                  onChange={(value) => setSandboxView(value === "code" ? "code" : "preview")}
+                  opciones={[
+                    {
+                      value: "preview",
+                      label: t("showcase.layout.preview"),
+                      icono: <FaEye size={10} />,
+                    },
+                    { value: "code", label: t("showcase.layout.code"), icono: <FaCode size={10} /> },
+                  ]}
+                />
               </div>
 
-              {/* View toggle: Preview / Code */}
-              <div className="flex items-center gap-1 rounded-[10px] border border-slate-200 bg-white p-0.5 dark:border-slate-800 dark:bg-slate-900">
-                <button
-                  onClick={() => setSandboxView("preview")}
-                  aria-pressed={sandboxView === "preview"}
-                  className={`flex items-center gap-1.5 rounded-[8px] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] transition-colors ${
-                    sandboxView === "preview"
-                      ? "bg-primary-600 text-white"
-                      : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-                  }`}
+              {/* Contenido */}
+              {sandboxView === "preview" ? (
+                <div
+                  data-theme={resolvedTheme}
+                  className="flex min-h-[280px] items-center justify-center overflow-x-auto bg-white p-6 dark:bg-slate-950 md:p-10"
                 >
-                  <FaEye size={10} />
-                  {t("showcase.layout.preview")}
-                </button>
-                <button
-                  onClick={() => setSandboxView("code")}
-                  aria-pressed={sandboxView === "code"}
-                  className={`flex items-center gap-1.5 rounded-[8px] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] transition-colors ${
-                    sandboxView === "code"
-                      ? "bg-primary-600 text-white"
-                      : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-                  }`}
-                >
-                  <FaCode size={10} />
-                  {t("showcase.layout.code")}
-                </button>
-              </div>
-            </div>
-
-            {/* Sandbox content */}
-            {sandboxView === "preview" ? (
-              <div
-                data-theme={resolvedTheme}
-                className="flex min-h-[320px] items-center justify-center bg-white p-6 transition-all duration-300 dark:bg-slate-950 md:p-10"
-              >
-                <div className="flex w-full justify-center">{demo}</div>
-              </div>
-            ) : (
-              <div className="bg-slate-50 p-3 dark:bg-slate-950/60">
-                <CodeViewer code={code} compact />
-              </div>
-            )}
-          </div>
-        </ITGrid>
-
-        {/* ── RIGHT SIDEBAR: Configs / Docs ── */}
-        <ITGrid item as="aside" xs={12} md={4}>
-          <div className="md:sticky md:top-4">
-            <div className={`overflow-hidden ${CARD}`}>
-              {/* Tab bar */}
-              {doc ? (
-                <div className="flex border-b border-slate-200 dark:border-slate-800">
-                  <button
-                    onClick={() => setActiveTab("controls")}
-                    aria-pressed={activeTab === "controls"}
-                    className={`flex flex-1 items-center justify-center gap-1.5 py-2.5 font-mono text-[10px] uppercase tracking-[0.12em] transition-colors ${
-                      activeTab === "controls"
-                        ? "border-b-2 border-primary-600 bg-primary-50/50 text-primary-600 dark:bg-primary-950/20 dark:text-primary-400"
-                        : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-                    }`}
-                  >
-                    <FaCog size={11} />
-                    {t("showcase.layout.properties")}
-                  </button>
-                  <button
-                    onClick={() => setActiveTab("docs")}
-                    aria-pressed={activeTab === "docs"}
-                    className={`flex flex-1 items-center justify-center gap-1.5 py-2.5 font-mono text-[10px] uppercase tracking-[0.12em] transition-colors ${
-                      activeTab === "docs"
-                        ? "border-b-2 border-primary-600 bg-primary-50/50 text-primary-600 dark:bg-primary-950/20 dark:text-primary-400"
-                        : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-                    }`}
-                  >
-                    <FaBookOpen size={11} />
-                    {t("showcase.layout.docs")}
-                  </button>
+                  <div className="flex w-full justify-center">{demo}</div>
                 </div>
-              ) : null}
-
-              {/* Controls Tab */}
-              {activeTab === "controls" && (
-                <div className="max-h-[calc(100vh-160px)] space-y-4 overflow-y-auto p-4">
-                  <div className="space-y-4">{controls}</div>
+              ) : (
+                <div className="p-3">
+                  <CodeViewer code={code} compact />
                 </div>
               )}
+            </section>
+          </ITGrid>
 
-              {/* Documentation Tab */}
-              {doc && activeTab === "docs" && (
-                <div className="max-h-[calc(100vh-160px)] space-y-5 overflow-y-auto p-4">
-                  {/* Description */}
-                  <div>
-                    <h3 className={`mb-2 ${EYEBROW}`}>
-                      {t("showcase.layout.overview")}
-                    </h3>
-                    <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300">
-                      {doc.summary}
-                    </p>
-                    {doc.description && (
-                      <p className="mt-2 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
-                        {doc.description}
+          {/* ── PANEL LATERAL ── */}
+          {hayPanel && (
+          <ITGrid item xs={12} md={completo ? 12 : 4}>
+            <div className={completo ? "" : "md:sticky md:top-4"}>
+              <section
+                aria-label={t("showcase.layout.properties")}
+                className={`overflow-hidden rounded-[10px] border ${FILETE} ${
+                  completo ? "max-w-[880px]" : ""
+                }`}
+              >
+                {doc ? (
+                  <div
+                    role="tablist"
+                    aria-label={t("showcase.layout.properties")}
+                    className={`flex items-stretch gap-1 border-b px-2 ${FILETE}`}
+                  >
+                    {(
+                      [
+                        { id: "controls", label: t("showcase.layout.properties"), icono: <FaCog size={10} /> },
+                        { id: "docs", label: t("showcase.layout.docs"), icono: <FaBookOpen size={10} /> },
+                      ] as const
+                    ).map((tab) => {
+                      const activa = activeTab === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          type="button"
+                          role="tab"
+                          aria-selected={activa}
+                          onClick={() => setActiveTab(tab.id)}
+                          className={`-mb-px inline-flex items-center gap-2 border-b-2 px-3 py-2.5 font-mono text-[10px] font-medium uppercase tracking-[0.14em] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/60 ${
+                            activa
+                              ? "border-primary-700 text-primary-700 dark:border-primary-500 dark:text-primary-500"
+                              : "border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                          }`}
+                        >
+                          {tab.icono}
+                          {tab.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : null}
+
+                {activeTab === "controls" && (
+                  <div
+                    className={`max-h-[calc(100vh-200px)] space-y-4 overflow-y-auto p-5 ${
+                      completo ? "it-panel-ancho max-w-[880px]" : ""
+                    }`}
+                  >
+                    {controls}
+                  </div>
+                )}
+
+                {doc && activeTab === "docs" && (
+                  <div
+                    className={`max-h-[calc(100vh-200px)] space-y-6 overflow-y-auto p-5 ${
+                      completo ? "it-panel-ancho max-w-[880px]" : ""
+                    }`}
+                  >
+                    <div>
+                      <h2 className={EYEBROW}>{t("showcase.layout.overview")}</h2>
+                      <p className="mt-2.5 text-[13px] leading-relaxed text-slate-700 dark:text-slate-300">
+                        {doc.summary}
                       </p>
+                      {doc.description && (
+                        <p className="mt-2 text-[12px] leading-relaxed text-slate-500 dark:text-slate-400">
+                          {doc.description}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <h2 className={EYEBROW}>{t("showcase.layout.props")}</h2>
+                      <dl className={`mt-3 border-t ${FILETE}`}>
+                        {doc.props.map((prop) => (
+                          <div key={prop.name} className={`border-b py-3 ${FILETE}`}>
+                            <dt className="flex flex-wrap items-baseline gap-x-2 font-mono text-[11px] font-semibold text-primary-700 dark:text-primary-500">
+                              {prop.name}
+                              {prop.required ? (
+                                <span className="text-danger-500" title={t("showcase.common.required")}>
+                                  *
+                                </span>
+                              ) : null}
+                              <span className="font-mono text-[10px] font-normal text-slate-500 dark:text-slate-400">
+                                {prop.type}
+                              </span>
+                              <span className="font-mono text-[10px] font-normal text-slate-500 dark:text-slate-400">
+                                {`= ${prop.default || "—"}`}
+                              </span>
+                            </dt>
+                            <dd className="mt-1.5 text-[12px] leading-relaxed text-slate-600 dark:text-slate-300">
+                              {prop.description}
+                            </dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
+
+                    {doc.examples && doc.examples.length > 0 && (
+                      <div>
+                        <h2 className={EYEBROW}>{t("showcase.layout.usageExamples")}</h2>
+                        <div className="mt-3 space-y-2">
+                          {doc.examples.map((example, i) => (
+                            <pre
+                              key={i}
+                              className="overflow-x-auto rounded-[10px] border border-slate-800 bg-slate-950 p-3 font-mono text-[10px] leading-relaxed text-slate-200"
+                            >
+                              <code>{example}</code>
+                            </pre>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {doc.notes && doc.notes.length > 0 && (
+                      <div>
+                        <h2 className={EYEBROW}>{t("showcase.layout.notes")}</h2>
+                        <ul className={`mt-3 border-t ${FILETE}`}>
+                          {doc.notes.map((note, i) => (
+                            <li
+                              key={i}
+                              className={`border-b py-2.5 text-[12px] leading-relaxed text-slate-600 dark:text-slate-300 ${FILETE}`}
+                            >
+                              {note}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     )}
                   </div>
-
-                  {/* Props Table */}
-                  <div>
-                    <h3 className={`mb-2 ${EYEBROW}`}>
-                      {t("showcase.layout.props")}
-                    </h3>
-                    <div className="overflow-x-auto rounded-[10px] border border-slate-200 dark:border-slate-800">
-                      <table className="w-full text-[11px]">
-                        <thead>
-                          <tr className="bg-slate-50 dark:bg-slate-950/60">
-                            <th className="whitespace-nowrap px-2 py-1.5 text-left font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{t("showcase.layout.prop")}</th>
-                            <th className="whitespace-nowrap px-2 py-1.5 text-left font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{t("showcase.layout.type")}</th>
-                            <th className="whitespace-nowrap px-2 py-1.5 text-left font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{t("showcase.layout.default")}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {doc.props.map((prop, i) => (
-                            <tr
-                              key={prop.name}
-                              className={`border-t border-slate-200 dark:border-slate-800 ${
-                                i % 2 === 0 ? "bg-white dark:bg-slate-900" : "bg-slate-50/60 dark:bg-slate-950/40"
-                              }`}
-                            >
-                              <td className="whitespace-nowrap px-2 py-1.5 font-mono font-semibold text-primary-600 dark:text-primary-400">
-                                {prop.name}
-                                {prop.required ? <span className="ml-0.5 text-danger-500">*</span> : null}
-                              </td>
-                              <td className="px-2 py-1.5 font-mono text-[10px] text-slate-600 dark:text-slate-400">
-                                {prop.type}
-                              </td>
-                              <td className="px-2 py-1.5 font-mono text-[10px] text-slate-500 dark:text-slate-400">
-                                {prop.default || "—"}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                    {/* Detailed descriptions below the compact table */}
-                    <div className="mt-2 space-y-1.5">
-                      {doc.props.map((prop) => (
-                        <div key={prop.name} className="text-[11px]">
-                          <span className="font-mono font-semibold text-primary-600 dark:text-primary-400">{prop.name}</span>
-                          <span className="text-slate-500 dark:text-slate-400"> — {prop.description}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Usage Examples */}
-                  {doc.examples && doc.examples.length > 0 && (
-                    <div>
-                      <h3 className={`mb-2 ${EYEBROW}`}>
-                        {t("showcase.layout.usageExamples")}
-                      </h3>
-                      {doc.examples.map((example, i) => (
-                        <div key={i} className="mb-2 last:mb-0">
-                          <pre className="overflow-x-auto rounded-[10px] border border-slate-800 bg-slate-950 p-2 font-mono text-[10px] leading-relaxed text-slate-200">
-                            <code>{example}</code>
-                          </pre>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Notes */}
-                  {doc.notes && doc.notes.length > 0 && (
-                    <div>
-                      <h3 className={`mb-2 ${EYEBROW}`}>
-                        {t("showcase.layout.notes")}
-                      </h3>
-                      <ul className="space-y-1">
-                        {doc.notes.map((note, i) => (
-                          <li key={i} className="flex items-start gap-2 text-[11px] text-slate-600 dark:text-slate-400">
-                            <span className="mt-0.5 shrink-0 font-mono text-primary-500">▍</span>
-                            <span>{note}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
+                )}
+              </section>
             </div>
-          </div>
+          </ITGrid>
+          )}
         </ITGrid>
-      </ITGrid>
+      </div>
 
-      {/* Gallery */}
+      {/* ─── GALERÍA ─── */}
       {gallery && (
-        <div className={`overflow-hidden ${CARD}`}>
-          <div className="border-b border-slate-200 px-4 py-2 dark:border-slate-800">
-            <span className={EYEBROW}>{t("showcase.layout.gallery")}</span>
-          </div>
-          <div className="p-4">
-            {gallery}
-          </div>
-        </div>
+        <section className={`mt-12 border-t pt-8 ${FILETE}`} aria-label={t("showcase.layout.gallery")}>
+          <h2 className={EYEBROW}>{t("showcase.layout.gallery")}</h2>
+          <div className="mt-5">{gallery}</div>
+        </section>
       )}
     </div>
   );

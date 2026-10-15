@@ -259,7 +259,7 @@ const PatternCard = ({ title, desc, code, children }: { title: string; desc?: st
     <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
       <div className="flex items-start justify-between gap-2 p-4 pb-3">
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{title}</p>
+          <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{title}</p>
           {desc && <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{desc}</p>}
         </div>
         {code && (
@@ -349,16 +349,22 @@ export const CardShowcase = () => {
             placeholder={t("showcase.structure.cardTitlePlaceholder")}
           />
           <div className="flex items-center justify-between pt-1">
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.structure.showImage")}</span>
-            <ITSlideToggle isOn={showImage} onToggle={setShowImage} size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.structure.showImage")}</span>
+            <ITSlideToggle isOn={showImage} onToggle={setShowImage} size="sm"
+              ariaLabel={t("showcase.structure.showImage")}
+            />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.structure.showActions")}</span>
-            <ITSlideToggle isOn={showActions} onToggle={setShowActions} size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.structure.showActions")}</span>
+            <ITSlideToggle isOn={showActions} onToggle={setShowActions} size="sm"
+              ariaLabel={t("showcase.structure.showActions")}
+            />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.structure.interactiveOnClick")}</span>
-            <ITSlideToggle isOn={clickable} onToggle={setClickable} size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.structure.interactiveOnClick")}</span>
+            <ITSlideToggle isOn={clickable} onToggle={setClickable} size="sm"
+              ariaLabel={t("showcase.structure.interactiveOnClick")}
+            />
           </div>
         </ITStack>
       }
@@ -736,12 +742,16 @@ export const TextShowcase = () => {
             </ITFlex>
           </div>
           <div className="flex items-center justify-between pt-1">
-            <ITText as="span" className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.structure.boldLabel")}</ITText>
-            <ITSlideToggle isOn={bold} onToggle={setBold} size="sm" />
+            <ITText as="span" className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.structure.boldLabel")}</ITText>
+            <ITSlideToggle isOn={bold} onToggle={setBold} size="sm"
+              ariaLabel={t("showcase.structure.boldLabel")}
+            />
           </div>
           <div className="flex items-center justify-between">
-            <ITText as="span" className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.structure.mutedLabel")}</ITText>
-            <ITSlideToggle isOn={muted} onToggle={setMuted} size="sm" />
+            <ITText as="span" className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.structure.mutedLabel")}</ITText>
+            <ITSlideToggle isOn={muted} onToggle={setMuted} size="sm"
+              ariaLabel={t("showcase.structure.mutedLabel")}
+            />
           </div>
         </ITStack>
       }
@@ -864,7 +874,7 @@ export const TextShowcase = () => {
               >
                 <ITStack spacing={4} className="max-w-sm">
                   <div>
-                    <ITText as="label" className="text-sm font-semibold text-slate-700 dark:text-slate-200 block mb-1">
+                    <ITText as="label" className="block mb-1 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
                       Workspace name <ITText as="span" className="text-danger-500">*</ITText>
                     </ITText>
                     <ITInput
@@ -879,7 +889,7 @@ export const TextShowcase = () => {
                     </ITText>
                   </div>
                   <div>
-                    <ITText as="label" className="text-sm font-semibold text-slate-700 dark:text-slate-200 block mb-1">
+                    <ITText as="label" className="block mb-1 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
                       Description
                     </ITText>
                     <ITInput
@@ -1037,22 +1047,10 @@ export const LayoutShowcase = () => {
     { id: "3", label: t("showcase.structure.navAlerts"), icon: <FaBell />, isActive: navActiveId === "3", action: () => setNavActiveId("3") },
   ];
 
-  const navbarCode = `<ITNavbar
-  logoText="AXZY"
-  navigationItems={[
-    { id: "1", label: "Inicio", icon: <FaHome />, isActive: true },
-    { id: "2", label: "Documentos", icon: <FaFileAlt /> },
-    { id: "3", label: "Alertas", icon: <FaBell /> }
-  ]}
-  userMenu={{
-    userName: "Auditor AXZY",
-    userEmail: "auditor@axzy.dev",
-    menuItems: [{ label: "Ajustes", onClick: () => {} }]
-  }}
-/>`;
 
   return (
     <ShowcaseLayout
+  demoAncho="completo"
       title="ITLayout & ITNavbar"
       description="Chasis estructural del portal con barra superior y lateral colapsable. Totalmente responsivo con drawer móvil."
       code={code}
@@ -1092,8 +1090,10 @@ export const LayoutShowcase = () => {
       controls={
         <ITStack spacing={4}>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.structure.sidebarCollapsed")}</span>
-            <ITSlideToggle isOn={collapsed} onToggle={setCollapsed} size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.structure.sidebarCollapsed")}</span>
+            <ITSlideToggle isOn={collapsed} onToggle={setCollapsed} size="sm"
+              ariaLabel={t("showcase.structure.sidebarCollapsed")}
+            />
           </div>
           <div className="text-xs text-slate-500">
             {t("showcase.structure.layoutHint")}
@@ -1101,10 +1101,12 @@ export const LayoutShowcase = () => {
         </ITStack>
       }
       gallery={
-        <ITStack spacing={6}>
+        <ITStack spacing={8}>
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.structure.galleryNavbarStandalone")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden h-[420px]">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+              {t("showcase.structure.galleryNavbarStandalone")}
+            </h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITNavbar
                 logoText="AXZY"
                 navigationItems={navbarItems}
@@ -1117,19 +1119,24 @@ export const LayoutShowcase = () => {
                   ],
                 }}
               >
-                <div className="p-8 text-center text-slate-500 text-sm">
-                  {navActiveId ? t("showcase.structure.activeItem", { label: navbarItems.find(i => i.isActive)?.label ?? "" }) : t("showcase.structure.selectNavItem")}
+                <div className="p-6">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+                    {navActiveId
+                      ? t("showcase.structure.activeItem", {
+                          label: navbarItems.find((item) => item.isActive)?.label ?? "",
+                        })
+                      : t("showcase.structure.selectNavItem")}
+                  </p>
                 </div>
               </ITNavbar>
-            </div>
-            <div className="mt-3">
-              <CodeViewer code={navbarCode} />
             </div>
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.structure.galleryNavbarSubmenus")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden h-[420px]">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+              {t("showcase.structure.galleryNavbarSubmenus")}
+            </h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITNavbar
                 logoText="Admin"
                 navigationItems={[
@@ -1151,16 +1158,20 @@ export const LayoutShowcase = () => {
                   menuItems: [{ label: t("showcase.structure.navExit"), onClick: () => {} }],
                 }}
               >
-                <div className="p-8 text-center text-slate-500 text-sm">
-                  {t("showcase.structure.submenuHint")}
+                <div className="p-6">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+                    {t("showcase.structure.submenuHint")}
+                  </p>
                 </div>
               </ITNavbar>
             </div>
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.structure.gallerySidebarBadges")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden h-[420px] flex">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+              {t("showcase.structure.gallerySidebarBadges")}
+            </h3>
+            <div className="flex h-[320px] overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITSidebar
                 visibleOnMobile
                 className="h-full"
@@ -1178,8 +1189,15 @@ export const LayoutShowcase = () => {
                   onClick: () => {},
                 }}
               />
-              <div className="flex-1 p-6 text-sm text-slate-500">
-                {t("showcase.structure.sidebarItemsHint1")} <code className="font-mono text-xs">badge</code> + <code className="font-mono text-xs">badgeProps</code>{t("showcase.structure.sidebarItemsHint2")} <code className="font-mono text-xs">notification</code> {t("showcase.structure.sidebarItemsHint3")}
+              <div className="flex-1 p-6">
+                <p className="font-mono text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                  {t("showcase.structure.sidebarItemsHint1")}{" "}
+                  <code className="rounded-[4px] border border-slate-200 px-1 dark:border-slate-800">badge</code> +{" "}
+                  <code className="rounded-[4px] border border-slate-200 px-1 dark:border-slate-800">badgeProps</code>
+                  {t("showcase.structure.sidebarItemsHint2")}{" "}
+                  <code className="rounded-[4px] border border-slate-200 px-1 dark:border-slate-800">notification</code>{" "}
+                  {t("showcase.structure.sidebarItemsHint3")}
+                </p>
               </div>
             </div>
           </div>
@@ -1244,8 +1262,10 @@ export const AccordionShowcase = () => {
       }
       controls={
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-700">{t("showcase.structure.allowMultiple")}</span>
-          <ITSlideToggle isOn={allowMultiple} onToggle={setAllowMultiple} size="sm" />
+          <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.structure.allowMultiple")}</span>
+          <ITSlideToggle isOn={allowMultiple} onToggle={setAllowMultiple} size="sm"
+              ariaLabel={t("showcase.structure.allowMultiple")}
+            />
         </div>
       }
       gallery={

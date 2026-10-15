@@ -134,19 +134,23 @@ export const ButtonShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.withIcon")}</span>
-            <ITSlideToggle isOn={withIcon} onToggle={setWithIcon} size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.forms.withIcon")}</span>
+            <ITSlideToggle isOn={withIcon} onToggle={setWithIcon} size="sm"
+              ariaLabel={t("showcase.forms.withIcon")}
+            />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
-            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.common.disabled")}</span>
+            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm"
+              ariaLabel={t("showcase.common.disabled")}
+            />
           </div>
         </>
       }
       gallery={
         <div className="space-y-6">
           <div>
-            <h4 className="text-sm font-bold text-slate-700 mb-3">{t("showcase.forms.galleryWithIcon")}</h4>
+            <h3 className="text-sm font-bold text-slate-700 mb-3">{t("showcase.forms.galleryWithIcon")}</h3>
             <div className="flex flex-wrap gap-3">
               <ITButton label={t("showcase.common.save")} icon={<FaSave />} color="success" />
               <ITButton label={t("showcase.common.edit")} icon={<FaEdit />} color="info" />
@@ -155,7 +159,7 @@ export const ButtonShowcase = () => {
             </div>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-700 mb-3">{t("showcase.forms.galleryVariants")}</h4>
+            <h3 className="text-sm font-bold text-slate-700 mb-3">{t("showcase.forms.galleryVariants")}</h3>
             <div className="flex flex-wrap gap-3">
               <ITButton label="Filled" variant="filled" />
               <ITButton label="Outlined" variant="outlined" />
@@ -166,7 +170,7 @@ export const ButtonShowcase = () => {
             </div>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-700 mb-3">{t("showcase.forms.gallerySemanticColors")}</h4>
+            <h3 className="text-sm font-bold text-slate-700 mb-3">{t("showcase.forms.gallerySemanticColors")}</h3>
             <div className="flex flex-wrap gap-3">
               <ITButton label="Primary" color="primary" />
               <ITButton label="Secondary" color="secondary" />
@@ -407,10 +411,11 @@ export const InputShowcase = () => {
       case "toggle":
         return (
           <div className="w-full max-w-sm flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-xl">
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{label || t("showcase.forms.toggleSwitch")}</span>
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{label || t("showcase.forms.toggleSwitch")}</span>
             <ITSlideToggle
               isOn={toggleVal}
               onToggle={setToggleVal}
+              ariaLabel={label || t("showcase.forms.toggleSwitch")}
               disabled={disabled}
               activeColor={variant === "primary" ? "success" : variant}
             />
@@ -543,7 +548,8 @@ export const InputShowcase = () => {
                   onToggle={(val) => setFormData(prev => ({ ...prev, newsletter: val }))}
                   disabled={formDisabled}
                   size="sm"
-                />
+              ariaLabel={t("showcase.forms.newsletter")}
+            />
               </div>
             </div>
 
@@ -628,11 +634,15 @@ export const InputShowcase = () => {
               />
               <div className="flex items-center justify-between pt-2">
                 <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.forms.simulateErrors")}</span>
-                <ITSlideToggle isOn={showFormErrors} onToggle={setShowFormErrors} size="sm" />
+                <ITSlideToggle isOn={showFormErrors} onToggle={setShowFormErrors} size="sm"
+              ariaLabel={t("showcase.forms.simulateErrors")}
+            />
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.forms.disableAll")}</span>
-                <ITSlideToggle isOn={formDisabled} onToggle={setFormDisabled} activeColor="danger" size="sm" />
+                <ITSlideToggle isOn={formDisabled} onToggle={setFormDisabled} activeColor="danger" size="sm"
+              ariaLabel={t("showcase.forms.disableAll")}
+            />
               </div>
             </>
           ) : (
@@ -679,11 +689,15 @@ export const InputShowcase = () => {
               />
               <div className="flex items-center justify-between pt-2">
                 <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.common.required")}</span>
-                <ITSlideToggle isOn={required} onToggle={setRequired} size="sm" />
+                <ITSlideToggle isOn={required} onToggle={setRequired} size="sm"
+              ariaLabel={t("showcase.common.required")}
+            />
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.common.disabled")}</span>
-                <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
+                <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm"
+              ariaLabel={t("showcase.common.disabled")}
+            />
               </div>
             </>
           )
@@ -745,8 +759,10 @@ export const SelectShowcase = () => {
           <ITInput name="label_ctrl" label={t("showcase.common.label")} value={label} onChange={(e: any) => setLabel(e.target.value)} onBlur={() => { }} />
           <ITInput name="err_ctrl" label={t("showcase.forms.errorMessage")} value={error} onChange={(e: any) => setError(e.target.value)} onBlur={() => { }} />
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
-            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.common.disabled")}</span>
+            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm"
+              ariaLabel={t("showcase.common.disabled")}
+            />
           </div>
         </>
       }
@@ -850,12 +866,16 @@ export const SearchSelectShowcase = () => {
       controls={
         <>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.loadingState")}</span>
-            <ITSlideToggle isOn={isLoading} onToggle={setIsLoading} size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.forms.loadingState")}</span>
+            <ITSlideToggle isOn={isLoading} onToggle={setIsLoading} size="sm"
+              ariaLabel={t("showcase.forms.loadingState")}
+            />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
-            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.common.disabled")}</span>
+            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm"
+              ariaLabel={t("showcase.common.disabled")}
+            />
           </div>
         </>
       }
@@ -922,12 +942,16 @@ export const DatePickerShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.rangeSelection")}</span>
-            <ITSlideToggle isOn={range} onToggle={(r) => { setRange(r); setVal(r ? [new Date(), new Date()] : new Date()); }} size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.forms.rangeSelection")}</span>
+            <ITSlideToggle isOn={range} onToggle={(r) => { setRange(r); setVal(r ? [new Date(), new Date()] : new Date()); }} size="sm"
+              ariaLabel={t("showcase.forms.rangeSelection")}
+            />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
-            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.common.disabled")}</span>
+            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm"
+              ariaLabel={t("showcase.common.disabled")}
+            />
           </div>
         </>
       }
@@ -983,8 +1007,10 @@ export const TimePickerShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
-            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.common.disabled")}</span>
+            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm"
+              ariaLabel={t("showcase.common.disabled")}
+            />
           </div>
         </>
       }
@@ -1088,6 +1114,7 @@ export const SlideToggleShowcase = () => {
             activeColor={activeColor}
             size={size}
             disabled={disabled}
+            ariaLabel={t("showcase.forms.toggleSwitch")}
           />
           <span className="text-xs font-mono text-slate-500">
             {t("showcase.forms.stateLabel")} {isOn ? t("showcase.forms.stateOn") : t("showcase.forms.stateOff")}
@@ -1121,17 +1148,38 @@ export const SlideToggleShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.disableSwitch")}</span>
-            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.forms.disableSwitch")}</span>
+            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm"
+              ariaLabel={t("showcase.forms.disableSwitch")}
+            />
           </div>
         </>
       }
       gallery={
         <div className="flex flex-wrap items-center gap-6">
-          <ITSlideToggle initialState={false} size="sm" />
-          <ITSlideToggle initialState={true} activeColor="primary" size="md" />
-          <ITSlideToggle initialState={true} activeColor="purple" size="lg" />
-          <ITSlideToggle initialState={true} disabled size="md" />
+          <ITSlideToggle
+            initialState={false}
+            size="sm"
+            ariaLabel={t("showcase.common.off")}
+          />
+          <ITSlideToggle
+            initialState={true}
+            activeColor="primary"
+            size="md"
+            ariaLabel={`${t("showcase.common.on")} · md`}
+          />
+          <ITSlideToggle
+            initialState={true}
+            activeColor="purple"
+            size="lg"
+            ariaLabel={`${t("showcase.common.on")} · purple · lg`}
+          />
+          <ITSlideToggle
+            initialState={true}
+            disabled
+            size="md"
+            ariaLabel={t("showcase.common.disabled")}
+          />
         </div>
       }
     />
@@ -1265,12 +1313,13 @@ export const WysiwygShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.forceError")}</span>
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.forms.forceError")}</span>
             <ITSlideToggle
               isOn={!!error}
               onToggle={(v) => setError(v ? t("showcase.forms.requiredFieldError") : undefined)}
               activeColor="danger"
               size="sm"
+              ariaLabel={t("showcase.forms.forceError")}
             />
           </div>
         </>
@@ -1751,8 +1800,10 @@ export const FieldShowcase = () => {
       }
       controls={
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.showHelp")}</span>
-          <ITSlideToggle isOn={showHelp} onToggle={setShowHelp} size="sm" />
+          <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.forms.showHelp")}</span>
+          <ITSlideToggle isOn={showHelp} onToggle={setShowHelp} size="sm"
+              ariaLabel={t("showcase.forms.showHelp")}
+            />
         </div>
       }
       doc={{
@@ -1955,7 +2006,7 @@ const MaskedDemo = ({
   const [complete, setComplete] = useState<string | null>(null);
   return (
     <div>
-      <h4 className="text-sm font-bold text-slate-700 mb-2">{title}</h4>
+      <h3 className="text-sm font-bold text-slate-700 mb-2">{title}</h3>
       <ITMaskedInput
         name={title.toLowerCase().replace(/\s+/g, "_")}
         label={mask}
@@ -2040,12 +2091,16 @@ export const MaskedInputShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
-            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.common.disabled")}</span>
+            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm"
+              ariaLabel={t("showcase.common.disabled")}
+            />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.error")}</span>
-            <ITSlideToggle isOn={withError} onToggle={setWithError} activeColor="danger" size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.common.error")}</span>
+            <ITSlideToggle isOn={withError} onToggle={setWithError} activeColor="danger" size="sm"
+              ariaLabel={t("showcase.common.error")}
+            />
           </div>
         </>
       }
@@ -2167,12 +2222,16 @@ export const SegmentedControlShowcase = () => {
             ]}
           />
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.withIcons")}</span>
-            <ITSlideToggle isOn={withIcons} onToggle={setWithIcons} size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.forms.withIcons")}</span>
+            <ITSlideToggle isOn={withIcons} onToggle={setWithIcons} size="sm"
+              ariaLabel={t("showcase.forms.withIcons")}
+            />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
-            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.common.disabled")}</span>
+            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm"
+              ariaLabel={t("showcase.common.disabled")}
+            />
           </div>
         </>
       }
@@ -2308,16 +2367,22 @@ onChange={(value) => console.log(value + 1)} // ${amount === null ? "undefined" 
             ]}
           />
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.required")}</span>
-            <ITSlideToggle isOn={required} onToggle={setRequired} size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.common.required")}</span>
+            <ITSlideToggle isOn={required} onToggle={setRequired} size="sm"
+              ariaLabel={t("showcase.common.required")}
+            />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.forms.simulateError")}</span>
-            <ITSlideToggle isOn={showError} onToggle={setShowError} activeColor="danger" size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.forms.simulateError")}</span>
+            <ITSlideToggle isOn={showError} onToggle={setShowError} activeColor="danger" size="sm"
+              ariaLabel={t("showcase.forms.simulateError")}
+            />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.common.disabled")}</span>
-            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.common.disabled")}</span>
+            <ITSlideToggle isOn={disabled} onToggle={setDisabled} activeColor="danger" size="sm"
+              ariaLabel={t("showcase.common.disabled")}
+            />
           </div>
         </>
       }

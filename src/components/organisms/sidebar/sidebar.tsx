@@ -378,6 +378,9 @@ export default function ITSidebar({
           {navigationItems.map((item) => {
             const hasSubmenu = !!item.subitems && item.subitems.length > 0;
             const submenuId = `it-sidebar-submenu-${item.id}`;
+            // El submenú solo existe en el DOM cuando la barra está expandida:
+            // `aria-controls` a un id inexistente es un valor ARIA inválido.
+            const hasRenderedSubmenu = hasSubmenu && !isSidebarCollapsed;
             const { className: badgeClassName, ...badgeRest } = item.badgeProps ?? {};
             // Flat + expanded: a parent whose subitem is active stays plain; the
             // subitem carries the highlight. Collapsed, the parent icon shows it.
@@ -389,7 +392,7 @@ export default function ITSidebar({
                 tabIndex={0}
                 aria-label={item.label}
                 aria-expanded={hasSubmenu ? expandedItems.has(item.id) : undefined}
-                aria-controls={hasSubmenu ? submenuId : undefined}
+                aria-controls={hasRenderedSubmenu ? submenuId : undefined}
                 className={`flex items-center cursor-pointer 
                   transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)]
                   rounded-xl relative overflow-visible

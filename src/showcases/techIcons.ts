@@ -40,6 +40,7 @@ const ICONS = {
   nodejs: { src: "/tech-icons/nodejs.svg" },
   flutter: { src: "/tech-icons/flutter.svg" },
   express: { src: "/tech-icons/express.svg", mono: true },
+  springboot: { src: "/tech-icons/springboot.svg" },
   electron: { src: "/tech-icons/electron.svg" },
   redux: { src: "/tech-icons/redux.svg" },
   // Markup, styles & data
@@ -48,8 +49,10 @@ const ICONS = {
   sass: { src: "/tech-icons/sass.svg" },
   mongodb: { src: "/tech-icons/mongodb.svg" },
   mysql: { src: "/tech-icons/mysql.svg" },
+  postgresql: { src: "/tech-icons/postgresql.svg" },
   // Mobile & platform
   android: { src: "/tech-icons/android.svg" },
+  appium: { src: "/tech-icons/appium.svg" },
   // Tooling & DevOps
   docker: { src: "/tech-icons/docker.svg" },
   git: { src: "/tech-icons/git.svg" },

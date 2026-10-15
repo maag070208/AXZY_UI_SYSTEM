@@ -7,7 +7,9 @@ They are self-hosted on purpose: the page previously pointed `<img src>` at
 `icongr.am` / `devicons.railway.app`, so every icon broke whenever those CDNs
 were unreachable.
 
-- Source: [Devicon](https://github.com/devicons/devicon) (MIT licensed).
+- Source: [Devicon](https://github.com/devicons/devicon) (MIT licensed); `appium.svg`
+  viene de [Simple Icons](https://github.com/simple-icons/simple-icons) (CC0), recoloreado a
+  la marca y reescalado al `viewBox 0 0 128 128` del resto del set.
 - The brand logos themselves remain property of their respective owners and are
   used here only to identify the technologies.
 - These files are dev sandbox assets: `public/` is not part of the published npm

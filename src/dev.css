@@ -1,4 +1,6 @@
-@import "tailwindcss";
+/* `index.css` ya importa Tailwind: importarlo otra vez aquí generaba una
+   segunda copia del tema por defecto (~154 KB) que, al emitirse después,
+   pisaba `--font-sans/--font-mono` y dejaba la hoja en las fuentes del sistema. */
 @import "./index.css";
 
 /* ──────────────────────────────────────────────
@@ -6,6 +8,11 @@
    See DESIGN.md. Dev-only: never reach dist/index.css.
    ────────────────────────────────────────────── */
 
+/* La tipografía se declara DOS veces a propósito:
+   1) en `@theme`, para que Tailwind genere las utilidades `font-sans/mono/display`;
+   2) en un `:root` SIN CAPA, porque el tema por defecto de Tailwind vive en
+      `@layer theme` y, al emitirse después, pisaba estos valores (la hoja
+      acababa con las fuentes del sistema). El CSS sin capa gana a cualquier capa. */
 @theme {
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", sans-serif;
@@ -14,20 +21,21 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
+:root {
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-display: "Bricolage Grotesque", "IBM Plex Sans", ui-sans-serif,
+    system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* La prosa del sandbox sigue a `--font-sans` (preflight usa esta variable). */
+  --default-font-family: var(--font-sans);
+}
+
 /* ──────────────────────────────────────────────
    SANDBOX-ONLY ANIMATIONS (dev.css)
    Never shipped: only src/main.tsx imports this file and `pnpm bundle`
    builds from src/index.ts, so these never reach dist/index.css.
    ────────────────────────────────────────────── */
-
-/* Blueprint grid: technical 1px ruling, masked to fade from the top. */
-.it-blueprint {
-  background-image: linear-gradient(to right, currentColor 1px, transparent 1px),
-    linear-gradient(to bottom, currentColor 1px, transparent 1px);
-  background-size: 56px 56px;
-  -webkit-mask-image: radial-gradient(ellipse at top, black 18%, transparent 72%);
-  mask-image: radial-gradient(ellipse at top, black 18%, transparent 72%);
-}
 
 /* Smooth in-page navigation for the portfolio anchors. */
 html {
@@ -107,4 +115,20 @@ html {
   .it-reveal {
     animation: none;
   }
+}
+
+/* ──────────────────────────────────────────────
+   PANEL DE PROPIEDADES A ANCHO COMPLETO (dev.css)
+   Cuando la vitrina ocupa las 12 columnas, las filas `justify-between` de los
+   controles dejaban la etiqueta a un lado y el control a 800px del otro. Aquí
+   el control se agrupa junto a su etiqueta.
+   ────────────────────────────────────────────── */
+.it-panel-ancho .justify-between {
+  justify-content: flex-start;
+  gap: 0.75rem;
+}
+
+/* Las notas del panel no se estiran a 100+ caracteres por línea. */
+.it-panel-ancho p {
+  max-width: 72ch;
 }

@@ -41,7 +41,8 @@
     "ext:catalog": "node vscode-extension/scripts/generate-catalog.mjs",
     "ext:build": "node vscode-extension/esbuild.mjs",
     "ext:typecheck": "tsc --noEmit -p vscode-extension/tsconfig.json",
-    "ext:package": "node vscode-extension/esbuild.mjs && cd vscode-extension && npx --yes @vscode/vsce package --no-dependencies"
+    "ext:package": "node vscode-extension/esbuild.mjs && cd vscode-extension && npx --yes @vscode/vsce package --no-dependencies",
+    "audit:sandbox": "node scripts/audit-sandbox.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

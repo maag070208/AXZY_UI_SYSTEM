@@ -3,7 +3,6 @@ import { FaCode } from "react-icons/fa";
 import ITStack from "../components/atoms/stack/stack";
 import ITFlex from "../components/atoms/flex/flex";
 import ITGrid from "../components/atoms/grid/grid";
-import ITCard from "../components/molecules/card/card";
 import ITButton from "../components/atoms/button/button";
 import ITStatCard from "../components/molecules/stat-card/stat-card";
 import ITAvatar from "../components/atoms/avatar/avatar";
@@ -250,7 +249,7 @@ export const StackShowcase = () => {
       controls={
         <>
           <div>
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">{t("showcase.layoutPrimitives.direction")}</p>
+            <p className="mb-1.5 block font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.layoutPrimitives.direction")}</p>
             <ITSegmentedControl
               options={[
                 { value: "column", label: "Column" },
@@ -278,7 +277,7 @@ export const StackShowcase = () => {
             options={justifyOptions}
           />
           <div>
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">{t("showcase.layoutPrimitives.flexWrap")}</p>
+            <p className="mb-1.5 block font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.layoutPrimitives.flexWrap")}</p>
             <ITSegmentedControl
               options={[
                 { value: "nowrap", label: "Nowrap" },
@@ -290,8 +289,10 @@ export const StackShowcase = () => {
             />
           </div>
           <ITFlex justify="between" align="center">
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.layoutPrimitives.showDivider")}</span>
-            <ITSlideToggle isOn={withDivider} onToggle={setWithDivider} size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.layoutPrimitives.showDivider")}</span>
+            <ITSlideToggle isOn={withDivider} onToggle={setWithDivider} size="sm"
+              ariaLabel={t("showcase.layoutPrimitives.showDivider")}
+            />
           </ITFlex>
         </>
       }
@@ -498,7 +499,7 @@ export const StackShowcase = () => {
                       { label: "Conversion", value: "3.24%", delta: "−0.8%", color: "amber" },
                     ].map((stat) => (
                       <div key={stat.label} className="flex-1 min-w-0 bg-white dark:bg-slate-800 rounded-xl p-3 border border-slate-200 dark:border-slate-700 shadow-sm">
-                        <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400">{stat.label}</p>
+                        <p className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{stat.label}</p>
                         <p className="text-xl font-bold text-slate-800 dark:text-slate-100 mt-1 font-mono">{stat.value}</p>
                         <p className={`text-[10px] font-semibold mt-0.5 ${
                           stat.color === "emerald" ? "text-emerald-600 dark:text-emerald-400" :
@@ -540,7 +541,7 @@ const PatternCard = ({ title, desc, code, children }: { title: string; desc?: st
     <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
       <div className="flex items-start justify-between gap-2 p-4 pb-3">
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{title}</p>
+          <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{title}</p>
           {desc && <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{desc}</p>}
         </div>
         {code && (
@@ -708,7 +709,7 @@ export const FlexShowcase = () => {
       controls={
         <ITStack spacing={4}>
           <div>
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">{t("showcase.layoutPrimitives.direction")}</p>
+            <p className="mb-1.5 block font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.layoutPrimitives.direction")}</p>
             <ITSegmentedControl
               options={[
                 { value: "row", label: "Row" },
@@ -742,7 +743,7 @@ export const FlexShowcase = () => {
             ]}
           />
           <div>
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">{t("showcase.layoutPrimitives.flexWrap")}</p>
+            <p className="mb-1.5 block font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.layoutPrimitives.flexWrap")}</p>
             <ITSegmentedControl
               options={[
                 { value: "nowrap", label: "Nowrap" },
@@ -793,8 +794,8 @@ export const FlexShowcase = () => {
                       <p className="text-sm font-semibold text-emerald-900 dark:text-emerald-200">Main area</p>
                     </ITFlex>
                     <div className="bg-slate-100 dark:bg-slate-800 rounded-xl p-4 text-center">
-                      <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400">Fixed</p>
-                      <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mt-1">100px</p>
+                      <p className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Fixed</p>
+                      <p className="mt-1 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">100px</p>
                     </div>
                   </ITFlex>
                 </div>
@@ -1038,7 +1039,7 @@ export const GridShowcase = () => {
                           ].map((s) => (
                             <ITGrid key={s.label} item xs={12} sm={4}>
                               <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-3 bg-slate-50/50 dark:bg-slate-800/30">
-                                <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400">{s.label}</p>
+                                <p className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{s.label}</p>
                                 <p className="text-lg font-bold text-slate-800 dark:text-slate-100 font-mono mt-0.5">{s.value}</p>
                               </div>
                             </ITGrid>
@@ -1197,7 +1198,7 @@ export const GridShowcase = () => {
                     <ITGrid item xs={12} md={4}>
                       <div className="p-5 space-y-4 bg-slate-50/50 dark:bg-slate-800/30">
                         <div>
-                          <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 mb-2">Written by</p>
+                          <p className="mb-2 block font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Written by</p>
                           <div className="flex items-center gap-2.5">
                             <div className="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-700 dark:text-emerald-300 text-xs font-bold">EM</div>
                             <div>
@@ -1207,7 +1208,7 @@ export const GridShowcase = () => {
                           </div>
                         </div>
                         <div>
-                          <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 mb-2">Tags</p>
+                          <p className="mb-2 block font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Tags</p>
                           <div className="flex flex-wrap gap-1">
                             {["Performance", "Webpack", "React"].map((t) => (
                               <span key={t} className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">{t}</span>
@@ -1345,17 +1346,17 @@ export const GridShowcase = () => {
 </ITStack>`;
 
   return (
-    <div className="space-y-6 animate-fadeIn">
-      <div>
-        <h1 className="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight">{t("showcase.layoutPrimitives.screensTitle")}</h1>
-        <p className="text-slate-500 mt-1.5 text-sm md:text-base">
-          {t("showcase.layoutPrimitives.screensSubtitle")}
-        </p>
-      </div>
-
-      {/* Dashboard Example */}
-      <ITCard title={t("showcase.layoutPrimitives.dashboardCard")} className="overflow-hidden">
-        <ITStack spacing={6}>
+    <ShowcaseLayout
+      demoAncho="completo"
+      title={t("showcase.layoutPrimitives.screensTitle")}
+      description={t("showcase.layoutPrimitives.screensSubtitle")}
+      code={code}
+      demo={
+        <div className="w-full">
+          <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+            {t("showcase.layoutPrimitives.dashboardCard")}
+          </p>
+          <ITStack spacing={6}>
           <ITFlex justify="between" align="center">
             <div>
               <h2 className="text-xl font-bold text-slate-800 dark:text-white">{t("showcase.structure.navDashboard")}</h2>
@@ -1414,11 +1415,10 @@ export const GridShowcase = () => {
               </div>
             </ITGrid>
           </ITGrid>
-        </ITStack>
-      </ITCard>
-
-      <CodeViewer code={code} />
-    </div>
+          </ITStack>
+        </div>
+      }
+    />
   );
 };
 
@@ -1457,8 +1457,17 @@ export const ScreenFormShowcase = () => {
 </ITStack>`;
 
   return (
-    <ITCard title={t("showcase.layoutPrimitives.formCard")}>
-      <ITStack spacing={6}>
+    <ShowcaseLayout
+      demoAncho="completo"
+      title={t("showcase.layoutPrimitives.screensTitle")}
+      description={t("showcase.layoutPrimitives.screensSubtitle")}
+      code={formCode}
+      demo={
+        <div className="w-full">
+          <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+            {t("showcase.layoutPrimitives.formCard")}
+          </p>
+          <ITStack spacing={6}>
         <div>
           <h2 className="text-xl font-bold text-slate-800 dark:text-white">{t("showcase.layoutPrimitives.newUser")}</h2>
           <p className="text-xs text-slate-400">{t("showcase.layoutPrimitives.newUserSubtitle")}</p>
@@ -1521,11 +1530,10 @@ export const ScreenFormShowcase = () => {
             </ITFlex>
           </ITGrid>
         </ITGrid>
-      </ITStack>
-      <div className="mt-6">
-        <CodeViewer code={formCode} />
-      </div>
-    </ITCard>
+          </ITStack>
+        </div>
+      }
+    />
   );
 };
 

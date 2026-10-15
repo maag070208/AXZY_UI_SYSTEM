@@ -102,11 +102,13 @@ export const StepperShowcase = () => {
       controls={
         <>
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.nav.useIcons")}</span>
-            <ITSlideToggle isOn={useIcons} onToggle={setUseIcons} size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.nav.useIcons")}</span>
+            <ITSlideToggle isOn={useIcons} onToggle={setUseIcons} size="sm"
+              ariaLabel={t("showcase.nav.useIcons")}
+            />
           </div>
           <div className="flex justify-between items-center pt-2">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.nav.resetStep")}</span>
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.nav.resetStep")}</span>
             <button onClick={() => setStep(0)} className="p-2 bg-slate-100 rounded-lg hover:bg-slate-200 text-slate-800">
               <FaSync size={12} />
             </button>
@@ -223,7 +225,7 @@ export const DropdownMenuShowcase = () => {
           <ITCard title={t("showcase.nav.rowActions")}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Reporte Q3.pdf</p>
+                <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Reporte Q3.pdf</p>
                 <p className="text-xs text-slate-500">{t("showcase.nav.lastAction", { action: lastAction })}</p>
               </div>
               <ITDropdownMenu items={items} />

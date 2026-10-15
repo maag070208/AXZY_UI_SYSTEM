@@ -30,6 +30,19 @@ export default function ITBadget({
   const themeBadge = (theme as any).badge || {};
   const config = themeBadge[color] || themeBadge.primary || {};
 
+  /**
+   * El acento base de la paleta (`--color-primary`, cian por defecto) queda en
+   * 2.4:1 con texto blanco y 3.3:1 como texto sobre blanco. Para `primary` el
+   * color se resuelve con utilidades (`primary-700` en claro, `primary-500` en
+   * oscuro) que sí pasan AA; el resto de colores del tema se respetan tal cual.
+   */
+  const esAcentoPrimario = color === "primary";
+  const claseAcento = esAcentoPrimario
+    ? variant === "filled"
+      ? "bg-primary-700 text-white dark:bg-primary-500 dark:text-slate-950"
+      : "border-primary-700 text-primary-700 dark:border-primary-500 dark:text-primary-500"
+    : "";
+
   const getStyle = () => {
     const style: React.CSSProperties = {
       fontWeight: config.fontWeight,
@@ -41,14 +54,18 @@ export default function ITBadget({
     };
 
     if (variant === "filled") {
-      style.backgroundColor = config.backgroundColor;
-      style.color = config.color;
+      if (!esAcentoPrimario) {
+        style.backgroundColor = config.backgroundColor;
+        style.color = config.color;
+      }
       style.borderColor = config.borderColor || 'transparent'; // Some filled badges might have subtle borders
     } else if (variant === "outlined") {
       style.backgroundColor = "transparent";
-      // Use the dark text color for both text and border to ensure high contrast
-      style.color = config.color; 
-      style.borderColor = config.color;
+      if (!esAcentoPrimario) {
+        // El tono del tema para texto y borde: legible sobre cualquier superficie.
+        style.color = config.color;
+        style.borderColor = config.color;
+      }
     }
 
     return style;
@@ -57,6 +74,7 @@ export default function ITBadget({
   return (
     <span
       className={clsx(
+        claseAcento,
         "inline-flex items-center justify-center",
         // Apply size classes (padding/font-size)
         badgeSizes[size],

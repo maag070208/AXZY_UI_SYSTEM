@@ -1,76 +1,45 @@
-import { FaNpm, FaReact, FaCheck } from "react-icons/fa";
+import { FaCube, FaNpm, FaReact } from "react-icons/fa";
 import { SiTailwindcss, SiTypescript, SiVite } from "react-icons/si";
-import { useState } from "react";
-import ITBadget from "../components/atoms/badget/badget";
-import ITButton from "../components/atoms/button/button";
-import ITCard from "../components/molecules/card/card";
 import ITFlex from "../components/atoms/flex/flex";
 import ITGrid from "../components/atoms/grid/grid";
-import ITStack from "../components/atoms/stack/stack";
-import ITText from "../components/atoms/text/text";
+import {
+  BloqueCodigo,
+  BotonCopiar,
+  EnlaceMono,
+  EYEBROW,
+  Etiqueta,
+  FILETE,
+  SectionHeading,
+} from "@/sandbox/ui";
 import { useITTranslation } from "@/i18n";
 
-const CopyButton = ({ text }: { text: string }) => {
-  const { t } = useITTranslation();
-  const [copied, setCopied] = useState(false);
-  return (
-    <ITButton
-      variant="text"
-      color="gray"
-      size="sm"
-      onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-    >
-      <ITFlex align="center" gap={1.5}>
-        {copied ? <FaCheck size={10} className="text-emerald-400" /> : <FaNpm size={10} />}
-        {copied ? t("showcase.common.copied") : t("showcase.common.copy")}
-      </ITFlex>
-    </ITButton>
-  );
-};
+const INSTALL_CMD = "pnpm add @axzydev/axzy_ui_system";
+const REPO_URL = "https://github.com/maag070208/AXZY_UI_SYSTEM";
 
-const CodeBlock = ({ code, filename, color }: { code: string; filename?: string; color?: string }) => (
-  <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
-    {filename && (
-      <div className={`px-4 py-2 border-b border-slate-200 dark:border-slate-700 ${color || "bg-slate-50 dark:bg-slate-800/80"}`}>
-        <ITText as="span" className="!text-xs !font-mono !text-slate-400">{filename}</ITText>
-      </div>
-    )}
-    <div className="relative bg-slate-950">
-      <pre className="p-4 text-xs font-mono overflow-x-auto leading-relaxed text-slate-200">
-        <code>{code}</code>
-      </pre>
-    </div>
-  </div>
-);
+/** Un paso del setup: título, apoyo, archivo y código. */
+interface Paso {
+  /** Ícono de la tecnología del paso. */
+  icono: React.ReactNode;
+  /** Clave i18n del título. */
+  titleKey: string;
+  /** Clave i18n del apoyo. */
+  descKey: string;
+  /** Archivo o etiqueta del bloque de código. */
+  filename: string;
+  /** Código del paso. */
+  code: string;
+}
 
-const codeFileColors = [
-  "bg-emerald-50 dark:bg-emerald-950/30",
-  "bg-blue-50 dark:bg-blue-950/30",
-  "bg-cyan-50 dark:bg-cyan-950/30",
-  "bg-violet-50 dark:bg-violet-950/30",
-  "bg-amber-50 dark:bg-amber-950/30",
-  "bg-rose-50 dark:bg-rose-950/30",
-];
-
-const stepStyles = [
-  { iconBg: "bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400" },
-  { iconBg: "bg-blue-100 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400" },
-  { iconBg: "bg-cyan-100 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400" },
-  { iconBg: "bg-violet-100 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400" },
-  { iconBg: "bg-amber-100 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400" },
-  { iconBg: "bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400" },
-];
-
-const steps = [
+const PASOS: Paso[] = [
   {
-    icon: <FaNpm size={14} />,
+    icono: <FaNpm size={13} />,
     titleKey: "showcase.gettingStarted.step1Title",
     descKey: "showcase.gettingStarted.step1Desc",
     filename: "terminal",
-    code: "npm install @axzydev/axzy_ui_system\nnpm install -D tailwindcss @tailwindcss/vite @vitejs/plugin-react-swc",
+    code: "pnpm add @axzydev/axzy_ui_system\npnpm add -D tailwindcss @tailwindcss/vite @vitejs/plugin-react-swc",
   },
   {
-    icon: <SiVite size={14} />,
+    icono: <SiVite size={13} />,
     titleKey: "showcase.gettingStarted.step2Title",
     descKey: "showcase.gettingStarted.step2Desc",
     filename: "vite.config.ts",
@@ -83,7 +52,7 @@ export default defineConfig({
 })`,
   },
   {
-    icon: <SiTailwindcss size={14} />,
+    icono: <SiTailwindcss size={13} />,
     titleKey: "showcase.gettingStarted.step3Title",
     descKey: "showcase.gettingStarted.step3Desc",
     filename: "src/index.css",
@@ -91,7 +60,7 @@ export default defineConfig({
 @variant dark (&:is(.dark &));`,
   },
   {
-    icon: <FaReact size={14} />,
+    icono: <FaReact size={13} />,
     titleKey: "showcase.gettingStarted.step4Title",
     descKey: "showcase.gettingStarted.step4Desc",
     filename: "src/main.tsx",
@@ -103,7 +72,7 @@ import "@axzydev/axzy_ui_system/dist/index.css"
 </ITThemeProvider>`,
   },
   {
-    icon: <SiTypescript size={14} />,
+    icono: <SiTypescript size={13} />,
     titleKey: "showcase.gettingStarted.step5Title",
     descKey: "showcase.gettingStarted.step5Desc",
     filename: "src/vite-env.d.ts",
@@ -115,7 +84,7 @@ declare module "*.css" {
 }`,
   },
   {
-    icon: <FaReact size={14} />,
+    icono: <FaCube size={13} />,
     titleKey: "showcase.gettingStarted.step6Title",
     descKey: "showcase.gettingStarted.step6Desc",
     filename: "src/App.tsx",
@@ -127,71 +96,7 @@ export default function App() {
   },
 ];
 
-export const GettingStartedShowcase = () => {
-  const { t } = useITTranslation();
-  return (
-    <ITStack spacing={10}>
-      {/* ─── HERO ─── */}
-      <ITCard className="overflow-hidden border-0 bg-gradient-to-br from-primary-50 via-white to-purple-50 dark:from-primary-950/20 dark:via-slate-900 dark:to-purple-950/20 shadow-sm">
-        <div className="relative">
-          <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-primary-500/10 rounded-full blur-[120px] pointer-events-none" />
-          <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
-
-          <ITStack spacing={5} className="relative z-10">
-            <ITStack spacing={2}>
-              <ITBadget label="v1.0.0" color="primary" variant="outlined" className="w-fit" />
-              <ITText as="h1" className="!text-4xl !font-bold !tracking-tight">
-                AXZY UI System
-              </ITText>
-              <ITText as="p" muted className="!text-base !leading-relaxed max-w-xl">
-                {t("showcase.gettingStarted.heroDesc")}
-              </ITText>
-            </ITStack>
-
-            <ITFlex gap={3} wrap="wrap" align="center">
-              <div className="px-4 py-2 rounded-xl bg-gradient-to-r from-primary-50 to-purple-50 dark:from-primary-950/30 dark:to-purple-950/30 border border-primary-200 dark:border-primary-800/50 shadow-sm">
-                <ITFlex align="center" gap={2}>
-                  <FaNpm size={16} className="text-primary-500" />
-                  <code className="text-sm font-mono text-slate-800 dark:text-slate-200">npm install @axzydev/axzy_ui_system</code>
-                  <CopyButton text="npm install @axzydev/axzy_ui_system" />
-                </ITFlex>
-              </div>
-            </ITFlex>
-          </ITStack>
-        </div>
-      </ITCard>
-
-      {/* ─── SETUP STEPS ─── */}
-      <ITGrid container spacing={6}>
-        {steps.map((step, i) => (
-          <ITGrid item xs={12} md={6} key={i}>
-            <ITCard className="border-slate-200/60 dark:border-slate-800/60 shadow-sm h-full">
-              <ITStack spacing={4}>
-                <ITFlex align="center" gap={2.5}>
-                  <div className={`w-8 h-8 rounded-lg ${stepStyles[i].iconBg} flex items-center justify-center`}>
-                    {step.icon}
-                  </div>
-                  <div>
-                    <ITText as="p" className="!text-sm !font-semibold">{t(step.titleKey)}</ITText>
-                    <ITText as="p" className="!text-xs !text-slate-400">{t(step.descKey)}</ITText>
-                  </div>
-                </ITFlex>
-                <CodeBlock code={step.code} filename={step.filename} color={codeFileColors[i]} />
-              </ITStack>
-            </ITCard>
-          </ITGrid>
-        ))}
-      </ITGrid>
-
-      {/* ─── THEMING ─── */}
-      <ITCard title={t("showcase.gettingStarted.themingTitle")} className="border-purple-200/60 dark:border-purple-800/60 shadow-sm">
-        <ITStack spacing={4}>
-          <ITText as="p" className="!text-sm" muted>
-            {t("showcase.gettingStarted.themingDesc")}
-          </ITText>
-          <div className="bg-gradient-to-r from-purple-50 via-fuchsia-50 to-pink-50 dark:from-purple-950/20 dark:via-fuchsia-950/20 dark:to-pink-950/20 rounded-xl p-5 border border-purple-200 dark:border-purple-800/30">
-            <CodeBlock
-              code={`const myTheme = {
+const TEMA_CODE = `const myTheme = {
   colors: {
     primary: { 50: "#fef2f2", 500: "#ef4444" },
   },
@@ -199,11 +104,109 @@ export const GettingStartedShowcase = () => {
 
 <ITThemeProvider theme={myTheme}>
   <App />
-</ITThemeProvider>`}
-            />
-          </div>
-        </ITStack>
-      </ITCard>
-    </ITStack>
+</ITThemeProvider>`;
+
+/**
+ * Puesta en marcha (`#ui-system/general/getting-started`): masthead con el
+ * comando de instalación y los seis pasos del setup como filas numeradas con
+ * filete (sin tarjetas de colores ni degradados decorativos).
+ *
+ * @example
+ * ```tsx
+ * <GettingStartedShowcase />
+ * ```
+ */
+export const GettingStartedShowcase = () => {
+  const { t } = useITTranslation();
+
+  return (
+    <div className="animate-fadeIn pb-4">
+      {/* ─── MASTHEAD ─── */}
+      <header className={`border-b pb-8 ${FILETE}`}>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <p className={EYEBROW}>{`v${__APP_VERSION__} · Tailwind v4 · TypeScript`}</p>
+          <EnlaceMono href={REPO_URL}>Repositorio</EnlaceMono>
+        </div>
+
+        <h1 className="mt-6 font-display text-[36px] font-bold leading-[1.06] tracking-[-0.015em] text-slate-900 dark:text-white sm:text-[46px]">
+          AXZY UI System
+        </h1>
+        <p className="mt-5 max-w-[64ch] text-[15.5px] leading-[1.75] text-slate-600 dark:text-slate-300">
+          {t("showcase.gettingStarted.heroDesc")}
+        </p>
+
+        <div
+          className={`mt-7 inline-flex flex-wrap items-center gap-x-3 gap-y-2 rounded-[10px] border px-4 py-2 ${FILETE}`}
+        >
+          <FaNpm size={15} className="shrink-0 text-primary-700 dark:text-primary-500" />
+          <code className="font-mono text-xs text-slate-700 dark:text-slate-200">
+            {INSTALL_CMD}
+          </code>
+          <span className={`border-l pl-3 ${FILETE}`}>
+            <BotonCopiar texto={INSTALL_CMD} />
+          </span>
+        </div>
+      </header>
+
+      {/* ─── PASOS ─── */}
+      <section className="pt-12">
+        <SectionHeading
+          index={0}
+          label={t("showcase.landing.quickstartEyebrow")}
+          title={t("showcase.gettingStarted.stepsTitle")}
+          subtitle={t("showcase.gettingStarted.stepsSubtitle")}
+          className="pb-7"
+        />
+
+        <ol className={`border-t ${FILETE}`}>
+          {PASOS.map((paso, indice) => (
+            <li
+              key={paso.titleKey}
+              className={`grid gap-4 border-b py-6 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-10 ${FILETE}`}
+            >
+              <div className="min-w-0">
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-[11px] tabular-nums text-slate-500 dark:text-slate-400">
+                    {String(indice + 1).padStart(2, "0")}
+                  </span>
+                  <span aria-hidden className="text-primary-700 dark:text-primary-500">{paso.icono}</span>
+                  <h3 className="font-display text-[16px] font-bold tracking-[-0.02em] text-slate-900 dark:text-white">
+                    {t(paso.titleKey)}
+                  </h3>
+                </div>
+                <p className="mt-2 text-[13.5px] leading-relaxed text-slate-500 dark:text-slate-400">
+                  {t(paso.descKey)}
+                </p>
+              </div>
+
+              <BloqueCodigo code={paso.code} filename={paso.filename} />
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* ─── THEMING ─── */}
+      <section className="pt-12">
+        <div className={`border-t pt-10 ${FILETE}`}>
+          <ITGrid container spacing={8}>
+            <ITGrid item xs={12} lg={5}>
+              <p className={EYEBROW}>{t("showcase.gettingStarted.themingTitle")}</p>
+              <p className="mt-3 text-[14px] leading-relaxed text-slate-600 dark:text-slate-300">
+                {t("showcase.gettingStarted.themingDesc")}
+              </p>
+              <ITFlex align="center" gap={2} wrap="wrap" className="!mt-5">
+                <Etiqueta>Tailwind v4</Etiqueta>
+                <Etiqueta>Runtime</Etiqueta>
+              </ITFlex>
+            </ITGrid>
+
+            <ITGrid item xs={12} lg={7}>
+              <BloqueCodigo code={TEMA_CODE} filename="theme.ts" />
+            </ITGrid>
+          </ITGrid>
+        </div>
+      </section>
+
+    </div>
   );
 };

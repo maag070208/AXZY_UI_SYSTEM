@@ -27,6 +27,18 @@ export interface ITSlideToggleProps {
   /** Size of the switch: "sm" | "md" | "lg". Default: "md". */
   size?: "sm" | "md" | "lg";
 
+  /**
+   * Texto visible del interruptor. Se asocia al control como nombre accesible
+   * (`aria-label`) cuando no hay un `<label>` externo que lo nombre.
+   */
+  label?: string;
+
+  /**
+   * Nombre accesible cuando la etiqueta visible vive fuera del componente.
+   * Tiene prioridad sobre `label`.
+   */
+  ariaLabel?: string;
+
   /** Additional CSS classes on the container. */
   className?: string;
 }

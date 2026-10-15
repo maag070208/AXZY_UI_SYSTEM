@@ -340,7 +340,9 @@ export const TableShowcase = () => {
           />
           <div className="flex items-center justify-between pt-2">
             <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.data.customCardTemplate")}</span>
-            <ITSlideToggle isOn={useCustomCard} onToggle={setUseCustomCard} size="sm" />
+            <ITSlideToggle isOn={useCustomCard} onToggle={setUseCustomCard} size="sm"
+              ariaLabel={t("showcase.data.customCardTemplate")}
+            />
           </div>
           {!useCustomCard && (
             <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded text-xs text-slate-500">
@@ -416,7 +418,7 @@ export const TableShowcase = () => {
       gallery={
         <div className="space-y-6">
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryCustomCardsHover")}</h4>
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryCustomCardsHover")}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {TABLE_DATA.slice(0, 4).map((row, i) => {
                 const initials = (row.name as string).split(" ").map((w: string) => w[0]).join("");
@@ -453,8 +455,8 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryDefaultCards")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryDefaultCards")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITTable
                 columns={columns}
                 data={TABLE_DATA.slice(0, 6)}
@@ -467,8 +469,8 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryCustomCardsPagination")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryCustomCardsPagination")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITTable
                 columns={columns}
                 data={TABLE_DATA}
@@ -499,8 +501,8 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryCompactFixed")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden" style={{ maxWidth: 560 }}>
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryCompactFixed")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800" style={{ maxWidth: 560 }}>
               <ITTable
                 columns={fixedColumns}
                 data={TABLE_DATA}
@@ -513,8 +515,8 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryPinnedNameActions")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden" style={{ maxWidth: 520 }}>
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryPinnedNameActions")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800" style={{ maxWidth: 520 }}>
               <ITTable
                 columns={pinnedColumns}
                 data={TABLE_DATA}
@@ -530,8 +532,8 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryAutoCards")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden" style={{ maxWidth: 420 }}>
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryAutoCards")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800" style={{ maxWidth: 420 }}>
               <ITTable
                 columns={columns}
                 data={TABLE_DATA.slice(0, 6)}
@@ -543,8 +545,8 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryVirtualized")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryVirtualized")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITTable
                 columns={virtualColumns}
                 data={virtualData}
@@ -561,8 +563,8 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryColumnFilters")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryColumnFilters")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITTable
                 columns={filterDemoColumns}
                 data={filterDemoData}
@@ -577,8 +579,8 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryDesignOverrides")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryDesignOverrides")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITTable
                 columns={columns}
                 data={TABLE_DATA.slice(0, 5)}
@@ -607,8 +609,8 @@ export const TableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryPerColumnDesign")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryPerColumnDesign")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITTable
                 columns={columns.map((col: any) =>
                   col.key === "sales"
@@ -891,7 +893,9 @@ export const DataTableShowcase = () => {
           </div>
           <div className="flex items-center justify-between pt-1">
             <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.data.customCardTemplate")}</span>
-            <ITSlideToggle isOn={useCustomCard} onToggle={setUseCustomCard} size="sm" />
+            <ITSlideToggle isOn={useCustomCard} onToggle={setUseCustomCard} size="sm"
+              ariaLabel={t("showcase.data.customCardTemplate")}
+            />
           </div>
           {!useCustomCard && (
             <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded text-xs text-slate-500">
@@ -967,11 +971,15 @@ export const DataTableShowcase = () => {
             />
             <div className="flex items-center justify-between pt-2">
               <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.data.virtualizedGallery")}</span>
-              <ITSlideToggle isOn={dtVirtualized} onToggle={setDtVirtualized} size="sm" />
+              <ITSlideToggle isOn={dtVirtualized} onToggle={setDtVirtualized} size="sm"
+              ariaLabel={t("showcase.data.virtualizedGallery")}
+            />
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">{t("showcase.data.stickyHeader")}</span>
-              <ITSlideToggle isOn={dtStickyHeader} onToggle={setDtStickyHeader} size="sm" disabled={!dtVirtualized} />
+              <ITSlideToggle isOn={dtStickyHeader} onToggle={setDtStickyHeader} size="sm" disabled={!dtVirtualized}
+              ariaLabel={t("showcase.data.stickyHeader")}
+            />
             </div>
             {dtVirtualized && (
               <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded text-xs text-slate-500">
@@ -1054,8 +1062,8 @@ export const DataTableShowcase = () => {
       gallery={
         <div className="space-y-6">
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryCustomCardsHover")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryCustomCardsHover")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <GalleryDataTable
                 title={t("showcase.data.teamMembers")}
                 defaultItemsPerPage={4}
@@ -1097,8 +1105,8 @@ export const DataTableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryDefaultCardsPagination")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryDefaultCardsPagination")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <GalleryDataTable
                 size="sm"
                 defaultItemsPerPage={3}
@@ -1108,8 +1116,8 @@ export const DataTableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryDesignOverrides")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryDesignOverrides")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITDataTable
                 columns={userColumns}
                 fetchData={fetchData}
@@ -1132,8 +1140,8 @@ export const DataTableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryPinnedIdActive")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden" style={{ maxWidth: 520 }}>
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryPinnedIdActive")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800" style={{ maxWidth: 520 }}>
               <ITDataTable
                 columns={pinnedColumns}
                 fetchData={fetchData}
@@ -1150,8 +1158,8 @@ export const DataTableShowcase = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.data.galleryServerVirtualization", { page: dtVirtualized ? 200 : 10 })}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.galleryServerVirtualization", { page: dtVirtualized ? 200 : 10 })}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITDataTable
                 key={dtVirtualized ? "dt-virt-on" : "dt-virt-off"}
                 columns={virtualUserColumns}
@@ -1334,8 +1342,10 @@ export const ImageShowcase = () => {
       controls={
         <>
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.data.forceError")}</span>
-            <ITSlideToggle isOn={broken} onToggle={setBroken} activeColor="danger" size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.data.forceError")}</span>
+            <ITSlideToggle isOn={broken} onToggle={setBroken} activeColor="danger" size="sm"
+              ariaLabel={t("showcase.data.forceError")}
+            />
           </div>
         </>
       }

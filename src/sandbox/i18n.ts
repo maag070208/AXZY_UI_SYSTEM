@@ -11,6 +11,10 @@ export const sandboxMessages: ITMessagesByLocale = {
   es: {
     // Chrome
     "sandbox.language": "Idioma",
+    "sandbox.theme": "Modo de color",
+    "sandbox.themeLight": "Claro",
+    "sandbox.themeDark": "Oscuro",
+    "sandbox.themeSystem": "Sistema",
     "sandbox.notifications": "Notificaciones",
     "sandbox.nav.portfolio": "Portafolio",
     "sandbox.userMenu.portfolio": "Ir al Portafolio",
@@ -43,6 +47,8 @@ export const sandboxMessages: ITMessagesByLocale = {
     "showcase.common.correct": "✅ Correcto",
     "showcase.common.delete": "Eliminar",
     "showcase.common.disabled": "Deshabilitado",
+    "showcase.common.on": "Encendido",
+    "showcase.common.off": "Apagado",
     "showcase.common.edit": "Editar",
     "showcase.common.error": "Error",
     "showcase.common.hideCode": "Ocultar código",
@@ -95,10 +101,16 @@ export const sandboxMessages: ITMessagesByLocale = {
     "showcase.producto.back": "Volver al portafolio",
     "showcase.producto.gallery": "Galería",
     "showcase.producto.cta": "¿Te interesa este proyecto?",
+    "showcase.producto.navLabel": "Navegación entre proyectos",
+    "showcase.producto.prev": "Proyecto anterior",
+    "showcase.producto.next": "Proyecto siguiente",
 
     // Getting started
     "showcase.gettingStarted.heroDesc":
       "Librería de componentes React con Tailwind CSS v4. Diseñada para apps enterprise con experiencia de desarrollo fluida.",
+    "showcase.gettingStarted.stepsTitle": "Instalación paso a paso",
+    "showcase.gettingStarted.stepsSubtitle":
+      "Seis pasos: dependencias, Vite, Tailwind, provider, tipos y tu primer componente.",
     "showcase.gettingStarted.step1Title": "Instalar dependencias",
     "showcase.gettingStarted.step1Desc": "Tailwind v4 y su plugin para Vite.",
     "showcase.gettingStarted.step2Title": "Configurar Vite",
@@ -196,6 +208,8 @@ export const sandboxMessages: ITMessagesByLocale = {
     // Home (portfolio)
     "showcase.home.ariaStats": "Métricas del perfil",
     "showcase.home.sectionNav": "Navegación del portafolio",
+    "showcase.home.skipToContent": "Saltar al contenido",
+    "showcase.home.backToTop": "Volver arriba",
     "showcase.home.navAbout": "Sobre mí",
     "showcase.home.navStack": "Stack",
     "showcase.home.navProjects": "Proyectos",
@@ -205,6 +219,13 @@ export const sandboxMessages: ITMessagesByLocale = {
     "showcase.home.noPreview": "Sin capturas",
     "showcase.home.footerBuiltWith": "Hecho con AXZY UI System",
     "showcase.home.badge": "Portafolio · 2026",
+    "showcase.home.heroLead": "Del API a la interfaz:",
+    "showcase.home.heroAccent": "producto completo, en producción.",
+    "showcase.home.featuredLabel": "Destacado",
+    "showcase.home.catLanguages": "Lenguajes",
+    "showcase.home.catDesktop": "Escritorio",
+    "showcase.home.catTools": "Herramientas",
+    "showcase.home.catTesting": "Pruebas",
     "showcase.home.hello": "Hola, soy",
     "showcase.home.bio":
       "Fullstack Developer con 4+ años creando aplicaciones web modernas. Especializado en TypeScript, Angular y React, con foco en arquitectura limpia y en productos que la gente usa todos los días.",
@@ -231,6 +252,7 @@ export const sandboxMessages: ITMessagesByLocale = {
     "showcase.home.titleStack": "Tecnologías que uso",
     "showcase.home.subtitleStack": "Filtra por área o busca por nombre.",
     "showcase.home.searchTech": "Buscar tecnología...",
+    "showcase.home.searchTechAria": "Buscar tecnología por nombre",
     "showcase.home.noTech": "No se encontraron tecnologías para “{term}”.",
     "showcase.home.techCount": "{shown} de {total} tecnologías",
     "showcase.home.catAll": "Todos",
@@ -930,6 +952,10 @@ export const sandboxMessages: ITMessagesByLocale = {
   en: {
     // Chrome
     "sandbox.language": "Language",
+    "sandbox.theme": "Color mode",
+    "sandbox.themeLight": "Light",
+    "sandbox.themeDark": "Dark",
+    "sandbox.themeSystem": "System",
     "sandbox.notifications": "Notifications",
     "sandbox.nav.portfolio": "Portfolio",
     "sandbox.userMenu.portfolio": "Go to portfolio",
@@ -962,6 +988,8 @@ export const sandboxMessages: ITMessagesByLocale = {
     "showcase.common.correct": "✅ Correct",
     "showcase.common.delete": "Delete",
     "showcase.common.disabled": "Disabled",
+    "showcase.common.on": "On",
+    "showcase.common.off": "Off",
     "showcase.common.edit": "Edit",
     "showcase.common.error": "Error",
     "showcase.common.hideCode": "Hide code",
@@ -1014,10 +1042,16 @@ export const sandboxMessages: ITMessagesByLocale = {
     "showcase.producto.back": "Back to portfolio",
     "showcase.producto.gallery": "Gallery",
     "showcase.producto.cta": "Interested in this project?",
+    "showcase.producto.navLabel": "Project navigation",
+    "showcase.producto.prev": "Previous project",
+    "showcase.producto.next": "Next project",
 
     // Getting started
     "showcase.gettingStarted.heroDesc":
       "React component library built with Tailwind CSS v4. Designed for enterprise apps with a smooth developer experience.",
+    "showcase.gettingStarted.stepsTitle": "Step-by-step setup",
+    "showcase.gettingStarted.stepsSubtitle":
+      "Six steps: dependencies, Vite, Tailwind, provider, types and your first component.",
     "showcase.gettingStarted.step1Title": "Install dependencies",
     "showcase.gettingStarted.step1Desc": "Tailwind v4 and its Vite plugin.",
     "showcase.gettingStarted.step2Title": "Configure Vite",
@@ -1115,6 +1149,8 @@ export const sandboxMessages: ITMessagesByLocale = {
     // Home (portfolio)
     "showcase.home.ariaStats": "Profile metrics",
     "showcase.home.sectionNav": "Portfolio navigation",
+    "showcase.home.skipToContent": "Skip to content",
+    "showcase.home.backToTop": "Back to top",
     "showcase.home.navAbout": "About",
     "showcase.home.navStack": "Stack",
     "showcase.home.navProjects": "Projects",
@@ -1124,6 +1160,13 @@ export const sandboxMessages: ITMessagesByLocale = {
     "showcase.home.noPreview": "No preview",
     "showcase.home.footerBuiltWith": "Built with AXZY UI System",
     "showcase.home.badge": "Portfolio · 2026",
+    "showcase.home.heroLead": "From API to interface:",
+    "showcase.home.heroAccent": "complete products, in production.",
+    "showcase.home.featuredLabel": "Featured",
+    "showcase.home.catLanguages": "Languages",
+    "showcase.home.catDesktop": "Desktop",
+    "showcase.home.catTools": "Tools",
+    "showcase.home.catTesting": "Testing",
     "showcase.home.hello": "Hi, I'm",
     "showcase.home.bio":
       "Fullstack Developer with 4+ years building modern web applications. Specialized in TypeScript, Angular and React, focused on clean architecture and products people use every day.",
@@ -1150,6 +1193,7 @@ export const sandboxMessages: ITMessagesByLocale = {
     "showcase.home.titleStack": "Technologies I use",
     "showcase.home.subtitleStack": "Filter by area or search by name.",
     "showcase.home.searchTech": "Search technology...",
+    "showcase.home.searchTechAria": "Search technology by name",
     "showcase.home.noTech": "No technologies found for “{term}”.",
     "showcase.home.techCount": "{shown} of {total} technologies",
     "showcase.home.catAll": "All",

@@ -24,6 +24,8 @@ export default function ITSlideToggle({
   inactiveColor = "#9ca3af", // default gray-400
   disabled = false,
   size = "md",
+  label,
+  ariaLabel,
   className = "",
 }: ITSlideToggleProps) {
   // Handle internal state if not controlled
@@ -98,6 +100,7 @@ export default function ITSlideToggle({
       style={{ backgroundColor }}
       role="switch"
       aria-checked={isOn}
+      aria-label={ariaLabel ?? label}
       tabIndex={disabled ? -1 : 0}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {

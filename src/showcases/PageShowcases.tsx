@@ -148,16 +148,22 @@ export const PageHeaderShowcase = () => {
             <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">{t("showcase.pages.headerElements")}</p>
             <ITFlex direction="column" gap={3}>
               <ITFlex justify="between" align="center">
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.pages.backButton")}</span>
-                <ITSlideToggle isOn={showBack} onToggle={setShowBack} size="sm" />
+                <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.backButton")}</span>
+                <ITSlideToggle isOn={showBack} onToggle={setShowBack} size="sm"
+              ariaLabel={t("showcase.pages.backButton")}
+            />
               </ITFlex>
               <ITFlex justify="between" align="center">
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.pages.breadcrumbs")}</span>
-                <ITSlideToggle isOn={showBreadcrumbs} onToggle={setShowBreadcrumbs} size="sm" />
+                <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.breadcrumbs")}</span>
+                <ITSlideToggle isOn={showBreadcrumbs} onToggle={setShowBreadcrumbs} size="sm"
+              ariaLabel={t("showcase.pages.breadcrumbs")}
+            />
               </ITFlex>
               <ITFlex justify="between" align="center">
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.pages.icon")}</span>
-                <ITSlideToggle isOn={showIcon} onToggle={setShowIcon} size="sm" />
+                <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.icon")}</span>
+                <ITSlideToggle isOn={showIcon} onToggle={setShowIcon} size="sm"
+              ariaLabel={t("showcase.pages.icon")}
+            />
               </ITFlex>
               {showIcon && (
                 <ITFlex gap={2} align="center">
@@ -174,8 +180,10 @@ export const PageHeaderShowcase = () => {
                 </ITFlex>
               )}
               <ITFlex justify="between" align="center">
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.pages.description")}</span>
-                <ITSlideToggle isOn={showDesc} onToggle={setShowDesc} size="sm" />
+                <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.description")}</span>
+                <ITSlideToggle isOn={showDesc} onToggle={setShowDesc} size="sm"
+              ariaLabel={t("showcase.pages.description")}
+            />
               </ITFlex>
             </ITFlex>
           </div>
@@ -199,8 +207,10 @@ export const PageHeaderShowcase = () => {
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">{t("showcase.pages.filters")}</p>
             <ITFlex justify="between" align="center">
-              <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.pages.showFilterBar")}</span>
-              <ITSlideToggle isOn={showFilters} onToggle={setShowFilters} size="sm" />
+              <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.showFilterBar")}</span>
+              <ITSlideToggle isOn={showFilters} onToggle={setShowFilters} size="sm"
+              ariaLabel={t("showcase.pages.showFilterBar")}
+            />
             </ITFlex>
           </div>
         </ITStack>
@@ -209,8 +219,8 @@ export const PageHeaderShowcase = () => {
         <ITStack spacing={6}>
           {/* 1. Team management — full header + search + filter bar + user rows */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryTeamManagement")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-900/50">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryTeamManagement")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
               <div className="p-5 pb-3">
                 <ITPageHeader
                   title={t("showcase.pages.teamMembers")}
@@ -272,8 +282,8 @@ export const PageHeaderShowcase = () => {
 
           {/* 2. Detail page — back + breadcrumbs + back button + save/cancel */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryDetailEdit")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-900/50">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryDetailEdit")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
               <div className="p-5 pb-3">
                 <ITPageHeader
                   title={t("showcase.pages.editProduct")}
@@ -292,15 +302,15 @@ export const PageHeaderShowcase = () => {
               </div>
               <ITGrid container spacing={3} className="px-5 pb-5">
                 <ITGrid item xs={12} md={6}>
-                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">{t("showcase.pages.productName")}</label>
+                  <label className="mb-1 block font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.productName")}</label>
                   <input type="text" defaultValue="MacBook Pro 16" className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                 </ITGrid>
                 <ITGrid item xs={12} md={3}>
-                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">{t("showcase.pages.price")}</label>
+                  <label className="mb-1 block font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.price")}</label>
                   <input type="text" defaultValue="$3,499" className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                 </ITGrid>
                 <ITGrid item xs={12} md={3}>
-                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">{t("showcase.pages.stock")}</label>
+                  <label className="mb-1 block font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.stock")}</label>
                   <input type="text" defaultValue="24" className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                 </ITGrid>
               </ITGrid>
@@ -309,8 +319,8 @@ export const PageHeaderShowcase = () => {
 
           {/* 3. Dashboard header — icon + title + desc + date range + refresh */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryDashboard")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-900/50">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryDashboard")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
               <div className="p-5">
                 <ITPageHeader
                   title={t("showcase.structure.navDashboard")}
@@ -335,8 +345,8 @@ export const PageHeaderShowcase = () => {
 
           {/* 4. Settings header — no icon, no breadcrumbs, just title + desc + save */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.gallerySettingsPrefs")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-900/50">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.gallerySettingsPrefs")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
               <div className="p-5">
                 <ITPageHeader
                   title={t("showcase.pages.generalSettings")}
@@ -354,8 +364,8 @@ export const PageHeaderShowcase = () => {
 
           {/* 5. Users list — icon + breadcrumbs + search in actions + add button */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryUsersList")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-900/50">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryUsersList")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
               <div className="p-5">
                 <ITPageHeader
                   title={t("showcase.structure.navUsers")}
@@ -550,7 +560,7 @@ export const PageShowcase = () => {
       description={t("showcase.pages.pageDesc")}
       code={buildCode()}
       demo={
-        <div className="w-full border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-900/50">
+        <div className="w-full overflow-hidden rounded-[10px] border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
           {isDetail && user ? (
             <ITPage
               title={user.name as string}
@@ -650,8 +660,10 @@ export const PageShowcase = () => {
           </div>
 
           <ITFlex justify="between" align="center">
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("showcase.pages.iconInHeader")}</span>
-            <ITSlideToggle isOn={showIcon} onToggle={setShowIcon} size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.iconInHeader")}</span>
+            <ITSlideToggle isOn={showIcon} onToggle={setShowIcon} size="sm"
+              ariaLabel={t("showcase.pages.iconInHeader")}
+            />
           </ITFlex>
 
           <div>
@@ -700,8 +712,8 @@ export const PageShowcase = () => {
         <ITStack spacing={6}>
           {/* 1. Users list with ITTable */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryUsersTable")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryUsersTable")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITPage
                 horizontalPadding={hPaddingValue}
                 title={t("showcase.structure.navUsers")}
@@ -728,8 +740,8 @@ export const PageShowcase = () => {
 
           {/* 2. Product detail */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryProductDetail")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryProductDetail")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITPage
                 horizontalPadding={hPaddingValue}
                 title="MacBook Pro 16'' M3 Max"
@@ -776,8 +788,8 @@ export const PageShowcase = () => {
 
           {/* 3. Edit profile form */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryEditProfile")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryEditProfile")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITPage
                 horizontalPadding={hPaddingValue}
                 title={t("showcase.pages.editProfile")}
@@ -806,15 +818,15 @@ export const PageShowcase = () => {
                     <ITCard title={t("showcase.pages.personalInformation")}>
                       <ITGrid container spacing={3}>
                         <ITGrid item xs={12} sm={6}>
-                          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">{t("showcase.pages.firstName")}</label>
+                          <label className="mb-1 block font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.firstName")}</label>
                           <input type="text" defaultValue="Ana" className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                         </ITGrid>
                         <ITGrid item xs={12} sm={6}>
-                          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">{t("showcase.pages.lastName")}</label>
+                          <label className="mb-1 block font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.lastName")}</label>
                           <input type="text" defaultValue="López" className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                         </ITGrid>
                         <ITGrid item xs={12}>
-                          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">{t("showcase.pages.emailField")}</label>
+                          <label className="mb-1 block font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.emailField")}</label>
                           <input type="email" defaultValue="ana.lopez@axzy.dev" className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                         </ITGrid>
                       </ITGrid>
@@ -827,8 +839,8 @@ export const PageShowcase = () => {
 
           {/* 4. Orders with table */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.galleryOrdersTable")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.galleryOrdersTable")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITPage
                 horizontalPadding={hPaddingValue}
                 title={t("showcase.structure.navOrders")}
@@ -880,8 +892,8 @@ export const PageShowcase = () => {
 
           {/* 5. Settings with tabs */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">{t("showcase.pages.gallerySettings")}</h4>
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <h3 className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.gallerySettings")}</h3>
+            <div className="overflow-hidden rounded-[10px] border border-slate-200 dark:border-slate-800">
               <ITPage
                 horizontalPadding={hPaddingValue}
                 title={t("showcase.structure.navConfiguration")}
@@ -913,23 +925,27 @@ export const PageShowcase = () => {
                     <ITCard title={t("showcase.pages.generalPreferences")}>
                       <ITStack spacing={4}>
                         <div>
-                          <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 block">{t("showcase.pages.workspaceName")}</label>
+                          <label className="mb-1 block font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.workspaceName")}</label>
                           <input type="text" defaultValue="AXZY Console" className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500" />
                         </div>
                         <ITStack spacing={3} className="pt-2 border-t border-slate-100 dark:border-slate-800">
                           <ITFlex justify="between" align="center">
                             <div>
-                              <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{t("showcase.pages.darkMode")}</p>
+                              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.darkMode")}</p>
                               <p className="text-xs text-slate-500">{t("showcase.pages.followSystem")}</p>
                             </div>
-                            <ITSlideToggle isOn={true} onToggle={() => {}} size="sm" />
+                            <ITSlideToggle isOn={true} onToggle={() => {}} size="sm"
+              ariaLabel={t("showcase.pages.followSystem")}
+            />
                           </ITFlex>
                           <ITFlex justify="between" align="center">
                             <div>
-                              <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{t("showcase.pages.emailNotifications")}</p>
+                              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.pages.emailNotifications")}</p>
                               <p className="text-xs text-slate-500">{t("showcase.pages.receiveAlerts")}</p>
                             </div>
-                            <ITSlideToggle isOn={false} onToggle={() => {}} size="sm" />
+                            <ITSlideToggle isOn={false} onToggle={() => {}} size="sm"
+              ariaLabel={t("showcase.pages.receiveAlerts")}
+            />
                           </ITFlex>
                         </ITStack>
                       </ITStack>

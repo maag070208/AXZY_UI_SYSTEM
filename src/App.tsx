@@ -1,15 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  FaCreditCard,
-  FaHome,
-  FaKeyboard,
-  FaRegBell,
-  FaSlidersH,
-  FaTable,
-} from "react-icons/fa";
-import { ITLayout, ITThemeProvider, ITI18nProvider, ITSegmentedControl, useITTranslation, useDebouncedSearch } from "./index";
+import { ITLayout, ITThemeProvider, ITI18nProvider, useITTranslation, useDebouncedSearch } from "./index";
 import type { ITNavigationItem } from "./index";
-import "./index.css";
 
 // Import Showcases
 import { HomeShowcase } from "./showcases/HomeShowcase";
@@ -85,50 +76,18 @@ import TopbarSearch from "./sandbox/TopbarSearch";
 import { LandingShowcase } from "./sandbox/LandingShowcase";
 import NotFoundShowcase from "./sandbox/NotFoundShowcase";
 import { sandboxMessages, translateLabel } from "./sandbox/i18n";
+import { SandboxLocaleProvider, useSandboxLocale } from "./sandbox/locale";
+import { SelectorIdioma, SelectorTema } from "./sandbox/controls";
+import { GROUP_ICONS } from "./sandbox/icons";
 
-// Icons per sandbox group (icons stay here; navigation.ts is plain data).
-const GROUP_ICONS: Record<string, React.ReactNode> = {
-  general: <FaHome />,
-  struc: <FaCreditCard />,
-  forms: <FaKeyboard />,
-  data: <FaTable />,
-  nav: <FaSlidersH />,
-  feed: <FaRegBell />,
-};
-
-/** Dev-only language switcher for the sandbox; lives inside `ITI18nProvider`. */
-function LocaleSwitcher({
-  locale,
-  onChange,
-}: {
-  locale: "es" | "en";
-  onChange: (locale: "es" | "en") => void;
-}) {
+/**
+ * Dev-only language switcher for the sandbox chrome. Lee el idioma del contexto
+ * compartido, así que el mismo control vive igual en la barra del sandbox y en
+ * la cabecera del portafolio.
+ */
+function AppShell() {
   const { t } = useITTranslation();
-  return (
-    <div role="group" aria-label={t("sandbox.language")}>
-      <ITSegmentedControl
-        size="sm"
-        options={[
-          { value: "es", label: "ES" },
-          { value: "en", label: "EN" },
-        ]}
-        value={locale}
-        onChange={(value) => onChange(value === "en" ? "en" : "es")}
-      />
-    </div>
-  );
-}
-
-function AppShell({
-  locale,
-  onLocaleChange,
-}: {
-  locale: "es" | "en";
-  onLocaleChange: (locale: "es" | "en") => void;
-}) {
-  const { t } = useITTranslation();
-  const { route, goToItem, goToLanding, goToProducto, goToPortfolio } = useHashRoute();
+  const { route, goToItem, goToLanding, goToPortfolio } = useHashRoute();
   const [subitemConnector] = useState<"dot" | "|" | "none">("dot");
 
   // Debounced term drives filtering; `searchValue` is the live input value.
@@ -223,20 +182,13 @@ function AppShell({
         pending={searchValue.trim() !== debouncedTerm.trim()}
       />
     ),
-    // The topbar places `children` in its right area, right before the user menu.
+    // The topbar places `children` in its right area: los controles reales del
+    // chrome (idioma y tema). Antes había aquí una campana de notificaciones con
+    // un punto rojo que no llevaba a ninguna parte.
     children: (
       <>
-        <LocaleSwitcher locale={locale} onChange={onLocaleChange} />
-        <button
-          type="button"
-          aria-label={t("sandbox.notifications")}
-          title={t("sandbox.notifications")}
-          className="relative flex items-center justify-center p-2.5 rounded-xl transition-colors duration-200 hover:bg-[var(--it-topbar-user-hover,#f1f5f9)] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
-          style={{ color: "var(--it-topbar-icon, #94a3b8)" }}
-        >
-          <FaRegBell className="w-5 h-5" aria-hidden="true" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white" />
-        </button>
+        <SelectorIdioma />
+        <SelectorTema />
       </>
     ),
     navItems: [
@@ -255,16 +207,8 @@ function AppShell({
       if (id === "ui-system") goToLanding();
       else if (id === "portfolio") goToPortfolio();
     },
-    userMenu: {
-      userName: "Alex Dev",
-      userEmail: "alex@axzy.dev",
-      menuItems: [
-        {
-          label: t("sandbox.userMenu.portfolio"),
-          onClick: () => goToPortfolio(),
-        },
-      ],
-    },
+    // Sin `userMenu`: el sandbox no tiene sesión. Antes mostraba un usuario
+    // inventado ("Alex Dev / alex@axzy.dev") en un portafolio real.
   };
 
   // Render correct component based on active showroom navigation
@@ -379,7 +323,7 @@ function AppShell({
   return (
     <ITThemeProvider showFab={false} density={0.98} radius={10} shadow={2}>
         {route.view === "producto" ? (
-          <div className="min-h-[100dvh] bg-slate-50 dark:bg-slate-950">
+          <div className="min-h-[100dvh] bg-[#fafafa] dark:bg-[#0b0d10]">
             {route.valid ? (
               <ProductoDetalle
                 producto={PRODUCTOS.find((producto) => producto.id === route.producto)!}
@@ -394,8 +338,8 @@ function AppShell({
             )}
           </div>
         ) : route.view === "home" ? (
-          <div className="min-h-[100dvh] bg-slate-50 dark:bg-slate-950">
-            <HomeShowcase onOpenProducto={goToProducto} />
+          <div className="min-h-[100dvh] bg-[#fafafa] dark:bg-[#0b0d10]">
+            <HomeShowcase />
           </div>
         ) : (
           <ITLayout sidebar={sidebarProps} topBar={topBarProps}>
@@ -419,21 +363,25 @@ function AppShell({
   );
 }
 
-/** Sandbox root: owns the locale state and provides i18n to the whole showroom. */
-function App() {
-  const [locale, setLocale] = useState<"es" | "en">(() => {
-    if (typeof window === "undefined") return "es";
-    return window.localStorage.getItem("it-locale") === "en" ? "en" : "es";
-  });
-
-  useEffect(() => {
-    window.localStorage.setItem("it-locale", locale);
-  }, [locale]);
+/**
+ * Sandbox root: el idioma vive en `SandboxLocaleProvider` (compartido con el
+ * portafolio) y `ITI18nProvider` lo aplica a todo el showroom.
+ */
+function SandboxI18n() {
+  const { locale } = useSandboxLocale();
 
   return (
     <ITI18nProvider locale={locale} messages={sandboxMessages}>
-      <AppShell locale={locale} onLocaleChange={setLocale} />
+      <AppShell />
     </ITI18nProvider>
+  );
+}
+
+function App() {
+  return (
+    <SandboxLocaleProvider>
+      <SandboxI18n />
+    </SandboxLocaleProvider>
   );
 }
 

@@ -67,8 +67,10 @@ export const DialogShowcase = () => {
       controls={
         <>
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-semibold text-gray-700">{t("showcase.feedback.useFormHeader")}</span>
-            <ITSlideToggle isOn={useFormHeader} onToggle={setUseFormHeader} size="sm" />
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{t("showcase.feedback.useFormHeader")}</span>
+            <ITSlideToggle isOn={useFormHeader} onToggle={setUseFormHeader} size="sm"
+              ariaLabel={t("showcase.feedback.useFormHeader")}
+            />
           </div>
         </>
       }
