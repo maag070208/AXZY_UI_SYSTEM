@@ -547,6 +547,17 @@ export default function ActionsDemo() {
 }
 ```
 
+### Solo icono (`variant="icon-only"` + `icon`)
+Cuando se pasa `icon` y no hay `label` ni `children`, el botón entra en modo "solo icono":
+es un cuadrado (`aspect-square`) con padding simétrico por tamaño
+(`buttonIconPadding`: `sm` 0.5rem, `md` 0.625rem, `lg` 0.75rem) y el icono queda centrado.
+No se usa el wrapper con `gap-1.5` ni el `ITText` vacío del layout con label.
+`label`/`ariaLabel` siguen alimentando `aria-label` y `title`.
+
+```tsx
+<ITButton variant="icon-only" size="sm" color="success" icon={<FaSave />} ariaLabel="Guardar" />
+```
+
 ================================================================================
 7. ITInput
 ================================================================================

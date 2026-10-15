@@ -4,7 +4,7 @@
 > necesario para que un modelo escriba código correcto con `@axzydev/axzy_ui_system`: instalación real,
 > reglas, accesibilidad, trampas, ejemplos de producción y el catálogo de componentes.
 >
-> Librería: `@axzydev/axzy_ui_system` · versión de referencia: `1.5.0` ·
+> Librería: `@axzydev/axzy_ui_system` · versión de referencia: `1.5.1` ·
 > 61 componentes. Generado el 2026-10-15.
 >
 > Estructura: **Parte 1** guía de uso · **Parte 2** ejemplos reales · **Parte 3** catálogo de componentes.

@@ -63,8 +63,10 @@ export function Actions() {
 ## Notas
 
 - La apariencia base viene de `theme.button[color]` (fondo, color de texto, `borderRadius`, `fontWeight`, `focus`, `hover`); el tamaño lo aportan las clases de `buttonSizes` y la forma las de `buttonVariants`.
-- Variantes (`buttonVariants` en `@/types/button.types`): `filled` (`border-transparent shadow-sm`), `outlined` (`bg-transparent border-2`), `raised` (`border-transparent shadow-md`), `rounded` (`... rounded-full`), `text` (`bg-transparent` + `hover:bg-black/5 dark:hover:bg-white/10`), `raised-text` (`bg-white border border-gray-200 shadow-sm hover:shadow-md`), `icon-only` (`p-2 aspect-square flex items-center justify-center ...`), `link` (`bg-transparent hover:underline px-0`).
+- Variantes (`buttonVariants` en `@/types/button.types`): `filled` (`border-transparent shadow-sm`), `outlined` (`bg-transparent border-2`), `raised` (`border-transparent shadow-md`), `rounded` (`... rounded-full`), `text` (`bg-transparent` + `hover:bg-black/5 dark:hover:bg-white/10`), `raised-text` (`bg-white border border-gray-200 shadow-sm hover:shadow-md`), `icon-only` (`aspect-square flex items-center justify-center ...`), `link` (`bg-transparent hover:underline px-0`).
 - Tamaños (`buttonSizes`): `sm` → `text-xs px-2.5 py-1`, `md` → `text-[13px] px-3.5 py-1.5`, `lg` → `text-sm px-4 py-2`.
+- `variant="icon-only"` junto a `icon` (sin `label` ni `children`) entra en modo "solo icono": se aplica `buttonIconSizes[size]` (solo tipografía, sin `px`/`py`, que competían con el padding cuadrado) y un padding simétrico por tamaño (`buttonIconPadding`: `sm` → `0.5rem`, `md` → `0.625rem`, `lg` → `0.75rem`). Con `aspect-square` el botón queda cuadrado y el icono centrado; no se renderiza el wrapper con `gap-1.5` ni el `ITText` vacío que lo desplazaban a la izquierda.
+- Si `variant="icon-only"` no recibe `icon`, o recibe `children`, cae al layout normal (`buttonSizes`) con el contenido disponible.
 - Hover y focus se gestionan con estado interno (`useState`); el focus aplica `style.boxShadow = themeConfig.focus`.
 - Con `disabled` se aplica `opacity-50 cursor-not-allowed`.
 - Si se pasa `children`, el `icon` y el `label` **no** se renderizan dentro del wrapper interno.

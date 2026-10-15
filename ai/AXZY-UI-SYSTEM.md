@@ -4,7 +4,7 @@
 > necesario para que un modelo escriba código correcto con `@axzydev/axzy_ui_system`: instalación real,
 > reglas, accesibilidad, trampas, ejemplos de producción y el catálogo de componentes.
 >
-> Librería: `@axzydev/axzy_ui_system` · versión de referencia: `1.5.0` ·
+> Librería: `@axzydev/axzy_ui_system` · versión de referencia: `1.5.1` ·
 > 61 componentes. Generado el 2026-10-15.
 >
 > Estructura: **Parte 1** guía de uso · **Parte 2** ejemplos reales · **Parte 3** catálogo de componentes.
@@ -790,11 +790,11 @@ export const useNotify = () => {
 | --- | --- | --- | --- |
 | `label` | `string` | — | Button text label. Overridden if `children` is provided. |
 | `children` | `React.ReactNode` | — | Custom content to render inside the button. Takes precedence over `label`. |
-| `icon` | `React.ReactNode` | — | Icon element rendered before the label. |
+| `icon` | `React.ReactNode` | — | Icon element rendered before the label. With `variant="icon-only"` and no `label`/`children` it becomes the only content and is centered in the square button. |
 | `onClick` | `() => void` | — | Click handler for the button. |
 | `color` | `"gray" \| "purple" \| "info" \| "success" \| "warning" \| "error" \| "primary" \| "secondary" \| "danger"` | `"primary"` | Color theme key. Values come from the semantic color palette (e.g. `"primary"`, `"secondary"`, `"success"`, `"danger"`, `"warning"`, `"info"`, `"purple"`, `"error"`, `"gray"`). |
-| `size` | `SizesTypes` | `"md"` | Button size. Valid values: `"sm"`, `"md"`, `"lg"`. |
-| `variant` | `string` | `"filled"` | Button visual style. Valid values: `"filled"`, `"outlined"`, `"raised"`, `"rounded"`, `"text"`, `"raised-text"`, `"icon-only"`, `"link"`. |
+| `size` | `SizesTypes` | `"md"` | Button size. Valid values: `"sm"`, `"md"`, `"lg"`. In `variant="icon-only"` it also scales the square padding (`buttonIconPadding`: `sm` 0.5rem, `md` 0.625rem, `lg` 0.75rem). |
+| `variant` | `string` | `"filled"` | Button visual style. Valid values: `"filled"`, `"outlined"`, `"raised"`, `"rounded"`, `"text"`, `"raised-text"`, `"icon-only"`, `"link"`. `"icon-only"` renders a centered square icon button; combine it with `icon` and `ariaLabel`. |
 | `disabled` | `boolean` | `false` | Disables the button interaction and applies reduced opacity. |
 | `className` | `string` | — | Additional CSS class names for the button element. |
 | `type` | `"button" \| "reset" \| "submit"` | `"button"` | HTML button type attribute. Valid values: `"submit"`, `"reset"`, `"button"`. |

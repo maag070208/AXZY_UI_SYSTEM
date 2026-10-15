@@ -547,7 +547,7 @@ Drift conocido (no tocar sin decisión): `ITTableProps.className` no se aplica; 
 | `ITAvatar` | Avatar con iniciales o imagen |
 | `ITBadget` | Badge con variantes de color |
 | `ITBreadcrumbs` | Breadcrumbs de navegación |
-| `ITButton` | Botón con variants (filled, outlined, text, raised, rounded, icon-only) y sizes |
+| `ITButton` | Botón con variants (filled, outlined, text, raised, rounded, icon-only) y sizes. `icon-only` + `icon` = cuadrado centrado (`buttonIconPadding` por tamaño; usa `ariaLabel`) |
 | `ITCalendar` | Calendario completo con eventos |
 | `ITCard` | Tarjeta con título, imagen, contenido y acciones |
 | `ITCheckbox` | Checkbox con label |

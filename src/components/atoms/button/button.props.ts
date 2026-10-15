@@ -7,15 +7,15 @@ export interface ITButtonProps {
   label?: string
   /** Custom content to render inside the button. Takes precedence over `label`. */
   children?: React.ReactNode;
-  /** Icon element rendered before the label. */
+  /** Icon element rendered before the label. With `variant="icon-only"` and no `label`/`children` it becomes the only content and is centered in the square button. */
   icon?: React.ReactNode;
   /** Click handler for the button. */
   onClick?: () => void;
   /** Color theme key. Values come from the semantic color palette (e.g. `"primary"`, `"secondary"`, `"success"`, `"danger"`, `"warning"`, `"info"`, `"purple"`, `"error"`, `"gray"`). @default "primary" */
   color?: ColorsTypes;
-  /** Button size. Valid values: `"sm"`, `"md"`, `"lg"`. @default "md" */
+  /** Button size. Valid values: `"sm"`, `"md"`, `"lg"`. In `variant="icon-only"` it also scales the square padding (`buttonIconPadding`: `sm` 0.5rem, `md` 0.625rem, `lg` 0.75rem). @default "md" */
   size?: SizesTypes;
-  /** Button visual style. Valid values: `"filled"`, `"outlined"`, `"raised"`, `"rounded"`, `"text"`, `"raised-text"`, `"icon-only"`, `"link"`. @default "filled" */
+  /** Button visual style. Valid values: `"filled"`, `"outlined"`, `"raised"`, `"rounded"`, `"text"`, `"raised-text"`, `"icon-only"`, `"link"`. `"icon-only"` renders a centered square icon button; combine it with `icon` and `ariaLabel`. @default "filled" */
   variant?: keyof typeof buttonVariants;
   /** Disables the button interaction and applies reduced opacity. @default false */
   disabled?: boolean;

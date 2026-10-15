@@ -159,6 +159,14 @@ export const ButtonShowcase = () => {
             </div>
           </div>
           <div>
+            <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.forms.galleryIconOnly")}</h3>
+            <div className="flex flex-wrap items-center gap-3">
+              <ITButton variant="icon-only" size="sm" color="primary" icon={<FaEdit />} ariaLabel={t("showcase.common.edit")} />
+              <ITButton variant="icon-only" size="md" color="success" icon={<FaSave />} ariaLabel={t("showcase.common.save")} />
+              <ITButton variant="icon-only" size="lg" color="danger" icon={<FaTrash />} ariaLabel={t("showcase.common.delete")} />
+            </div>
+          </div>
+          <div>
             <h3 className="mb-3 w-fit border-l-2 border-primary-700 pl-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-700 dark:border-primary-500 dark:text-slate-200">{t("showcase.forms.galleryVariants")}</h3>
             <div className="flex flex-wrap gap-3">
               <ITButton label="Filled" variant="filled" />
@@ -210,6 +218,7 @@ export const ButtonShowcase = () => {
         notes: [
           "Con children no se renderizan label ni icon.",
           'Usa variant="icon-only" junto a ariaLabel cuando el botón no tenga texto visible.',
+          'Con variant="icon-only" + icon (sin label) el botón es cuadrado y el icono queda centrado; el tamaño del cuadrado sale de buttonIconPadding (sm 0.5rem, md 0.625rem, lg 0.75rem).',
         ],
       }}
     />

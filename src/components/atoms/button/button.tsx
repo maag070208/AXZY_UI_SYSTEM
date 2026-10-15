@@ -1,4 +1,6 @@
 import {
+  buttonIconPadding,
+  buttonIconSizes,
   buttonSizes,
   buttonVariants,
 } from "@/types/button.types";
@@ -35,6 +37,16 @@ export default function ITButton({
 }: ITButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+
+  /** La variante `icon-only` siempre es un cuadrado con padding simétrico. */
+  const isIconOnly = variant === "icon-only";
+
+  /**
+   * Contenido "solo icono": hay `icon` y no hay `children`.
+   * En ese caso NO se envuelve el icono en el wrapper con `gap-1.5` ni en un `ITText` vacío,
+   * que lo desplazaban a la izquierda del centro.
+   */
+  const isIconOnlyContent = isIconOnly && Boolean(icon) && !children;
   
   // Get specific button config from theme
   const themeBtn = theme.button as any;
@@ -64,8 +76,11 @@ export default function ITButton({
       style.borderRadius = "9999px";
     }
 
-    if (variant === "icon-only") {
-      style.padding = "0.5rem"; // Square padding override
+    if (isIconOnly) {
+      // Padding simétrico explícito: con `aspect-square` define un cuadrado exacto
+      // y evita que las utilidades `px-*`/`py-*` de `buttonSizes` desalineen el icono.
+      style.padding = buttonIconPadding[size] ?? "0.5rem";
+      style.lineHeight = 1;
     }
 
     if (isSolid) {
@@ -103,7 +118,7 @@ export default function ITButton({
         // Apply variant base styles (border, shadow, rounded-full)
         buttonVariants[variant || "filled"],
         // Apply size classes (padding/font-size)
-        buttonSizes[size],
+        isIconOnly ? buttonIconSizes[size] : buttonSizes[size],
         className,
         { "opacity-50 cursor-not-allowed": disabled }
       )}
@@ -118,10 +133,15 @@ export default function ITButton({
       title={title || ariaLabel || label}
     >
       {children || (
-        <span className={clsx("inline-flex items-center gap-1.5 font-semibold", { "opacity-50": disabled })}>
-          {icon && <span className="flex-shrink-0">{icon}</span>}
-          <ITText as="span">{label}</ITText>
-        </span>
+        isIconOnlyContent ? (
+          // Icono solo: sin wrapper con `gap` ni `ITText` vacío, que lo desplazaban a la izquierda.
+          <span className="inline-flex items-center justify-center leading-none">{icon}</span>
+        ) : (
+          <span className={clsx("inline-flex items-center gap-1.5 font-semibold", { "opacity-50": disabled })}>
+            {icon && <span className="flex-shrink-0">{icon}</span>}
+            <ITText as="span">{label}</ITText>
+          </span>
+        )
       )}
     </button>
   );
