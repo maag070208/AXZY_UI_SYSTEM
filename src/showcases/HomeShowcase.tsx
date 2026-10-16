@@ -27,6 +27,7 @@ import {
   VolverArriba,
 } from "./portfolioUi";
 import { useITTranslation } from "@/i18n";
+import { AxzyLogo } from "@/sandbox/AxzyLogo";
 
 const CV_URL = "/Martin_Amaro_CV_ES_2026.pdf";
 const GITHUB_URL = "https://github.com/maag070208";
@@ -125,9 +126,7 @@ const PortfolioNav = () => {
       <nav aria-label={t("showcase.home.sectionNav")} className={HOJA}>
         <div className="flex h-14 items-center gap-4">
           <a href="#sobre-mi" className="flex items-center gap-2.5">
-            <span className="grid h-6 w-6 place-items-center rounded-[6px] bg-primary-700 font-mono !text-[10px] !font-bold text-white">
-              AA
-            </span>
+            <AxzyLogo variante="icono" tamano={24} />
             <ITText
               as="span"
               className="hidden font-display !text-[13px] !font-bold -tracking-[0.01em] text-slate-900 dark:text-white sm:block"
@@ -439,6 +438,10 @@ export const HomeShowcase = () => {
                 <FaLinkedin size={11} />
                 LinkedIn
               </a>
+            </ITFlex>
+
+            <ITFlex align="center" className="it-reveal !mt-8">
+              <AxzyLogo variante="wordmark" tamano={300} />
             </ITFlex>
 
             <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14">
@@ -783,12 +786,16 @@ export const HomeShowcase = () => {
         <div
           className={`${HOJA} flex flex-col items-start justify-between gap-3 py-7 sm:flex-row sm:items-center`}
         >
-          <ITText
-            as="p"
-            className="font-mono !text-[11px] uppercase !tracking-[0.14em] text-slate-500 dark:text-slate-400"
-          >
-            {`Asael Amaro · ${t("showcase.home.role")}`}
-          </ITText>
+          <div className="flex items-center gap-4">
+            <AxzyLogo variante="wordmark" tamano={190} />
+            <span aria-hidden="true" className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
+            <ITText
+              as="p"
+              className="font-mono !text-[11px] uppercase !tracking-[0.14em] text-slate-500 dark:text-slate-400"
+            >
+              {`Asael Amaro · ${t("showcase.home.role")}`}
+            </ITText>
+          </div>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <ITText
               as="span"

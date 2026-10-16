@@ -169,4 +169,418 @@
   :where(.it-table-pinned-right) {
     box-shadow: inset 1px 0 0 0 var(--color-secondary-200);
   }
+
+  /* ── ITJSONEditor ────────────────────────────────────────────────────────
+     Editor de código sobre <textarea>: una capa con el JSON resaltado se pinta
+     debajo del textarea transparente. Las dos capas comparten tipografía y
+     `line-height`, y el alto de línea lo mide el componente en el DOM
+     (`--it-json-editor-line`), de ahí que aquí solo se fije la métrica. */
+  :where(.it-json-editor-canvas) {
+    --it-json-editor-line: 21px;
+    background: #fbfcfd;
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"]) {
+    background: #0b1120;
+  }
+  :where(.dark .it-json-editor-canvas) {
+    background: #020617;
+  }
+
+  :where(.it-json-editor-code) {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    /* Misma métrica que el textarea: los dos consumen la variable que publica el
+       componente con el alto de línea real. */
+    line-height: var(--it-json-editor-line, 21px);
+    tab-size: 2;
+    color: #334155;
+  }
+  /* El relleno vive en `.it-json-editor-code`, que es la clase compartida por la
+     capa resaltada y el textarea: así las dos cajas de scroll tienen el mismo
+     contenido y desplazan igual, y el alto de cada línea es exactamente
+     `--it-json-editor-line` para que el gutter no se desincronice. */
+  :where(.it-json-editor-code) {
+    padding: 10px 12px;
+  }
+  :where(.it-json-editor-code-line) {
+    white-space: pre;
+  }
+  :where(.it-json-editor-highlight) {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-code) {
+    color: #cbd5e1;
+  }
+
+  /* Textarea: texto transparente y cursor visible, encima de la capa pintada.
+     Las métricas de texto van declaradas **aquí** y no heredadas de
+     `.it-json-editor-code`: el textarea no es hijo de esa capa, así que sin esto
+     usa la tipografía de la página y el caret del navegador deja de coincidir
+     con el glifo pintado (el clic cae en otro carácter). */
+  :where(.it-json-editor-textarea) {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border: 0;
+    resize: none;
+    outline: none;
+    background: transparent;
+    color: transparent;
+    caret-color: #2563eb;
+    -webkit-text-fill-color: transparent;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    line-height: var(--it-json-editor-line, 21px);
+    tab-size: 2;
+    letter-spacing: normal;
+    padding: 10px 12px;
+    white-space: pre;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-textarea) {
+    caret-color: #7dd3fc;
+  }
+  :where(.it-json-editor-textarea)::placeholder {
+    color: #94a3b8;
+    -webkit-text-fill-color: #94a3b8;
+  }
+  :where(.it-json-editor-textarea)::selection {
+    background: rgb(37 99 235 / 0.25);
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-textarea)::selection {
+    background: rgb(125 211 252 / 0.25);
+  }
+  :where(.it-json-editor-nowrap) {
+    white-space: pre;
+    overflow: auto;
+  }
+
+  /* Gutter: números y controles de plegado, con la misma rejilla que el código. */
+  :where(.it-json-editor-gutter),
+  :where(.it-json-editor-linenumbers) {
+    background: rgb(148 163 184 / 0.08);
+    border-right: 1px solid rgb(148 163 184 / 0.22);
+  }
+  :where(.it-json-editor-gutter-row) {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+  }
+  :where(.it-json-editor-fold) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin: 2px 1px 0 0;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: #64748b;
+    cursor: pointer;
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-fold) {
+    color: #94a3b8;
+  }
+  :where(.it-json-editor-fold:hover) {
+    background: rgb(148 163 184 / 0.25);
+    color: #1d4ed8;
+  }
+  :where(.it-json-editor-fold:focus-visible) {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 1px;
+  }
+  :where(.it-json-editor-linenumber) {
+    padding-right: 10px;
+    padding-left: 10px;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px;
+    line-height: var(--it-json-editor-line);
+    text-align: right;
+    color: #94a3b8;
+    white-space: pre;
+  }
+  :where(.it-json-editor-linenumber--active) {
+    color: #1d4ed8;
+    font-weight: 600;
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-linenumber) {
+    color: #64748b;
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-linenumber--active) {
+    color: #7dd3fc;
+  }
+
+  /* Fondos de línea (cursor y error). */
+  :where(.it-json-editor-active-line) {
+    z-index: 0;
+    background: rgb(37 99 235 / 0.06);
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-active-line) {
+    background: rgb(148 197 253 / 0.07);
+  }
+  :where(.it-json-editor-error-line) {
+    z-index: 0;
+    background: rgb(244 63 94 / 0.12);
+    box-shadow: inset 2px 0 0 0 var(--color-danger-500);
+  }
+
+  /* Tokens del resaltado. */
+  :where(.it-json-editor-tk-key) {
+    color: #0369a1;
+  }
+  :where(.it-json-editor-tk-string) {
+    color: #047857;
+  }
+  :where(.it-json-editor-tk-number) {
+    color: #b45309;
+  }
+  :where(.it-json-editor-tk-keyword),
+  :where(.it-json-editor-tk-null) {
+    color: #7c3aed;
+  }
+  :where(.it-json-editor-tk-punct) {
+    color: #64748b;
+  }
+  :where(.it-json-editor-tk-plain) {
+    color: #b91c1c;
+    text-decoration: underline wavy rgb(185 28 28 / 0.5);
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-tk-key) {
+    color: #7dd3fc;
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-tk-string) {
+    color: #86efac;
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-tk-number) {
+    color: #fcd34d;
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-tk-keyword),
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-tk-null) {
+    color: #c4b5fd;
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-tk-punct) {
+    color: #94a3b8;
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-tk-plain) {
+    color: #fda4af;
+    text-decoration: underline wavy rgb(253 164 175 / 0.5);
+  }
+  :where(.it-json-editor-fold-marker) {
+    margin-left: 6px;
+    padding: 0 4px;
+    border-radius: 4px;
+    background: rgb(148 163 184 / 0.2);
+    font-size: 10.5px;
+    color: #64748b;
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-fold-marker) {
+    color: #94a3b8;
+  }
+
+  /* Botonera de la barra superior. */
+  :where(.it-json-editor-tool) {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 24px;
+    padding: 0 8px;
+    border: 1px solid var(--color-secondary-200);
+    border-radius: 6px;
+    background: transparent;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-secondary-600);
+    cursor: pointer;
+    transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+  }
+  :where(.dark .it-json-editor-tool) {
+    border-color: var(--color-secondary-800);
+    color: var(--color-secondary-300);
+  }
+  :where(.it-json-editor-tool:hover:not(:disabled)) {
+    border-color: var(--color-primary-400);
+    background: var(--color-primary-50);
+    color: var(--color-primary-700);
+  }
+  :where(.dark .it-json-editor-tool:hover:not(:disabled)) {
+    border-color: var(--color-primary-500);
+    background: rgb(37 99 235 / 0.15);
+    color: var(--color-primary-300);
+  }
+  :where(.it-json-editor-tool:disabled) {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  :where(.it-json-editor-tool:focus-visible) {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 1px;
+  }
+
+  /* Conmutador texto/árbol. */
+  :where(.it-json-editor-segment) {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-secondary-200);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  :where(.dark .it-json-editor-segment) {
+    border-color: var(--color-secondary-800);
+  }
+  :where(.it-json-editor-segment-item) {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 24px;
+    padding: 0 8px;
+    border: 0;
+    background: transparent;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-secondary-500);
+    cursor: pointer;
+  }
+  :where(.it-json-editor-segment-item--active) {
+    background: var(--color-primary-600);
+    color: #ffffff;
+  }
+  :where(.it-json-editor-segment-item:focus-visible) {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: -2px;
+  }
+
+  /* Interruptores de la fila de ajustes. */
+  :where(.it-json-editor-toggle) {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: 0;
+    background: transparent;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-secondary-400);
+    cursor: pointer;
+  }
+  :where(.it-json-editor-toggle--on) {
+    color: var(--color-primary-700);
+  }
+  :where(.dark .it-json-editor-toggle--on) {
+    color: var(--color-primary-300);
+  }
+  :where(.it-json-editor-toggle-dot) {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.4;
+  }
+  :where(.it-json-editor-toggle--on .it-json-editor-toggle-dot) {
+    opacity: 1;
+  }
+  :where(.it-json-editor-toggle:focus-visible) {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 1px;
+  }
+
+  /* Árbol navegable. */
+  :where(.it-json-editor-tree) {
+    height: 100%;
+  }
+  :where(.it-json-editor-tree-spacer) {
+    display: inline-block;
+    width: 14px;
+    flex-shrink: 0;
+  }
+  :where(.it-json-editor-tk-value) {
+    color: #334155;
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-tk-value) {
+    color: #cbd5e1;
+  }
+  :where(.it-json-editor-tree-row) {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 20px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: #334155;
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-tree-row) {
+    color: #cbd5e1;
+  }
+  :where(.it-json-editor-tree-row:hover) {
+    background: rgb(148 163 184 / 0.12);
+  }
+  :where(.it-json-editor-tree-toggle) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border: 0;
+    border-radius: 3px;
+    background: transparent;
+    color: #64748b;
+    cursor: pointer;
+  }
+  :where(.it-json-editor-tree-badge) {
+    padding: 0 5px;
+    border-radius: 999px;
+    background: rgb(148 163 184 / 0.18);
+    font-size: 9.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #64748b;
+  }
+  :where(.it-json-editor-canvas[data-canvas="ink"] .it-json-editor-tree-badge) {
+    color: #94a3b8;
+  }
+  :where(.it-json-editor-tree-jump) {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    margin-left: auto;
+    padding: 0 5px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #64748b;
+    cursor: pointer;
+    opacity: 0;
+  }
+  :where(.it-json-editor-tree-row:hover .it-json-editor-tree-jump),
+  :where(.it-json-editor-tree-jump:focus-visible) {
+    opacity: 1;
+  }
+  :where(.it-json-editor-tree-jump:hover) {
+    background: var(--color-primary-50);
+    color: var(--color-primary-700);
+  }
+  :where(.dark .it-json-editor-tree-jump:hover) {
+    background: rgb(37 99 235 / 0.2);
+    color: var(--color-primary-300);
+  }
 }

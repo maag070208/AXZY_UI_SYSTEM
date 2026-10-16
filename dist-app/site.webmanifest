@@ -1,0 +1,13 @@
+{
+  "name": "AXZY UI System",
+  "short_name": "AXZY UI",
+  "description": "Librería de componentes React + TypeScript con Tailwind CSS v4.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFAFA",
+  "theme_color": "#1D2636",
+  "icons": [
+    { "src": "/brand/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

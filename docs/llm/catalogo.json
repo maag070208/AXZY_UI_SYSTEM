@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-10-15T15:47:38.708Z",
- "libraryVersion": "1.5.1",
+ "generatedAt": "2026-10-16T22:51:08.217Z",
+ "libraryVersion": "1.6.0",
  "components": [
   {
    "name": "ITAvatar",
@@ -2557,6 +2557,227 @@
      "required": false,
      "default": "",
      "description": "Additional CSS classes"
+    }
+   ]
+  },
+  {
+   "name": "ITJSONEditor",
+   "layer": "molecules",
+   "description": "Editor de JSON con resaltado de sintaxis, gutter con números y plegado,\nerrores señalados por línea y columna, árbol navegable y acciones de formato.\n\nNo añade dependencias: el resaltado se pinta en una capa bajo el `<textarea>`\nnativo, así que se conservan el deshacer del navegador, el pegado, el dictado\ny el corrector. La validación la hace `JSON.parse`, de modo que el coloreado\nfunciona igual mientras el documento está a medio escribir.",
+   "example": "```tsx\n<ITJSONEditor value={json} onChange={setJson} onParse={handleParse} height={420} />\n```",
+   "source": "src/components/molecules/json-editor/json-editor.tsx",
+   "props": [
+    {
+     "name": "value",
+     "type": "string",
+     "required": false,
+     "default": "\"\"",
+     "description": "Documento JSON como cadena. Si es `undefined`, el editor arranca vacío."
+    },
+    {
+     "name": "onChange",
+     "type": "(value: string) => void",
+     "required": false,
+     "default": "",
+     "description": "Se dispara con el texto completo cada vez que cambia (teclado, pegado o barra de acciones)."
+    },
+    {
+     "name": "onParse",
+     "type": "(parsed: unknown, isValid: boolean, error?: string) => void",
+     "required": false,
+     "default": "",
+     "description": "Se dispara tras cada validación con el valor parseado y su estado."
+    },
+    {
+     "name": "placeholder",
+     "type": "string",
+     "required": false,
+     "default": "",
+     "description": "Texto de ayuda que se muestra cuando el documento está vacío."
+    },
+    {
+     "name": "readOnly",
+     "type": "boolean",
+     "required": false,
+     "default": "false",
+     "description": "Bloquea la edición: desaparecen las acciones que modifican el texto."
+    },
+    {
+     "name": "mode",
+     "type": "ITJSONEditorMode",
+     "required": false,
+     "default": "\"text\"",
+     "description": "Modo inicial: `\"text\"` (código) o `\"tree\"` (árbol navegable)."
+    },
+    {
+     "name": "showModeSwitch",
+     "type": "boolean",
+     "required": false,
+     "default": "true",
+     "description": "Permite alternar entre texto y árbol desde la barra."
+    },
+    {
+     "name": "showToolbar",
+     "type": "boolean",
+     "required": false,
+     "default": "true",
+     "description": "Muestra la barra superior de acciones."
+    },
+    {
+     "name": "showValidation",
+     "type": "boolean",
+     "required": false,
+     "default": "true",
+     "description": "Muestra el indicador de válido/ inválido con línea y columna del error."
+    },
+    {
+     "name": "showStatusBar",
+     "type": "boolean",
+     "required": false,
+     "default": "true",
+     "description": "Estadísticas del pie: líneas, nodos, profundidad y tamaño."
+    },
+    {
+     "name": "showLineNumbers",
+     "type": "boolean",
+     "required": false,
+     "default": "true",
+     "description": "Muestra los números de línea del gutter."
+    },
+    {
+     "name": "showFoldGutter",
+     "type": "boolean",
+     "required": false,
+     "default": "true",
+     "description": "Muestra el gutter de plegado de bloques `{…}` / `[…]`."
+    },
+    {
+     "name": "showTransformActions",
+     "type": "boolean",
+     "required": false,
+     "default": "true",
+     "description": "Habilita las acciones de la barra (formatear, minificar, ordenar, escapar)."
+    },
+    {
+     "name": "showCopyButton",
+     "type": "boolean",
+     "required": false,
+     "default": "true",
+     "description": "Habilita el botón de copiar el documento completo."
+    },
+    {
+     "name": "showImportButton",
+     "type": "boolean",
+     "required": false,
+     "default": "true",
+     "description": "Habilita la carga de un `.json` desde disco."
+    },
+    {
+     "name": "showDownloadButton",
+     "type": "boolean",
+     "required": false,
+     "default": "true",
+     "description": "Habilita la descarga del documento como `.json`."
+    },
+    {
+     "name": "showViewSettings",
+     "type": "boolean",
+     "required": false,
+     "default": "true",
+     "description": "Muestra la fila de ajustes de vista (ajuste de línea, números, plegado, indentación)."
+    },
+    {
+     "name": "indentSize",
+     "type": "number",
+     "required": false,
+     "default": "2",
+     "description": "Espacios por nivel de indentación, entre 0 y 8."
+    },
+    {
+     "name": "wrapLines",
+     "type": "boolean",
+     "required": false,
+     "default": "false",
+     "description": "Ajusta las líneas largas al ancho del editor. Desactivado mantiene el scroll horizontal y el gutter sincronizado."
+    },
+    {
+     "name": "treeShowLines",
+     "type": "boolean",
+     "required": false,
+     "default": "false",
+     "description": "Ofrece números de línea y plegado también en la vista de árbol."
+    },
+    {
+     "name": "canvasTheme",
+     "type": "ITJSONEditorTheme",
+     "required": false,
+     "default": "\"ink\"",
+     "description": "Paleta del lienzo: `\"ink\"` (tinta oscura, por defecto) o `\"light\"`."
+    },
+    {
+     "name": "height",
+     "type": "string | number",
+     "required": false,
+     "default": "340",
+     "description": "Altura del área de edición: número en píxeles o cualquier medida CSS."
+    },
+    {
+     "name": "minWidth",
+     "type": "string | number",
+     "required": false,
+     "default": "",
+     "description": "Ancho mínimo del editor. Útil dentro de layouts que comprimen."
+    },
+    {
+     "name": "actions",
+     "type": "React.ReactNode",
+     "required": false,
+     "default": "",
+     "description": "Acciones extra que se añaden al final de la barra, antes de copiar/descargar."
+    },
+    {
+     "name": "className",
+     "type": "string",
+     "required": false,
+     "default": "",
+     "description": "Clases para el contenedor raíz."
+    },
+    {
+     "name": "textareaClassName",
+     "type": "string",
+     "required": false,
+     "default": "",
+     "description": "Clases para el `<textarea>`, por si hay que afinar la tipografía."
+    },
+    {
+     "name": "errorLine",
+     "type": "number",
+     "required": false,
+     "default": "",
+     "description": "Línea (1-based) que hay que marcar como errónea cuando el fallo lo detecta\nla aplicación y no el propio editor."
+    }
+   ]
+  },
+  {
+   "name": "ITJsonRenderer",
+   "layer": "molecules",
+   "description": "Render UI from JSON schema using AXZY UI System components.",
+   "example": "<ITJsonRenderer json={{ type: \"button\", props: { label: \"Click me\" } }} />",
+   "source": "src/components/molecules/json-renderer/json-renderer.tsx",
+   "props": [
+    {
+     "name": "json",
+     "type": "JsonComponentNode | JsonComponentNode[]",
+     "required": true,
+     "default": "",
+     "description": "JSON structure to render"
+    },
+    {
+     "name": "className",
+     "type": "string",
+     "required": false,
+     "default": "",
+     "description": "Additional CSS class names"
     }
    ]
   },
@@ -5655,6 +5876,14 @@
    "example": ""
   },
   {
+   "name": "useJsonRender",
+   "layer": "hooks",
+   "description": "",
+   "signature": "(json: JsonComponentNode | JsonComponentNode[]): import(\"/Users/axzy/DEV/AXZY/AXZY_UI_SYSTEM/node_modules/.pnpm/@types+react@19.0.8/node_modules/@types/react/jsx-runtime\").JSX.Element",
+   "source": "src/hooks/useJsonRender.tsx",
+   "example": ""
+  },
+  {
    "name": "useITTheme",
    "layer": "hooks",
    "description": "",
@@ -5729,6 +5958,8 @@
   "ITImageProps",
   "ITInputNumberProps",
   "ITInputProps",
+  "ITJSONEditorProps",
+  "ITJsonRendererProps",
   "ITLayoutProps",
   "ITLineBarChartProps",
   "ITLineBarDatum",
@@ -5778,6 +6009,8 @@
   "ITTripleFilterOption",
   "ITTripleFilterProps",
   "ITWysiwygProps",
+  "JsonComponentNode",
+  "JsonComponentType",
   "TableColors",
   "TableDensity",
   "TableDesign",

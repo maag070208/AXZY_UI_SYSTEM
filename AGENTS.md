@@ -52,7 +52,8 @@
   - any other hash under `#ui-system` → 404 (`src/sandbox/NotFoundShowcase.tsx`).
   - empty hash / unknown first segment → the personal portfolio at `/`.
 - Group slug map: `general→general`, `struc→structure`, `forms→forms`, `data→viewdata`, `nav→navigation`, `feed→feedback`. The catalog, slug map and helpers (`SANDBOX_GROUPS`, `GROUP_SLUGS`, `SLUG_TO_GROUP`, `groupBySlug`, `firstItemOf`, `isValidItem`, `TOTAL_ITEMS`) live in `src/sandbox/navigation.ts`; item ids are the `renderShowcase` cases in `src/App.tsx`.
-- Sandbox-only keyframes (`it-landing-rise` / `it-landing-float` / `it-landing-grid`) live in `src/dev.css`; only `src/main.tsx` imports it, so they never reach `dist/index.css`.
+- Sandbox-only keyframes (`it-landing-rise` / `it-landing-float` / `it-landing-grid` / `it-logo-latido`) live in `src/dev.css`; only `src/main.tsx` imports it, so they never reach `dist/index.css`.
+- **Marca axzydev** del sitio: el componente es `src/sandbox/AxzyLogo.tsx` (`AxzyLogo` para navbar/hero/footer y `AxzyLoader` para cargas) y los assets son SVG del kit `axzydev-brand-kit/logos/svg`, copiados a `public/brand/` (`icon.svg`, `logo-color.svg` para fondo claro, `logo-dark.svg` para fondo oscuro). El wordmark cambia de variante según `resolvedTheme`; no hay Lottie ni dependencias nuevas. `index.html` usa el favicon del kit y `public/site.webmanifest` la PWA. Nada de esto entra en `dist/`.
 - Note: `package.json#files` includes `src/`, so sandbox sources ship in the npm tarball (same pre-existing behavior as `src/showcases/**`); they are not part of the published JS/CSS bundle.
 
 ## Component conventions

@@ -570,6 +570,7 @@ Drift conocido (no tocar sin decisión): `ITTableProps.className` no se aplica; 
 | `ITImage` | Imagen con lazy loading |
 | `ITInput` | Input con validación, números, moneda, password, textarea |
 | `ITInputNumber` | Campo numérico con formato de moneda que emite `number` (entero/decimal) |
+| `ITJSONEditor` | Editor de JSON con resaltado, gutter plegable, errores L:C y árbol navegable (`mode="tree"`). Sin dependencias: capa coloreada bajo un `<textarea>` nativo |
 | `ITLayout` | Chasis estructural (topbar + sidebar + content) |
 | `ITLoader` | Spinner/Loader |
 | `ITMultiSelect` | Select múltiple con búsqueda, chips y teclado |

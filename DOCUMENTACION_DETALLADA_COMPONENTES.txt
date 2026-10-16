@@ -61,6 +61,7 @@ español; las props de texto explícitas siempre ganan. Detalle: `docs/i18n/`.
 43. ITChipInput (Entrada de Etiquetas)
 44. ITMaskedInput (Input con Máscara de Formato)
 45. ITInputNumber (Campo Numérico con Formato de Moneda)
+46. ITJSONEditor (Editor de JSON con Resaltado, Plegado y Árbol)
 
 ================================================================================
 1. ITThemeProvider
@@ -3186,3 +3187,150 @@ export default function AmountField() {
 - `min`/`max` se aplican al salir del campo (clamp) y también bloquean dígitos que excedan el máximo al teclear.
 - Internamente usa `ITInput` con `currencyFormat` + `formatNumber`, por lo que hereda el tema y los estados de error.
 - `prefix` es un atajo de `iconLeft`; para cualquier nodo personalizado usa `iconLeft` directamente.
+
+================================================================================
+46. ITJSONEditor
+================================================================================
+Editor de JSON con resaltado de sintaxis, gutter con números y plegado, errores
+señalados por línea y columna, árbol navegable y acciones de formato. Es
+independiente de `ITJsonRenderer`: los une solo el JSON que les pases.
+
+Resaltado sin dependencias: una capa con el JSON coloreado se pinta **debajo** de
+un `<textarea>` nativo transparente. Se conservan el deshacer del navegador, el
+pegado, el dictado y el corrector; la validación sigue siendo `JSON.parse` y el
+error del motor se traduce a línea/columna.
+
+### Props (ITJSONEditorProps)
+```typescript
+export type ITJSONEditorMode = "text" | "tree";
+export type ITJSONEditorTheme = "ink" | "light";
+
+export interface ITJSONEditorProps {
+  /** Documento JSON como cadena. Default: "" */
+  value?: string;
+  /** Se dispara con el texto completo cada vez que cambia. */
+  onChange?: (value: string) => void;
+  /** Tras cada validación: valor parseado y estado. */
+  onParse?: (parsed: unknown, isValid: boolean, error?: string) => void;
+  /** Ayuda que se muestra con el documento vacío. */
+  placeholder?: string;
+  /** Bloquea la edición. Default: false */
+  readOnly?: boolean;
+  /** Modo inicial. Default: "text" */
+  mode?: ITJSONEditorMode;
+  /** Conmutador texto/árbol en la barra. Default: true */
+  showModeSwitch?: boolean;
+  /** Barra superior de acciones. Default: true */
+  showToolbar?: boolean;
+  /** Indicador válido/inválido con L:C. Default: true */
+  showValidation?: boolean;
+  /** Pie con líneas, nodos, profundidad, raíz y tamaño. Default: true */
+  showStatusBar?: boolean;
+  /** Números de línea en el gutter. Default: true */
+  showLineNumbers?: boolean;
+  /** Gutter de plegado de bloques. Default: true */
+  showFoldGutter?: boolean;
+  /** Formatear, minificar, ordenar, escapar. Default: true */
+  showTransformActions?: boolean;
+  /** Botón de copiar el documento. Default: true */
+  showCopyButton?: boolean;
+  /** Carga de un archivo .json desde disco. Default: true */
+  showImportButton?: boolean;
+  /** Descarga del documento como document.json. Default: true */
+  showDownloadButton?: boolean;
+  /** Fila de ajustes de vista. Default: true */
+  showViewSettings?: boolean;
+  /** Espacios por nivel (0, 2, 4 u 8). Default: 2 */
+  indentSize?: number;
+  /** Ajusta las líneas largas al ancho. Default: false */
+  wrapLines?: boolean;
+  /** Línea de cada nodo en el árbol + salto. Default: false */
+  treeShowLines?: boolean;
+  /** Paleta del lienzo. Default: "ink" */
+  canvasTheme?: ITJSONEditorTheme;
+  /** Alto del área de edición. Default: 340 */
+  height?: number | string;
+  /** Ancho mínimo del editor. */
+  minWidth?: number | string;
+  /** Acciones propias al final de la barra. */
+  actions?: React.ReactNode;
+  /** Clases del contenedor raíz. */
+  className?: string;
+  /** Identificador HTML del contenedor raíz. */
+  id?: string;
+  /** Clases extra del textarea. */
+  textareaClassName?: string;
+  /** Línea a marcar como errónea cuando el fallo lo detecta la app. */
+  errorLine?: number;
+}
+```
+
+### Valores literales
+- `mode`: `'text'` (editor de código) | `'tree'` (árbol navegable de solo lectura).
+- `canvasTheme`: `'ink'` (tinta oscura, por defecto) | `'light'`.
+- `indentSize`: `0` | `2` | `4` | `8`.
+- Transformaciones de la barra: formatear, minificar, ordenar A-Z, ordenar Z-A, escapar y desescapar.
+
+### Atajos de teclado
+- `Tab` / `Mayús+Tab`: indenta o desangra el bloque seleccionado.
+- `Enter`: continúa la indentación; entre `{}` o `[]` abre el bloque y centra el cursor.
+- `{`, `[`, `"`: cierre automático (con texto seleccionado, lo envuelve).
+- `Retroceso`: borra la pareja completa (`{}`, `[]`, `""`).
+- `Mayús+Alt+F` formatear, `Mayús+Alt+M` minificar, `Mayús+Alt+S` ordenar A-Z.
+- `Cmd/Ctrl+D`: duplica la línea. `Cmd/Ctrl+A`: selecciona solo el editor.
+
+### Ejemplo Real
+```tsx
+import { useState } from 'react';
+import { ITJSONEditor, ITJsonRenderer, ITFlex, ITAlert } from '@axzydev/axzy_ui_system';
+
+export default function BuilderPlayground() {
+  const [json, setJson] = useState('{\n  "type": "button",\n  "props": { "label": "Aceptar" }\n}');
+  const [parsed, setParsed] = useState<unknown>(null);
+  const [valid, setValid] = useState(true);
+
+  const handleParse = (value: unknown, isValid: boolean) => {
+    setValid(isValid);
+    if (isValid) setParsed(value);
+  };
+
+  return (
+    <ITFlex direction="column" gap={4}>
+      <ITJSONEditor
+        value={json}
+        onChange={setJson}
+        onParse={handleParse}
+        height={420}
+        indentSize={2}
+      />
+      {valid ? <ITJsonRenderer json={parsed as never} /> : (
+        <ITAlert variant="error" title="JSON inválido">Corrige el JSON para ver el preview</ITAlert>
+      )}
+    </ITFlex>
+  );
+}
+```
+
+### Ejemplo Real (solo lectura, vista de árbol)
+```tsx
+<ITJSONEditor
+  value={json}
+  readOnly
+  mode="tree"
+  treeShowLines
+  height={320}
+  showToolbar={false}
+  showViewSettings={false}
+/>
+```
+
+### Notas
+- i18n: todas las cadenas salen del namespace `jsonEditor.*` de `useITTranslation()`
+  (`jsonEditor.format`, `jsonEditor.invalidAt`, `jsonEditor.treeNeedsValid`…).
+- Con `wrapLines` activo, el resaltado de la línea vigente y el de error se
+  desactivan de forma deliberada: su posición dependería de las vueltas de cada línea.
+- El árbol corta a 1500 filas para no colgar la vista y avisa con `jsonEditor.treeTruncated`.
+- El alto real de línea se mide en el DOM (`ResizeObserver` + `document.fonts.ready`) y se
+  publica como `--it-json-editor-line`; de ahí que gutter, capa resaltada y textarea
+  queden alineados al píxel con cualquier tipografía.
+- El CSS scoped vive en `src/index.css` bajo `@layer components` con prefijo `it-json-editor-*`.

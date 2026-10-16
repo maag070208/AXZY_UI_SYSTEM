@@ -20,6 +20,7 @@ export const sandboxMessages: ITMessagesByLocale = {
     "sandbox.userMenu.portfolio": "Ir al Portafolio",
     "sandbox.search.label": "Buscar componentes",
     "sandbox.search.placeholder": "Buscar componente…",
+    "sandbox.loading": "Cargando…",
     "sandbox.search.clear": "Limpiar búsqueda",
     "sandbox.search.results": "{count} resultados",
 
@@ -967,6 +968,7 @@ export const sandboxMessages: ITMessagesByLocale = {
     "sandbox.userMenu.portfolio": "Go to portfolio",
     "sandbox.search.label": "Search components",
     "sandbox.search.placeholder": "Search component…",
+    "sandbox.loading": "Loading…",
     "sandbox.search.clear": "Clear search",
     "sandbox.search.results": "{count} results",
 

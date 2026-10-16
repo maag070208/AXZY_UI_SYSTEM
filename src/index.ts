@@ -6,6 +6,7 @@ import { useDebouncedSearch } from "./hooks/useDebouncedSearch";
 import { useEditableRow } from "./hooks/useEditableRow";
 import { useFloatingPanel } from "./hooks/useFloatingPanel";
 import { useTableState, UseTableStateOptions, UseTableStateResult } from "./hooks/useTableState";
+import useJsonRender from "./hooks/useJsonRender";
 
 // COMPONENTES
 import ITAccordion from "./components/molecules/accordion/accordion";
@@ -62,6 +63,8 @@ import ITTabs from "./components/molecules/tabs/tabs";
 import ITTripleFilter from "./components/organisms/triple-filter/tripleFilter";
 import ITToast from "./components/organisms/toast/toast";
 import ITWysiwyg from "./components/molecules/wysiwyg/wysiwyg";
+import ITJsonRenderer from "./components/molecules/json-renderer/json-renderer";
+import ITJSONEditor from "./components/molecules/json-editor/json-editor";
 
 // PROPS
 import type { ITAlertProps } from "./components/molecules/alert/alert.props";
@@ -118,6 +121,8 @@ import type { ITTabsProps, ITTabItem } from "./components/molecules/tabs/tabs.pr
 import type { ITTripleFilterProps, ITTripleFilterOption } from "./components/organisms/triple-filter/tripleFilter.props";
 import type { ITToastProps } from "./components/organisms/toast/toast.props";
 import type { ITWysiwygProps } from "./components/molecules/wysiwyg/wysiwyg.props";
+import type { ITJsonRendererProps, JsonComponentNode, JsonComponentType } from "./components/molecules/json-renderer/json-renderer.props";
+import type { ITJSONEditorProps } from "./components/molecules/json-editor/json-editor.props";
 import type { FieldConfig, FieldConfigV2 } from "./types/field.types";
 import type { ColumnFilters, ColumnFilterValue, TableColors, TableDensity, TableDesign, TableDesignProps, TableDesignSlot } from "./types/table.types";
 
@@ -144,7 +149,7 @@ import type { ITI18nProviderProps, ITI18nValue, ITLocale, ITMessages, ITMessages
 
 export {
   // Hooks
-  useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useTableState,
+  useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useTableState, useJsonRender,
   createValidationSchema,
   // Components
   ITAccordion,
@@ -162,7 +167,8 @@ export {
   useITTheme, useITThemeSafe, useITFlatAppearance, ITTimePicker, ITToast, ITWysiwyg,
   UploadStatus, FileTypeEnum,
   getContrastTextColor, isLightColor, resolveCssColor,
-  ITI18nProvider, useITTranslation, esMessages, enMessages
+  ITI18nProvider, useITTranslation, esMessages, enMessages,
+  ITJsonRenderer, ITJSONEditor
 };
 
   export type {
@@ -195,6 +201,8 @@ export {
     ITTripleFilterProps, ITTripleFilterOption, ITThemeConfig, ITThemeProviderProps, ITThemePalette, ITThemeAppearance,
     ITTimePickerProps, ITToastProps,
     ITWysiwygProps,
+    ITJsonRendererProps, JsonComponentNode, JsonComponentType,
+    ITJSONEditorProps,
     UseTableStateOptions, UseTableStateResult
   };
 

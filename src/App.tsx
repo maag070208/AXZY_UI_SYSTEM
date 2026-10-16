@@ -65,6 +65,8 @@ import {
   LoaderShowcase,
   ThemeProviderShowcase,
 } from "./showcases/FeedbackShowcases";
+import JsonRendererShowcase from "./showcases/JsonRendererShowcase";
+import JsonEditorShowcase from "./showcases/JsonEditorShowcase";
 
 // Sandbox routing / landing (dev-only, never published)
 import {
@@ -75,6 +77,7 @@ import { useHashRoute } from "./sandbox/useHashRoute";
 import TopbarSearch from "./sandbox/TopbarSearch";
 import { LandingShowcase } from "./sandbox/LandingShowcase";
 import NotFoundShowcase from "./sandbox/NotFoundShowcase";
+import { AxzyLogo } from "./sandbox/AxzyLogo";
 import { sandboxMessages, translateLabel } from "./sandbox/i18n";
 import { SandboxLocaleProvider, useSandboxLocale } from "./sandbox/locale";
 import { SelectorIdioma, SelectorTema } from "./sandbox/controls";
@@ -172,6 +175,9 @@ function AppShell() {
   };
 
   const topBarProps = {
+    // La marca axzydev sustituye al nombre suelto: el wordmark ya dice a quién
+    // pertenece el catálogo y el texto se mantiene como respaldo accesible.
+    logo: <AxzyLogo variante="icono" tamano={22} />,
     logoText: "AXZY UI System",
     centerContent: (
       <TopbarSearch
@@ -309,6 +315,10 @@ function AppShell() {
         return <LoaderShowcase />;
       case "themeprovider":
         return <ThemeProviderShowcase />;
+      case "jsonrenderer":
+        return <JsonRendererShowcase />;
+      case "jsoneditor":
+        return <JsonEditorShowcase />;
       default:
         return (
           <NotFoundShowcase

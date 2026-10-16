@@ -4,8 +4,8 @@
 > necesario para que un modelo escriba código correcto con `@axzydev/axzy_ui_system`: instalación real,
 > reglas, accesibilidad, trampas, ejemplos de producción y el catálogo de componentes.
 >
-> Librería: `@axzydev/axzy_ui_system` · versión de referencia: `1.5.1` ·
-> 61 componentes. Generado el 2026-10-15.
+> Librería: `@axzydev/axzy_ui_system` · versión de referencia: `1.6.0` ·
+> 63 componentes. Generado el 2026-10-16.
 >
 > Estructura: **Parte 1** guía de uso · **Parte 2** ejemplos reales · **Parte 3** catálogo de componentes.
 > Las rutas que se citan dentro (`docs/…`, `LLM_DOCS.md`) son del repo de la librería: este paquete ya
@@ -1744,6 +1744,71 @@ export const useNotify = () => {
 
 `*` = obligatorio.
 
+#### `ITJSONEditor`
+
+- **Capa:** Molecules
+- **Fuente:** `src/components/molecules/json-editor/json-editor.tsx`
+- **Qué es:** Editor de JSON con resaltado de sintaxis, gutter con números y plegado, errores señalados por línea y columna, árbol navegable y acciones de formato. No añade dependencias: el resaltado se pinta en una capa bajo el `<textarea>` nativo, así que se conservan el deshacer del navegador, el pegado, el dictado y el corrector. La validación la hace `JSON.parse`, de modo que el coloreado funciona igual mientras el documento está a medio escribir.
+
+```tsx
+```tsx
+<ITJSONEditor value={json} onChange={setJson} onParse={handleParse} height={420} />
+```
+```
+
+**Props**
+
+| Prop | Tipo | Por defecto | Descripción |
+| --- | --- | --- | --- |
+| `value` | `string` | `""` | Documento JSON como cadena. Si es `undefined`, el editor arranca vacío. |
+| `onChange` | `(value: string) => void` | — | Se dispara con el texto completo cada vez que cambia (teclado, pegado o barra de acciones). |
+| `onParse` | `(parsed: unknown, isValid: boolean, error?: string) => void` | — | Se dispara tras cada validación con el valor parseado y su estado. |
+| `placeholder` | `string` | — | Texto de ayuda que se muestra cuando el documento está vacío. |
+| `readOnly` | `boolean` | `false` | Bloquea la edición: desaparecen las acciones que modifican el texto. |
+| `mode` | `ITJSONEditorMode` | `"text"` | Modo inicial: `"text"` (código) o `"tree"` (árbol navegable). |
+| `showModeSwitch` | `boolean` | `true` | Permite alternar entre texto y árbol desde la barra. |
+| `showToolbar` | `boolean` | `true` | Muestra la barra superior de acciones. |
+| `showValidation` | `boolean` | `true` | Muestra el indicador de válido/ inválido con línea y columna del error. |
+| `showStatusBar` | `boolean` | `true` | Estadísticas del pie: líneas, nodos, profundidad y tamaño. |
+| `showLineNumbers` | `boolean` | `true` | Muestra los números de línea del gutter. |
+| `showFoldGutter` | `boolean` | `true` | Muestra el gutter de plegado de bloques `{…}` / `[…]`. |
+| `showTransformActions` | `boolean` | `true` | Habilita las acciones de la barra (formatear, minificar, ordenar, escapar). |
+| `showCopyButton` | `boolean` | `true` | Habilita el botón de copiar el documento completo. |
+| `showImportButton` | `boolean` | `true` | Habilita la carga de un `.json` desde disco. |
+| `showDownloadButton` | `boolean` | `true` | Habilita la descarga del documento como `.json`. |
+| `showViewSettings` | `boolean` | `true` | Muestra la fila de ajustes de vista (ajuste de línea, números, plegado, indentación). |
+| `indentSize` | `number` | `2` | Espacios por nivel de indentación, entre 0 y 8. |
+| `wrapLines` | `boolean` | `false` | Ajusta las líneas largas al ancho del editor. Desactivado mantiene el scroll horizontal y el gutter sincronizado. |
+| `treeShowLines` | `boolean` | `false` | Ofrece números de línea y plegado también en la vista de árbol. |
+| `canvasTheme` | `ITJSONEditorTheme` | `"ink"` | Paleta del lienzo: `"ink"` (tinta oscura, por defecto) o `"light"`. |
+| `height` | `string \| number` | `340` | Altura del área de edición: número en píxeles o cualquier medida CSS. |
+| `minWidth` | `string \| number` | — | Ancho mínimo del editor. Útil dentro de layouts que comprimen. |
+| `actions` | `React.ReactNode` | — | Acciones extra que se añaden al final de la barra, antes de copiar/descargar. |
+| `className` | `string` | — | Clases para el contenedor raíz. |
+| `textareaClassName` | `string` | — | Clases para el `<textarea>`, por si hay que afinar la tipografía. |
+| `errorLine` | `number` | — | Línea (1-based) que hay que marcar como errónea cuando el fallo lo detecta la aplicación y no el propio editor. |
+
+`*` = obligatorio.
+
+#### `ITJsonRenderer`
+
+- **Capa:** Molecules
+- **Fuente:** `src/components/molecules/json-renderer/json-renderer.tsx`
+- **Qué es:** Render UI from JSON schema using AXZY UI System components.
+
+```tsx
+<ITJsonRenderer json={{ type: "button", props: { label: "Click me" } }} />
+```
+
+**Props**
+
+| Prop | Tipo | Por defecto | Descripción |
+| --- | --- | --- | --- |
+| `json` **\*** | `JsonComponentNode \| JsonComponentNode[]` | — | JSON structure to render |
+| `className` | `string` | — | Additional CSS class names |
+
+`*` = obligatorio.
+
 #### `ITLineBarChart`
 
 - **Capa:** Molecules
@@ -2886,6 +2951,11 @@ errors={formik.errors}
 - **Firma:** `({ defaultItemsPerPage, initialSort, }?: UseTableStateOptions): UseTableStateResult`
 - **Fuente:** `src/hooks/useTableState.ts`
 
+#### `useJsonRender`
+
+- **Firma:** `(json: JsonComponentNode \| JsonComponentNode[]): import("/Users/axzy/DEV/AXZY/AXZY_UI_SYSTEM/node_modules/.pnpm/@types+react@19.0.8/node_modules/@types/react/jsx-runtime").JSX.Element`
+- **Fuente:** `src/hooks/useJsonRender.tsx`
+
 #### `useITTheme`
 
 - **Firma:** `(): import("/Users/axzy/DEV/AXZY/AXZY_UI_SYSTEM/src/theme/theme-context").ITThemeContextType`
@@ -2918,6 +2988,6 @@ return <ITButton label={t("common.cancel")} onClick={onCancel} />;
 
 ### Otros exports (tipos y utilidades)
 
-`Column`, `ColumnFilterMode`, `ColumnFilterValue`, `ColumnFilters`, `FieldConfig`, `FieldConfigV2`, `FileTypeEnum`, `ITAccordionItem`, `ITAccordionProps`, `ITAlertProps`, `ITAvatarProps`, `ITBadgetProps`, `ITBreadcrumbItem`, `ITBreadcrumbsProps`, `ITButtonProps`, `ITCalendarProps`, `ITCardProps`, `ITCheckboxProps`, `ITChipInputProps`, `ITChipProps`, `ITConfirmDialogProps`, `ITDataTableFetchParams`, `ITDataTableProps`, `ITDataTableResponse`, `ITDatePickerProps`, `ITDialogProps`, `ITDividerProps`, `ITDrawerProps`, `ITDropdownMenuItem`, `ITDropdownMenuProps`, `ITEmptyStateProps`, `ITFieldProps`, `ITFlexProps`, `ITFormBuilderProps`, `ITFormHeaderProps`, `ITGridProps`, `ITI18nProviderProps`, `ITI18nValue`, `ITImageProps`, `ITInputNumberProps`, `ITInputProps`, `ITLayoutProps`, `ITLineBarChartProps`, `ITLineBarDatum`, `ITLoaderProps`, `ITLocale`, `ITMaskedInputProps`, `ITMessages`, `ITMessagesByLocale`, `ITMultiSelectOption`, `ITMultiSelectProps`, `ITNavbarProps`, `ITNavigationItem`, `ITNavigationSubItem`, `ITNavigationSubItemEntry`, `ITNavigationSubItemGroup`, `ITPageHeaderProps`, `ITPageProps`, `ITPaginationProps`, `ITPopoverProps`, `ITProgressProps`, `ITRadioGroupProps`, `ITRadioOption`, `ITSearchSelectProps`, `ITSearchTableProps`, `ITSegmentedControlProps`, `ITSelectProps`, `ITSidebarBrand`, `ITSidebarNotification`, `ITSidebarProps`, `ITSkeletonProps`, `ITSlideToggleProps`, `ITSliderProps`, `ITStackProps`, `ITStatCardProps`, `ITStepperProps`, `ITTabItem`, `ITTableProps`, `ITTabsProps`, `ITTextProps`, `ITTextareaProps`, `ITThemeAppearance`, `ITThemeConfig`, `ITThemePalette`, `ITThemeProviderProps`, `ITTimePickerProps`, `ITToastProps`, `ITTripleFilterOption`, `ITTripleFilterProps`, `ITWysiwygProps`, `TableColors`, `TableDensity`, `TableDesign`, `TableDesignProps`, `TableDesignSlot`, `UploadStatus`, `UseTableStateOptions`, `UseTableStateResult`, `createValidationSchema`, `enMessages`, `esMessages`, `getContrastTextColor`, `isLightColor`, `resolveCssColor`
+`Column`, `ColumnFilterMode`, `ColumnFilterValue`, `ColumnFilters`, `FieldConfig`, `FieldConfigV2`, `FileTypeEnum`, `ITAccordionItem`, `ITAccordionProps`, `ITAlertProps`, `ITAvatarProps`, `ITBadgetProps`, `ITBreadcrumbItem`, `ITBreadcrumbsProps`, `ITButtonProps`, `ITCalendarProps`, `ITCardProps`, `ITCheckboxProps`, `ITChipInputProps`, `ITChipProps`, `ITConfirmDialogProps`, `ITDataTableFetchParams`, `ITDataTableProps`, `ITDataTableResponse`, `ITDatePickerProps`, `ITDialogProps`, `ITDividerProps`, `ITDrawerProps`, `ITDropdownMenuItem`, `ITDropdownMenuProps`, `ITEmptyStateProps`, `ITFieldProps`, `ITFlexProps`, `ITFormBuilderProps`, `ITFormHeaderProps`, `ITGridProps`, `ITI18nProviderProps`, `ITI18nValue`, `ITImageProps`, `ITInputNumberProps`, `ITInputProps`, `ITJSONEditorProps`, `ITJsonRendererProps`, `ITLayoutProps`, `ITLineBarChartProps`, `ITLineBarDatum`, `ITLoaderProps`, `ITLocale`, `ITMaskedInputProps`, `ITMessages`, `ITMessagesByLocale`, `ITMultiSelectOption`, `ITMultiSelectProps`, `ITNavbarProps`, `ITNavigationItem`, `ITNavigationSubItem`, `ITNavigationSubItemEntry`, `ITNavigationSubItemGroup`, `ITPageHeaderProps`, `ITPageProps`, `ITPaginationProps`, `ITPopoverProps`, `ITProgressProps`, `ITRadioGroupProps`, `ITRadioOption`, `ITSearchSelectProps`, `ITSearchTableProps`, `ITSegmentedControlProps`, `ITSelectProps`, `ITSidebarBrand`, `ITSidebarNotification`, `ITSidebarProps`, `ITSkeletonProps`, `ITSlideToggleProps`, `ITSliderProps`, `ITStackProps`, `ITStatCardProps`, `ITStepperProps`, `ITTabItem`, `ITTableProps`, `ITTabsProps`, `ITTextProps`, `ITTextareaProps`, `ITThemeAppearance`, `ITThemeConfig`, `ITThemePalette`, `ITThemeProviderProps`, `ITTimePickerProps`, `ITToastProps`, `ITTripleFilterOption`, `ITTripleFilterProps`, `ITWysiwygProps`, `JsonComponentNode`, `JsonComponentType`, `TableColors`, `TableDensity`, `TableDesign`, `TableDesignProps`, `TableDesignSlot`, `UploadStatus`, `UseTableStateOptions`, `UseTableStateResult`, `createValidationSchema`, `enMessages`, `esMessages`, `getContrastTextColor`, `isLightColor`, `resolveCssColor`
 
 

@@ -1,0 +1,9 @@
+/* Tokens de marca axzydev — sácalos de tu captura de axzy.dev */
+:root {
+  --axzy-teal:      #4598B1;  /* acento, llama, "dev" en fondo oscuro */
+  --axzy-teal-deep: #387D92;  /* botones, "dev" en fondo claro */
+  --axzy-navy:      #1D2636;  /* texto principal / fondo oscuro */
+  --axzy-paper:     #FAFAFA;  /* fondo claro */
+  --axzy-slate:     #5A6475;  /* texto secundario sobre claro */
+  --axzy-mist:      #9AA6B8;  /* texto secundario sobre oscuro */
+}

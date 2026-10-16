@@ -1,7 +1,7 @@
 # Catálogo maestro de textos (i18n)
 
 > **Estado: implementado.** La fuente de verdad runtime son `src/i18n/locales/es.ts` y
-> `src/i18n/locales/en.ts` (148 keys cada uno, en paridad). Si añades keys nuevas, actualiza los
+> `src/i18n/locales/en.ts` (193 keys cada uno, en paridad). Si añades keys nuevas, actualiza los
 > catálogos **y** este documento; ante duda, manda el código.
 >
 > La vista **por componente** (con archivo:línea) está en la sección *Textos (i18n)* de
@@ -111,6 +111,63 @@ componentes llaman a `t(...)` con esa key; `—` significa que la key existe per
 | `breadcrumbs.aria` | Ruta de navegación | Breadcrumb | ITBreadcrumbs (aria-label) |
 | `stepper.stepOf` | Paso {current} de {total} | Step {current} of {total} | ITStepper |
 | `stepper.stepAria` | Paso {n} {label} | Step {n} {label} | ITStepper (aria-label) |
+
+### ITJSONEditor — `jsonEditor.*`
+
+| Key | es | en | Usado en |
+| --- | --- | --- | --- |
+| `jsonEditor.ariaLabel` | Editor de JSON | JSON editor | ITJSONEditor (`aria-label`) |
+| `jsonEditor.placeholder` | `{ … }` de ejemplo | `{ … }` de ejemplo | ITJSONEditor (placeholder) |
+| `jsonEditor.valid` | JSON válido | Valid JSON | ITJSONEditor |
+| `jsonEditor.invalid` | JSON no válido | Invalid JSON | ITJSONEditor |
+| `jsonEditor.invalidAt` | Error en línea {line}, columna {column} | Error on line {line}, column {column} | ITJSONEditor (pie) |
+| `jsonEditor.format` | Formatear | Format | ITJSONEditor |
+| `jsonEditor.formatHint` | Reindenta el documento (Mayús+Alt+F) | Reindents the document (Shift+Alt+F) | ITJSONEditor (title) |
+| `jsonEditor.minify` | Minificar | Minify | ITJSONEditor |
+| `jsonEditor.sortAsc` | A-Z | A-Z | ITJSONEditor |
+| `jsonEditor.sortDesc` | Z-A | Z-A | ITJSONEditor |
+| `jsonEditor.escape` | Escapar | Escape | ITJSONEditor |
+| `jsonEditor.unescape` | Desescapar | Unescape | ITJSONEditor |
+| `jsonEditor.copy` | Copiar | Copy | ITJSONEditor |
+| `jsonEditor.copied` | Copiado | Copied | ITJSONEditor |
+| `jsonEditor.copyFailed` | No se pudo copiar al portapapeles | Could not copy to the clipboard | ITJSONEditor (aviso) |
+| `jsonEditor.importFile` | Abrir | Open | ITJSONEditor |
+| `jsonEditor.download` | Descargar | Download | ITJSONEditor |
+| `jsonEditor.fileLoaded` | Archivo cargado | File loaded | ITJSONEditor (aviso) |
+| `jsonEditor.fileError` | No se pudo leer el archivo | The file could not be read | ITJSONEditor (aviso) |
+| `jsonEditor.applied` | Acción aplicada | Action applied | ITJSONEditor (aviso) |
+| `jsonEditor.actionFailed` | La acción no se pudo aplicar | The action could not be applied | ITJSONEditor (aviso) |
+| `jsonEditor.viewMode` | Modo de vista | View mode | ITJSONEditor (aria-label) |
+| `jsonEditor.modeText` | Texto | Text | ITJSONEditor |
+| `jsonEditor.modeTree` | Árbol | Tree | ITJSONEditor |
+| `jsonEditor.viewSettings` | Vista | View | ITJSONEditor |
+| `jsonEditor.wrap` | Ajuste | Wrap | ITJSONEditor |
+| `jsonEditor.lineNumbers` | Números | Numbers | ITJSONEditor |
+| `jsonEditor.folding` | Plegado | Folding | ITJSONEditor |
+| `jsonEditor.indent` | Indentación | Indent | ITJSONEditor |
+| `jsonEditor.indentNone` | Sin sangrar | No indent | ITJSONEditor |
+| `jsonEditor.collapseAll` | Plegar todo | Collapse all | ITJSONEditor |
+| `jsonEditor.expandAll` | Desplegar todo | Expand all | ITJSONEditor |
+| `jsonEditor.collapseBlock` | Plegar el bloque de la línea {line} | Collapse the block on line {line} | ITJSONEditor (aria-label) |
+| `jsonEditor.expandBlock` | Desplegar el bloque de la línea {line} | Expand the block on line {line} | ITJSONEditor (aria-label) |
+| `jsonEditor.foldMore` | … {count} líneas plegadas | … {count} folded lines | ITJSONEditor (marcador) |
+| `jsonEditor.expandNode` | Desplegar nodo | Expand node | ITCodeTreeView (aria-label) |
+| `jsonEditor.collapseNode` | Plegar nodo | Collapse node | ITCodeTreeView (aria-label) |
+| `jsonEditor.jumpToLine` | Ir a la línea {line} | Go to line {line} | ITCodeTreeView |
+| `jsonEditor.childCount` | {count} hijos | {count} children | ITCodeTreeView |
+| `jsonEditor.treeNeedsValid` | Corrige el JSON para ver el árbol | Fix the JSON to see the tree | ITJSONEditor |
+| `jsonEditor.treeTruncated` | Árbol recortado: demasiados nodos, usa la vista de texto | Tree truncated: too many nodes, use the text view | ITCodeTreeView |
+| `jsonEditor.statLines` | {count} líneas | {count} lines | ITJSONEditor (pie) |
+| `jsonEditor.statNodes` | {count} nodos | {count} nodes | ITJSONEditor (pie) |
+| `jsonEditor.statDepth` | prof. {count} | depth {count} | ITJSONEditor (pie) |
+| `jsonEditor.statRoot` | raíz: {kind} | root: {kind} | ITJSONEditor (pie) |
+| `jsonEditor.statSize` | tamaño: {size} | size: {size} | ITJSONEditor (pie) |
+| `jsonEditor.kindObject` | objeto | object | ITJSONEditor, ITCodeTreeView |
+| `jsonEditor.kindArray` | array | array | ITJSONEditor, ITCodeTreeView |
+| `jsonEditor.kindString` | texto | string | ITJSONEditor, ITCodeTreeView |
+| `jsonEditor.kindNumber` | número | number | ITJSONEditor, ITCodeTreeView |
+| `jsonEditor.kindBoolean` | booleano | boolean | ITJSONEditor, ITCodeTreeView |
+| `jsonEditor.kindNull` | nulo | null | ITJSONEditor, ITCodeTreeView |
 
 ## Organisms
 

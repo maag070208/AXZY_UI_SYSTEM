@@ -37,6 +37,7 @@ import type { ITSidebarProps } from "../index";
 import { ShowcaseLayout, CodeViewer } from "./ShowcaseLayout";
 import { EjemploContenedor } from "@/sandbox/ui";
 import { useITTranslation } from "@/i18n";
+import { AxzyLogo } from "@/sandbox/AxzyLogo";
 
 // ─────────────────────────────────────────
 // 1. ITCard Showcase
@@ -972,7 +973,7 @@ export const LayoutShowcase = () => {
   const [navActiveId, setNavActiveId] = useState<string | null>("1");
 
   const topBar = {
-    logo: <div className="w-9 h-9 rounded-lg bg-primary-500 flex items-center justify-center text-white font-bold">A</div>,
+    logo: <AxzyLogo variante="icono" tamano={36} etiqueta="" />,
     logoText: "AXZY Console",
     centerContent: (
       <input
@@ -1155,6 +1156,7 @@ export const LayoutShowcase = () => {
             numero="02"
             titulo={t("showcase.structure.galleryNavbarStandalone")}
             codigo={`<ITNavbar
+  logo={<AxzyLogo variante="icono" tamano={28} etiqueta="" />}
   logoText="AXZY"
   navigationItems={[
     { id: "1", label: "Inicio", icon: <FaHome />, isActive: true },
@@ -1169,6 +1171,7 @@ export const LayoutShowcase = () => {
           >
             <div className="h-[380px] overflow-hidden [&>div]:!h-full">
               <ITNavbar
+                logo={<AxzyLogo variante="icono" tamano={28} etiqueta="" />}
                 logoText="AXZY"
                 navigationItems={navbarItems}
                 userMenu={{
@@ -1197,6 +1200,7 @@ export const LayoutShowcase = () => {
             numero="03"
             titulo={t("showcase.structure.galleryNavbarSubmenus")}
             codigo={`<ITNavbar
+  logo={<AxzyLogo variante="icono" tamano={28} etiqueta="" />}
   logoText="Admin"
   navigationItems={[
     { id: "u", label: "Usuarios", icon: <FaUsers /> },
@@ -1215,6 +1219,7 @@ export const LayoutShowcase = () => {
           >
             <div className="h-[380px] overflow-hidden [&>div]:!h-full">
               <ITNavbar
+                logo={<AxzyLogo variante="icono" tamano={28} etiqueta="" />}
                 logoText="Admin"
                 navigationItems={[
                   { id: "u", label: t("showcase.structure.navUsers"), icon: <FaUsers /> },

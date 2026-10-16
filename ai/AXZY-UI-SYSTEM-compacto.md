@@ -4,8 +4,8 @@
 > necesario para que un modelo escriba código correcto con `@axzydev/axzy_ui_system`: instalación real,
 > reglas, accesibilidad, trampas, ejemplos de producción y el catálogo de componentes.
 >
-> Librería: `@axzydev/axzy_ui_system` · versión de referencia: `1.5.1` ·
-> 61 componentes. Generado el 2026-10-15.
+> Librería: `@axzydev/axzy_ui_system` · versión de referencia: `1.6.0` ·
+> 63 componentes. Generado el 2026-10-16.
 >
 > Estructura: **Parte 1** guía de uso · **Parte 2** ejemplos reales · **Parte 3** catálogo de componentes.
 > Las rutas que se citan dentro (`docs/…`, `LLM_DOCS.md`) son del repo de la librería: este paquete ya
@@ -929,6 +929,18 @@ Props: label: string · htmlFor: string · required: boolean · error: string | 
 Colored header bar for modals and forms with an optional close button. Uses the theme's primary color as the background and automatically calculates a contrasting text color for readability.
 
 Props: title*: string · onClose: () => void · className: string
+
+#### `ITJSONEditor` — molecules
+
+Editor de JSON con resaltado de sintaxis, gutter con números y plegado, errores señalados por línea y columna, árbol navegable y acciones de formato. No añade dependencias: el resaltado se pinta en una capa bajo el `<textarea>` nativo, así que se conservan el deshacer del navegador, el pegado, el dictado y el corrector. La validación la hace `JSON.parse`, de modo que el coloreado funciona igual mientras el documento está a medio escribir.
+
+Props: value: string · onChange: (value: string) => void · onParse: (parsed: unknown, isValid: boolean, error?: stri · placeholder: string · readOnly: boolean · mode: ITJSONEditorMode · showModeSwitch: boolean · showToolbar: boolean · showValidation: boolean · showStatusBar: boolean · showLineNumbers: boolean · showFoldGutter: boolean · showTransformActions: boolean · showCopyButton: boolean · showImportButton: boolean · showDownloadButton: boolean · showViewSettings: boolean · indentSize: number · wrapLines: boolean · treeShowLines: boolean · canvasTheme: ITJSONEditorTheme · height: string | number · minWidth: string | number · actions: React.ReactNode · className: string · textareaClassName: string · errorLine: number
+
+#### `ITJsonRenderer` — molecules
+
+Render UI from JSON schema using AXZY UI System components.
+
+Props: json*: JsonComponentNode | JsonComponentNode[] · className: string
 
 #### `ITLineBarChart` — molecules
 

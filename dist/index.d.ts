@@ -314,6 +314,29 @@ interface UseTableStateResult {
 }
 declare function useTableState({ defaultItemsPerPage, initialSort, }?: UseTableStateOptions): UseTableStateResult;
 
+type JsonComponentType = "button" | "text" | "card" | "flex" | "stack" | "grid" | "alert" | "div";
+interface JsonProps {
+    [key: string]: any;
+}
+interface JsonComponentNode {
+    /** Component type to render */
+    type: JsonComponentType;
+    /** Props to pass to the component */
+    props?: JsonProps;
+    /** Children nodes */
+    children?: JsonComponentNode[] | React.ReactNode;
+    /** Text content (shorthand for text children) */
+    text?: string;
+}
+interface ITJsonRendererProps {
+    /** JSON structure to render */
+    json: JsonComponentNode | JsonComponentNode[];
+    /** Additional CSS class names */
+    className?: string;
+}
+
+declare function useJsonRender(json: JsonComponentNode | JsonComponentNode[]): react_jsx_runtime.JSX.Element;
+
 /** A single collapsible section inside {@link ITAccordionProps}. */
 interface ITAccordionItem {
     /** Unique identifier for the item. */
@@ -3807,6 +3830,127 @@ interface ITWysiwygProps {
  */
 declare function ITWysiwyg({ value, onChange, label, placeholder, error, disabled, readOnly, name, size, minHeight, highlightColor, toolbar, className, }: ITWysiwygProps): react_jsx_runtime.JSX.Element;
 
+/**
+ * Render UI from JSON schema using AXZY UI System components.
+ *
+ * @example
+ * <ITJsonRenderer json={{ type: "button", props: { label: "Click me" } }} />
+ *
+ * @example
+ * <ITJsonRenderer json={[
+ *   { type: "alert", props: { variant: "info", title: "Info" }, children: "Hello" },
+ *   { type: "card", props: { title: "Card" }, children: { type: "text", text: "Content" } }
+ * ]} />
+ */
+declare function ITJsonRenderer({ json, className, }: ITJsonRendererProps): react_jsx_runtime.JSX.Element;
+
+/**
+ * Modo de presentación del documento.
+ *
+ * - `"text"`: editor de código con resaltado, gutter y plegado.
+ * - `"tree"`: árbol navegable de solo lectura sobre el mismo JSON.
+ */
+type ITJSONEditorMode = "text" | "tree";
+/** Paleta del lienzo de código. */
+type ITJSONEditorTheme = "ink" | "light";
+/**
+ * Props de `ITJSONEditor`.
+ *
+ * @example
+ * ```tsx
+ * <ITJSONEditor value={json} onChange={setJson} height={420} mode="text" />
+ * ```
+ */
+interface ITJSONEditorProps {
+    /** Documento JSON como cadena. Si es `undefined`, el editor arranca vacío. @default "" */
+    value?: string;
+    /** Se dispara con el texto completo cada vez que cambia (teclado, pegado o barra de acciones). */
+    onChange?: (value: string) => void;
+    /** Se dispara tras cada validación con el valor parseado y su estado. */
+    onParse?: (parsed: unknown, isValid: boolean, error?: string) => void;
+    /** Texto de ayuda que se muestra cuando el documento está vacío. */
+    placeholder?: string;
+    /** Bloquea la edición: desaparecen las acciones que modifican el texto. @default false */
+    readOnly?: boolean;
+    /** Modo inicial: `"text"` (código) o `"tree"` (árbol navegable). @default "text" */
+    mode?: ITJSONEditorMode;
+    /** Permite alternar entre texto y árbol desde la barra. @default true */
+    showModeSwitch?: boolean;
+    /** Muestra la barra superior de acciones. @default true */
+    showToolbar?: boolean;
+    /** Muestra el indicador de válido/ inválido con línea y columna del error. @default true */
+    showValidation?: boolean;
+    /** Estadísticas del pie: líneas, nodos, profundidad y tamaño. @default true */
+    showStatusBar?: boolean;
+    /** Muestra los números de línea del gutter. @default true */
+    showLineNumbers?: boolean;
+    /** Muestra el gutter de plegado de bloques `{…}` / `[…]`. @default true */
+    showFoldGutter?: boolean;
+    /** Habilita las acciones de la barra (formatear, minificar, ordenar, escapar). @default true */
+    showTransformActions?: boolean;
+    /** Habilita el botón de copiar el documento completo. @default true */
+    showCopyButton?: boolean;
+    /** Habilita la carga de un `.json` desde disco. @default true */
+    showImportButton?: boolean;
+    /** Habilita la descarga del documento como `.json`. @default true */
+    showDownloadButton?: boolean;
+    /** Muestra la fila de ajustes de vista (ajuste de línea, números, plegado, indentación). @default true */
+    showViewSettings?: boolean;
+    /** Espacios por nivel de indentación, entre 0 y 8. @default 2 */
+    indentSize?: number;
+    /** Ajusta las líneas largas al ancho del editor. Desactivado mantiene el scroll horizontal y el gutter sincronizado. @default false */
+    wrapLines?: boolean;
+    /** Ofrece números de línea y plegado también en la vista de árbol. @default false */
+    treeShowLines?: boolean;
+    /** Paleta del lienzo: `"ink"` (tinta oscura, por defecto) o `"light"`. @default "ink" */
+    canvasTheme?: ITJSONEditorTheme;
+    /** Altura del área de edición: número en píxeles o cualquier medida CSS. @default 340 */
+    height?: number | string;
+    /** Ancho mínimo del editor. Útil dentro de layouts que comprimen. */
+    minWidth?: number | string;
+    /** Acciones extra que se añaden al final de la barra, antes de copiar/descargar. */
+    actions?: ReactNode;
+    /** Clases para el contenedor raíz. */
+    className?: string;
+    /** Identificador HTML del contenedor raíz, para anclarlo desde fuera o en pruebas. */
+    id?: string;
+    /** Clases para el `<textarea>`, por si hay que afinar la tipografía. */
+    textareaClassName?: string;
+    /**
+     * Línea (1-based) que hay que marcar como errónea cuando el fallo lo detecta
+     * la aplicación y no el propio editor.
+     */
+    errorLine?: number;
+}
+
+/**
+ * Editor de JSON con resaltado de sintaxis, gutter con números y plegado,
+ * errores señalados por línea y columna, árbol navegable y acciones de formato.
+ *
+ * No añade dependencias: el resaltado se pinta en una capa bajo el `<textarea>`
+ * nativo, así que se conservan el deshacer del navegador, el pegado, el dictado
+ * y el corrector. La validación la hace `JSON.parse`, de modo que el coloreado
+ * funciona igual mientras el documento está a medio escribir.
+ *
+ * @example
+ * ```tsx
+ * <ITJSONEditor value={json} onChange={setJson} onParse={handleParse} height={420} />
+ * ```
+ *
+ * @example
+ * ```tsx
+ * <ITJSONEditor
+ *   value={json}
+ *   onChange={setJson}
+ *   mode="tree"
+ *   indentSize={4}
+ *   showFoldGutter
+ *   showStatusBar
+ * />
+ * ```
+ */
+declare function ITJSONEditor({ value, onChange, onParse, placeholder, readOnly, mode, showModeSwitch, showToolbar, showValidation, showStatusBar, showLineNumbers, showFoldGutter, showTransformActions, showCopyButton, showImportButton, showDownloadButton, showViewSettings, indentSize: indentSizeProp, wrapLines: wrapLinesProp, treeShowLines, canvasTheme, height, minWidth, actions, className, id, textareaClassName, errorLine, }: ITJSONEditorProps): react_jsx_runtime.JSX.Element;
+
 /** Allowed file MIME types for the dropzone */
 declare enum FileTypeEnum {
     PDF = "application/pdf",
@@ -4526,4 +4670,4 @@ declare const es: ITMessages;
  */
 declare const en: ITMessages;
 
-export { type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITI18nProvider, type ITI18nProviderProps, type ITI18nValue, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITLayout, type ITLayoutProps, ITLineBarChart, type ITLineBarChartProps, type ITLineBarDatum, ITLoader, type LoaderProps as ITLoaderProps, type ITLocale, ITMaskedInput, type ITMaskedInputProps, type ITMessages, type ITMessagesByLocale, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarBrand, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeAppearance, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type TableColors, type TableDensity, type TableDesign, type TableDesignProps, type TableDesignSlot, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, en as enMessages, es as esMessages, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITFlatAppearance, useITTheme, useITThemeSafe, useITTranslation, useTableState };
+export { type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITI18nProvider, type ITI18nProviderProps, type ITI18nValue, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITJSONEditor, type ITJSONEditorProps, ITJsonRenderer, type ITJsonRendererProps, ITLayout, type ITLayoutProps, ITLineBarChart, type ITLineBarChartProps, type ITLineBarDatum, ITLoader, type LoaderProps as ITLoaderProps, type ITLocale, ITMaskedInput, type ITMaskedInputProps, type ITMessages, type ITMessagesByLocale, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarBrand, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeAppearance, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type JsonComponentNode, type JsonComponentType, type TableColors, type TableDensity, type TableDesign, type TableDesignProps, type TableDesignSlot, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, en as enMessages, es as esMessages, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITFlatAppearance, useITTheme, useITThemeSafe, useITTranslation, useJsonRender, useTableState };

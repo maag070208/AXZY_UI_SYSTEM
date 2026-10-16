@@ -15,6 +15,7 @@ import {
 import { PRESETS } from "../components/theme-provider/themePresets";
 import { ShowcaseLayout } from "./ShowcaseLayout";
 import { useITTranslation } from "@/i18n";
+import { AxzyLoader, AxzyLogo } from "@/sandbox/AxzyLogo";
 
 // 1. ITDialog Showcase
 export const DialogShowcase = () => {
@@ -237,11 +238,21 @@ export const LoaderShowcase = () => {
         </>
       }
       gallery={
-        <div className="flex flex-wrap items-center gap-6">
-          <ITLoader variant="spinner" size="md" color="primary" />
-          <ITLoader variant="dots" size="md" color="success" />
-          <div className="w-32"><ITLoader variant="bar" size="md" color="danger" /></div>
-          <ITLoader variant="pulse" size="md" color="purple" />
+        <div className="space-y-6">
+          <div className="flex flex-wrap items-center gap-6">
+            <ITLoader variant="spinner" size="md" color="primary" />
+            <ITLoader variant="dots" size="md" color="success" />
+            <div className="w-32"><ITLoader variant="bar" size="md" color="danger" /></div>
+            <ITLoader variant="pulse" size="md" color="purple" />
+          </div>
+
+          {/* Loader de marca: el ícono axzydev con un latido suave. En el kit la
+              versión animada es Lottie; aquí se usa el SVG estático. */}
+          <div className="flex flex-wrap items-center gap-8 border-t border-slate-200 pt-6 dark:border-slate-800">
+            <AxzyLoader etiqueta={t("sandbox.loading")} />
+            <AxzyLoader etiqueta={t("sandbox.loading")} tamano={24} />
+            <AxzyLogo variante="loader" tamano={56} etiqueta="axzydev" />
+          </div>
         </div>
       }
       doc={{

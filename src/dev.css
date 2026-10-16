@@ -112,7 +112,30 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .it-landing-rise,
   .it-landing-float,
-  .it-reveal {
+  .it-reveal,
+  .it-logo-latido {
     animation: none;
   }
+}
+
+/* ──────────────────────────────────────────────
+   MARCA AXZYDEV (dev.css)
+   El loader del kit es una animación Lottie; en el sitio se usa la versión
+   estática del ícono con un latido suave. Solo dev: nunca llega a dist.
+   ────────────────────────────────────────────── */
+@keyframes it-logo-latido {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.72;
+    transform: scale(0.94);
+  }
+}
+
+.it-logo-latido {
+  animation: it-logo-latido 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  transform-origin: center;
 }
