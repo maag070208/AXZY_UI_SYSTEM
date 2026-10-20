@@ -11,6 +11,7 @@
 import { writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { buildVocabularyContract, formatVocabularyForPrompt } from "../../src/json-renderer/vocabulary/buildContract.ts";
+import { buildRoutesSchema, buildScreenSchema } from "../../src/json-renderer/validation/jsonSchema.ts";
 
 const ROOT = process.cwd();
 const OUT = resolve(ROOT, "docs/json-renderer");
@@ -76,6 +77,10 @@ ${formatVocabularyForPrompt(contract)}
 `;
 
 writeFileSync(resolve(OUT, "VOCABULARIO.md"), markdown, "utf8");
+
+// 3. JSON Schema para el editor (autocompletado) y para el tester `pnpm schema:check`.
+writeFileSync(resolve(OUT, "screen.schema.json"), `${JSON.stringify(buildScreenSchema(), null, 2)}\n`, "utf8");
+writeFileSync(resolve(OUT, "routes.schema.json"), `${JSON.stringify(buildRoutesSchema(), null, 2)}\n`, "utf8");
 
 console.log(
   `[json-renderer] contrato v${contract.schemaVersion}: ${contract.components.length} componentes, ` +

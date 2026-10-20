@@ -47,7 +47,8 @@
     "audit:sandbox": "node scripts/audit-sandbox.mjs",
     "docs:llm": "pnpm ext:catalog && node scripts/build-llm-docs.mjs && node scripts/build-ai-bundle.mjs",
     "docs:ai": "node scripts/build-ai-bundle.mjs",
-    "docs:json-renderer": "node scripts/build-json-renderer-docs.mjs"
+    "docs:json-renderer": "node scripts/build-json-renderer-docs.mjs",
+    "schema:check": "node scripts/json-renderer/check.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -72,6 +73,7 @@
     "@types/react-dom": "19.0.3",
     "@types/vscode": "1.85.0",
     "@vitejs/plugin-react-swc": "3.8.0",
+    "ajv": "8.18.0",
     "esbuild": "^0.25.0",
     "eslint": "9.19.0",
     "eslint-plugin-react-hooks": "5.0.0",

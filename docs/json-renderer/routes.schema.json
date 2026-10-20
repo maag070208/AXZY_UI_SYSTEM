@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AXZY · rutas (axzy/routes)",
+  "description": "Rutas declarativas: qué pantalla pinta cada dirección y qué entradas aparecen en el menú.",
+  "type": "object",
+  "required": [
+    "version",
+    "routes"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "const": "axzy/routes"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/route"
+      }
+    }
+  },
+  "$defs": {
+    "route": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Identificador estable de la ruta."
+        },
+        "path": {
+          "type": "string",
+          "description": "Segmentos relativos al padre (`usuarios`, `:id`). Vacío hereda el del padre."
+        },
+        "page": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Pantalla que pinta la ruta. Solo en hojas."
+        },
+        "query": {
+          "type": "object",
+          "description": "Query que exige la ruta.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "nav": {
+          "type": "object",
+          "required": [
+            "label"
+          ],
+          "additionalProperties": false,
+          "description": "Entrada de menú. Sin ella, la ruta no aparece.",
+          "properties": {
+            "label": {
+              "$ref": "#/$defs/valueOrReference"
+            },
+            "icon": {
+              "type": "string",
+              "description": "Icono del registro del host."
+            },
+            "badge": {
+              "type": [
+                "integer",
+                "string"
+              ],
+              "description": "Contador visible."
+            }
+          }
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/route"
+          },
+          "description": "Rutas hijas. Si existen, es un grupo."
+        }
+      },
+      "if": {
+        "required": [
+          "children"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "page"
+          ]
+        },
+        "description": "Un grupo no lleva page."
+      },
+      "else": {
+        "required": [
+          "page"
+        ],
+        "description": "Una hoja necesita page."
+      }
+    },
+    "reference": {
+      "type": "object",
+      "description": "Referencia a un dato del host: fuente (`$source`), estado (`$state`), parámetro de ruta (`$param`) o texto traducible (`i18n`).",
+      "properties": {
+        "$source": {
+          "type": "string",
+          "description": "Fuente declarada en `data` del esquema."
+        },
+        "$state": {
+          "type": "string",
+          "description": "Clave del `state` de la pantalla."
+        },
+        "$param": {
+          "type": "string",
+          "description": "Parámetro de la dirección (`:id`)."
+        },
+        "i18n": {
+          "type": "string",
+          "description": "Clave de traducción."
+        },
+        "params": {
+          "type": "object",
+          "description": "Valores para los marcadores `{nombre}` del texto."
+        }
+      },
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "$source"
+          ]
+        },
+        {
+          "required": [
+            "$state"
+          ]
+        },
+        {
+          "required": [
+            "$param"
+          ]
+        },
+        {
+          "required": [
+            "i18n"
+          ]
+        }
+      ]
+    },
+    "valueOrReference": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/$defs/reference"
+        }
+      ]
+    }
+  }
+}

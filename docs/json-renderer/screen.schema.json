@@ -1,0 +1,2699 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AXZY · pantalla (axzy/screen)",
+  "description": "Documento de pantalla del motor declarativo. Lo que no figura aquí no se pinta.",
+  "type": "object",
+  "required": [
+    "version",
+    "id",
+    "content"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "const": "axzy/screen",
+      "description": "Identificador del formato."
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1,
+      "description": "Versión del formato."
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identificador de la pantalla."
+    },
+    "title": {
+      "$ref": "#/$defs/valueOrReference",
+      "description": "Título, normalmente `{ i18n }`."
+    },
+    "description": {
+      "$ref": "#/$defs/valueOrReference",
+      "description": "Descripción corta para la cabecera."
+    },
+    "requires": {
+      "$ref": "#/$defs/requires"
+    },
+    "data": {
+      "type": "object",
+      "description": "Fuentes de datos: cada una nombra un handler que registra el host.",
+      "additionalProperties": {
+        "$ref": "#/$defs/dataSource"
+      }
+    },
+    "state": {
+      "type": "object",
+      "description": "Estado inicial de la pantalla (lo lee `$state`)."
+    },
+    "content": {
+      "description": "Nodo raíz o lista de nodos.",
+      "anyOf": [
+        {
+          "$ref": "#/$defs/node"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/node"
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "reference": {
+      "type": "object",
+      "description": "Referencia a un dato del host: fuente (`$source`), estado (`$state`), parámetro de ruta (`$param`) o texto traducible (`i18n`).",
+      "properties": {
+        "$source": {
+          "type": "string",
+          "description": "Fuente declarada en `data` del esquema."
+        },
+        "$state": {
+          "type": "string",
+          "description": "Clave del `state` de la pantalla."
+        },
+        "$param": {
+          "type": "string",
+          "description": "Parámetro de la dirección (`:id`)."
+        },
+        "i18n": {
+          "type": "string",
+          "description": "Clave de traducción."
+        },
+        "params": {
+          "type": "object",
+          "description": "Valores para los marcadores `{nombre}` del texto."
+        }
+      },
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "$source"
+          ]
+        },
+        {
+          "required": [
+            "$state"
+          ]
+        },
+        {
+          "required": [
+            "$param"
+          ]
+        },
+        {
+          "required": [
+            "i18n"
+          ]
+        }
+      ]
+    },
+    "action": {
+      "type": "object",
+      "description": "Acción que resuelve el host por nombre.",
+      "required": [
+        "action"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "Nombre de la acción registrada por el host."
+        },
+        "args": {
+          "type": "object",
+          "description": "Argumentos que recibe el host."
+        },
+        "confirm": {
+          "type": "object",
+          "description": "Confirmación previa: `{ title, message }`."
+        },
+        "then": {
+          "type": "array",
+          "description": "Efectos tras un resultado correcto.",
+          "items": {
+            "type": "object"
+          }
+        },
+        "onError": {
+          "type": "object",
+          "description": "Efecto si la acción falla."
+        },
+        "toast": {
+          "type": "object",
+          "description": "Aviso al usuario: `{ variant, message }`."
+        },
+        "navigate": {
+          "type": "string",
+          "description": "Dirección a la que navegar."
+        },
+        "openOverlay": {
+          "type": "string",
+          "description": "Overlay a abrir."
+        },
+        "closeOverlay": {
+          "type": "string",
+          "description": "Overlay a cerrar."
+        },
+        "refresh": {
+          "type": "string",
+          "description": "Fuente de datos a refrescar."
+        }
+      },
+      "additionalProperties": false
+    },
+    "valueOrReference": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/$defs/reference"
+        }
+      ]
+    },
+    "requires": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "dataSource": {
+      "type": "object",
+      "required": [
+        "handler"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "handler": {
+          "type": "string",
+          "description": "Nombre del handler que registra el host. Nunca una URL."
+        },
+        "params": {
+          "type": "object",
+          "description": "Parámetros; admiten referencias."
+        },
+        "refreshOn": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Fuentes o acciones que la invalidan."
+        }
+      }
+    },
+    "node": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "ITAlert",
+            "ITAvatar",
+            "ITBadget",
+            "ITButton",
+            "ITCard",
+            "ITChip",
+            "ITDataTable",
+            "ITDivider",
+            "ITEmptyState",
+            "ITFlex",
+            "ITGrid",
+            "ITImage",
+            "ITLoader",
+            "ITProgress",
+            "ITSkeleton",
+            "ITStack",
+            "ITStatCard",
+            "ITText",
+            "slot",
+            "form"
+          ],
+          "description": "Componente del catálogo o nodo del motor."
+        },
+        "id": {
+          "type": "string",
+          "description": "Ancla y referencia para depurar."
+        },
+        "props": {
+          "type": "object",
+          "description": "Props del componente (se validan según `type`)."
+        },
+        "children": {
+          "description": "Hijos del nodo.",
+          "anyOf": [
+            {
+              "$ref": "#/$defs/node"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/node"
+              }
+            }
+          ]
+        },
+        "text": {
+          "$ref": "#/$defs/valueOrReference",
+          "description": "Atajo de contenido para componentes textuales."
+        },
+        "requires": {
+          "$ref": "#/$defs/requires"
+        },
+        "fallback": {
+          "$ref": "#/$defs/node",
+          "description": "Qué pintar si el nodo falla o no tiene permiso."
+        },
+        "when": {
+          "type": "object",
+          "description": "Condición para pintar el nodo."
+        },
+        "$status": {
+          "type": "string",
+          "enum": [
+            "complete",
+            "pending"
+          ],
+          "description": "Lo rellena el parser de streaming."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITAlert"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "variant": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "info",
+                          "success",
+                          "warning",
+                          "error"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "title": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "dismissible": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "onDismiss": {
+                    "type": "object",
+                    "description": "Acción que resuelve el host por nombre.",
+                    "required": [
+                      "action"
+                    ],
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "description": "Nombre de la acción registrada por el host."
+                      },
+                      "args": {
+                        "type": "object",
+                        "description": "Argumentos que recibe el host."
+                      },
+                      "confirm": {
+                        "type": "object",
+                        "description": "Confirmación previa: `{ title, message }`."
+                      },
+                      "then": {
+                        "type": "array",
+                        "description": "Efectos tras un resultado correcto.",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "onError": {
+                        "type": "object",
+                        "description": "Efecto si la acción falla."
+                      },
+                      "toast": {
+                        "type": "object",
+                        "description": "Aviso al usuario: `{ variant, message }`."
+                      },
+                      "navigate": {
+                        "type": "string",
+                        "description": "Dirección a la que navegar."
+                      },
+                      "openOverlay": {
+                        "type": "string",
+                        "description": "Overlay a abrir."
+                      },
+                      "closeOverlay": {
+                        "type": "string",
+                        "description": "Overlay a cerrar."
+                      },
+                      "refresh": {
+                        "type": "string",
+                        "description": "Fuente de datos a refrescar."
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITAvatar"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "src": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "alt": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "initials": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Se usa cuando no hay imagen."
+                  },
+                  "size": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "xs",
+                          "sm",
+                          "md",
+                          "lg",
+                          "xl"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "onClick": {
+                    "type": "object",
+                    "description": "Acción que resuelve el host por nombre.",
+                    "required": [
+                      "action"
+                    ],
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "description": "Nombre de la acción registrada por el host."
+                      },
+                      "args": {
+                        "type": "object",
+                        "description": "Argumentos que recibe el host."
+                      },
+                      "confirm": {
+                        "type": "object",
+                        "description": "Confirmación previa: `{ title, message }`."
+                      },
+                      "then": {
+                        "type": "array",
+                        "description": "Efectos tras un resultado correcto.",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "onError": {
+                        "type": "object",
+                        "description": "Efecto si la acción falla."
+                      },
+                      "toast": {
+                        "type": "object",
+                        "description": "Aviso al usuario: `{ variant, message }`."
+                      },
+                      "navigate": {
+                        "type": "string",
+                        "description": "Dirección a la que navegar."
+                      },
+                      "openOverlay": {
+                        "type": "string",
+                        "description": "Overlay a abrir."
+                      },
+                      "closeOverlay": {
+                        "type": "string",
+                        "description": "Overlay a cerrar."
+                      },
+                      "refresh": {
+                        "type": "string",
+                        "description": "Fuente de datos a refrescar."
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false
+              },
+              "children": false,
+              "text": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITBadget"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "primary",
+                          "secondary",
+                          "success",
+                          "danger",
+                          "warning",
+                          "info",
+                          "purple",
+                          "error",
+                          "gray"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "size": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "sm",
+                          "md",
+                          "lg"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "variant": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "soft",
+                          "filled",
+                          "outlined"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITButton"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Texto del botón (alternativa a `text`)."
+                  },
+                  "color": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "primary",
+                          "secondary",
+                          "success",
+                          "danger",
+                          "warning",
+                          "info",
+                          "purple",
+                          "error",
+                          "gray"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "size": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "sm",
+                          "md",
+                          "lg"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "variant": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "filled",
+                          "outlined",
+                          "raised",
+                          "rounded",
+                          "text",
+                          "raised-text",
+                          "icon-only",
+                          "link"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "disabled": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "button",
+                          "submit",
+                          "reset"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "ariaLabel": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Etiqueta accesible cuando el botón no lleva texto."
+                  },
+                  "title": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "onClick": {
+                    "type": "object",
+                    "description": "Nombre de una acción registrada.",
+                    "required": [
+                      "action"
+                    ],
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "description": "Nombre de la acción registrada por el host."
+                      },
+                      "args": {
+                        "type": "object",
+                        "description": "Argumentos que recibe el host."
+                      },
+                      "confirm": {
+                        "type": "object",
+                        "description": "Confirmación previa: `{ title, message }`."
+                      },
+                      "then": {
+                        "type": "array",
+                        "description": "Efectos tras un resultado correcto.",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "onError": {
+                        "type": "object",
+                        "description": "Efecto si la acción falla."
+                      },
+                      "toast": {
+                        "type": "object",
+                        "description": "Aviso al usuario: `{ variant, message }`."
+                      },
+                      "navigate": {
+                        "type": "string",
+                        "description": "Dirección a la que navegar."
+                      },
+                      "openOverlay": {
+                        "type": "string",
+                        "description": "Overlay a abrir."
+                      },
+                      "closeOverlay": {
+                        "type": "string",
+                        "description": "Overlay a cerrar."
+                      },
+                      "refresh": {
+                        "type": "string",
+                        "description": "Fuente de datos a refrescar."
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITCard"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "image": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "URL de la imagen de cabecera."
+                  },
+                  "alt": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "onClick": {
+                    "type": "object",
+                    "description": "Acción que resuelve el host por nombre.",
+                    "required": [
+                      "action"
+                    ],
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "description": "Nombre de la acción registrada por el host."
+                      },
+                      "args": {
+                        "type": "object",
+                        "description": "Argumentos que recibe el host."
+                      },
+                      "confirm": {
+                        "type": "object",
+                        "description": "Confirmación previa: `{ title, message }`."
+                      },
+                      "then": {
+                        "type": "array",
+                        "description": "Efectos tras un resultado correcto.",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "onError": {
+                        "type": "object",
+                        "description": "Efecto si la acción falla."
+                      },
+                      "toast": {
+                        "type": "object",
+                        "description": "Aviso al usuario: `{ variant, message }`."
+                      },
+                      "navigate": {
+                        "type": "string",
+                        "description": "Dirección a la que navegar."
+                      },
+                      "openOverlay": {
+                        "type": "string",
+                        "description": "Overlay a abrir."
+                      },
+                      "closeOverlay": {
+                        "type": "string",
+                        "description": "Overlay a cerrar."
+                      },
+                      "refresh": {
+                        "type": "string",
+                        "description": "Fuente de datos a refrescar."
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "imageClassName": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "titleClassName": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "contentClassName": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "actionClassName": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false
+              },
+              "text": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITChip"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "primary",
+                          "secondary",
+                          "success",
+                          "danger",
+                          "warning",
+                          "info",
+                          "purple",
+                          "error",
+                          "gray"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "size": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "sm",
+                          "md",
+                          "lg"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "variant": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "soft",
+                          "filled",
+                          "outlined"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "removable": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "selected": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "disabled": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "onRemove": {
+                    "type": "object",
+                    "description": "Acción que resuelve el host por nombre.",
+                    "required": [
+                      "action"
+                    ],
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "description": "Nombre de la acción registrada por el host."
+                      },
+                      "args": {
+                        "type": "object",
+                        "description": "Argumentos que recibe el host."
+                      },
+                      "confirm": {
+                        "type": "object",
+                        "description": "Confirmación previa: `{ title, message }`."
+                      },
+                      "then": {
+                        "type": "array",
+                        "description": "Efectos tras un resultado correcto.",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "onError": {
+                        "type": "object",
+                        "description": "Efecto si la acción falla."
+                      },
+                      "toast": {
+                        "type": "object",
+                        "description": "Aviso al usuario: `{ variant, message }`."
+                      },
+                      "navigate": {
+                        "type": "string",
+                        "description": "Dirección a la que navegar."
+                      },
+                      "openOverlay": {
+                        "type": "string",
+                        "description": "Overlay a abrir."
+                      },
+                      "closeOverlay": {
+                        "type": "string",
+                        "description": "Overlay a cerrar."
+                      },
+                      "refresh": {
+                        "type": "string",
+                        "description": "Fuente de datos a refrescar."
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "onClick": {
+                    "type": "object",
+                    "description": "Acción que resuelve el host por nombre.",
+                    "required": [
+                      "action"
+                    ],
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "description": "Nombre de la acción registrada por el host."
+                      },
+                      "args": {
+                        "type": "object",
+                        "description": "Argumentos que recibe el host."
+                      },
+                      "confirm": {
+                        "type": "object",
+                        "description": "Confirmación previa: `{ title, message }`."
+                      },
+                      "then": {
+                        "type": "array",
+                        "description": "Efectos tras un resultado correcto.",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "onError": {
+                        "type": "object",
+                        "description": "Efecto si la acción falla."
+                      },
+                      "toast": {
+                        "type": "object",
+                        "description": "Aviso al usuario: `{ variant, message }`."
+                      },
+                      "navigate": {
+                        "type": "string",
+                        "description": "Dirección a la que navegar."
+                      },
+                      "openOverlay": {
+                        "type": "string",
+                        "description": "Overlay a abrir."
+                      },
+                      "closeOverlay": {
+                        "type": "string",
+                        "description": "Overlay a cerrar."
+                      },
+                      "refresh": {
+                        "type": "string",
+                        "description": "Fuente de datos a refrescar."
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITDataTable"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "columns": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Columnas: { key, label, type, sortable, filter, currencyMX }."
+                  },
+                  "fetchData": {
+                    "anyOf": [
+                      {},
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Referencia a una fuente: { \"$source\": \"usuarios\" }. El host la convierte en un fetcher."
+                  },
+                  "title": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Título opcional sobre la tabla."
+                  },
+                  "defaultItemsPerPage": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Filas por página al abrir."
+                  },
+                  "itemsPerPageOptions": {
+                    "anyOf": [
+                      {
+                        "type": "array"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Opciones del paginador, p. ej. [5, 10, 20]."
+                  },
+                  "debounceMs": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Espera antes de refiltrar al teclear."
+                  },
+                  "variant": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "default",
+                          "striped",
+                          "bordered",
+                          "minimal"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "size": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "sm",
+                          "md",
+                          "lg"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "density": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "compact",
+                          "normal",
+                          "comfortable"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "layout": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "fixed"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "showVerticalBorder": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "autoCardBreakpoint": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Ancho (px) por debajo del cual cae a tarjetas."
+                  },
+                  "onRowClick": {
+                    "type": "object",
+                    "description": "Nombre de una acción registrada; recibe la fila.",
+                    "required": [
+                      "action"
+                    ],
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "description": "Nombre de la acción registrada por el host."
+                      },
+                      "args": {
+                        "type": "object",
+                        "description": "Argumentos que recibe el host."
+                      },
+                      "confirm": {
+                        "type": "object",
+                        "description": "Confirmación previa: `{ title, message }`."
+                      },
+                      "then": {
+                        "type": "array",
+                        "description": "Efectos tras un resultado correcto.",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "onError": {
+                        "type": "object",
+                        "description": "Efecto si la acción falla."
+                      },
+                      "toast": {
+                        "type": "object",
+                        "description": "Aviso al usuario: `{ variant, message }`."
+                      },
+                      "navigate": {
+                        "type": "string",
+                        "description": "Dirección a la que navegar."
+                      },
+                      "openOverlay": {
+                        "type": "string",
+                        "description": "Overlay a abrir."
+                      },
+                      "closeOverlay": {
+                        "type": "string",
+                        "description": "Overlay a cerrar."
+                      },
+                      "refresh": {
+                        "type": "string",
+                        "description": "Fuente de datos a refrescar."
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "containerClassName": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "columns",
+                  "fetchData"
+                ]
+              },
+              "children": false,
+              "text": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITDivider"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "orientation": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "horizontal",
+                          "vertical"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "thickness": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false
+              },
+              "children": false,
+              "text": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITEmptyState"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "description": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "title"
+                ]
+              },
+              "children": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITFlex"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "direction": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "row",
+                          "column"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "align": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "start",
+                          "center",
+                          "end",
+                          "stretch",
+                          "baseline"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "justify": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "start",
+                          "center",
+                          "end",
+                          "between",
+                          "around",
+                          "evenly"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "wrap": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "nowrap",
+                          "wrap",
+                          "wrap-reverse"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "gap": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "grow": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "shrink": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "basis": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false
+              },
+              "text": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITGrid"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "container": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "item": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "spacing": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "columns": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Columnas del contenedor."
+                  },
+                  "xs": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "sm": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "md": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "lg": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "xl": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false
+              },
+              "text": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITImage"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "src": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "alt": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "fallback": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "URL de respaldo."
+                  },
+                  "onClick": {
+                    "type": "object",
+                    "description": "Acción que resuelve el host por nombre.",
+                    "required": [
+                      "action"
+                    ],
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "description": "Nombre de la acción registrada por el host."
+                      },
+                      "args": {
+                        "type": "object",
+                        "description": "Argumentos que recibe el host."
+                      },
+                      "confirm": {
+                        "type": "object",
+                        "description": "Confirmación previa: `{ title, message }`."
+                      },
+                      "then": {
+                        "type": "array",
+                        "description": "Efectos tras un resultado correcto.",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "onError": {
+                        "type": "object",
+                        "description": "Efecto si la acción falla."
+                      },
+                      "toast": {
+                        "type": "object",
+                        "description": "Aviso al usuario: `{ variant, message }`."
+                      },
+                      "navigate": {
+                        "type": "string",
+                        "description": "Dirección a la que navegar."
+                      },
+                      "openOverlay": {
+                        "type": "string",
+                        "description": "Overlay a abrir."
+                      },
+                      "closeOverlay": {
+                        "type": "string",
+                        "description": "Overlay a cerrar."
+                      },
+                      "refresh": {
+                        "type": "string",
+                        "description": "Fuente de datos a refrescar."
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "src"
+                ]
+              },
+              "children": false,
+              "text": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITLoader"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "variant": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "spinner",
+                          "dots",
+                          "bar",
+                          "pulse"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "size": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "xs",
+                          "sm",
+                          "md",
+                          "lg",
+                          "xl"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false
+              },
+              "children": false,
+              "text": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITProgress"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "max": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "variant": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "determinate",
+                          "indeterminate"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "primary",
+                          "secondary",
+                          "success",
+                          "danger",
+                          "warning",
+                          "info",
+                          "purple",
+                          "error",
+                          "gray"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "size": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "sm",
+                          "md",
+                          "lg"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false
+              },
+              "children": false,
+              "text": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITSkeleton"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "variant": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "text",
+                          "rect",
+                          "circle"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "width": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "height": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "count": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false
+              },
+              "children": false,
+              "text": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITStack"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "direction": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "row",
+                          "column"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "spacing": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "alignItems": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "start",
+                          "center",
+                          "end",
+                          "stretch",
+                          "baseline"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "justifyContent": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "start",
+                          "center",
+                          "end",
+                          "between",
+                          "around",
+                          "evenly"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "flexWrap": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "nowrap",
+                          "wrap",
+                          "wrap-reverse"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false
+              },
+              "text": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITStatCard"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Valor ya formateado o número."
+                  },
+                  "trend": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "trendDirection": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "up",
+                          "down",
+                          "neutral"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Color CSS del icono."
+                  },
+                  "onClick": {
+                    "type": "object",
+                    "description": "Acción que resuelve el host por nombre.",
+                    "required": [
+                      "action"
+                    ],
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "description": "Nombre de la acción registrada por el host."
+                      },
+                      "args": {
+                        "type": "object",
+                        "description": "Argumentos que recibe el host."
+                      },
+                      "confirm": {
+                        "type": "object",
+                        "description": "Confirmación previa: `{ title, message }`."
+                      },
+                      "then": {
+                        "type": "array",
+                        "description": "Efectos tras un resultado correcto.",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "onError": {
+                        "type": "object",
+                        "description": "Efecto si la acción falla."
+                      },
+                      "toast": {
+                        "type": "object",
+                        "description": "Aviso al usuario: `{ variant, message }`."
+                      },
+                      "navigate": {
+                        "type": "string",
+                        "description": "Dirección a la que navegar."
+                      },
+                      "openOverlay": {
+                        "type": "string",
+                        "description": "Overlay a abrir."
+                      },
+                      "closeOverlay": {
+                        "type": "string",
+                        "description": "Overlay a cerrar."
+                      },
+                      "refresh": {
+                        "type": "string",
+                        "description": "Fuente de datos a refrescar."
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "label",
+                  "value"
+                ]
+              },
+              "children": false,
+              "text": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ITText"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "properties": {
+                  "as": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "span",
+                          "p",
+                          "h1",
+                          "h2",
+                          "h3",
+                          "h4",
+                          "label",
+                          "div",
+                          "strong",
+                          "em"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Etiqueta HTML semántica."
+                  },
+                  "muted": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Atenúa el color del texto."
+                  },
+                  "className": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Clases extra del componente."
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "slot"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "children": false,
+              "text": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "form"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "type": "object",
+                "required": [
+                  "fields"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "fields": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "name"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "Clave del valor enviado."
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "text",
+                            "email"
+                          ],
+                          "description": "Tipo de campo."
+                        },
+                        "label": {
+                          "$ref": "#/$defs/valueOrReference"
+                        },
+                        "required": {
+                          "type": "boolean",
+                          "description": "Si el campo es obligatorio."
+                        },
+                        "minLength": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "description": "Mínimo de caracteres."
+                        },
+                        "maxLength": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "description": "Máximo de caracteres."
+                        }
+                      }
+                    }
+                  },
+                  "submitLabel": {
+                    "$ref": "#/$defs/valueOrReference"
+                  },
+                  "onSubmit": {
+                    "$ref": "#/$defs/action"
+                  }
+                }
+              },
+              "children": false,
+              "text": false
+            }
+          }
+        }
+      ]
+    }
+  }
+}
