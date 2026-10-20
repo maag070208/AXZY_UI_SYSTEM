@@ -22,6 +22,21 @@ export { NodeBoundary } from "./kernel/NodeBoundary";
 export { renderNode, childList, hasChildren } from "./kernel/renderNode";
 export { auditTree, countPendingNodes } from "./kernel/partial";
 export type { ITJsonRenderEngineProps } from "./kernel/schemaRenderer.props";
+
+/* ── Rutas y navegación ────────────────────────────────────────────────── */
+export { validateRoutes, flattenRoutes, joinRoutePath } from "./routing/routes";
+export type { RoutesSchema, RouteSchema, RouteNavSchema, FlatRoute } from "./routing/routes";
+export { matchRoute, routeHref } from "./routing/match";
+export type { RouteMatch } from "./routing/match";
+export { buildNavigationTree, navContainsRoute } from "./routing/navigation";
+export type { NavNode } from "./routing/navigation";
+
+/* ── Slots (bloques JSX que registra el host) ──────────────────────────── */
+export type { SlotComponent, SlotRegistry } from "./kernel/slots";
+
+/* ── Binding ───────────────────────────────────────────────────────────── */
+export { createBindingResolver } from "./binding/resolveValue";
+export type { DataHandler, DataLoader, BindingScope, BindingResolver } from "./binding/resolveValue";
 export type {
   ScreenSchema,
   NodeSchema,

@@ -9,10 +9,23 @@
 import React from "react";
 import type { Catalog } from "../catalog/catalog.props";
 import { resolveNode } from "../catalog/resolve";
-import type { JsonEngineIssue } from "../shared/errors";
-import type { SchemaPath } from "../shared/paths";
+import { issue, type JsonEngineIssue } from "../shared/errors";
+import { formatPath, propPath, type SchemaPath } from "../shared/paths";
 import { isNodePending } from "../stream/tolerantParse";
+import { isSlotNode, slotName, type SlotRegistry } from "./slots";
 import type { NodeSchema } from "./types";
+import { FormNode } from "../form/FormNode";
+import { readFormFields, type FormField } from "../form/rules";
+
+/** `true` cuando el nodo es un formulario del motor. */
+function isFormNode(node: NodeSchema): boolean {
+  return node.type === "form";
+}
+
+/** Texto de un valor ya resuelto: solo los primitivos se muestran. */
+function textoDe(value: unknown): string {
+  return typeof value === "string" || typeof value === "number" || typeof value === "boolean" ? String(value) : "";
+}
 
 /** Opciones de render de un nodo. */
 export interface RenderNodeOptions {
@@ -31,6 +44,8 @@ export interface RenderNodeOptions {
     action: unknown,
     path: SchemaPath
   ) => ((...args: unknown[]) => void) | undefined;
+  /** Slots que registra el host. Un nodo `slot` monta el componente con su nombre. */
+  slots?: SlotRegistry;
   /** Renderiza los hijos de un nodo (lo aporta el recorrido del árbol). */
   renderChildren?: (node: NodeSchema, path: SchemaPath) => React.ReactNode;
   /** Qué pintar mientras un nodo está pendiente (streaming). */
@@ -56,6 +71,83 @@ export function childList(node: NodeSchema | null | undefined): NodeSchema[] {
 }
 
 /**
+ * Monta un slot: el componente que el host registró con el nombre del nodo.
+ *
+ * Se monta como componente (no se llama como función) para que pueda usar hooks.
+ * Los props del nodo pasan por `resolveValue`, igual que los del resto de nodos.
+ */
+function renderSlot(node: NodeSchema, options: RenderNodeOptions): React.ReactNode {
+  const { path, issues, slots, resolveValue } = options;
+  const name = slotName(node);
+
+  if (!name) {
+    issues.push(
+      issue("JR011", "El slot no declara `props.name`.", formatPath(propPath(path, "name")), {
+        severity: "error",
+        hint: 'Declara el nombre que el host registró, por ejemplo { "type": "slot", "props": { "name": "resumen" } }.',
+      })
+    );
+    return null;
+  }
+
+  const Component = slots && Object.prototype.hasOwnProperty.call(slots, name) ? slots[name] : undefined;
+  if (!Component) {
+    issues.push(
+      issue("JR010", `El slot \`${name}\` no está registrado por el host.`, formatPath(path), {
+        severity: "error",
+        hint: "El host debe registrarlo en `slots` del renderizador.",
+      })
+    );
+    return null;
+  }
+
+  const props: Record<string, unknown> = {};
+  for (const [key, raw] of Object.entries(node.props ?? {})) {
+    if (key === "name") continue;
+    props[key] = resolveValue ? resolveValue(raw, path) : raw;
+  }
+
+  return React.createElement(Component, { key: node.id ?? path.join("-"), ...props });
+}
+
+/**
+ * Pinta un nodo `form`: campos declarados en JSON, validación y envío por la acción del host.
+ *
+ * Los campos se leen con las mismas reglas que el validador (`readFormFields`). Los
+ * textos (etiquetas, botón) pasan por `resolveValue`, así que pueden ser `{ i18n }`.
+ */
+function renderForm(node: NodeSchema, options: RenderNodeOptions): React.ReactNode {
+  const { path, issues, resolveValue, resolveAction } = options;
+  const { fields: declarados, issues: avisos } = readFormFields(node.props?.fields, [...path, "props", "fields"]);
+  issues.push(...avisos);
+
+  const campos: FormField[] = declarados.map((campo, index) => {
+    const etiqueta = resolveValue ? resolveValue(campo.label, [...path, "props", "fields", index]) : campo.label;
+    return {
+      name: campo.name,
+      kind: campo.kind,
+      required: campo.required,
+      minLength: campo.minLength,
+      maxLength: campo.maxLength,
+      label: textoDe(etiqueta) || campo.name,
+    };
+  });
+
+  const textoEnvio = node.props?.submitLabel;
+  // Sin texto declarado, el nodo usa `jsonRenderer.form.submit` (lo resuelve FormNode).
+  const submitLabel = textoDe(resolveValue ? resolveValue(textoEnvio, path) : textoEnvio) || undefined;
+  const accion = resolveAction?.(node, "onSubmit", node.props?.onSubmit, path);
+
+  return React.createElement(FormNode, {
+    key: node.id ?? path.join("-"),
+    id: node.id,
+    fields: campos,
+    submitLabel,
+    onSubmit: accion ? (valores: Record<string, string>) => accion(valores) : undefined,
+  });
+}
+
+/**
  * Pinta un nodo del esquema.
  *
  * @example
@@ -71,6 +163,16 @@ export function renderNode(node: NodeSchema, options: RenderNodeOptions): React.
   // Un nodo que aún no ha llegado por el stream no se pinta a medias.
   if (isNodePending(node)) {
     return options.pendingFallback ?? null;
+  }
+
+  // Los slots no están en el catálogo: los registra el host.
+  if (isSlotNode(node)) {
+    return renderSlot(node, options);
+  }
+
+  // El formulario lo compila el motor: campos, validación y envío por acción.
+  if (isFormNode(node)) {
+    return renderForm(node, options);
   }
 
   const resolved = resolveNode(node, catalog, path);

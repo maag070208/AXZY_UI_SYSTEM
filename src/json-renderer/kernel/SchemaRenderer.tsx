@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import type { Catalog } from "../catalog/catalog.props";
 import { axzyCatalog } from "../catalog/axzyCatalog";
+import { createBindingResolver } from "../binding/resolveValue";
 import type { JsonEngineIssue } from "../shared/errors";
 import { resolveLimits, type EngineLimits } from "../shared/limits";
 import type { SchemaPath } from "../shared/paths";
@@ -8,6 +9,7 @@ import { NodeBoundary } from "./NodeBoundary";
 import { auditTree } from "./partial";
 import { childList, renderNode } from "./renderNode";
 import type { ITJsonRenderEngineProps } from "./schemaRenderer.props";
+import type { SlotRegistry } from "./slots";
 import type { NodeSchema } from "./types";
 
 /** Contexto que comparten los nodos durante un render. */
@@ -21,6 +23,7 @@ interface RenderContext {
   resolveValue?: ITJsonRenderEngineProps["resolveValue"];
   resolveAction?: ITJsonRenderEngineProps["resolveAction"];
   pendingFallback?: React.ReactNode;
+  slots?: SlotRegistry;
 }
 
 /**
@@ -53,6 +56,7 @@ function renderTree(node: NodeSchema, path: SchemaPath, context: RenderContext, 
     resolveValue: context.resolveValue,
     resolveAction: context.resolveAction,
     pendingFallback: context.pendingFallback,
+    slots: context.slots,
     renderChildren: (current, currentPath) => {
       const children = childList(current);
       if (children.length === 0) return undefined;
@@ -111,6 +115,9 @@ export function ITSchemaRenderer({
   schema,
   catalog = axzyCatalog,
   limits,
+  params,
+  dataHandlers,
+  slots,
   resolveValue,
   resolveAction,
   pendingFallback,
@@ -137,14 +144,23 @@ export function ITSchemaRenderer({
       limits: resolvedLimits,
       issues,
       onIssue,
-      resolveValue,
+      // El binding escribe sus avisos (JR030, JR032) en el mismo array que el resto del render.
+      resolveValue: createBindingResolver({
+        data: schema?.data,
+        state: schema?.state,
+        params,
+        handlers: dataHandlers,
+        report: (aviso) => issues.push(aviso),
+        host: resolveValue,
+      }),
       resolveAction,
       pendingFallback,
+      slots,
     }),
     // `issues` es un array nuevo en cada render a propósito: acumular avisos
     // entre renders duplicaría los avisos de esquemas que no han cambiado.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [catalog, resolvedLimits, onIssue, resolveValue, resolveAction, pendingFallback]
+    [schema, params, dataHandlers, slots, catalog, resolvedLimits, onIssue, resolveValue, resolveAction, pendingFallback]
   );
 
   const content = schema

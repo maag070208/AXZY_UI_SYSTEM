@@ -22,6 +22,7 @@ export type JsonEngineCode =
   | "JR021" // nodo inválido (forma o `type` ausente)
   | "JR030" // fuente de datos sin handler registrado
   | "JR031" // el esquema intenta provocar red (prohibido)
+  | "JR032" // referencia sin valor o operador de binding no soportado todavía
   | "JR040" // acción no registrada
   | "JR041" // acción excedió su timeout
   | "JR042" // encadenado de efectos demasiado profundo

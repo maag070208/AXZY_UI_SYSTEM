@@ -3,7 +3,9 @@ import type { Catalog } from "../catalog/catalog.props";
 import type { JsonEngineIssue } from "../shared/errors";
 import type { EngineLimits } from "../shared/limits";
 import type { SchemaPath } from "../shared/paths";
-import type { NodeSchema, ScreenSchema } from "./types";
+import type { DataHandler } from "../binding/resolveValue";
+import type { SlotRegistry } from "./slots";
+import type { NodeSchema, ScreenSchema, SchemaValue } from "./types";
 
 /**
  * Props de `ITSchemaRenderer`.
@@ -18,9 +20,21 @@ export interface ITJsonRenderEngineProps {
   catalog?: Catalog;
   /** Presupuesto de nodos, profundidad y tiempos. */
   limits?: Partial<EngineLimits>;
+  /** Valores de la ruta para `$param`. Los pone el host; el esquema no puede crearlos. */
+  params?: Record<string, SchemaValue>;
   /**
-   * Resuelve un valor declarativo del esquema (`$state`, `$param`, `$source`…) al
-   * valor real. Sin esta prop, los valores se pasan tal cual (útil para pruebas).
+   * Handlers de datos que registra el host, por nombre. Las fuentes de `data` los
+   * referencian con `handler`. Conviene memoizarlo: cada fuente se resuelve contra él.
+   */
+  dataHandlers?: Record<string, DataHandler>;
+  /**
+   * Bloques JSX que registra el host, por nombre. Un nodo `{ "type": "slot", "props": { "name": "…" } }`
+   * monta el componente con ese nombre; el esquema no puede elegir otro.
+   */
+  slots?: SlotRegistry;
+  /**
+   * Resuelve los valores que no son referencias del motor (por ejemplo, textos
+   * `{ i18n }`). Las referencias `$source`, `$state` y `$param` las resuelve el motor.
    */
   resolveValue?: (value: unknown, path: SchemaPath) => unknown;
   /**

@@ -212,6 +212,13 @@ const en: ITMessages = {
   "jsonEditor.kindNumber": "number",
   "jsonEditor.kindBoolean": "boolean",
   "jsonEditor.kindNull": "null",
+
+  // ---------------------------------------------------------------- jsonRenderer
+  "jsonRenderer.form.required": "Required field.",
+  "jsonRenderer.form.email": "Enter a valid email address.",
+  "jsonRenderer.form.minLength": "Enter at least {min} characters.",
+  "jsonRenderer.form.maxLength": "Enter at most {max} characters.",
+  "jsonRenderer.form.submit": "Submit",
 };
 
 export default en;
