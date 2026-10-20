@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { ITStatCardProps } from "./stat-card.props";
 import ITText from "@/components/atoms/text/text";
+import ITProgress from "@/components/atoms/progress/progress";
 
 const trendColors = {
   up: "text-emerald-600 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-950/30",
@@ -23,6 +24,9 @@ export default function ITStatCard({
   value,
   trend,
   trendDirection = trend && trend.startsWith("-") ? "down" : "neutral",
+  hint,
+  progress,
+  progressColor = "primary",
   icon,
   color = "bg-primary-50 dark:bg-primary-950/20",
   className,
@@ -59,6 +63,20 @@ export default function ITStatCard({
           </ITText>
         )}
       </div>
+      {hint && (
+        <ITText as="p" className="mt-1 text-[11px] leading-snug text-slate-500 dark:text-slate-400">
+          {hint}
+        </ITText>
+      )}
+      {progress !== undefined && (
+        <ITProgress
+          value={progress}
+          max={100}
+          color={progressColor}
+          size="sm"
+          className="mt-2"
+        />
+      )}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { ReactNode, CSSProperties } from "react";
+import { ColorsTypes } from "@/types/colors.types";
 
 export interface ITStatCardProps {
   /** The metric label displayed above the value. */
@@ -7,6 +8,12 @@ export interface ITStatCardProps {
   value: string | number;
   /** Optional trend indicator text (e.g. "+12%", "-3"). */
   trend?: string;
+  /** Optional secondary line under the value (context, not a trend). */
+  hint?: string;
+  /** Optional progress 0–100 rendered under the hint. */
+  progress?: number;
+  /** Semantic color for the progress bar. @default "primary" */
+  progressColor?: ColorsTypes;
   /** Direction of the trend, used to color the trend badge. */
   trendDirection?: "up" | "down" | "neutral";
   /** Icon element rendered next to the label in the top-right corner. */
