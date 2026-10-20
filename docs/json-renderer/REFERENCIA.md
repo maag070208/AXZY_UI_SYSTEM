@@ -1,6 +1,7 @@
 # Referencia del esquema (fase 1)
 
 > Versión del formato: **1**. Catálogo de referencia: [`VOCABULARIO.md`](./VOCABULARIO.md)
+> Para construir una pantalla paso a paso, empieza por [`GUIA-PANTALLAS.md`](./GUIA-PANTALLAS.md).
 > (generado desde el catálogo real).
 
 ## Forma de una pantalla
@@ -100,6 +101,36 @@ catálogo, en `docs/json-renderer/screen.schema.json` y `routes.schema.json`.
   comprobar en un VS Code real.
 - **Sincronía:** un test compara los archivos versionados con el generador, y otro exige
   que cada prop del catálogo aparezca en el schema.
+
+## Acciones y efectos
+
+Una acción nombra algo que resuelve el host (`{ "action": "enviar" }`). Lo que pasa
+después se declara en el JSON y lo cumple el registro `effects` del host.
+
+```json
+{
+  "action": "enviar-contacto",
+  "then": [{ "toast": { "variant": "success", "message": { "i18n": "clave" } } }],
+  "onError": { "toast": { "variant": "error", "message": { "i18n": "clave-error" } } }
+}
+```
+
+- `then`: efectos que se ejecutan si el handler termina bien. Si el handler devuelve una
+  promesa, se espera a que resuelva.
+- `onError`: efecto si el handler lanza o la promesa rechaza. `then` no se ejecuta.
+- Un efecto puede ir también suelto en la acción; cuenta como un `then` más.
+- Efectos: `toast` (`variant`: `success`, `error`, `info`, `warning`; `message` admite
+  `{ i18n }`), `navigate` (dirección), `refresh` (fuente), `openOverlay` y `closeOverlay`.
+- El host pasa su registro con la prop `effects`: `{ toast, navigate, … }`. Cada efecto
+  es opcional. Si el JSON pide uno que el host no implementa, el motor avisa con `JR040`
+  al pintar, y al ejecutarse no hace nada.
+- Sin `then` ni `onError`, el handler del host se usa tal cual.
+- Encadenar: un efecto puede ser otra acción, con `action`, `args` y sus propios `then` y
+  `onError`. Si el host no tiene la acción encadenada, avisa con `JR040`. El encadenado
+  tiene un límite de 5 niveles (`JR042`).
+- Datos del resultado: el handler puede devolver datos. Un texto lee `{ "$result": "campo" }`
+  (admite puntos, `"usuario.id"`), y una dirección sustituye `{campo}`. Un campo que no
+  existe llega vacío, sin romper.
 
 ## Formularios (`form`, fase 8 parcial)
 
