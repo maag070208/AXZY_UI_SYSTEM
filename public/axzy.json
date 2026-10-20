@@ -1,0 +1,19 @@
+{
+  "$schema": "axzy/config",
+  "version": 1,
+  "theme": {
+    "primary": "#06b6d4",
+    "secondary": "#6b7280",
+    "ternary": "#8b5cf6",
+    "danger": "#ef4444",
+    "success": "#22c55e",
+    "info": "#3b82f6",
+    "alert": "#f97316",
+    "warning": "#eab308"
+  },
+  "density": 0.98,
+  "radius": 10,
+  "shadow": 2,
+  "appearance": "soft",
+  "showFab": true
+}

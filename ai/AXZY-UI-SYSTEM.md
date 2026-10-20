@@ -5,7 +5,7 @@
 > reglas, accesibilidad, trampas, ejemplos de producción y el catálogo de componentes.
 >
 > Librería: `@axzydev/axzy_ui_system` · versión de referencia: `1.6.0` ·
-> 63 componentes. Generado el 2026-10-16.
+> 64 componentes. Generado el 2026-10-17.
 >
 > Estructura: **Parte 1** guía de uso · **Parte 2** ejemplos reales · **Parte 3** catálogo de componentes.
 > Las rutas que se citan dentro (`docs/…`, `LLM_DOCS.md`) son del repo de la librería: este paquete ya
@@ -347,7 +347,106 @@ Dale **estos archivos** como contexto: `docs/llm/GUIA.md` + `docs/llm/catalogo.m
 Pedir explícitamente «consulta el catálogo antes de inventar un prop» es lo que evita el 90% de las
 alucinaciones con esta librería.
 
-### 16. Mapa del repo (por si hace falta el código)
+### 16. Motor de pantallas (JSON) y configuración global
+
+Además de componentes sueltos, la librería trae un **motor declarativo**: una pantalla
+descrita en JSON que se valida contra una lista blanca y se pinta sin ejecutar código.
+
+```tsx
+import { ITSchemaRenderer, validateSchema, parsePartialSchema } from "@axzydev/axzy_ui_system";
+
+const informe = validateSchema(esquema);      // "valid" | "partial" | "invalid"
+const { tree } = parsePartialSchema(texto);   // tolera JSON a medias (streaming)
+
+<ITSchemaRenderer
+  schema={esquema}
+  resolveValue={(valor) => valor}             // { i18n } → texto, { $source } → datos
+  resolveAction={(nodo, prop, accion) => () => {} } // { action } → handler del host
+  onIssue={(issue) => console.warn(issue.code, issue.path)}
+/>
+```
+
+```json
+{
+  "$schema": "axzy/screen",
+  "version": 1,
+  "id": "usuarios.lista",
+  "title": { "i18n": "usuarios.title" },
+  "content": [
+    { "type": "ITCard", "props": { "title": "Usuarios" }, "children": [
+      { "type": "ITDataTable", "props": {
+        "columns": [{ "key": "nombre", "label": "Nombre", "type": "string", "sortable": true, "filter": true }],
+        "fetchData": { "$source": "usuarios" },
+        "defaultItemsPerPage": 10 } }
+    ] }
+  ]
+}
+```
+
+**Reglas que no se negocian**
+
+- El esquema **nunca** ejecuta código, hace red ni pinta HTML. Todo sale de listas blancas del host.
+- `type` tiene que estar en el catálogo; una prop no declarada se ignora con aviso.
+- Las referencias se resuelven en el host: `{ "i18n": "clave" }`, `{ "$source": "fuente" }`,
+  `{ "action": "nombre", "args": { … } }`. **Nunca** metas funciones, nodos React ni URLs en el JSON.
+- El nodo puede traer `id` (ancla en el DOM) y `$status: "pending"` (lo pone el parser, no el autor).
+- Presupuesto: nodos máximos y profundidad; al excederse, `JR013` y la pantalla se corta, no se cae.
+
+**Códigos de aviso** (contrato estable, no renumerar): `JR010` tipo desconocido · `JR011` prop
+inválida o prohibida · `JR012` componente aislado · `JR013` presupuesto · `JR014` `id` que no llegó
+al DOM · `JR020` esquema inválido · `JR021` nodo inválido · `JR040` acción no registrada ·
+`JR070` falta migración · `JR080` stream cortado.
+
+**Catálogo y contrato de vocabulario**
+
+- Lista blanca: `src/json-renderer/catalog/axzyCatalog.ts` (18 tipos, 123 props al día de hoy).
+- Antes de inventar un `type`, consulta `docs/json-renderer/VOCABULARIO.md` o
+  `pnpm docs:json-renderer` (genera el contrato y un nodo mínimo que funciona por componente).
+- Alcance y fases: `docs/json-renderer/ALCANCE.md` y `PLAN-IMPLEMENTACION.md`.
+
+**Configuración global con `axzy.json`**
+
+Lo que no es pantalla (tema, densidad, radios, sombras, apariencia) se declara una vez:
+
+```json
+{
+  "$schema": "axzy/config",
+  "version": 1,
+  "density": 0.98,
+  "radius": 10,
+  "shadow": 2,
+  "appearance": "soft",
+  "showFab": true,
+  "theme": { "primary": "#06b6d4", "danger": "#ef4444" }
+}
+```
+
+```ts
+import { mergeAxzyConfig } from "./sandbox/axzyConfig";
+
+const config = mergeAxzyConfig(await (await fetch("/axzy.json")).json());
+<ITThemeProvider {...config} />   // density, radius, shadow, appearance, showFab, theme
+```
+
+- El merge es tolerante: valores faltantes o inválidos caen al default; densidad se recorta a
+  0.5–1.5, radio a 0–24 y sombra a 0–3.
+- En el sandbox vive en `public/axzy.json`; en una app real, en tu propio archivo de configuración.
+
+**Shell y páginas en el demo**
+
+- `public/demo/app/layout.json` declara marca, módulos, iconos por nombre, badges y sub-items con
+  `query` (que filtran de verdad: `?estado=Activo`).
+- `public/demo/app/<página>.json` es el cuerpo de cada página.
+- El host (`src/showcases/DemoJsonDashboard.tsx`) monta `ITLayout` + `ITPage` y resuelve iconos,
+  etiquetas, datos y acciones. **ITLayout no puede ser un nodo del esquema**: recibe ReactNode y
+  funciones. El JSON nombra; el host resuelve.
+- Pantallas que necesitan código (editor, mapa, formulario) son del host, o híbridas: el esquema
+  pinta y una acción abre la parte TSX (así funciona el CRUD del demo).
+
+**Rutas del demo** (sandbox, dev-only): `#demo` portafolio en JSON · `#demo/app/inicio` dashboard ·
+`#demo/app/docs` documentación viva con `ITJSONEditor`.
+
+### 17. Mapa del repo (por si hace falta el código)
 
 ```
 src/components/<capa>/<componente>/<componente>.tsx     implementación
@@ -1785,6 +1884,7 @@ export const useNotify = () => {
 | `minWidth` | `string \| number` | — | Ancho mínimo del editor. Útil dentro de layouts que comprimen. |
 | `actions` | `React.ReactNode` | — | Acciones extra que se añaden al final de la barra, antes de copiar/descargar. |
 | `className` | `string` | — | Clases para el contenedor raíz. |
+| `id` | `string` | — | Identificador HTML del contenedor raíz, para anclarlo desde fuera o en pruebas. |
 | `textareaClassName` | `string` | — | Clases para el `<textarea>`, por si hay que afinar la tipografía. |
 | `errorLine` | `number` | — | Línea (1-based) que hay que marcar como errónea cuando el fallo lo detecta la aplicación y no el propio editor. |
 
@@ -2897,6 +2997,31 @@ errors={formik.errors}
 
 `*` = obligatorio.
 
+#### `ITSchemaRenderer`
+
+- **Capa:** Providers y otros
+- **Fuente:** `src/json-renderer/kernel/SchemaRenderer.tsx`
+- **Qué es:** Pinta una pantalla completa a partir de un esquema. Nunca lanza por culpa del esquema: los problemas se convierten en avisos que se entregan por `onIssue` (y se acumulan en `issuesRef` si quieres leerlos).
+
+```tsx
+<ITSchemaRenderer schema={{ version: 1, id: "demo", content: { type: "ITText", text: "Hola" } }} />
+```
+
+**Props**
+
+| Prop | Tipo | Por defecto | Descripción |
+| --- | --- | --- | --- |
+| `schema` **\*** | `ScreenSchema` | — | Esquema de pantalla a pintar. Admite un árbol parcial (streaming). |
+| `catalog` | `Catalog` | — | Catálogo de componentes permitidos. Por defecto, el de AXZY. |
+| `limits` | `Partial<EngineLimits>` | — | Presupuesto de nodos, profundidad y tiempos. |
+| `resolveValue` | `(value: unknown, path: SchemaPath) => unknown` | — | Resuelve un valor declarativo del esquema (`$state`, `$param`, `$source`…) al valor real. Sin esta prop, los valores se pasan tal cual (útil para pruebas). |
+| `resolveAction` | `(node: NodeSchema, prop: string, action: unknown, path: SchemaPath) => ((...args: unknown[]) => void) \| undefined` | — | Traduce una acción declarada a un handler ejecutable. Sin esta prop, las acciones se ignoran y se avisa una sola vez por nodo. |
+| `pendingFallback` | `React.ReactNode` | — | Qué pintar mientras un nodo está pendiente (streaming). |
+| `onIssue` | `(issue: JsonEngineIssue) => void` | — | Se llama por cada aviso del motor, con código y ruta. |
+| `className` | `string` | — | Clases del contenedor raíz. |
+
+`*` = obligatorio.
+
 #### `ITThemeProvider`
 
 - **Capa:** Providers y otros
@@ -2988,6 +3113,6 @@ return <ITButton label={t("common.cancel")} onClick={onCancel} />;
 
 ### Otros exports (tipos y utilidades)
 
-`Column`, `ColumnFilterMode`, `ColumnFilterValue`, `ColumnFilters`, `FieldConfig`, `FieldConfigV2`, `FileTypeEnum`, `ITAccordionItem`, `ITAccordionProps`, `ITAlertProps`, `ITAvatarProps`, `ITBadgetProps`, `ITBreadcrumbItem`, `ITBreadcrumbsProps`, `ITButtonProps`, `ITCalendarProps`, `ITCardProps`, `ITCheckboxProps`, `ITChipInputProps`, `ITChipProps`, `ITConfirmDialogProps`, `ITDataTableFetchParams`, `ITDataTableProps`, `ITDataTableResponse`, `ITDatePickerProps`, `ITDialogProps`, `ITDividerProps`, `ITDrawerProps`, `ITDropdownMenuItem`, `ITDropdownMenuProps`, `ITEmptyStateProps`, `ITFieldProps`, `ITFlexProps`, `ITFormBuilderProps`, `ITFormHeaderProps`, `ITGridProps`, `ITI18nProviderProps`, `ITI18nValue`, `ITImageProps`, `ITInputNumberProps`, `ITInputProps`, `ITJSONEditorProps`, `ITJsonRendererProps`, `ITLayoutProps`, `ITLineBarChartProps`, `ITLineBarDatum`, `ITLoaderProps`, `ITLocale`, `ITMaskedInputProps`, `ITMessages`, `ITMessagesByLocale`, `ITMultiSelectOption`, `ITMultiSelectProps`, `ITNavbarProps`, `ITNavigationItem`, `ITNavigationSubItem`, `ITNavigationSubItemEntry`, `ITNavigationSubItemGroup`, `ITPageHeaderProps`, `ITPageProps`, `ITPaginationProps`, `ITPopoverProps`, `ITProgressProps`, `ITRadioGroupProps`, `ITRadioOption`, `ITSearchSelectProps`, `ITSearchTableProps`, `ITSegmentedControlProps`, `ITSelectProps`, `ITSidebarBrand`, `ITSidebarNotification`, `ITSidebarProps`, `ITSkeletonProps`, `ITSlideToggleProps`, `ITSliderProps`, `ITStackProps`, `ITStatCardProps`, `ITStepperProps`, `ITTabItem`, `ITTableProps`, `ITTabsProps`, `ITTextProps`, `ITTextareaProps`, `ITThemeAppearance`, `ITThemeConfig`, `ITThemePalette`, `ITThemeProviderProps`, `ITTimePickerProps`, `ITToastProps`, `ITTripleFilterOption`, `ITTripleFilterProps`, `ITWysiwygProps`, `JsonComponentNode`, `JsonComponentType`, `TableColors`, `TableDensity`, `TableDesign`, `TableDesignProps`, `TableDesignSlot`, `UploadStatus`, `UseTableStateOptions`, `UseTableStateResult`, `createValidationSchema`, `enMessages`, `esMessages`, `getContrastTextColor`, `isLightColor`, `resolveCssColor`
+`AXZY_CATALOG_ENTRIES`, `AXZY_EXCLUDED_TYPES`, `ActionSchema`, `CURRENT_SCHEMA_VERSION`, `Catalog`, `CatalogEntry`, `Column`, `ColumnFilterMode`, `ColumnFilterValue`, `ColumnFilters`, `ComponentContract`, `DEFAULT_LIMITS`, `DEFAULT_MIGRATIONS`, `DataSourceSchema`, `EffectSchema`, `EngineLimits`, `FieldConfig`, `FieldConfigV2`, `FileTypeEnum`, `GLOBALLY_FORBIDDEN_PROPS`, `ITAccordionItem`, `ITAccordionProps`, `ITAlertProps`, `ITAvatarProps`, `ITBadgetProps`, `ITBreadcrumbItem`, `ITBreadcrumbsProps`, `ITButtonProps`, `ITCalendarProps`, `ITCardProps`, `ITCheckboxProps`, `ITChipInputProps`, `ITChipProps`, `ITConfirmDialogProps`, `ITDataTableFetchParams`, `ITDataTableProps`, `ITDataTableResponse`, `ITDatePickerProps`, `ITDialogProps`, `ITDividerProps`, `ITDrawerProps`, `ITDropdownMenuItem`, `ITDropdownMenuProps`, `ITEmptyStateProps`, `ITFieldProps`, `ITFlexProps`, `ITFormBuilderProps`, `ITFormHeaderProps`, `ITGridProps`, `ITI18nProviderProps`, `ITI18nValue`, `ITImageProps`, `ITInputNumberProps`, `ITInputProps`, `ITJSONEditorProps`, `ITJsonRenderEngineProps`, `ITJsonRendererProps`, `ITLayoutProps`, `ITLineBarChartProps`, `ITLineBarDatum`, `ITLoaderProps`, `ITLocale`, `ITMaskedInputProps`, `ITMessages`, `ITMessagesByLocale`, `ITMultiSelectOption`, `ITMultiSelectProps`, `ITNavbarProps`, `ITNavigationItem`, `ITNavigationSubItem`, `ITNavigationSubItemEntry`, `ITNavigationSubItemGroup`, `ITPageHeaderProps`, `ITPageProps`, `ITPaginationProps`, `ITPopoverProps`, `ITProgressProps`, `ITRadioGroupProps`, `ITRadioOption`, `ITSearchSelectProps`, `ITSearchTableProps`, `ITSegmentedControlProps`, `ITSelectProps`, `ITSidebarBrand`, `ITSidebarNotification`, `ITSidebarProps`, `ITSkeletonProps`, `ITSlideToggleProps`, `ITSliderProps`, `ITStackProps`, `ITStatCardProps`, `ITStepperProps`, `ITTabItem`, `ITTableProps`, `ITTabsProps`, `ITTextProps`, `ITTextareaProps`, `ITThemeAppearance`, `ITThemeConfig`, `ITThemePalette`, `ITThemeProviderProps`, `ITTimePickerProps`, `ITToastProps`, `ITTripleFilterOption`, `ITTripleFilterProps`, `ITWysiwygProps`, `JsonComponentNode`, `JsonComponentType`, `JsonEngineCode`, `JsonEngineError`, `JsonEngineIssue`, `JsonEngineSeverity`, `LimitTracker`, `MigrationRegistry`, `MigrationResult`, `NodeBoundary`, `NodeSchema`, `NodeStatus`, `PartialParseResult`, `PathSegment`, `PropContract`, `PropKind`, `PropSpec`, `ResolvedNode`, `SchemaMigration`, `SchemaPath`, `SchemaReference`, `SchemaValue`, `ScreenSchema`, `StreamState`, `TableColors`, `TableDensity`, `TableDesign`, `TableDesignProps`, `TableDesignSlot`, `UnresolvedNode`, `UploadStatus`, `UseTableStateOptions`, `UseTableStateResult`, `ValidateOptions`, `ValidationReport`, `ValidationVerdict`, `VocabularyContract`, `WhenSchema`, `auditTree`, `axzyCatalog`, `axzyCatalogTypes`, `buildVocabularyContract`, `countPendingNodes`, `createCatalog`, `createLimitTracker`, `createValidationSchema`, `enMessages`, `esMessages`, `formatPath`, `formatVocabularyForPrompt`, `getCatalogEntry`, `getContrastTextColor`, `getExclusionReason`, `hasPath`, `isExcludedType`, `isLightColor`, `isNodePending`, `issue`, `migrateSchema`, `parsePartialSchema`, `parsePath`, `propPath`, `pushPath`, `readPath`, `renderNode`, `resolveCssColor`, `resolveLimits`, `resolveNode`, `validateSchema`
 
 

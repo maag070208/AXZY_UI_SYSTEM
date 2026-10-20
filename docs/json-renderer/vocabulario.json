@@ -1,0 +1,1202 @@
+{
+  "$schema": "axzy/vocabulary",
+  "schemaVersion": 1,
+  "rules": [
+    "Emite SOLO JSON válido con la forma: { $schema: \"axzy/screen\", version, id, content }.",
+    "`content` es un nodo o un array de nodos; cada nodo necesita `type` del catálogo.",
+    "Usa solo props declaradas para ese `type`; el resto se ignora y se avisa.",
+    "Los hijos se expresan con `children` (nodos) y los textos con `text`, nunca con props de nodo React.",
+    "Las acciones se declaran por nombre: `\"onClick\": { \"action\": \"nombre.registrado\" }`. No hay código en el JSON.",
+    "Prohibido: HTML crudo, URLs, fetch, expresiones JS y props como icon/actions/render.",
+    "Los textos visibles deben ser claves de i18n: { \"i18n\": \"namespace.clave\" }."
+  ],
+  "components": [
+    {
+      "type": "ITAlert",
+      "summary": "Aviso con variante semántica.",
+      "children": true,
+      "text": true,
+      "props": [
+        {
+          "name": "variant",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "info",
+            "success",
+            "warning",
+            "error"
+          ],
+          "default": "info"
+        },
+        {
+          "name": "title",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "dismissible",
+          "kind": "boolean",
+          "required": false,
+          "default": false
+        },
+        {
+          "name": "onDismiss",
+          "kind": "action",
+          "required": false
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [
+        "icon"
+      ],
+      "minimal": {
+        "type": "ITAlert",
+        "text": "Texto"
+      }
+    },
+    {
+      "type": "ITAvatar",
+      "summary": "Avatar con imagen o iniciales.",
+      "children": false,
+      "text": false,
+      "props": [
+        {
+          "name": "src",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "alt",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "initials",
+          "kind": "string",
+          "required": false,
+          "doc": "Se usa cuando no hay imagen."
+        },
+        {
+          "name": "size",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ]
+        },
+        {
+          "name": "color",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "onClick",
+          "kind": "action",
+          "required": false
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [
+        "badge"
+      ],
+      "minimal": {
+        "type": "ITAvatar"
+      }
+    },
+    {
+      "type": "ITBadget",
+      "summary": "Insignia de estado.",
+      "children": true,
+      "text": true,
+      "props": [
+        {
+          "name": "label",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "color",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "primary",
+            "secondary",
+            "success",
+            "danger",
+            "warning",
+            "info",
+            "purple",
+            "error",
+            "gray"
+          ],
+          "default": "primary"
+        },
+        {
+          "name": "size",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        },
+        {
+          "name": "variant",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "soft",
+            "filled",
+            "outlined"
+          ],
+          "default": "soft"
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [],
+      "minimal": {
+        "type": "ITBadget",
+        "text": "Texto"
+      }
+    },
+    {
+      "type": "ITButton",
+      "summary": "Botón. `onClick` es una acción registrada por el host.",
+      "children": true,
+      "text": true,
+      "props": [
+        {
+          "name": "label",
+          "kind": "string",
+          "required": false,
+          "doc": "Texto del botón (alternativa a `text`)."
+        },
+        {
+          "name": "color",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "primary",
+            "secondary",
+            "success",
+            "danger",
+            "warning",
+            "info",
+            "purple",
+            "error",
+            "gray"
+          ],
+          "default": "primary"
+        },
+        {
+          "name": "size",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        },
+        {
+          "name": "variant",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "filled",
+            "outlined",
+            "raised",
+            "rounded",
+            "text",
+            "raised-text",
+            "icon-only",
+            "link"
+          ],
+          "default": "filled"
+        },
+        {
+          "name": "disabled",
+          "kind": "boolean",
+          "required": false,
+          "default": false
+        },
+        {
+          "name": "type",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "button",
+            "submit",
+            "reset"
+          ],
+          "default": "button"
+        },
+        {
+          "name": "ariaLabel",
+          "kind": "string",
+          "required": false,
+          "doc": "Etiqueta accesible cuando el botón no lleva texto."
+        },
+        {
+          "name": "title",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "onClick",
+          "kind": "action",
+          "required": false,
+          "doc": "Nombre de una acción registrada."
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [
+        "icon"
+      ],
+      "minimal": {
+        "type": "ITButton",
+        "text": "Texto"
+      }
+    },
+    {
+      "type": "ITCard",
+      "summary": "Tarjeta con título, imagen y contenido.",
+      "children": true,
+      "text": false,
+      "props": [
+        {
+          "name": "title",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "image",
+          "kind": "string",
+          "required": false,
+          "doc": "URL de la imagen de cabecera."
+        },
+        {
+          "name": "alt",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "onClick",
+          "kind": "action",
+          "required": false
+        },
+        {
+          "name": "imageClassName",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "titleClassName",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "contentClassName",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "actionClassName",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [
+        "actions"
+      ],
+      "minimal": {
+        "type": "ITCard"
+      }
+    },
+    {
+      "type": "ITChip",
+      "summary": "Etiqueta compacta, opcionalmente removible o seleccionable.",
+      "children": true,
+      "text": true,
+      "props": [
+        {
+          "name": "label",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "color",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "primary",
+            "secondary",
+            "success",
+            "danger",
+            "warning",
+            "info",
+            "purple",
+            "error",
+            "gray"
+          ],
+          "default": "gray"
+        },
+        {
+          "name": "size",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        },
+        {
+          "name": "variant",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "soft",
+            "filled",
+            "outlined"
+          ],
+          "default": "soft"
+        },
+        {
+          "name": "removable",
+          "kind": "boolean",
+          "required": false,
+          "default": false
+        },
+        {
+          "name": "selected",
+          "kind": "boolean",
+          "required": false,
+          "default": false
+        },
+        {
+          "name": "disabled",
+          "kind": "boolean",
+          "required": false,
+          "default": false
+        },
+        {
+          "name": "onRemove",
+          "kind": "action",
+          "required": false
+        },
+        {
+          "name": "onClick",
+          "kind": "action",
+          "required": false
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [
+        "icon"
+      ],
+      "minimal": {
+        "type": "ITChip",
+        "text": "Texto"
+      }
+    },
+    {
+      "type": "ITDataTable",
+      "summary": "Tabla con paginación, orden y filtros. Los datos llegan de una fuente que el host resuelve (`$source`).",
+      "children": false,
+      "text": false,
+      "props": [
+        {
+          "name": "columns",
+          "kind": "columns",
+          "required": true,
+          "doc": "Columnas: { key, label, type, sortable, filter, currencyMX }."
+        },
+        {
+          "name": "fetchData",
+          "kind": "data",
+          "required": true,
+          "doc": "Referencia a una fuente: { \"$source\": \"usuarios\" }. El host la convierte en un fetcher."
+        },
+        {
+          "name": "title",
+          "kind": "string",
+          "required": false,
+          "doc": "Título opcional sobre la tabla."
+        },
+        {
+          "name": "defaultItemsPerPage",
+          "kind": "integer",
+          "required": false,
+          "default": 5,
+          "doc": "Filas por página al abrir."
+        },
+        {
+          "name": "itemsPerPageOptions",
+          "kind": "array",
+          "required": false,
+          "doc": "Opciones del paginador, p. ej. [5, 10, 20]."
+        },
+        {
+          "name": "debounceMs",
+          "kind": "integer",
+          "required": false,
+          "default": 400,
+          "doc": "Espera antes de refiltrar al teclear."
+        },
+        {
+          "name": "variant",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "default",
+            "striped",
+            "bordered",
+            "minimal"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "size",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        },
+        {
+          "name": "density",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "compact",
+            "normal",
+            "comfortable"
+          ],
+          "default": "normal"
+        },
+        {
+          "name": "layout",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "auto",
+            "fixed"
+          ],
+          "default": "auto"
+        },
+        {
+          "name": "showVerticalBorder",
+          "kind": "boolean",
+          "required": false,
+          "default": true
+        },
+        {
+          "name": "autoCardBreakpoint",
+          "kind": "integer",
+          "required": false,
+          "default": 0,
+          "doc": "Ancho (px) por debajo del cual cae a tarjetas."
+        },
+        {
+          "name": "onRowClick",
+          "kind": "action",
+          "required": false,
+          "doc": "Nombre de una acción registrada; recibe la fila."
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "containerClassName",
+          "kind": "string",
+          "required": false
+        }
+      ],
+      "forbidden": [
+        "renderCard",
+        "loadingIndicator"
+      ],
+      "minimal": {
+        "type": "ITDataTable",
+        "props": {
+          "columns": "columns",
+          "fetchData": "fetchData"
+        }
+      }
+    },
+    {
+      "type": "ITDivider",
+      "summary": "Separador horizontal o vertical.",
+      "children": false,
+      "text": false,
+      "props": [
+        {
+          "name": "orientation",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "horizontal",
+            "vertical"
+          ],
+          "default": "horizontal"
+        },
+        {
+          "name": "color",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "thickness",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [],
+      "minimal": {
+        "type": "ITDivider"
+      }
+    },
+    {
+      "type": "ITEmptyState",
+      "summary": "Estado vacío con título, descripción y acción.",
+      "children": false,
+      "text": true,
+      "props": [
+        {
+          "name": "title",
+          "kind": "string",
+          "required": true
+        },
+        {
+          "name": "description",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [
+        "icon",
+        "action"
+      ],
+      "minimal": {
+        "type": "ITEmptyState",
+        "props": {
+          "title": "title"
+        },
+        "text": "Texto"
+      }
+    },
+    {
+      "type": "ITFlex",
+      "summary": "Contenedor flex completo.",
+      "children": true,
+      "text": false,
+      "props": [
+        {
+          "name": "direction",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "row",
+            "column"
+          ],
+          "default": "row"
+        },
+        {
+          "name": "align",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "start",
+            "center",
+            "end",
+            "stretch",
+            "baseline"
+          ]
+        },
+        {
+          "name": "justify",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "start",
+            "center",
+            "end",
+            "between",
+            "around",
+            "evenly"
+          ]
+        },
+        {
+          "name": "wrap",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "nowrap",
+            "wrap",
+            "wrap-reverse"
+          ]
+        },
+        {
+          "name": "gap",
+          "kind": "number",
+          "required": false,
+          "default": 0
+        },
+        {
+          "name": "grow",
+          "kind": "boolean",
+          "required": false
+        },
+        {
+          "name": "shrink",
+          "kind": "boolean",
+          "required": false
+        },
+        {
+          "name": "basis",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [
+        "style",
+        "onClick"
+      ],
+      "minimal": {
+        "type": "ITFlex"
+      }
+    },
+    {
+      "type": "ITGrid",
+      "summary": "Rejilla de 12 columnas; `item` para una celda.",
+      "children": true,
+      "text": false,
+      "props": [
+        {
+          "name": "container",
+          "kind": "boolean",
+          "required": false,
+          "default": false
+        },
+        {
+          "name": "item",
+          "kind": "boolean",
+          "required": false,
+          "default": false
+        },
+        {
+          "name": "spacing",
+          "kind": "number",
+          "required": false,
+          "default": 0
+        },
+        {
+          "name": "columns",
+          "kind": "integer",
+          "required": false,
+          "default": 12,
+          "doc": "Columnas del contenedor."
+        },
+        {
+          "name": "xs",
+          "kind": "integer",
+          "required": false
+        },
+        {
+          "name": "sm",
+          "kind": "integer",
+          "required": false
+        },
+        {
+          "name": "md",
+          "kind": "integer",
+          "required": false
+        },
+        {
+          "name": "lg",
+          "kind": "integer",
+          "required": false
+        },
+        {
+          "name": "xl",
+          "kind": "integer",
+          "required": false
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [
+        "style"
+      ],
+      "minimal": {
+        "type": "ITGrid"
+      }
+    },
+    {
+      "type": "ITImage",
+      "summary": "Imagen con respaldo si falla la carga.",
+      "children": false,
+      "text": false,
+      "props": [
+        {
+          "name": "src",
+          "kind": "string",
+          "required": true
+        },
+        {
+          "name": "alt",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "fallback",
+          "kind": "string",
+          "required": false,
+          "doc": "URL de respaldo."
+        },
+        {
+          "name": "onClick",
+          "kind": "action",
+          "required": false
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [],
+      "minimal": {
+        "type": "ITImage",
+        "props": {
+          "src": "/imagen.png"
+        }
+      }
+    },
+    {
+      "type": "ITLoader",
+      "summary": "Indicador de carga.",
+      "children": false,
+      "text": false,
+      "props": [
+        {
+          "name": "variant",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "spinner",
+            "dots",
+            "bar",
+            "pulse"
+          ],
+          "default": "spinner"
+        },
+        {
+          "name": "size",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "default": "md"
+        },
+        {
+          "name": "color",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [],
+      "minimal": {
+        "type": "ITLoader"
+      }
+    },
+    {
+      "type": "ITProgress",
+      "summary": "Barra de progreso.",
+      "children": false,
+      "text": false,
+      "props": [
+        {
+          "name": "value",
+          "kind": "number",
+          "required": false,
+          "default": 0
+        },
+        {
+          "name": "max",
+          "kind": "number",
+          "required": false,
+          "default": 100
+        },
+        {
+          "name": "variant",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "determinate",
+            "indeterminate"
+          ],
+          "default": "determinate"
+        },
+        {
+          "name": "color",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "primary",
+            "secondary",
+            "success",
+            "danger",
+            "warning",
+            "info",
+            "purple",
+            "error",
+            "gray"
+          ],
+          "default": "primary"
+        },
+        {
+          "name": "size",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [
+        "style"
+      ],
+      "minimal": {
+        "type": "ITProgress"
+      }
+    },
+    {
+      "type": "ITSkeleton",
+      "summary": "Marcador de carga con forma.",
+      "children": false,
+      "text": false,
+      "props": [
+        {
+          "name": "variant",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "text",
+            "rect",
+            "circle"
+          ],
+          "default": "text"
+        },
+        {
+          "name": "width",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "height",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "count",
+          "kind": "integer",
+          "required": false,
+          "default": 1
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [
+        "style"
+      ],
+      "minimal": {
+        "type": "ITSkeleton"
+      }
+    },
+    {
+      "type": "ITStack",
+      "summary": "Pila con dirección y separación uniforme.",
+      "children": true,
+      "text": false,
+      "props": [
+        {
+          "name": "direction",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "row",
+            "column"
+          ],
+          "default": "column"
+        },
+        {
+          "name": "spacing",
+          "kind": "number",
+          "required": false,
+          "default": 0
+        },
+        {
+          "name": "alignItems",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "start",
+            "center",
+            "end",
+            "stretch",
+            "baseline"
+          ]
+        },
+        {
+          "name": "justifyContent",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "start",
+            "center",
+            "end",
+            "between",
+            "around",
+            "evenly"
+          ]
+        },
+        {
+          "name": "flexWrap",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "nowrap",
+            "wrap",
+            "wrap-reverse"
+          ]
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [
+        "divider",
+        "style"
+      ],
+      "minimal": {
+        "type": "ITStack"
+      }
+    },
+    {
+      "type": "ITStatCard",
+      "summary": "Métrica con valor y tendencia.",
+      "children": false,
+      "text": false,
+      "props": [
+        {
+          "name": "label",
+          "kind": "string",
+          "required": true
+        },
+        {
+          "name": "value",
+          "kind": "string",
+          "required": true,
+          "doc": "Valor ya formateado o número."
+        },
+        {
+          "name": "trend",
+          "kind": "string",
+          "required": false
+        },
+        {
+          "name": "trendDirection",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "up",
+            "down",
+            "neutral"
+          ]
+        },
+        {
+          "name": "color",
+          "kind": "string",
+          "required": false,
+          "doc": "Color CSS del icono."
+        },
+        {
+          "name": "onClick",
+          "kind": "action",
+          "required": false
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [
+        "icon"
+      ],
+      "minimal": {
+        "type": "ITStatCard",
+        "props": {
+          "label": "label",
+          "value": "value"
+        }
+      }
+    },
+    {
+      "type": "ITText",
+      "summary": "Texto semántico. Usa `text` o `children` para el contenido.",
+      "children": true,
+      "text": true,
+      "props": [
+        {
+          "name": "as",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "span",
+            "p",
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "label",
+            "div",
+            "strong",
+            "em"
+          ],
+          "default": "span",
+          "doc": "Etiqueta HTML semántica."
+        },
+        {
+          "name": "muted",
+          "kind": "boolean",
+          "required": false,
+          "default": false,
+          "doc": "Atenúa el color del texto."
+        },
+        {
+          "name": "className",
+          "kind": "string",
+          "required": false,
+          "doc": "Clases extra del componente."
+        }
+      ],
+      "forbidden": [],
+      "minimal": {
+        "type": "ITText",
+        "text": "Texto"
+      }
+    }
+  ],
+  "excluded": {
+    "ITJsonRenderer": "Recursión: un esquema no puede pedir otro renderer.",
+    "ITSchemaRenderer": "Recursión: un esquema no puede pedir otro renderer.",
+    "ITJSONEditor": "Ejecuta entrada del usuario como código.",
+    "ITFormBuilder": "Se sustituye por el nodo `form` del motor.",
+    "ITWysiwyg": "Produce HTML, que se salta la lista blanca.",
+    "ITI18nProvider": "Lo monta el host, no el esquema.",
+    "ITThemeProvider": "Lo monta el host, no el esquema.",
+    "ITLayout": "El shell lo declara el router, no un nodo suelto.",
+    "ITNavbar": "El shell lo declara el router, no un nodo suelto.",
+    "ITSidebar": "El shell lo declara el router, no un nodo suelto.",
+    "ITTopBar": "El shell lo declara el router, no un nodo suelto."
+  }
+}

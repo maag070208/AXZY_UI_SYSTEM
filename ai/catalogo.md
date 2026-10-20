@@ -2,7 +2,7 @@
 
 # Catálogo de componentes (para IA)
 
-Generado desde el código con el compilador de TypeScript: **63 componentes**, 752 props, 10 hooks. Versión de la librería: `1.6.0`.
+Generado desde el código con el compilador de TypeScript: **64 componentes**, 761 props, 10 hooks. Versión de la librería: `1.6.0`.
 
 Para regenerarlo: `pnpm docs:llm`.
 
@@ -12,7 +12,7 @@ Para regenerarlo: `pnpm docs:llm`.
 - **Molecules** (25): `ITAccordion`, `ITAlert`, `ITBreadcrumbs`, `ITCalendar`, `ITCard`, `ITChipInput`, `ITDatePicker`, `ITDropdownMenu`, `ITEmptyState`, `ITField`, `ITFormHeader`, `ITJSONEditor`, `ITJsonRenderer`, `ITLineBarChart`, `ITMaskedInput`, `ITMultiSelect`, `ITPagination`, `ITSearchSelect`, `ITSelect`, `ITStatCard`, `ITStepper`, `ITTable`, `ITTabs`, `ITTimePicker`, `ITWysiwyg`
 - **Organisms** (12): `ITConfirmDialog`, `ITDataTable`, `ITDialog`, `ITDrawer`, `ITDropfile`, `ITFormBuilder`, `ITNavbar`, `ITPageHeader`, `ITSearchTable`, `ITSidebar`, `ITToast`, `ITTripleFilter`
 - **Templates** (2): `ITLayout`, `ITPage`
-- **Providers y otros** (2): `ITI18nProvider`, `ITThemeProvider`
+- **Providers y otros** (3): `ITI18nProvider`, `ITSchemaRenderer`, `ITThemeProvider`
 - **Hooks** (10): `useClickOutside`, `useDebouncedSearch`, `useEditableRow`, `useFloatingPanel`, `useTableState`, `useJsonRender`, `useITTheme`, `useITThemeSafe`, `useITFlatAppearance`, `useITTranslation`
 
 ## Atoms
@@ -1076,6 +1076,7 @@ Para regenerarlo: `pnpm docs:llm`.
 | `minWidth` | `string \| number` | — | Ancho mínimo del editor. Útil dentro de layouts que comprimen. |
 | `actions` | `React.ReactNode` | — | Acciones extra que se añaden al final de la barra, antes de copiar/descargar. |
 | `className` | `string` | — | Clases para el contenedor raíz. |
+| `id` | `string` | — | Identificador HTML del contenedor raíz, para anclarlo desde fuera o en pruebas. |
 | `textareaClassName` | `string` | — | Clases para el `<textarea>`, por si hay que afinar la tipografía. |
 | `errorLine` | `number` | — | Línea (1-based) que hay que marcar como errónea cuando el fallo lo detecta la aplicación y no el propio editor. |
 
@@ -2188,6 +2189,31 @@ errors={formik.errors}
 
 `*` = obligatorio.
 
+### `ITSchemaRenderer`
+
+- **Capa:** Providers y otros
+- **Fuente:** `src/json-renderer/kernel/SchemaRenderer.tsx`
+- **Qué es:** Pinta una pantalla completa a partir de un esquema. Nunca lanza por culpa del esquema: los problemas se convierten en avisos que se entregan por `onIssue` (y se acumulan en `issuesRef` si quieres leerlos).
+
+```tsx
+<ITSchemaRenderer schema={{ version: 1, id: "demo", content: { type: "ITText", text: "Hola" } }} />
+```
+
+**Props**
+
+| Prop | Tipo | Por defecto | Descripción |
+| --- | --- | --- | --- |
+| `schema` **\*** | `ScreenSchema` | — | Esquema de pantalla a pintar. Admite un árbol parcial (streaming). |
+| `catalog` | `Catalog` | — | Catálogo de componentes permitidos. Por defecto, el de AXZY. |
+| `limits` | `Partial<EngineLimits>` | — | Presupuesto de nodos, profundidad y tiempos. |
+| `resolveValue` | `(value: unknown, path: SchemaPath) => unknown` | — | Resuelve un valor declarativo del esquema (`$state`, `$param`, `$source`…) al valor real. Sin esta prop, los valores se pasan tal cual (útil para pruebas). |
+| `resolveAction` | `(node: NodeSchema, prop: string, action: unknown, path: SchemaPath) => ((...args: unknown[]) => void) \| undefined` | — | Traduce una acción declarada a un handler ejecutable. Sin esta prop, las acciones se ignoran y se avisa una sola vez por nodo. |
+| `pendingFallback` | `React.ReactNode` | — | Qué pintar mientras un nodo está pendiente (streaming). |
+| `onIssue` | `(issue: JsonEngineIssue) => void` | — | Se llama por cada aviso del motor, con código y ruta. |
+| `className` | `string` | — | Clases del contenedor raíz. |
+
+`*` = obligatorio.
+
 ### `ITThemeProvider`
 
 - **Capa:** Providers y otros
@@ -2279,5 +2305,5 @@ return <ITButton label={t("common.cancel")} onClick={onCancel} />;
 
 ## Otros exports (tipos y utilidades)
 
-`Column`, `ColumnFilterMode`, `ColumnFilterValue`, `ColumnFilters`, `FieldConfig`, `FieldConfigV2`, `FileTypeEnum`, `ITAccordionItem`, `ITAccordionProps`, `ITAlertProps`, `ITAvatarProps`, `ITBadgetProps`, `ITBreadcrumbItem`, `ITBreadcrumbsProps`, `ITButtonProps`, `ITCalendarProps`, `ITCardProps`, `ITCheckboxProps`, `ITChipInputProps`, `ITChipProps`, `ITConfirmDialogProps`, `ITDataTableFetchParams`, `ITDataTableProps`, `ITDataTableResponse`, `ITDatePickerProps`, `ITDialogProps`, `ITDividerProps`, `ITDrawerProps`, `ITDropdownMenuItem`, `ITDropdownMenuProps`, `ITEmptyStateProps`, `ITFieldProps`, `ITFlexProps`, `ITFormBuilderProps`, `ITFormHeaderProps`, `ITGridProps`, `ITI18nProviderProps`, `ITI18nValue`, `ITImageProps`, `ITInputNumberProps`, `ITInputProps`, `ITJSONEditorProps`, `ITJsonRendererProps`, `ITLayoutProps`, `ITLineBarChartProps`, `ITLineBarDatum`, `ITLoaderProps`, `ITLocale`, `ITMaskedInputProps`, `ITMessages`, `ITMessagesByLocale`, `ITMultiSelectOption`, `ITMultiSelectProps`, `ITNavbarProps`, `ITNavigationItem`, `ITNavigationSubItem`, `ITNavigationSubItemEntry`, `ITNavigationSubItemGroup`, `ITPageHeaderProps`, `ITPageProps`, `ITPaginationProps`, `ITPopoverProps`, `ITProgressProps`, `ITRadioGroupProps`, `ITRadioOption`, `ITSearchSelectProps`, `ITSearchTableProps`, `ITSegmentedControlProps`, `ITSelectProps`, `ITSidebarBrand`, `ITSidebarNotification`, `ITSidebarProps`, `ITSkeletonProps`, `ITSlideToggleProps`, `ITSliderProps`, `ITStackProps`, `ITStatCardProps`, `ITStepperProps`, `ITTabItem`, `ITTableProps`, `ITTabsProps`, `ITTextProps`, `ITTextareaProps`, `ITThemeAppearance`, `ITThemeConfig`, `ITThemePalette`, `ITThemeProviderProps`, `ITTimePickerProps`, `ITToastProps`, `ITTripleFilterOption`, `ITTripleFilterProps`, `ITWysiwygProps`, `JsonComponentNode`, `JsonComponentType`, `TableColors`, `TableDensity`, `TableDesign`, `TableDesignProps`, `TableDesignSlot`, `UploadStatus`, `UseTableStateOptions`, `UseTableStateResult`, `createValidationSchema`, `enMessages`, `esMessages`, `getContrastTextColor`, `isLightColor`, `resolveCssColor`
+`AXZY_CATALOG_ENTRIES`, `AXZY_EXCLUDED_TYPES`, `ActionSchema`, `CURRENT_SCHEMA_VERSION`, `Catalog`, `CatalogEntry`, `Column`, `ColumnFilterMode`, `ColumnFilterValue`, `ColumnFilters`, `ComponentContract`, `DEFAULT_LIMITS`, `DEFAULT_MIGRATIONS`, `DataSourceSchema`, `EffectSchema`, `EngineLimits`, `FieldConfig`, `FieldConfigV2`, `FileTypeEnum`, `GLOBALLY_FORBIDDEN_PROPS`, `ITAccordionItem`, `ITAccordionProps`, `ITAlertProps`, `ITAvatarProps`, `ITBadgetProps`, `ITBreadcrumbItem`, `ITBreadcrumbsProps`, `ITButtonProps`, `ITCalendarProps`, `ITCardProps`, `ITCheckboxProps`, `ITChipInputProps`, `ITChipProps`, `ITConfirmDialogProps`, `ITDataTableFetchParams`, `ITDataTableProps`, `ITDataTableResponse`, `ITDatePickerProps`, `ITDialogProps`, `ITDividerProps`, `ITDrawerProps`, `ITDropdownMenuItem`, `ITDropdownMenuProps`, `ITEmptyStateProps`, `ITFieldProps`, `ITFlexProps`, `ITFormBuilderProps`, `ITFormHeaderProps`, `ITGridProps`, `ITI18nProviderProps`, `ITI18nValue`, `ITImageProps`, `ITInputNumberProps`, `ITInputProps`, `ITJSONEditorProps`, `ITJsonRenderEngineProps`, `ITJsonRendererProps`, `ITLayoutProps`, `ITLineBarChartProps`, `ITLineBarDatum`, `ITLoaderProps`, `ITLocale`, `ITMaskedInputProps`, `ITMessages`, `ITMessagesByLocale`, `ITMultiSelectOption`, `ITMultiSelectProps`, `ITNavbarProps`, `ITNavigationItem`, `ITNavigationSubItem`, `ITNavigationSubItemEntry`, `ITNavigationSubItemGroup`, `ITPageHeaderProps`, `ITPageProps`, `ITPaginationProps`, `ITPopoverProps`, `ITProgressProps`, `ITRadioGroupProps`, `ITRadioOption`, `ITSearchSelectProps`, `ITSearchTableProps`, `ITSegmentedControlProps`, `ITSelectProps`, `ITSidebarBrand`, `ITSidebarNotification`, `ITSidebarProps`, `ITSkeletonProps`, `ITSlideToggleProps`, `ITSliderProps`, `ITStackProps`, `ITStatCardProps`, `ITStepperProps`, `ITTabItem`, `ITTableProps`, `ITTabsProps`, `ITTextProps`, `ITTextareaProps`, `ITThemeAppearance`, `ITThemeConfig`, `ITThemePalette`, `ITThemeProviderProps`, `ITTimePickerProps`, `ITToastProps`, `ITTripleFilterOption`, `ITTripleFilterProps`, `ITWysiwygProps`, `JsonComponentNode`, `JsonComponentType`, `JsonEngineCode`, `JsonEngineError`, `JsonEngineIssue`, `JsonEngineSeverity`, `LimitTracker`, `MigrationRegistry`, `MigrationResult`, `NodeBoundary`, `NodeSchema`, `NodeStatus`, `PartialParseResult`, `PathSegment`, `PropContract`, `PropKind`, `PropSpec`, `ResolvedNode`, `SchemaMigration`, `SchemaPath`, `SchemaReference`, `SchemaValue`, `ScreenSchema`, `StreamState`, `TableColors`, `TableDensity`, `TableDesign`, `TableDesignProps`, `TableDesignSlot`, `UnresolvedNode`, `UploadStatus`, `UseTableStateOptions`, `UseTableStateResult`, `ValidateOptions`, `ValidationReport`, `ValidationVerdict`, `VocabularyContract`, `WhenSchema`, `auditTree`, `axzyCatalog`, `axzyCatalogTypes`, `buildVocabularyContract`, `countPendingNodes`, `createCatalog`, `createLimitTracker`, `createValidationSchema`, `enMessages`, `esMessages`, `formatPath`, `formatVocabularyForPrompt`, `getCatalogEntry`, `getContrastTextColor`, `getExclusionReason`, `hasPath`, `isExcludedType`, `isLightColor`, `isNodePending`, `issue`, `migrateSchema`, `parsePartialSchema`, `parsePath`, `propPath`, `pushPath`, `readPath`, `renderNode`, `resolveCssColor`, `resolveLimits`, `resolveNode`, `validateSchema`
 

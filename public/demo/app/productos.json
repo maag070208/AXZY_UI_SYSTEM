@@ -1,0 +1,75 @@
+{
+  "$schema": "axzy/screen",
+  "version": 1,
+  "id": "demo.productos",
+  "title": {
+    "i18n": "sandbox.app.productos.title"
+  },
+  "description": {
+    "i18n": "sandbox.app.productos.lead"
+  },
+  "content": [
+    {
+      "type": "ITStack",
+      "props": {
+        "direction": "column",
+        "spacing": 8,
+        "alignItems": "stretch"
+      },
+      "children": [
+        {
+          "type": "ITDataTable",
+          "id": "tabla-productos",
+          "props": {
+            "columns": [
+              {
+                "key": "sku",
+                "label": "SKU",
+                "type": "string",
+                "sortable": true,
+                "filter": true
+              },
+              {
+                "key": "nombre",
+                "label": "Producto",
+                "type": "string",
+                "filter": true
+              },
+              {
+                "key": "precio",
+                "label": "Precio",
+                "type": "number",
+                "sortable": true,
+                "currencyMX": true
+              },
+              {
+                "key": "stock",
+                "label": "Stock",
+                "type": "number",
+                "sortable": true
+              },
+              {
+                "key": "categoria",
+                "label": "Categoría",
+                "type": "string",
+                "filter": "catalog"
+              }
+            ],
+            "fetchData": {
+              "$source": "productos"
+            },
+            "defaultItemsPerPage": 8,
+            "itemsPerPageOptions": [
+              8,
+              16,
+              32
+            ],
+            "density": "normal",
+            "variant": "striped",
+            "layout": "fixed"
+          }
+        }
+      ]
+    }
+  ]
+}

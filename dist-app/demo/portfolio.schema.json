@@ -1,0 +1,831 @@
+{
+  "$schema": "axzy/screen",
+  "version": 1,
+  "id": "demo.portfolio",
+  "content": [
+    {
+      "type": "ITStack",
+      "props": {
+        "direction": "column",
+        "spacing": 10,
+        "alignItems": "stretch"
+      },
+      "children": [
+        {
+          "type": "ITFlex",
+          "props": {
+            "justify": "between",
+            "align": "center",
+            "wrap": "wrap",
+            "gap": 4
+          },
+          "children": [
+            {
+              "type": "ITFlex",
+              "props": {
+                "align": "center",
+                "gap": 3
+              },
+              "children": [
+                {
+                  "type": "ITAvatar",
+                  "props": {
+                    "initials": "AA",
+                    "size": "sm",
+                    "color": "#387D92"
+                  }
+                },
+                {
+                  "type": "ITText",
+                  "props": {
+                    "as": "span",
+                    "muted": true
+                  },
+                  "text": {
+                    "i18n": "sandbox.demo.brand"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITButton",
+              "props": {
+                "label": {
+                  "i18n": "sandbox.demo.back"
+                },
+                "size": "sm",
+                "variant": "outlined",
+                "color": "gray",
+                "onClick": {
+                  "action": "volver"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "ITDivider",
+          "props": {
+            "orientation": "horizontal"
+          }
+        },
+        {
+          "type": "ITStack",
+          "props": {
+            "direction": "column",
+            "spacing": 6,
+            "alignItems": "start"
+          },
+          "children": [
+            {
+              "type": "ITBadget",
+              "props": {
+                "label": {
+                  "i18n": "sandbox.demo.eyebrow"
+                },
+                "color": "primary",
+                "variant": "outlined"
+              }
+            },
+            {
+              "type": "ITStack",
+              "props": {
+                "direction": "column",
+                "spacing": 4,
+                "alignItems": "start"
+              },
+              "children": [
+                {
+                  "type": "ITText",
+                  "props": {
+                    "as": "h1",
+                    "className": "max-w-[820px] font-display text-[34px] font-bold leading-[1.06] tracking-[-0.015em] sm:text-[46px]"
+                  },
+                  "text": {
+                    "i18n": "sandbox.demo.title"
+                  }
+                },
+                {
+                  "type": "ITText",
+                  "props": {
+                    "as": "p",
+                    "muted": true,
+                    "className": "max-w-[62ch] text-[15.5px] leading-[1.7]"
+                  },
+                  "text": {
+                    "i18n": "sandbox.demo.lead"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITFlex",
+              "props": {
+                "wrap": "wrap",
+                "gap": 3
+              },
+              "children": [
+                {
+                  "type": "ITButton",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.demo.ctaProjects"
+                    },
+                    "size": "md",
+                    "onClick": {
+                      "action": "ir-seccion",
+                      "args": {
+                        "id": "proyectos"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "ITButton",
+                  "props": {
+                    "label": "GitHub",
+                    "size": "md",
+                    "variant": "outlined",
+                    "color": "gray",
+                    "onClick": {
+                      "action": "abrir-github"
+                    }
+                  }
+                },
+                {
+                  "type": "ITButton",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.demo.ctaContact"
+                    },
+                    "size": "md",
+                    "variant": "text",
+                    "color": "primary",
+                    "onClick": {
+                      "action": "ir-seccion",
+                      "args": {
+                        "id": "contacto"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ITGrid",
+          "props": {
+            "container": true,
+            "spacing": 4
+          },
+          "children": [
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.demo.statExperience"
+                    },
+                    "value": "5+"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.demo.statProducts"
+                    },
+                    "value": "4"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.demo.statTech"
+                    },
+                    "value": "31"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.demo.statMode"
+                    },
+                    "value": {
+                      "i18n": "sandbox.demo.statModeValue"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ITDivider",
+          "props": {
+            "orientation": "horizontal"
+          }
+        },
+        {
+          "type": "ITStack",
+          "props": {
+            "direction": "column",
+            "spacing": 6,
+            "alignItems": "stretch"
+          },
+          "children": [
+            {
+              "type": "ITStack",
+              "props": {
+                "direction": "column",
+                "spacing": 2,
+                "alignItems": "start"
+              },
+              "children": [
+                {
+                  "type": "ITText",
+                  "id": "proyectos",
+                  "props": {
+                    "as": "h2",
+                    "className": "font-display text-[24px] font-bold tracking-[-0.01em]"
+                  },
+                  "text": {
+                    "i18n": "sandbox.demo.projectsTitle"
+                  }
+                },
+                {
+                  "type": "ITText",
+                  "props": {
+                    "as": "p",
+                    "muted": true,
+                    "className": "max-w-[62ch]"
+                  },
+                  "text": {
+                    "i18n": "sandbox.demo.projectsLead"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITGrid",
+              "props": {
+                "container": true,
+                "spacing": 4
+              },
+              "children": [
+                {
+                  "type": "ITGrid",
+                  "props": {
+                    "item": true,
+                    "xs": 12,
+                    "md": 4
+                  },
+                  "children": [
+                    {
+                      "type": "ITCard",
+                      "props": {
+                        "title": "CheckApp",
+                        "image": "/productos/checkapp-analitica.webp",
+                        "alt": {
+                          "i18n": "sandbox.demo.p1.alt"
+                        },
+                        "imageClassName": "h-40 w-full object-cover object-top",
+                        "className": "h-full"
+                      },
+                      "children": [
+                        {
+                          "type": "ITStack",
+                          "props": {
+                            "direction": "column",
+                            "spacing": 3,
+                            "alignItems": "start"
+                          },
+                          "children": [
+                            {
+                              "type": "ITText",
+                              "props": {
+                                "muted": true,
+                                "as": "p"
+                              },
+                              "text": {
+                                "i18n": "sandbox.demo.p1.text"
+                              }
+                            },
+                            {
+                              "type": "ITFlex",
+                              "props": {
+                                "wrap": "wrap",
+                                "gap": 2
+                              },
+                              "children": [
+                                {
+                                  "type": "ITChip",
+                                  "props": {
+                                    "label": "React",
+                                    "size": "sm"
+                                  }
+                                },
+                                {
+                                  "type": "ITChip",
+                                  "props": {
+                                    "label": "TypeScript",
+                                    "size": "sm"
+                                  }
+                                },
+                                {
+                                  "type": "ITChip",
+                                  "props": {
+                                    "label": "Analytics",
+                                    "size": "sm"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "type": "ITButton",
+                              "props": {
+                                "label": {
+                                  "i18n": "sandbox.demo.viewProject"
+                                },
+                                "size": "sm",
+                                "variant": "outlined",
+                                "color": "gray",
+                                "onClick": {
+                                  "action": "ver-proyecto",
+                                  "args": {
+                                    "id": "checkapp"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "ITGrid",
+                  "props": {
+                    "item": true,
+                    "xs": 12,
+                    "md": 4
+                  },
+                  "children": [
+                    {
+                      "type": "ITCard",
+                      "props": {
+                        "title": "AXZY UI System",
+                        "image": "/productos/agente-ajustes.webp",
+                        "alt": {
+                          "i18n": "sandbox.demo.p2.alt"
+                        },
+                        "imageClassName": "h-40 w-full object-cover object-top",
+                        "className": "h-full"
+                      },
+                      "children": [
+                        {
+                          "type": "ITStack",
+                          "props": {
+                            "direction": "column",
+                            "spacing": 3,
+                            "alignItems": "start"
+                          },
+                          "children": [
+                            {
+                              "type": "ITText",
+                              "props": {
+                                "muted": true,
+                                "as": "p"
+                              },
+                              "text": {
+                                "i18n": "sandbox.demo.p2.text"
+                              }
+                            },
+                            {
+                              "type": "ITFlex",
+                              "props": {
+                                "wrap": "wrap",
+                                "gap": 2
+                              },
+                              "children": [
+                                {
+                                  "type": "ITChip",
+                                  "props": {
+                                    "label": "Design system",
+                                    "size": "sm"
+                                  }
+                                },
+                                {
+                                  "type": "ITChip",
+                                  "props": {
+                                    "label": "Tailwind v4",
+                                    "size": "sm"
+                                  }
+                                },
+                                {
+                                  "type": "ITChip",
+                                  "props": {
+                                    "label": "a11y",
+                                    "size": "sm"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "type": "ITButton",
+                              "props": {
+                                "label": {
+                                  "i18n": "sandbox.demo.viewProject"
+                                },
+                                "size": "sm",
+                                "variant": "outlined",
+                                "color": "gray",
+                                "onClick": {
+                                  "action": "ver-proyecto",
+                                  "args": {
+                                    "id": "axzy-ui-system"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "ITGrid",
+                  "props": {
+                    "item": true,
+                    "xs": 12,
+                    "md": 4
+                  },
+                  "children": [
+                    {
+                      "type": "ITCard",
+                      "props": {
+                        "title": "axzy (CLI + TUI)",
+                        "image": "/productos/axzy-cli.webp",
+                        "alt": {
+                          "i18n": "sandbox.demo.p3.alt"
+                        },
+                        "imageClassName": "h-40 w-full object-cover object-top",
+                        "className": "h-full"
+                      },
+                      "children": [
+                        {
+                          "type": "ITStack",
+                          "props": {
+                            "direction": "column",
+                            "spacing": 3,
+                            "alignItems": "start"
+                          },
+                          "children": [
+                            {
+                              "type": "ITText",
+                              "props": {
+                                "muted": true,
+                                "as": "p"
+                              },
+                              "text": {
+                                "i18n": "sandbox.demo.p3.text"
+                              }
+                            },
+                            {
+                              "type": "ITFlex",
+                              "props": {
+                                "wrap": "wrap",
+                                "gap": 2
+                              },
+                              "children": [
+                                {
+                                  "type": "ITChip",
+                                  "props": {
+                                    "label": "Rust",
+                                    "size": "sm"
+                                  }
+                                },
+                                {
+                                  "type": "ITChip",
+                                  "props": {
+                                    "label": "TUI",
+                                    "size": "sm"
+                                  }
+                                },
+                                {
+                                  "type": "ITChip",
+                                  "props": {
+                                    "label": "CI",
+                                    "size": "sm"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "type": "ITButton",
+                              "props": {
+                                "label": {
+                                  "i18n": "sandbox.demo.viewProject"
+                                },
+                                "size": "sm",
+                                "variant": "outlined",
+                                "color": "gray",
+                                "onClick": {
+                                  "action": "ver-proyecto",
+                                  "args": {
+                                    "id": "axzy-http-cli"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ITDivider",
+          "props": {
+            "orientation": "horizontal"
+          }
+        },
+        {
+          "type": "ITStack",
+          "props": {
+            "direction": "column",
+            "spacing": 4,
+            "alignItems": "start"
+          },
+          "children": [
+            {
+              "type": "ITStack",
+              "props": {
+                "direction": "column",
+                "spacing": 2,
+                "alignItems": "start"
+              },
+              "children": [
+                {
+                  "type": "ITText",
+                  "props": {
+                    "as": "h2",
+                    "className": "font-display text-[24px] font-bold tracking-[-0.01em]"
+                  },
+                  "text": {
+                    "i18n": "sandbox.demo.stackTitle"
+                  }
+                },
+                {
+                  "type": "ITText",
+                  "props": {
+                    "as": "p",
+                    "muted": true,
+                    "className": "max-w-[62ch]"
+                  },
+                  "text": {
+                    "i18n": "sandbox.demo.stackLead"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITFlex",
+              "props": {
+                "wrap": "wrap",
+                "gap": 2
+              },
+              "children": [
+                {
+                  "type": "ITChip",
+                  "props": {
+                    "label": "TypeScript",
+                    "size": "sm",
+                    "variant": "outlined"
+                  }
+                },
+                {
+                  "type": "ITChip",
+                  "props": {
+                    "label": "React",
+                    "size": "sm",
+                    "variant": "outlined"
+                  }
+                },
+                {
+                  "type": "ITChip",
+                  "props": {
+                    "label": "Angular",
+                    "size": "sm",
+                    "variant": "outlined"
+                  }
+                },
+                {
+                  "type": "ITChip",
+                  "props": {
+                    "label": "Node.js",
+                    "size": "sm",
+                    "variant": "outlined"
+                  }
+                },
+                {
+                  "type": "ITChip",
+                  "props": {
+                    "label": "Rust",
+                    "size": "sm",
+                    "variant": "outlined"
+                  }
+                },
+                {
+                  "type": "ITChip",
+                  "props": {
+                    "label": "PostgreSQL",
+                    "size": "sm",
+                    "variant": "outlined"
+                  }
+                },
+                {
+                  "type": "ITChip",
+                  "props": {
+                    "label": "Docker",
+                    "size": "sm",
+                    "variant": "outlined"
+                  }
+                },
+                {
+                  "type": "ITChip",
+                  "props": {
+                    "label": "Playwright",
+                    "size": "sm",
+                    "variant": "outlined"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ITCard",
+          "props": {
+            "title": {
+              "i18n": "sandbox.demo.contactTitle"
+            }
+          },
+          "children": [
+            {
+              "type": "ITStack",
+              "props": {
+                "direction": "column",
+                "spacing": 4,
+                "alignItems": "start"
+              },
+              "children": [
+                {
+                  "type": "ITText",
+                  "id": "contacto",
+                  "props": {
+                    "as": "p",
+                    "muted": true
+                  },
+                  "text": {
+                    "i18n": "sandbox.demo.contactLead"
+                  }
+                },
+                {
+                  "type": "ITFlex",
+                  "props": {
+                    "wrap": "wrap",
+                    "gap": 3
+                  },
+                  "children": [
+                    {
+                      "type": "ITButton",
+                      "props": {
+                        "label": {
+                          "i18n": "sandbox.demo.sendMail"
+                        },
+                        "size": "md",
+                        "onClick": {
+                          "action": "abrir-correo"
+                        }
+                      }
+                    },
+                    {
+                      "type": "ITButton",
+                      "props": {
+                        "label": "LinkedIn",
+                        "size": "md",
+                        "variant": "outlined",
+                        "color": "gray",
+                        "onClick": {
+                          "action": "abrir-linkedin"
+                        }
+                      }
+                    },
+                    {
+                      "type": "ITButton",
+                      "props": {
+                        "label": {
+                          "i18n": "sandbox.demo.back"
+                        },
+                        "size": "md",
+                        "variant": "text",
+                        "color": "gray",
+                        "onClick": {
+                          "action": "volver"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ITDivider",
+          "props": {
+            "orientation": "horizontal"
+          }
+        },
+        {
+          "type": "ITFlex",
+          "props": {
+            "justify": "between",
+            "align": "center",
+            "wrap": "wrap",
+            "gap": 3
+          },
+          "children": [
+            {
+              "type": "ITText",
+              "props": {
+                "as": "span",
+                "muted": true
+              },
+              "text": {
+                "i18n": "sandbox.demo.footer"
+              }
+            },
+            {
+              "type": "ITBadget",
+              "props": {
+                "label": {
+                  "i18n": "sandbox.demo.badge"
+                },
+                "color": "success",
+                "size": "sm"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

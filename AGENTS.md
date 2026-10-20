@@ -14,10 +14,11 @@
 - `pnpm bundle` — build the published package: tsup (JS + `.d.ts`) then `scripts/build-css.mjs` → `dist/`
 - `pnpm build` — **alias of `pnpm bundle`** (tsup + CSS). Trust `package.json`.
 - `pnpm build:app` — build the sandbox into `dist-app/`
-- No `test` script and no test runner: Storybook (and its Vitest project) was removed. Examples and manual checks live in the sandbox.
+- `pnpm test` / `pnpm test:watch` — Vitest. Cubre el motor de pantallas (`src/json-renderer/**/*.test.ts(x)`); el resto se verifica a mano en el sandbox.
 - `pnpm ext:catalog` / `pnpm ext:typecheck` / `pnpm ext:build` / `pnpm ext:package` — VS Code extension in `vscode-extension/` (see below).
 - `pnpm docs:llm` — regenerates the AI documentation: `pnpm ext:catalog` → `docs/llm/` (`catalogo.md` + `catalogo.json`) → `ai/` bundle.
 - `pnpm docs:ai` — only the `ai/` bundle (requires `docs/llm/` to exist).
+- `pnpm docs:json-renderer` — regenera el contrato de vocabulario del motor (`docs/json-renderer/vocabulario.json` + `VOCABULARIO.md`) desde el catálogo. No requiere `pnpm bundle`: usa esbuild para compilar el generador.
 - `pnpm audit:sandbox` — serves `dist-app/` and audits all sandbox routes with axe (full rule set) + clipped-content detection. Run `pnpm build:app` first.
 
 ## VS Code extension (`vscode-extension/`)
@@ -50,11 +51,23 @@
   - `#ui-system/<group-slug>` → redirects (history replace) to that group's first item.
   - `#ui-system/<group-slug>/<item-id>` → that showcase.
   - any other hash under `#ui-system` → 404 (`src/sandbox/NotFoundShowcase.tsx`).
+  - `#demo` → portafolio de demostración pintado **solo** con el motor de pantallas (`public/demo/portfolio.schema.json`). Es la prueba de extremo a extremo del motor: carga, valida y pinta un JSON real.
+  - `#demo/app/<página>` → dashboard de demostración con páginas (`inicio`, `usuarios`, `pedidos`) en `public/demo/app/*.json`: shell y datos los pone el host (`src/showcases/DemoJsonDashboard.tsx`), las pantallas son JSON con `ITDataTable` alimentada por `$source`.
   - empty hash / unknown first segment → the personal portfolio at `/`.
 - Group slug map: `general→general`, `struc→structure`, `forms→forms`, `data→viewdata`, `nav→navigation`, `feed→feedback`. The catalog, slug map and helpers (`SANDBOX_GROUPS`, `GROUP_SLUGS`, `SLUG_TO_GROUP`, `groupBySlug`, `firstItemOf`, `isValidItem`, `TOTAL_ITEMS`) live in `src/sandbox/navigation.ts`; item ids are the `renderShowcase` cases in `src/App.tsx`.
 - Sandbox-only keyframes (`it-landing-rise` / `it-landing-float` / `it-landing-grid` / `it-logo-latido`) live in `src/dev.css`; only `src/main.tsx` imports it, so they never reach `dist/index.css`.
 - **Marca axzydev** del sitio: el componente es `src/sandbox/AxzyLogo.tsx` (`AxzyLogo` para navbar/hero/footer y `AxzyLoader` para cargas) y los assets son SVG del kit `axzydev-brand-kit/logos/svg`, copiados a `public/brand/` (`icon.svg`, `logo-color.svg` para fondo claro, `logo-dark.svg` para fondo oscuro). El wordmark cambia de variante según `resolvedTheme`; no hay Lottie ni dependencias nuevas. `index.html` usa el favicon del kit y `public/site.webmanifest` la PWA. Nada de esto entra en `dist/`.
 - Note: `package.json#files` includes `src/`, so sandbox sources ship in the npm tarball (same pre-existing behavior as `src/showcases/**`); they are not part of the published JS/CSS bundle.
+
+## Motor de pantallas (`src/json-renderer/`)
+
+- Dominio propio, hermano de `components/`: **consume** componentes y publica su API desde `src/index.ts`. No es una capa atómica, así que queda fuera de `check:atomic-deps` (que solo vigila `src/components/**`).
+- El esquema **nunca** ejecuta código, ni hace red, ni pinta HTML: se trata como entrada no confiable. Toda autoridad (componentes, props, acciones, datos, permisos) vive en registros del host.
+- `src/json-renderer/catalog/axzyCatalog.ts` es la lista blanca. Al añadir un componente al catálogo, regenera el contrato con `pnpm docs:json-renderer` y comprueba que su nodo mínimo valida.
+- El streaming es una capacidad del kernel (nodo `$status: "pending"`, `parsePartialSchema`), no un añadido: un JSON a medias sigue siendo pintable.
+- Documentación: `docs/json-renderer/` (ALCANCE, PLAN-IMPLEMENTACION, REFERENCIA, STREAMING, VOCABULARIO generado).
+- Los códigos `JR0xx` son contrato estable; no se renumeran.
+- **Clases en el JSON**: Tailwind solo genera lo que ve en el código, así que un `className` dentro de un esquema no existe en el bundle salvo que se apunte al archivo. `src/dev.css` lo hace con `@source "../public/demo/*.json"` para el demo (dev-only).
 
 ## Component conventions
 

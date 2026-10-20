@@ -5,6 +5,9 @@
 > **Regla de oro:** cada fase termina con criterios verificables y documentación viva. Nada
 > se da por hecho sin una comprobación que lo demuestre.
 >
+> **Estado:** fases **0, 1 y 2 entregadas** (base del motor). Siguiente: fase 3
+> (catálogo completo) o fase 4 (binding), según prioridad.
+>
 > **Caso de uso que manda:** UI generada por IA. El esquema se trata como **entrada no
 > confiable** y el **streaming es una capacidad del kernel desde la fase 1** — no una fase
 > al final. Eso adelanta el parseo parcial, el nodo pendiente y los límites.
@@ -489,21 +492,52 @@ pantalla real del sandbox construida **solo** con el motor.
 
 ---
 
+## 5.bis Estado entregado (fases 0–2)
+
+**Qué hay funcionando**
+
+| Pieza | Archivo | Verificado |
+|---|---|---|
+| Tipos del esquema y estado pendiente | `src/json-renderer/kernel/types.ts` | tsc |
+| Errores con código y ruta (`JR0xx`) | `shared/errors.ts` | 3 pruebas |
+| Rutas de esquema | `shared/paths.ts` | 6 pruebas |
+| Presupuestos | `shared/limits.ts` | 5 pruebas |
+| Parser tolerante de JSON incompleto | `stream/tolerantParse.ts` | 10 pruebas, **truncado en las 714 posiciones** |
+| Catálogo de 17 tipos con lista blanca | `catalog/axzyCatalog.ts` | 10 pruebas de resolución |
+| Kernel con nodo pendiente, boundary y presupuesto | `kernel/SchemaRenderer.tsx` | 12 pruebas de render |
+| Validación con veredicto `partial` | `validation/validate.ts` | 8 pruebas |
+| Migraciones de versión | `validation/migrate.ts` | 4 pruebas |
+| Contrato de vocabulario generado | `vocabulary/buildContract.ts` + `pnpm docs:json-renderer` | 7 pruebas |
+| Laboratorio en el sandbox | `src/showcases/JsonScreenShowcase.tsx` (`#ui-system/feedback/jsonscreen`) | manual + captura |
+
+**Total: 65 pruebas, `pnpm lint` en 0 errores, `pnpm bundle` y `pnpm build:app` en verde.**
+
+**Desviaciones respecto al borrador**
+
+- El catálogo mínimo tiene **17 tipos** (el plan decía 25): se dejaron fuera los de entrada
+  de datos (`ITInput`, `ITSelect`…) porque sin binding ni formularios no aportan nada
+  todavía; entran en la fase 8 con el nodo `form`.
+- El contrato de vocabulario se genera con esbuild (Node 20 no ejecuta TS) y se publica
+  como `docs/json-renderer/vocabulario.json` + `VOCABULARIO.md`.
+- `vitest`, `@testing-library/react` y `jsdom@26` entran como devDependencies (jsdom 30
+  exige Node 22 por `undici`).
+
 ## 6. Resumen de fases
 
-| Fase | Contenido | Días | Depende de |
+| Fase | Contenido | Días | Depende de | Estado |
+|---|---|---|---|---|
 |---|---|---|---|
-| 0 | Andamiaje, tipos, errores, **parser tolerante**, Vitest | 3–4 | — |
-| 1 | Kernel **con nodo pendiente** + catálogo mínimo + laboratorio con stream | 5–7 | 0 |
-| 2 | Validación en modo parcial, códigos, versionado, **contrato de vocabulario** | 5–7 | 0, 1 |
-| 3 | Catálogo completo (63) generado | 6–8 | 1, 2 |
-| 4 | Binding, estado y datos | 6–8 | 1 |
-| 5 | Acciones y efectos | 5–7 | 1, 4 |
-| 6 | Router, layouts y guards | 6–8 | 1, 5 |
-| 7 | Permisos y redacción | 4–6 | 1 |
-| 8 | Formularios y tablas | 7–9 | 4, 5 |
-| 9 | Entry point, devtools, observabilidad | 5–7 | 1–8 |
-| 10 | Endurecimiento, docs y piloto | 6–8 | todas |
+| 0 | Andamiaje, tipos, errores, **parser tolerante**, Vitest | 3–4 | — | ✅ entregada |
+| 1 | Kernel **con nodo pendiente** + catálogo mínimo + laboratorio con stream | 5–7 | 0 | ✅ entregada |
+| 2 | Validación en modo parcial, códigos, versionado, **contrato de vocabulario** | 5–7 | 0, 1 | ✅ entregada |
+| 3 | Catálogo completo (63) generado | 6–8 | 1, 2 | pendiente |
+| 4 | Binding, estado y datos | 6–8 | 1 | pendiente |
+| 5 | Acciones y efectos | 5–7 | 1, 4 | pendiente |
+| 6 | Router, layouts y guards | 6–8 | 1, 5 | pendiente |
+| 7 | Permisos y redacción | 4–6 | 1 | pendiente |
+| 8 | Formularios y tablas | 7–9 | 4, 5 | pendiente |
+| 9 | Entry point, devtools, observabilidad | 5–7 | 1–8 | pendiente |
+| 10 | Endurecimiento, docs y piloto | 6–8 | todas | pendiente |
 | | **Total** | **58–78 días ideales** | |
 
 Con un solo desarrollador son ~3 meses de calendario. Las fases 4–8 se pueden repartir

@@ -1,0 +1,247 @@
+{
+  "$schema": "axzy/screen",
+  "version": 1,
+  "id": "demo.inicio",
+  "content": [
+    {
+      "type": "ITStack",
+      "props": {
+        "direction": "column",
+        "spacing": 8,
+        "alignItems": "stretch"
+      },
+      "children": [
+        {
+          "type": "ITFlex",
+          "props": {
+            "wrap": "wrap",
+            "gap": 2
+          },
+          "children": [
+            {
+              "type": "ITButton",
+              "props": {
+                "label": {
+                  "i18n": "sandbox.app.inicio.ctaUsers"
+                },
+                "size": "sm",
+                "onClick": {
+                  "action": "ir-pagina",
+                  "args": {
+                    "pagina": "usuarios"
+                  }
+                }
+              }
+            },
+            {
+              "type": "ITButton",
+              "props": {
+                "label": {
+                  "i18n": "sandbox.app.inicio.ctaOrders"
+                },
+                "size": "sm",
+                "onClick": {
+                  "action": "ir-pagina",
+                  "args": {
+                    "pagina": "pedidos"
+                  }
+                },
+                "variant": "outlined",
+                "color": "gray"
+              }
+            }
+          ]
+        },
+        {
+          "type": "ITGrid",
+          "props": {
+            "container": true,
+            "spacing": 4
+          },
+          "children": [
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.app.statUsers"
+                    },
+                    "value": "25"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.app.statOrders"
+                    },
+                    "value": "42"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.app.statRevenue"
+                    },
+                    "value": "$48,920"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.app.statPending"
+                    },
+                    "value": "11"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ITDivider",
+          "props": {
+            "orientation": "horizontal"
+          }
+        },
+        {
+          "type": "ITStack",
+          "props": {
+            "direction": "column",
+            "spacing": 4,
+            "alignItems": "stretch"
+          },
+          "children": [
+            {
+              "type": "ITStack",
+              "props": {
+                "direction": "column",
+                "spacing": 2,
+                "alignItems": "start"
+              },
+              "children": [
+                {
+                  "type": "ITText",
+                  "props": {
+                    "as": "h2",
+                    "className": "font-display text-[20px] font-bold"
+                  },
+                  "text": {
+                    "i18n": "sandbox.app.inicio.recent"
+                  }
+                },
+                {
+                  "type": "ITText",
+                  "props": {
+                    "as": "p",
+                    "muted": true
+                  },
+                  "text": {
+                    "i18n": "sandbox.app.inicio.recentLead"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITDataTable",
+              "id": "tabla-recientes",
+              "props": {
+                "columns": [
+                  {
+                    "key": "folio",
+                    "label": "Folio",
+                    "type": "string",
+                    "sortable": true,
+                    "filter": true
+                  },
+                  {
+                    "key": "cliente",
+                    "label": "Cliente",
+                    "type": "string",
+                    "filter": "catalog"
+                  },
+                  {
+                    "key": "total",
+                    "label": "Total",
+                    "type": "number",
+                    "sortable": true,
+                    "currencyMX": true
+                  },
+                  {
+                    "key": "estado",
+                    "label": "Estado",
+                    "type": "string",
+                    "filter": "catalog"
+                  },
+                  {
+                    "key": "fecha",
+                    "label": "Fecha",
+                    "type": "date",
+                    "sortable": true
+                  }
+                ],
+                "fetchData": {
+                  "$source": "pedidos"
+                },
+                "defaultItemsPerPage": 5,
+                "itemsPerPageOptions": [
+                  5,
+                  10,
+                  20
+                ],
+                "density": "normal",
+                "variant": "striped",
+                "layout": "fixed"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "title": {
+    "i18n": "sandbox.app.inicio.title"
+  },
+  "description": {
+    "i18n": "sandbox.app.inicio.lead"
+  }
+}

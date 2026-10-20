@@ -1722,6 +1722,8 @@ interface ITDialogProps {
     title?: string;
     /** When true and `title` is provided, renders an ITFormHeader instead of the default title bar. @default false */
     useFormHeader?: boolean;
+    /** When false, the card has no padding: the title row and body are flush to the edges, so the content can draw its own sections. @default true */
+    padded?: boolean;
     /** Makes the dialog fill the entire viewport. @default false */
     fullScreen?: boolean;
 }
@@ -1752,7 +1754,7 @@ interface ITDialogProps {
  * </ITDialog>
  * ```
  */
-declare function ITDialog({ isOpen, onClose, children, className, title, useFormHeader, fullScreen, }: ITDialogProps): React$1.ReactPortal;
+declare function ITDialog({ isOpen, onClose, children, className, title, useFormHeader, fullScreen, padded, }: ITDialogProps): React$1.ReactPortal;
 
 /** Direction the divider flows: "horizontal" | "vertical". */
 type DividerOrientation = "horizontal" | "vertical";
@@ -2316,6 +2318,8 @@ interface ITImageProps {
     className?: string;
     /** Fallback image URL shown when the primary `src` fails to load */
     fallback?: string;
+    /** How the image fills its box: "cover" crops to fill (default), "contain" shows the whole image */
+    fit?: "cover" | "contain";
     /** Click handler */
     onClick?: () => void;
 }
@@ -2339,7 +2343,7 @@ interface ITImageProps {
  *   className="w-32 h-32 rounded-full"
  * />
  */
-declare const ITImage: ({ src, alt, className, fallback, }: ITImageProps) => react_jsx_runtime.JSX.Element;
+declare const ITImage: ({ src, alt, className, fallback, fit, }: ITImageProps) => react_jsx_runtime.JSX.Element;
 
 interface ITInputProps {
     /** Field name used for form identification */
@@ -3951,6 +3955,738 @@ interface ITJSONEditorProps {
  */
 declare function ITJSONEditor({ value, onChange, onParse, placeholder, readOnly, mode, showModeSwitch, showToolbar, showValidation, showStatusBar, showLineNumbers, showFoldGutter, showTransformActions, showCopyButton, showImportButton, showDownloadButton, showViewSettings, indentSize: indentSizeProp, wrapLines: wrapLinesProp, treeShowLines, canvasTheme, height, minWidth, actions, className, id, textareaClassName, errorLine, }: ITJSONEditorProps): react_jsx_runtime.JSX.Element;
 
+/**
+ * Catálogo del motor: qué componentes y qué props están permitidos.
+ *
+ * Es una **lista blanca**. Todo lo que no esté aquí declarado se ignora y se
+ * avisa (`JR010` / `JR011`), porque el esquema se trata siempre como entrada no
+ * confiable: puede venir de un backend con un bug o de un modelo que alucina.
+ *
+ * Cada prop declara su tipo, si es obligatoria, sus valores admitidos y si su
+ * valor es una acción registrada por el host (`kind: "action"`).
+ */
+/** Tipo de un valor admitido en una prop. */
+type PropKind = "string" | "number" | "integer" | "boolean" | "enum" | "node" | "nodes" | "data" | "columns" | "action" | "i18n" | "object" | "array";
+/** Especificación de una prop dentro del catálogo. */
+interface PropSpec {
+    /** Tipo admitido. */
+    kind: PropKind;
+    /** `true` cuando el componente no funciona sin ella. */
+    required?: boolean;
+    /** Valores admitidos cuando `kind: "enum"`. */
+    values?: readonly string[];
+    /** Valor por defecto que aplica el motor. */
+    default?: unknown;
+    /** Descripción para el autor del esquema y para el contrato del emisor. */
+    doc?: string;
+}
+/** Entrada de un componente en el catálogo. */
+interface CatalogEntry {
+    /** Nombre del componente tal cual (`ITCard`). */
+    type: string;
+    /**
+     * Componente React que se monta.
+     *
+     * El tipo es deliberadamente laxo (`any`): las props se validan y coaccionan
+     * en runtime contra `props`, así que exigir el tipo exacto de cada componente
+     * solo serviría para obligar a un cast por entrada.
+     */
+    component: React__default.ComponentType<any>;
+    /** Props permitidas. Todo lo demás se descarta con aviso. */
+    props?: Record<string, PropSpec>;
+    /** `true` cuando el nodo admite `children`. @default false */
+    children?: boolean;
+    /** `true` cuando el nodo admite el atajo `text`. @default false */
+    text?: boolean;
+    /** Props prohibidas explícitamente (para mensajes más claros). */
+    forbidden?: readonly string[];
+    /** Descripción breve para el contrato de vocabulario. */
+    summary?: string;
+}
+/** Catálogo completo. */
+interface Catalog {
+    /** Entradas indexadas por `type`. */
+    entries: Record<string, CatalogEntry>;
+    /** Tipos excluidos a propósito, con su motivo (se avisa distinto). */
+    excluded?: Record<string, string>;
+}
+/**
+ * Props prohibidas en **cualquier** componente, por seguridad.
+ *
+ * Solo entran las que inyectan nodos React, HTML o comportamiento: los valores
+ * enumerados y seguros (`as`, `className`…) se declaran componente a componente.
+ */
+declare const GLOBALLY_FORBIDDEN_PROPS: readonly string[];
+/** Crea un catálogo a partir de una lista de entradas. */
+declare function createCatalog(entries: CatalogEntry[], excluded?: Record<string, string>): Catalog;
+/** Devuelve la entrada de un tipo, o `undefined` si no está en el catálogo. */
+declare function getCatalogEntry(catalog: Catalog, type: string): CatalogEntry | undefined;
+/** `true` cuando el tipo está excluido a propósito (recursión, ejecución de entrada…). */
+declare function isExcludedType(catalog: Catalog, type: string): boolean;
+/** Motivo por el que un tipo está excluido. */
+declare function getExclusionReason(catalog: Catalog, type: string): string | undefined;
+
+/**
+ * Errores y avisos del motor de pantallas declarativas.
+ *
+ * Todo lo que el motor detecta (nodo desconocido, prop prohibida, acción no
+ * registrada, permiso insuficiente…) se expresa con un **código estable** y el
+ * `path` exacto dentro del esquema. Los códigos son contrato público: están
+ * documentados en `docs/json-renderer/PLAN-IMPLEMENTACION.md` §11 y no cambian
+ * sin migración.
+ */
+/** Gravedad de un aviso del motor. */
+type JsonEngineSeverity = "error" | "warning" | "info";
+/** Códigos de aviso del motor. Contrato estable. */
+type JsonEngineCode = "JR010" | "JR011" | "JR012" | "JR013" | "JR014" | "JR020" | "JR021" | "JR030" | "JR031" | "JR040" | "JR041" | "JR042" | "JR050" | "JR060" | "JR061" | "JR070" | "JR080" | "JR081";
+/** Aviso del motor: lo que pasó, dónde y qué hacer. */
+interface JsonEngineIssue {
+    /** Código estable (`JR010`…). */
+    code: JsonEngineCode;
+    /** Gravedad: `error` impide pintar el nodo, `warning` lo pinta con reservas. */
+    severity: JsonEngineSeverity;
+    /** Mensaje legible, ya traducido por el motor. */
+    message: string;
+    /** Ruta exacta dentro del esquema (`content[0].children[2].props.onClick`). */
+    path: string;
+    /** Sugerencia accionable, cuando la hay. */
+    hint?: string;
+}
+/** Error interno del motor: siempre lleva código y ruta. */
+declare class JsonEngineError extends Error {
+    /** Código estable del catálogo de avisos. */
+    readonly code: JsonEngineCode;
+    /** Ruta del esquema donde se produjo. */
+    readonly path: string;
+    /** Sugerencia accionable. */
+    readonly hint?: string;
+    constructor(code: JsonEngineCode, message: string, path: string, hint?: string);
+    /** Convierte el error en el aviso que consume la interfaz y el informe. */
+    toIssue(severity?: JsonEngineSeverity): JsonEngineIssue;
+}
+/** Crea un aviso sin lanzar excepción (para flujos tolerantes). */
+declare function issue(code: JsonEngineCode, message: string, path?: string, options?: {
+    severity?: JsonEngineSeverity;
+    hint?: string;
+}): JsonEngineIssue;
+
+/**
+ * Presupuestos del motor.
+ *
+ * Un esquema puede venir de un modelo que alucina o de un backend con un bug: el
+ * motor no puede confiar en que el árbol sea razonable. Estos techos son la red
+ * que evita que una pantalla congele el hilo o agote la memoria.
+ */
+/** Techos de trabajo del motor. */
+interface EngineLimits {
+    /** Número máximo de nodos que se pintan en una pantalla. @default 5000 */
+    maxNodes: number;
+    /** Profundidad máxima de anidación. @default 40 */
+    maxDepth: number;
+    /** Milisegundos de trabajo por fragmento de stream antes de diferir al siguiente frame. @default 8 */
+    maxMsPerChunk: number;
+    /** Milisegundos máximos de una acción antes de considerarla colgada. @default 15000 */
+    actionTimeoutMs: number;
+    /** Profundidad máxima de encadenado de efectos (`then`/`onError`). @default 5 */
+    maxEffectChain: number;
+}
+/** Presupuesto por defecto. */
+declare const DEFAULT_LIMITS: EngineLimits;
+/** Resuelve un presupuesto parcial sobre los valores por defecto. */
+declare function resolveLimits(overrides?: Partial<EngineLimits>): EngineLimits;
+/** Consumidor de presupuesto: cuenta nodos y profundidad y avisa al agotarse. */
+interface LimitTracker {
+    /** Registra un nodo en la profundidad indicada. `false` si ya no cabe. */
+    visit(depth: number): boolean;
+    /** Nodos contados hasta ahora. */
+    readonly nodes: number;
+    /** Profundidad máxima vista. */
+    readonly deepest: number;
+    /** `true` cuando se agotó el presupuesto y se recortó el árbol. */
+    readonly exceeded: boolean;
+}
+/**
+ * Crea un consumidor de presupuesto para un render.
+ *
+ * @example
+ * const tracker = createLimitTracker({ maxNodes: 100 });
+ * tracker.visit(0); // true
+ */
+declare function createLimitTracker(limits?: EngineLimits): LimitTracker;
+
+/**
+ * Rutas dentro de un esquema.
+ *
+ * Un aviso del motor tiene que poder señalar **exactamente** dónde está el
+ * problema: `content[2].children[0].props.onClick`. Estas utilidades construyen,
+ * leen y renderizan esas rutas sin depender de nada externo.
+ */
+/** Un segmento de ruta: clave de objeto o índice de array. */
+type PathSegment = string | number;
+/** Ruta de un nodo o valor dentro del esquema. */
+type SchemaPath = readonly PathSegment[];
+/** Añade un segmento a una ruta sin mutarla. */
+declare function pushPath(path: SchemaPath, segment: PathSegment): SchemaPath;
+/** Renderiza una ruta en la forma legible `content[0].children[2].props`. */
+declare function formatPath(path: SchemaPath): string;
+/** Parsea una ruta renderizada (`content[0].children`) de vuelta a segmentos. */
+declare function parsePath(rendered: string): PathSegment[];
+/** Lee un valor del esquema siguiendo una ruta. Devuelve `undefined` si no existe. */
+declare function readPath(source: unknown, path: SchemaPath): unknown;
+/** `true` cuando la ruta apunta a un valor que existe (aunque sea `null`). */
+declare function hasPath(source: unknown, path: SchemaPath): boolean;
+/** Añade el sufijo de una prop a la ruta de un nodo. */
+declare function propPath(nodePath: SchemaPath, prop: string): SchemaPath;
+
+/**
+ * Contrato de datos del motor de pantallas.
+ *
+ * Un esquema describe **qué** pintar; nunca **cómo** comportarse: no hay código,
+ * ni expresiones, ni URLs. Todo lo que exige autoridad (componentes, props,
+ * datos, acciones, permisos) se resuelve contra registros del host.
+ */
+/** Estado de un nodo respecto al stream. */
+type NodeStatus = "complete" | "pending";
+/** Valor de una prop: literal, referencia a datos o texto traducible. */
+type SchemaValue = string | number | boolean | null | SchemaValue[] | {
+    [key: string]: SchemaValue;
+};
+/** Referencia declarativa a un dato. Ninguna provoca red por sí misma. */
+interface SchemaReference {
+    /** Valor de una fuente de datos declarada en `data`. */
+    $source?: string;
+    /** Valor del estado de pantalla. */
+    $state?: string;
+    /** Parámetro de la ruta. */
+    $param?: string;
+    /** Campo de la fila actual (dentro de una tabla). */
+    $row?: string;
+    /** Campo del formulario actual (dentro de un `form`). */
+    $form?: string;
+    /** Concatenación de valores ya resueltos. */
+    $concat?: SchemaValue[];
+    /** Proyección de un array: se queda con la clave indicada. */
+    $map?: {
+        $source?: string;
+        $state?: string;
+        $param?: string;
+        pick: string;
+    };
+    /** Longitud de un array o número de claves de un objeto. */
+    $count?: SchemaValue;
+    /** Primer valor definido y no nulo. */
+    $coalesce?: SchemaValue[];
+}
+/** Condicional declarativo, sin lógica libre. */
+interface WhenSchema {
+    /** Compara el valor de una fuente o del estado. */
+    state?: string;
+    /** Compara el estado de una fuente de datos. */
+    source?: string;
+    /** Igualdad estricta contra este valor. */
+    equals?: SchemaValue;
+    /** Pertenencia a esta lista. */
+    in?: SchemaValue[];
+    /** Estado de la fuente (`loading` | `empty` | `error` | `ok`). */
+    status?: "loading" | "empty" | "error" | "ok";
+    /** Capacidad del host que debe estar presente. */
+    capability?: string;
+    /** Niega la condición. */
+    not?: WhenSchema;
+    /** Todas deben cumplirse. */
+    all?: WhenSchema[];
+    /** Al menos una debe cumplirse. */
+    any?: WhenSchema[];
+}
+/** Efecto declarativo que ejecuta el motor tras una acción. */
+interface EffectSchema {
+    /** Acción registrada por el host. */
+    action?: string;
+    /** Argumentos explícitos del efecto. */
+    args?: Record<string, SchemaValue>;
+    /** Aviso al usuario. */
+    toast?: {
+        variant?: "success" | "error" | "info" | "warning";
+        message: SchemaValue;
+    };
+    /** Navegación a otra ruta. */
+    navigate?: string;
+    /** Abre un overlay declarado en `overlays`. */
+    openOverlay?: string;
+    /** Cierra el overlay indicado, o el que esté abierto si se omite. */
+    closeOverlay?: string;
+    /** Refresca una fuente de datos. */
+    refresh?: string;
+}
+/** Acción declarada en un nodo: nombre registrado + argumentos + reacciones. */
+interface ActionSchema extends EffectSchema {
+    /** Confirmación previa obligatoria. */
+    confirm?: {
+        title: SchemaValue;
+        message?: SchemaValue;
+    };
+    /** Efectos que se ejecutan si la acción termina bien. */
+    then?: EffectSchema[];
+    /** Efectos que se ejecutan si la acción falla. */
+    onError?: EffectSchema;
+}
+/** Nodo del esquema. */
+interface NodeSchema {
+    /** Tipo de componente del catálogo (`ITCard`, `ITButton`…) o nodo del motor (`form`, `table`). */
+    type: string;
+    /** Identificador opcional, para depuración y binding. */
+    id?: string;
+    /** Props del componente, ya filtradas por el catálogo. */
+    props?: Record<string, SchemaValue>;
+    /** Hijos: nodo, lista de nodos o nada. */
+    children?: NodeSchema | NodeSchema[];
+    /**
+     * Atajo de contenido para componentes textuales (`ITText`, `ITButton`…).
+     * Admite una referencia (`{ i18n: "clave" }`), que el host resuelve.
+     */
+    text?: SchemaValue;
+    /** Capacidad o capacidades que exige el nodo. */
+    requires?: string | string[];
+    /** Qué pintar cuando falla o no hay permiso. */
+    fallback?: NodeSchema;
+    /** Condición para pintar el nodo. */
+    when?: WhenSchema;
+    /**
+     * Estado respecto al stream. Lo rellena el parser tolerante; el autor no lo
+     * escribe.
+     */
+    $status?: NodeStatus;
+}
+/** Definición de una fuente de datos. El host aporta el `handler`. */
+interface DataSourceSchema {
+    /** Nombre de un handler registrado por el host. Nunca una URL. */
+    handler: string;
+    /** Parámetros, normalmente con referencias. */
+    params?: Record<string, SchemaValue>;
+    /** Fuentes o acciones que invalidan esta fuente. */
+    refreshOn?: string[];
+}
+/** Esquema de pantalla completo. */
+interface ScreenSchema {
+    /** Identificador del formato. */
+    $schema?: "axzy/screen";
+    /** Versión del formato; obligatoria para poder migrar. */
+    version: number;
+    /** Identificador de la pantalla. */
+    id: string;
+    /** Título, normalmente traducible. */
+    title?: SchemaValue;
+    /** Descripción corta de la pantalla, para la cabecera que ponga el host. */
+    description?: SchemaValue;
+    /** Capacidades que exige la pantalla completa. */
+    requires?: string | string[];
+    /** Fuentes de datos que el host resolverá. */
+    data?: Record<string, DataSourceSchema>;
+    /** Estado local de la pantalla. */
+    state?: Record<string, SchemaValue>;
+    /** Contenido raíz. */
+    content: NodeSchema | NodeSchema[];
+}
+
+/**
+ * Props de `ITSchemaRenderer`.
+ *
+ * El renderizador es el núcleo del motor: pinta un esquema contra un catálogo y
+ * entrega los avisos sin lanzar nunca por culpa del esquema.
+ */
+interface ITJsonRenderEngineProps {
+    /** Esquema de pantalla a pintar. Admite un árbol parcial (streaming). */
+    schema: ScreenSchema | null | undefined;
+    /** Catálogo de componentes permitidos. Por defecto, el de AXZY. */
+    catalog?: Catalog;
+    /** Presupuesto de nodos, profundidad y tiempos. */
+    limits?: Partial<EngineLimits>;
+    /**
+     * Resuelve un valor declarativo del esquema (`$state`, `$param`, `$source`…) al
+     * valor real. Sin esta prop, los valores se pasan tal cual (útil para pruebas).
+     */
+    resolveValue?: (value: unknown, path: SchemaPath) => unknown;
+    /**
+     * Traduce una acción declarada a un handler ejecutable. Sin esta prop, las
+     * acciones se ignoran y se avisa una sola vez por nodo.
+     */
+    resolveAction?: (node: NodeSchema, prop: string, action: unknown, path: SchemaPath) => ((...args: unknown[]) => void) | undefined;
+    /** Qué pintar mientras un nodo está pendiente (streaming). */
+    pendingFallback?: ReactNode;
+    /** Se llama por cada aviso del motor, con código y ruta. */
+    onIssue?: (issue: JsonEngineIssue) => void;
+    /** Clases del contenedor raíz. */
+    className?: string;
+}
+
+/**
+ * Pinta una pantalla completa a partir de un esquema.
+ *
+ * Nunca lanza por culpa del esquema: los problemas se convierten en avisos que
+ * se entregan por `onIssue` (y se acumulan en `issuesRef` si quieres leerlos).
+ *
+ * @example
+ * <ITSchemaRenderer schema={{ version: 1, id: "demo", content: { type: "ITText", text: "Hola" } }} />
+ *
+ * @example
+ * <ITSchemaRenderer schema={schema} onIssue={(issue) => console.warn(issue.code, issue.path)} />
+ */
+declare function ITSchemaRenderer({ schema, catalog, limits, resolveValue, resolveAction, pendingFallback, onIssue, className, }: ITJsonRenderEngineProps): react_jsx_runtime.JSX.Element;
+
+/** Props de `NodeBoundary`. */
+interface NodeBoundaryProps {
+    /** Ruta del nodo dentro del esquema, para el aviso. */
+    path: string;
+    /** Qué pintar si el subárbol falla. */
+    fallback?: React__default.ReactNode;
+    /** Se llama con el error y su ruta para acumularlo en el informe. */
+    onError?: (error: Error, path: string) => void;
+    /** Subárbol del nodo. */
+    children: React__default.ReactNode;
+}
+/** Estado interno del boundary. */
+interface NodeBoundaryState {
+    failed: boolean;
+}
+/**
+ * Aísla el fallo de un nodo: si un componente del catálogo lanza durante el
+ * render, solo se pierde ese subárbol y el resto de la pantalla sigue viva
+ * (aviso `JR012`).
+ *
+ * @example
+ * <NodeBoundary path="content[0]" fallback={<p>No se pudo pintar</p>}>
+ *   <ITCard />
+ * </NodeBoundary>
+ */
+declare class NodeBoundary extends React__default.Component<NodeBoundaryProps, NodeBoundaryState> {
+    state: NodeBoundaryState;
+    static getDerivedStateFromError(): NodeBoundaryState;
+    componentDidCatch(error: Error): void;
+    render(): React__default.ReactNode;
+}
+
+/**
+ * Renderizado de un nodo del esquema.
+ *
+ * Toma un `NodeSchema`, lo resuelve contra el catálogo y devuelve el elemento
+ * React. Todo lo que no puede resolverse se convierte en avisos, nunca en una
+ * excepción: el motor tiene que poder pintar un esquema a medias sin caerse.
+ */
+
+/** Opciones de render de un nodo. */
+interface RenderNodeOptions {
+    /** Catálogo contra el que se resuelve el tipo. */
+    catalog: Catalog;
+    /** Ruta del nodo dentro del esquema (para avisos). */
+    path: SchemaPath;
+    /** Acumulador de avisos del render en curso. */
+    issues: JsonEngineIssue[];
+    /** Resuelve un valor del esquema (binding). Por defecto, identidad. */
+    resolveValue?: (value: unknown, path: SchemaPath) => unknown;
+    /** Resuelve el handler de una acción declarada. */
+    resolveAction?: (node: NodeSchema, prop: string, action: unknown, path: SchemaPath) => ((...args: unknown[]) => void) | undefined;
+    /** Renderiza los hijos de un nodo (lo aporta el recorrido del árbol). */
+    renderChildren?: (node: NodeSchema, path: SchemaPath) => React__default.ReactNode;
+    /** Qué pintar mientras un nodo está pendiente (streaming). */
+    pendingFallback?: React__default.ReactNode;
+    /** Componente para envolver cada nodo. Por defecto, `NodeBoundary`. */
+    wrap?: (node: NodeSchema, path: SchemaPath, content: React__default.ReactNode) => React__default.ReactNode;
+}
+/**
+ * Pinta un nodo del esquema.
+ *
+ * @example
+ * renderNode({ type: "ITText", text: "Hola" }, { catalog: axzyCatalog, path: ["content", 0], issues: [] });
+ */
+declare function renderNode(node: NodeSchema, options: RenderNodeOptions): React__default.ReactNode;
+
+/**
+ * Presupuesto y nodos pendientes.
+ *
+ * Dos responsabilidades que van juntas porque las dos protegen el render:
+ * contar lo que se va a pintar (para no colgar el hilo con un esquema enorme) y
+ * saber cuánto falta por llegar (para no pintar nodos a medias).
+ */
+
+/** Recuento de un esquema antes de pintarlo. */
+interface TreeAudit {
+    /** Nodos con `type` contados. */
+    nodes: number;
+    /** Profundidad máxima alcanzada. */
+    depth: number;
+    /** Nodos marcados como pendientes por el stream. */
+    pending: number;
+    /** `true` cuando se recortó por presupuesto. */
+    exceeded: boolean;
+    /** Avisos derivados del recuento. */
+    issues: JsonEngineIssue[];
+}
+/**
+ * Recorre el esquema sin pintarlo para saber su tamaño.
+ *
+ * Se hace antes del render a propósito: así el motor puede decidir recortar y
+ * avisar sin que React haya empezado a montar nada.
+ *
+ * @example
+ * auditTree({ version: 1, id: "x", content: [] }, resolveLimits()).nodes; // 0
+ */
+declare function auditTree(schema: ScreenSchema, limits: EngineLimits): TreeAudit;
+/** Cuenta los nodos pendientes de un esquema ya parseado. */
+declare function countPendingNodes(schema: ScreenSchema | null): number;
+
+/** Entradas del catálogo por defecto. */
+declare const AXZY_CATALOG_ENTRIES: CatalogEntry[];
+/** Tipos excluidos a propósito, con el motivo que se muestra en el aviso. */
+declare const AXZY_EXCLUDED_TYPES: Record<string, string>;
+/** Catálogo AXZY por defecto. */
+declare const axzyCatalog: Catalog;
+/** Tipos disponibles en esta fase. */
+declare const axzyCatalogTypes: string[];
+
+/**
+ * Resolución de un nodo contra el catálogo.
+ *
+ * Aquí es donde el esquema deja de ser texto libre y se convierte en props
+ * seguras: se comprueba el tipo, se filtran las props permitidas, se aplican los
+ * valores por defecto, se coaccionan los tipos y se acumulan los avisos con su
+ * ruta exacta. Nada de esto lanza: un nodo mal formado produce avisos y se pinta
+ * lo que se pueda.
+ */
+
+/** Resultado de resolver un nodo: props listas para el componente + avisos. */
+interface ResolvedNode {
+    /** Discriminante: el nodo se pudo resolver. */
+    ok: true;
+    /** Entrada del catálogo que se va a montar. */
+    entry: CatalogEntry;
+    /** Props ya filtradas, con defaults aplicados y tipos coaccionados. */
+    props: Record<string, unknown>;
+    /** Acciones declaradas en el nodo, por nombre de prop (`onClick` → esquema). */
+    actions: Record<string, unknown>;
+    /** Avisos acumulados (tipo desconocido, prop ignorada, valor inválido…). */
+    issues: JsonEngineIssue[];
+}
+/** Resultado cuando el nodo no se puede resolver. */
+interface UnresolvedNode {
+    /** Discriminante: el nodo no se pudo resolver. */
+    ok: false;
+    /** Avisos que explican por qué. */
+    issues: JsonEngineIssue[];
+}
+/**
+ * Resuelve un nodo contra el catálogo.
+ *
+ * @example
+ * const resolved = resolveNode({ type: "ITButton", props: { label: "Ir" } }, axzyCatalog, ["content", 0]);
+ * resolved.props.label; // "Ir"
+ */
+declare function resolveNode(node: NodeSchema, catalog: Catalog, path: SchemaPath): ResolvedNode | UnresolvedNode;
+
+/**
+ * Validación de esquemas con **tres veredictos**.
+ *
+ * Un esquema a medio llegar no es un esquema roto: `partial` significa "válido
+ * hasta donde ha llegado", y es el estado normal mientras un emisor (una IA, por
+ * ejemplo) sigue escribiendo. `invalid` es lo que no se puede pintar ni esperar.
+ */
+
+/** Veredicto de la validación. */
+type ValidationVerdict = "valid" | "partial" | "invalid";
+/** Informe de validación. */
+interface ValidationReport {
+    /** Veredicto global. */
+    verdict: ValidationVerdict;
+    /** Errores que impiden pintar. */
+    errors: JsonEngineIssue[];
+    /** Avisos que no impiden pintar. */
+    warnings: JsonEngineIssue[];
+    /** Nodos que aún no están cerrados. */
+    pendingNodes: number;
+    /** Versión del esquema, si la declara. */
+    version?: number;
+}
+/** Opciones de validación. */
+interface ValidateOptions {
+    /** Catálogo contra el que se validan tipos y props. @default axzyCatalog */
+    catalog?: Catalog;
+    /** Versión máxima admitida del formato. @default 1 */
+    maxVersion?: number;
+}
+/** Versión actual del formato de pantalla. */
+declare const CURRENT_SCHEMA_VERSION = 1;
+/**
+ * Valida un esquema de pantalla.
+ *
+ * No lanza nunca: devuelve un informe con el veredicto y los avisos, cada uno con
+ * su código y su ruta.
+ *
+ * @example
+ * validateSchema({ version: 1, id: "x", content: { type: "ITText", text: "ok" } }).verdict; // "valid"
+ *
+ * @example
+ * validateSchema(parsePartialSchema(tokens).tree).verdict; // "partial" mientras llega
+ */
+declare function validateSchema(schema: unknown, options?: ValidateOptions): ValidationReport;
+
+/**
+ * Versionado y migraciones del formato de pantalla.
+ *
+ * Un esquema declara `version`. Cuando el formato cambia, el motor aplica la
+ * migración registrada para cada salto; si falta, avisa (`JR070`) en lugar de
+ * intentar adivinar. Sin este mecanismo, actualizar el motor rompería esquemas
+ * guardados por el host.
+ */
+
+/** Migra un esquema de una versión a la siguiente. */
+type SchemaMigration = (schema: ScreenSchema) => ScreenSchema;
+/** Resultado de migrar un esquema. */
+interface MigrationResult {
+    /** Esquema migrado (o el original si ya estaba al día). */
+    schema: ScreenSchema;
+    /** `true` cuando se aplicó alguna migración. */
+    migrated: boolean;
+    /** Versión de origen. */
+    from: number;
+    /** Versión de destino. */
+    to: number;
+    /** Avisos, incluido el de migración ausente. */
+    issues: JsonEngineIssue[];
+}
+/** Migraciones registradas, indexadas por versión de origen. */
+type MigrationRegistry = Record<number, SchemaMigration>;
+/** Registro por defecto: vacío (solo existe la versión 1). */
+declare const DEFAULT_MIGRATIONS: MigrationRegistry;
+/**
+ * Lleva un esquema hasta la versión objetivo aplicando migraciones en cadena.
+ *
+ * @example
+ * migrateSchema({ version: 1, id: "x", content: [] }, 1); // migrated: false
+ */
+declare function migrateSchema(schema: ScreenSchema, targetVersion: number, migrations?: MigrationRegistry): MigrationResult;
+
+/**
+ * Contrato de vocabulario para el emisor.
+ *
+ * Para que un modelo (o un backend) acierte con el esquema, necesita saber qué
+ * `type` existen, qué props acepta cada uno, qué valores admiten los enums y cuál
+ * es el nodo mínimo que funciona. Ese contrato **se genera desde el catálogo**,
+ * no se escribe a mano: así el prompt nunca se desincroniza del motor.
+ *
+ * Se publica como artefacto versionado (`pnpm docs:json-renderer`) y se puede
+ * entregar tal cual en el prompt del sistema.
+ */
+
+/** Descripción de una prop en el contrato. */
+interface PropContract {
+    /** Nombre de la prop. */
+    name: string;
+    /** Tipo admitido. */
+    kind: PropKind;
+    /** `true` si el componente no funciona sin ella. */
+    required: boolean;
+    /** Valores admitidos en los enums. */
+    values?: string[];
+    /** Valor por defecto que aplica el motor. */
+    default?: unknown;
+    /** Nota para el emisor. */
+    doc?: string;
+}
+/** Descripción de un componente en el contrato. */
+interface ComponentContract {
+    /** Tipo a emitir (`ITCard`). */
+    type: string;
+    /** Para qué sirve, en una línea. */
+    summary?: string;
+    /** `true` si admite `children`. */
+    children: boolean;
+    /** `true` si admite el atajo `text`. */
+    text: boolean;
+    /** Props permitidas. */
+    props: PropContract[];
+    /** Props prohibidas (los nodos React no viajan en JSON). */
+    forbidden: string[];
+    /** Nodo mínimo que se puede emitir y funciona. */
+    minimal: Record<string, unknown>;
+}
+/** Contrato completo, listo para serializar. */
+interface VocabularyContract {
+    /** Identificador del formato. */
+    $schema: "axzy/vocabulary";
+    /** Versión del formato de pantalla al que corresponde. */
+    schemaVersion: number;
+    /** Reglas que el emisor debe respetar. */
+    rules: string[];
+    /** Componentes disponibles, ordenados por nombre. */
+    components: ComponentContract[];
+    /** Tipos excluidos y su motivo (el emisor no debe usarlos). */
+    excluded: Record<string, string>;
+}
+/** Deriva el contrato de vocabulario de un catálogo. */
+declare function buildVocabularyContract(catalog?: Catalog, schemaVersion?: number): VocabularyContract;
+/** Serializa el contrato como texto compacto para el prompt. */
+declare function formatVocabularyForPrompt(contract: VocabularyContract): string;
+
+/**
+ * Parser tolerante de esquemas a medio llegar.
+ *
+ * Es la pieza que hace posible el streaming: en vez de esperar a que el JSON esté
+ * completo (y fallar mientras tanto), se construye el árbol **hasta donde es
+ * válido** y se marcan como `pending` los nodos que aún no están cerrados.
+ *
+ * No pretende ser un parser JSON general: entiende la gramática de un esquema
+ * (objetos, arrays, cadenas, números, booleanos y `null`) y, cuando algo no
+ * cierra, devuelve el punto exacto donde se quedó para poder seguir desde ahí.
+ *
+ * @example
+ * const { tree, status } = parsePartialSchema('{"version":1,"content":[{"type":"ITCard"');
+ * // tree.content[0].$status === "pending"
+ */
+
+/** Resultado de parsear un texto posiblemente incompleto. */
+interface PartialParseResult {
+    /** Árbol resuelto hasta donde el texto es válido. `null` si aún no hay nada. */
+    tree: ScreenSchema | null;
+    /** `complete` si el documento está entero; `pending` si falta cerrar algo. */
+    status: NodeStatus;
+    /** Offset donde terminó el consumo (punto de continuación). */
+    offset: number;
+    /** `true` cuando el texto no es recuperable (basura al principio). */
+    broken: boolean;
+    /** Cuántos nodos quedaron pendientes. */
+    pendingNodes: number;
+}
+/**
+ * Parsea un esquema que puede estar incompleto.
+ *
+ * Nunca lanza: si el texto no es recuperable devuelve `broken: true` y un árbol
+ * vacío, para que el motor pueda avisar (`JR080`) sin romper la pantalla.
+ *
+ * @example
+ * parsePartialSchema('{"version":1,"content":[]}').status; // "complete"
+ */
+declare function parsePartialSchema(text: string): PartialParseResult;
+/**
+ * Estado del stream de un esquema, listo para pintar.
+ *
+ * @example
+ * const state = useSchemaStream(tokens);
+ * state.tree; // ScreenSchema | null
+ */
+interface StreamState {
+    /** Árbol pintable (parcial mientras llega). */
+    tree: ScreenSchema | null;
+    /** `pending` mientras el emisor sigue escribiendo. */
+    status: NodeStatus;
+    /** `true` cuando el texto no es recuperable. */
+    broken: boolean;
+    /** Nodos que aún no están cerrados. */
+    pendingNodes: number;
+    /** `true` cuando el emisor está activo. */
+    streaming: boolean;
+}
+/** `true` cuando un nodo está pendiente según el parser. */
+declare function isNodePending(node: NodeSchema | undefined): boolean;
+
 /** Allowed file MIME types for the dropzone */
 declare enum FileTypeEnum {
     PDF = "application/pdf",
@@ -4670,4 +5406,4 @@ declare const es: ITMessages;
  */
 declare const en: ITMessages;
 
-export { type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type FieldConfig, type FieldConfigV2, FileTypeEnum, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITI18nProvider, type ITI18nProviderProps, type ITI18nValue, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITJSONEditor, type ITJSONEditorProps, ITJsonRenderer, type ITJsonRendererProps, ITLayout, type ITLayoutProps, ITLineBarChart, type ITLineBarChartProps, type ITLineBarDatum, ITLoader, type LoaderProps as ITLoaderProps, type ITLocale, ITMaskedInput, type ITMaskedInputProps, type ITMessages, type ITMessagesByLocale, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarBrand, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeAppearance, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type JsonComponentNode, type JsonComponentType, type TableColors, type TableDensity, type TableDesign, type TableDesignProps, type TableDesignSlot, UploadStatus, type UseTableStateOptions, type UseTableStateResult, createValidationSchema, en as enMessages, es as esMessages, getContrastTextColor, isLightColor, resolveCssColor, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITFlatAppearance, useITTheme, useITThemeSafe, useITTranslation, useJsonRender, useTableState };
+export { AXZY_CATALOG_ENTRIES, AXZY_EXCLUDED_TYPES, type ActionSchema, CURRENT_SCHEMA_VERSION, type Catalog, type CatalogEntry, type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type ComponentContract, DEFAULT_LIMITS, DEFAULT_MIGRATIONS, type DataSourceSchema, type EffectSchema, type EngineLimits, type FieldConfig, type FieldConfigV2, FileTypeEnum, GLOBALLY_FORBIDDEN_PROPS, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITI18nProvider, type ITI18nProviderProps, type ITI18nValue, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITJSONEditor, type ITJSONEditorProps, type ITJsonRenderEngineProps, ITJsonRenderer, type ITJsonRendererProps, ITLayout, type ITLayoutProps, ITLineBarChart, type ITLineBarChartProps, type ITLineBarDatum, ITLoader, type LoaderProps as ITLoaderProps, type ITLocale, ITMaskedInput, type ITMaskedInputProps, type ITMessages, type ITMessagesByLocale, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSchemaRenderer, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarBrand, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeAppearance, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type JsonComponentNode, type JsonComponentType, type JsonEngineCode, JsonEngineError, type JsonEngineIssue, type JsonEngineSeverity, type LimitTracker, type MigrationRegistry, type MigrationResult, NodeBoundary, type NodeSchema, type NodeStatus, type PartialParseResult, type PathSegment, type PropContract, type PropKind, type PropSpec, type ResolvedNode, type SchemaMigration, type SchemaPath, type SchemaReference, type SchemaValue, type ScreenSchema, type StreamState, type TableColors, type TableDensity, type TableDesign, type TableDesignProps, type TableDesignSlot, type UnresolvedNode, UploadStatus, type UseTableStateOptions, type UseTableStateResult, type ValidateOptions, type ValidationReport, type ValidationVerdict, type VocabularyContract, type WhenSchema, auditTree, axzyCatalog, axzyCatalogTypes, buildVocabularyContract, countPendingNodes, createCatalog, createLimitTracker, createValidationSchema, en as enMessages, es as esMessages, formatPath, formatVocabularyForPrompt, getCatalogEntry, getContrastTextColor, getExclusionReason, hasPath, isExcludedType, isLightColor, isNodePending, issue, migrateSchema, parsePartialSchema, parsePath, propPath, pushPath, readPath, renderNode, resolveCssColor, resolveLimits, resolveNode, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITFlatAppearance, useITTheme, useITThemeSafe, useITTranslation, useJsonRender, useTableState, validateSchema };

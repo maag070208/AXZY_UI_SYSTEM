@@ -31,6 +31,12 @@
   --default-font-family: var(--font-sans);
 }
 
+/* El portafolio de demostración vive en `public/demo/*.json` y sus clases
+   viajan en el JSON. Tailwind solo genera las clases que ve en el código, así
+   que hay que apuntarlo al archivo del esquema: el demo es dev-only y estas
+   utilidades no entran en `dist/index.css`. */
+@source "../public/demo/*.json";
+
 /* ──────────────────────────────────────────────
    SANDBOX-ONLY ANIMATIONS (dev.css)
    Never shipped: only src/main.tsx imports this file and `pnpm bundle`

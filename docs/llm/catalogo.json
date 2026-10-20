@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-16T22:51:08.217Z",
+ "generatedAt": "2026-10-17T18:08:51.732Z",
  "libraryVersion": "1.6.0",
  "components": [
   {
@@ -2741,6 +2741,13 @@
      "required": false,
      "default": "",
      "description": "Clases para el contenedor raíz."
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "required": false,
+     "default": "",
+     "description": "Identificador HTML del contenedor raíz, para anclarlo desde fuera o en pruebas."
     },
     {
      "name": "textareaClassName",
@@ -5776,6 +5783,71 @@
    ]
   },
   {
+   "name": "ITSchemaRenderer",
+   "layer": "others",
+   "description": "Pinta una pantalla completa a partir de un esquema.\n\nNunca lanza por culpa del esquema: los problemas se convierten en avisos que\nse entregan por `onIssue` (y se acumulan en `issuesRef` si quieres leerlos).",
+   "example": "<ITSchemaRenderer schema={{ version: 1, id: \"demo\", content: { type: \"ITText\", text: \"Hola\" } }} />",
+   "source": "src/json-renderer/kernel/SchemaRenderer.tsx",
+   "props": [
+    {
+     "name": "schema",
+     "type": "ScreenSchema",
+     "required": true,
+     "default": "",
+     "description": "Esquema de pantalla a pintar. Admite un árbol parcial (streaming)."
+    },
+    {
+     "name": "catalog",
+     "type": "Catalog",
+     "required": false,
+     "default": "",
+     "description": "Catálogo de componentes permitidos. Por defecto, el de AXZY."
+    },
+    {
+     "name": "limits",
+     "type": "Partial<EngineLimits>",
+     "required": false,
+     "default": "",
+     "description": "Presupuesto de nodos, profundidad y tiempos."
+    },
+    {
+     "name": "resolveValue",
+     "type": "(value: unknown, path: SchemaPath) => unknown",
+     "required": false,
+     "default": "",
+     "description": "Resuelve un valor declarativo del esquema (`$state`, `$param`, `$source`…) al\nvalor real. Sin esta prop, los valores se pasan tal cual (útil para pruebas)."
+    },
+    {
+     "name": "resolveAction",
+     "type": "(node: NodeSchema, prop: string, action: unknown, path: SchemaPath) => ((...args: unknown[]) => void) | undefined",
+     "required": false,
+     "default": "",
+     "description": "Traduce una acción declarada a un handler ejecutable. Sin esta prop, las\nacciones se ignoran y se avisa una sola vez por nodo."
+    },
+    {
+     "name": "pendingFallback",
+     "type": "React.ReactNode",
+     "required": false,
+     "default": "",
+     "description": "Qué pintar mientras un nodo está pendiente (streaming)."
+    },
+    {
+     "name": "onIssue",
+     "type": "(issue: JsonEngineIssue) => void",
+     "required": false,
+     "default": "",
+     "description": "Se llama por cada aviso del motor, con código y ruta."
+    },
+    {
+     "name": "className",
+     "type": "string",
+     "required": false,
+     "default": "",
+     "description": "Clases del contenedor raíz."
+    }
+   ]
+  },
+  {
    "name": "ITThemeProvider",
    "layer": "others",
    "description": "Root theme context provider that injects CSS custom properties for all components,\nsupports custom color palettes, dark/light mode, and an optional in-app theme designer FAB.",
@@ -5917,13 +5989,26 @@
   }
  ],
  "otherExports": [
+  "AXZY_CATALOG_ENTRIES",
+  "AXZY_EXCLUDED_TYPES",
+  "ActionSchema",
+  "CURRENT_SCHEMA_VERSION",
+  "Catalog",
+  "CatalogEntry",
   "Column",
   "ColumnFilterMode",
   "ColumnFilterValue",
   "ColumnFilters",
+  "ComponentContract",
+  "DEFAULT_LIMITS",
+  "DEFAULT_MIGRATIONS",
+  "DataSourceSchema",
+  "EffectSchema",
+  "EngineLimits",
   "FieldConfig",
   "FieldConfigV2",
   "FileTypeEnum",
+  "GLOBALLY_FORBIDDEN_PROPS",
   "ITAccordionItem",
   "ITAccordionProps",
   "ITAlertProps",
@@ -5959,6 +6044,7 @@
   "ITInputNumberProps",
   "ITInputProps",
   "ITJSONEditorProps",
+  "ITJsonRenderEngineProps",
   "ITJsonRendererProps",
   "ITLayoutProps",
   "ITLineBarChartProps",
@@ -6011,19 +6097,72 @@
   "ITWysiwygProps",
   "JsonComponentNode",
   "JsonComponentType",
+  "JsonEngineCode",
+  "JsonEngineError",
+  "JsonEngineIssue",
+  "JsonEngineSeverity",
+  "LimitTracker",
+  "MigrationRegistry",
+  "MigrationResult",
+  "NodeBoundary",
+  "NodeSchema",
+  "NodeStatus",
+  "PartialParseResult",
+  "PathSegment",
+  "PropContract",
+  "PropKind",
+  "PropSpec",
+  "ResolvedNode",
+  "SchemaMigration",
+  "SchemaPath",
+  "SchemaReference",
+  "SchemaValue",
+  "ScreenSchema",
+  "StreamState",
   "TableColors",
   "TableDensity",
   "TableDesign",
   "TableDesignProps",
   "TableDesignSlot",
+  "UnresolvedNode",
   "UploadStatus",
   "UseTableStateOptions",
   "UseTableStateResult",
+  "ValidateOptions",
+  "ValidationReport",
+  "ValidationVerdict",
+  "VocabularyContract",
+  "WhenSchema",
+  "auditTree",
+  "axzyCatalog",
+  "axzyCatalogTypes",
+  "buildVocabularyContract",
+  "countPendingNodes",
+  "createCatalog",
+  "createLimitTracker",
   "createValidationSchema",
   "enMessages",
   "esMessages",
+  "formatPath",
+  "formatVocabularyForPrompt",
+  "getCatalogEntry",
   "getContrastTextColor",
+  "getExclusionReason",
+  "hasPath",
+  "isExcludedType",
   "isLightColor",
-  "resolveCssColor"
+  "isNodePending",
+  "issue",
+  "migrateSchema",
+  "parsePartialSchema",
+  "parsePath",
+  "propPath",
+  "pushPath",
+  "readPath",
+  "renderNode",
+  "resolveCssColor",
+  "resolveLimits",
+  "resolveNode",
+  "validateSchema"
  ]
 }

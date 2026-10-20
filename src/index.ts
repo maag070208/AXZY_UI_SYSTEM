@@ -66,6 +66,80 @@ import ITWysiwyg from "./components/molecules/wysiwyg/wysiwyg";
 import ITJsonRenderer from "./components/molecules/json-renderer/json-renderer";
 import ITJSONEditor from "./components/molecules/json-editor/json-editor";
 
+// MOTOR DE PANTALLAS DECLARATIVAS (json-renderer)
+import {
+  ITSchemaRenderer,
+  NodeBoundary,
+  renderNode,
+  auditTree,
+  countPendingNodes,
+  axzyCatalog,
+  axzyCatalogTypes,
+  AXZY_CATALOG_ENTRIES,
+  AXZY_EXCLUDED_TYPES,
+  createCatalog,
+  getCatalogEntry,
+  isExcludedType,
+  getExclusionReason,
+  GLOBALLY_FORBIDDEN_PROPS,
+  resolveNode,
+  parsePartialSchema,
+  isNodePending,
+  JsonEngineError,
+  issue,
+  formatPath,
+  parsePath,
+  readPath,
+  hasPath,
+  pushPath,
+  propPath,
+  DEFAULT_LIMITS,
+  resolveLimits,
+  createLimitTracker,
+  validateSchema,
+  CURRENT_SCHEMA_VERSION,
+  migrateSchema,
+  DEFAULT_MIGRATIONS,
+  buildVocabularyContract,
+  formatVocabularyForPrompt,
+} from "./json-renderer";
+import type {
+  ITJsonRenderEngineProps,
+  ScreenSchema,
+  NodeSchema,
+  SchemaValue,
+  SchemaReference,
+  WhenSchema,
+  ActionSchema,
+  EffectSchema,
+  DataSourceSchema,
+  NodeStatus,
+  Catalog,
+  CatalogEntry,
+  PropSpec,
+  PropKind,
+  ResolvedNode,
+  UnresolvedNode,
+  PartialParseResult,
+  StreamState,
+  JsonEngineIssue,
+  JsonEngineCode,
+  JsonEngineSeverity,
+  SchemaPath,
+  PathSegment,
+  EngineLimits,
+  LimitTracker,
+  ValidationReport,
+  ValidationVerdict,
+  ValidateOptions,
+  SchemaMigration,
+  MigrationRegistry,
+  MigrationResult,
+  VocabularyContract,
+  ComponentContract,
+  PropContract,
+} from "./json-renderer";
+
 // PROPS
 import type { ITAlertProps } from "./components/molecules/alert/alert.props";
 import type { ITAvatarProps } from "./components/atoms/avatar/avatar.props";
@@ -168,7 +242,16 @@ export {
   UploadStatus, FileTypeEnum,
   getContrastTextColor, isLightColor, resolveCssColor,
   ITI18nProvider, useITTranslation, esMessages, enMessages,
-  ITJsonRenderer, ITJSONEditor
+  ITJsonRenderer, ITJSONEditor,
+  // Motor de pantallas declarativas
+  ITSchemaRenderer, NodeBoundary, renderNode, auditTree, countPendingNodes,
+  axzyCatalog, axzyCatalogTypes, AXZY_CATALOG_ENTRIES, AXZY_EXCLUDED_TYPES,
+  createCatalog, getCatalogEntry, isExcludedType, getExclusionReason, GLOBALLY_FORBIDDEN_PROPS,
+  resolveNode, parsePartialSchema, isNodePending,
+  JsonEngineError, issue, formatPath, parsePath, readPath, hasPath, pushPath, propPath,
+  DEFAULT_LIMITS, resolveLimits, createLimitTracker,
+  validateSchema, CURRENT_SCHEMA_VERSION, migrateSchema, DEFAULT_MIGRATIONS,
+  buildVocabularyContract, formatVocabularyForPrompt,
 };
 
   export type {
@@ -203,6 +286,12 @@ export {
     ITWysiwygProps,
     ITJsonRendererProps, JsonComponentNode, JsonComponentType,
     ITJSONEditorProps,
+    ITJsonRenderEngineProps, ScreenSchema, NodeSchema, SchemaValue, SchemaReference, WhenSchema,
+    ActionSchema, EffectSchema, DataSourceSchema, NodeStatus, Catalog, CatalogEntry, PropSpec, PropKind,
+    ResolvedNode, UnresolvedNode, PartialParseResult, StreamState, JsonEngineIssue, JsonEngineCode,
+    JsonEngineSeverity, SchemaPath, PathSegment, EngineLimits, LimitTracker,
+    ValidationReport, ValidationVerdict, ValidateOptions, SchemaMigration, MigrationRegistry, MigrationResult,
+    VocabularyContract, ComponentContract, PropContract,
     UseTableStateOptions, UseTableStateResult
   };
 

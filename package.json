@@ -33,6 +33,8 @@
     "build:app": "tsc -b && vite build -c vite.app.config.ts",
     "build:css": "node scripts/build-css.mjs",
     "lint": "eslint . && node scripts/check-atomic-deps.mjs && node scripts/check-css-isolation.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "check:atomic": "node scripts/check-atomic-deps.mjs",
     "check:css": "node scripts/check-css-isolation.mjs",
     "preview": "vite preview",
@@ -44,7 +46,8 @@
     "ext:package": "node vscode-extension/esbuild.mjs && cd vscode-extension && npx --yes @vscode/vsce package --no-dependencies",
     "audit:sandbox": "node scripts/audit-sandbox.mjs",
     "docs:llm": "pnpm ext:catalog && node scripts/build-llm-docs.mjs && node scripts/build-ai-bundle.mjs",
-    "docs:ai": "node scripts/build-ai-bundle.mjs"
+    "docs:ai": "node scripts/build-ai-bundle.mjs",
+    "docs:json-renderer": "node scripts/build-json-renderer-docs.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -61,22 +64,26 @@
   },
   "devDependencies": {
     "@eslint/js": "9.19.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^22.13.1",
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
+    "@types/vscode": "1.85.0",
     "@vitejs/plugin-react-swc": "3.8.0",
+    "esbuild": "^0.25.0",
     "eslint": "9.19.0",
     "eslint-plugin-react-hooks": "5.0.0",
     "eslint-plugin-react-refresh": "0.4.18",
     "globals": "15.14.0",
+    "jsdom": "^26.1.0",
+    "tailwindcss": "^4.0.0",
+    "tsup": "^8.3.6",
     "typescript": "~5.7.2",
     "typescript-eslint": "8.22.0",
     "vite": "6.1.0",
-    "@tailwindcss/vite": "^4.0.0",
-    "tailwindcss": "^4.0.0",
-    "tsup": "^8.3.6",
     "vite-plugin-dts": "^4.5.0",
-    "@types/vscode": "1.85.0",
-    "esbuild": "^0.25.0"
+    "vitest": "^3.2.7"
   }
 }

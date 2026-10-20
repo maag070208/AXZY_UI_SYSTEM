@@ -7,10 +7,10 @@ No tiene enlaces relativos: cada archivo se entiende solo.
 
 | Archivo | Tamaño | Qué incluye |
 | --- | --- | --- |
-| `AXZY-UI-SYSTEM.md` | 154.5 KB · ~40k tokens | **Todo en uno**: guía + ejemplos de producción + catálogo completo (63 componentes) |
-| `AXZY-UI-SYSTEM-compacto.md` | 66.4 KB · ~17k tokens | Igual, con el catálogo sin descripciones de props (para contextos cortos) |
-| `catalogo.md` | 124.3 KB · ~32k tokens | Solo el catálogo (si ya tienes la guía pegada) |
-| `catalogo.json` | 190.0 KB | El catálogo en JSON, para indexar o usar como herramienta |
+| `AXZY-UI-SYSTEM.md` | 161.6 KB · ~41k tokens | **Todo en uno**: guía + ejemplos de producción + catálogo completo (64 componentes) |
+| `AXZY-UI-SYSTEM-compacto.md` | 71.1 KB · ~18k tokens | Igual, con el catálogo sin descripciones de props (para contextos cortos) |
+| `catalogo.md` | 127.2 KB · ~33k tokens | Solo el catálogo (si ya tienes la guía pegada) |
+| `catalogo.json` | 193.8 KB | El catálogo en JSON, para indexar o usar como herramienta |
 | `plantillas/` | — | Reglas listas para Cursor (`.mdc`), Copilot (`copilot-instructions.md`), Claude Code (`CLAUDE.md`) y un prompt inicial |
 
 ## Cómo usarlo

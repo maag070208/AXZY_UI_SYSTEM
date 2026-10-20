@@ -331,7 +331,106 @@ Dale **estos archivos** como contexto: `docs/llm/GUIA.md` + `docs/llm/catalogo.m
 Pedir explícitamente «consulta el catálogo antes de inventar un prop» es lo que evita el 90% de las
 alucinaciones con esta librería.
 
-## 16. Mapa del repo (por si hace falta el código)
+## 16. Motor de pantallas (JSON) y configuración global
+
+Además de componentes sueltos, la librería trae un **motor declarativo**: una pantalla
+descrita en JSON que se valida contra una lista blanca y se pinta sin ejecutar código.
+
+```tsx
+import { ITSchemaRenderer, validateSchema, parsePartialSchema } from "@axzydev/axzy_ui_system";
+
+const informe = validateSchema(esquema);      // "valid" | "partial" | "invalid"
+const { tree } = parsePartialSchema(texto);   // tolera JSON a medias (streaming)
+
+<ITSchemaRenderer
+  schema={esquema}
+  resolveValue={(valor) => valor}             // { i18n } → texto, { $source } → datos
+  resolveAction={(nodo, prop, accion) => () => {} } // { action } → handler del host
+  onIssue={(issue) => console.warn(issue.code, issue.path)}
+/>
+```
+
+```json
+{
+  "$schema": "axzy/screen",
+  "version": 1,
+  "id": "usuarios.lista",
+  "title": { "i18n": "usuarios.title" },
+  "content": [
+    { "type": "ITCard", "props": { "title": "Usuarios" }, "children": [
+      { "type": "ITDataTable", "props": {
+        "columns": [{ "key": "nombre", "label": "Nombre", "type": "string", "sortable": true, "filter": true }],
+        "fetchData": { "$source": "usuarios" },
+        "defaultItemsPerPage": 10 } }
+    ] }
+  ]
+}
+```
+
+**Reglas que no se negocian**
+
+- El esquema **nunca** ejecuta código, hace red ni pinta HTML. Todo sale de listas blancas del host.
+- `type` tiene que estar en el catálogo; una prop no declarada se ignora con aviso.
+- Las referencias se resuelven en el host: `{ "i18n": "clave" }`, `{ "$source": "fuente" }`,
+  `{ "action": "nombre", "args": { … } }`. **Nunca** metas funciones, nodos React ni URLs en el JSON.
+- El nodo puede traer `id` (ancla en el DOM) y `$status: "pending"` (lo pone el parser, no el autor).
+- Presupuesto: nodos máximos y profundidad; al excederse, `JR013` y la pantalla se corta, no se cae.
+
+**Códigos de aviso** (contrato estable, no renumerar): `JR010` tipo desconocido · `JR011` prop
+inválida o prohibida · `JR012` componente aislado · `JR013` presupuesto · `JR014` `id` que no llegó
+al DOM · `JR020` esquema inválido · `JR021` nodo inválido · `JR040` acción no registrada ·
+`JR070` falta migración · `JR080` stream cortado.
+
+**Catálogo y contrato de vocabulario**
+
+- Lista blanca: `src/json-renderer/catalog/axzyCatalog.ts` (18 tipos, 123 props al día de hoy).
+- Antes de inventar un `type`, consulta `docs/json-renderer/VOCABULARIO.md` o
+  `pnpm docs:json-renderer` (genera el contrato y un nodo mínimo que funciona por componente).
+- Alcance y fases: `docs/json-renderer/ALCANCE.md` y `PLAN-IMPLEMENTACION.md`.
+
+**Configuración global con `axzy.json`**
+
+Lo que no es pantalla (tema, densidad, radios, sombras, apariencia) se declara una vez:
+
+```json
+{
+  "$schema": "axzy/config",
+  "version": 1,
+  "density": 0.98,
+  "radius": 10,
+  "shadow": 2,
+  "appearance": "soft",
+  "showFab": true,
+  "theme": { "primary": "#06b6d4", "danger": "#ef4444" }
+}
+```
+
+```ts
+import { mergeAxzyConfig } from "./sandbox/axzyConfig";
+
+const config = mergeAxzyConfig(await (await fetch("/axzy.json")).json());
+<ITThemeProvider {...config} />   // density, radius, shadow, appearance, showFab, theme
+```
+
+- El merge es tolerante: valores faltantes o inválidos caen al default; densidad se recorta a
+  0.5–1.5, radio a 0–24 y sombra a 0–3.
+- En el sandbox vive en `public/axzy.json`; en una app real, en tu propio archivo de configuración.
+
+**Shell y páginas en el demo**
+
+- `public/demo/app/layout.json` declara marca, módulos, iconos por nombre, badges y sub-items con
+  `query` (que filtran de verdad: `?estado=Activo`).
+- `public/demo/app/<página>.json` es el cuerpo de cada página.
+- El host (`src/showcases/DemoJsonDashboard.tsx`) monta `ITLayout` + `ITPage` y resuelve iconos,
+  etiquetas, datos y acciones. **ITLayout no puede ser un nodo del esquema**: recibe ReactNode y
+  funciones. El JSON nombra; el host resuelve.
+- Pantallas que necesitan código (editor, mapa, formulario) son del host, o híbridas: el esquema
+  pinta y una acción abre la parte TSX (así funciona el CRUD del demo).
+
+**Rutas del demo** (sandbox, dev-only): `#demo` portafolio en JSON · `#demo/app/inicio` dashboard ·
+`#demo/app/docs` documentación viva con `ITJSONEditor`.
+
+## 17. Mapa del repo (por si hace falta el código)
 
 ```
 src/components/<capa>/<componente>/<componente>.tsx     implementación

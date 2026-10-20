@@ -3,7 +3,7 @@ import { GROUP_SLUGS, groupBySlug, isValidItem } from "./navigation";
 import { PRODUCTOS } from "../showcases/productos";
 
 /** Top-level sandbox views. `home` is the portfolio, `producto` a project detail page. */
-export type SandboxView = "home" | "ui-system" | "producto";
+export type SandboxView = "home" | "ui-system" | "producto" | "demo";
 
 /** Parsed representation of `window.location.hash`. */
 export interface HashRoute {
@@ -17,6 +17,8 @@ export interface HashRoute {
   producto: string | null;
   /** Raw hash exactly as read from the URL (used by the 404 page). */
   raw: string;
+  /** Parámetros `?clave=valor` del hash (filtros persistentes). */
+  query: Record<string, string>;
   /** Whether the route resolved to a real page. `false` → render 404. */
   valid: boolean;
 }
@@ -39,7 +41,17 @@ function isValidProducto(id: string): boolean {
  */
 export function parseHash(hash: string): HashRoute {
   const raw = hash;
-  const clean = hash.startsWith("#") ? hash.slice(1) : hash;
+  const body = hash.startsWith("#") ? hash.slice(1) : hash;
+  const [clean, queryString = ""] = body.split("?");
+  const query: Record<string, string> = Object.fromEntries(
+    queryString
+      .split("&")
+      .filter(Boolean)
+      .map((par) => {
+        const [clave, valor = ""] = par.split("=");
+        return [decodeURIComponent(clave), decodeURIComponent(valor)];
+      })
+  );
   const parts = clean.split("/").filter(Boolean);
 
   if (parts[0] === "proyecto") {
@@ -50,24 +62,32 @@ export function parseHash(hash: string): HashRoute {
       item: null,
       producto,
       raw,
+      query,
       valid: Boolean(producto) && isValidProducto(producto as string),
     };
   }
 
+  if (parts[0] === "demo") {
+    if (parts[1] === "app") {
+      return { view: "demo", group: "app", item: parts[2] ?? "inicio", producto: null, raw, query, valid: parts.length <= 3 };
+    }
+    return { view: "demo", group: null, item: null, producto: null, raw, query, valid: parts.length === 1 };
+  }
+
   if (parts.length === 0 || parts[0] !== "ui-system") {
-    return { view: "home", group: null, item: null, producto: null, raw, valid: true };
+    return { view: "home", group: null, item: null, producto: null, raw, query, valid: true };
   }
 
   if (parts.length === 1) {
-    return { view: "ui-system", group: null, item: null, producto: null, raw, valid: true };
+    return { view: "ui-system", group: null, item: null, producto: null, raw, query, valid: true };
   }
 
   if (parts.length === 2) {
     const group = groupBySlug(parts[1]);
     if (!group) {
-      return { view: "ui-system", group: null, item: null, producto: null, raw, valid: false };
+      return { view: "ui-system", group: null, item: null, producto: null, raw, query, valid: false };
     }
-    return { view: "ui-system", group: group.id, item: null, producto: null, raw, valid: true };
+    return { view: "ui-system", group: group.id, item: null, producto: null, raw, query, valid: true };
   }
 
   if (parts.length === 3) {
@@ -79,13 +99,14 @@ export function parseHash(hash: string): HashRoute {
         item: null,
         producto: null,
         raw,
+        query,
         valid: false,
       };
     }
-    return { view: "ui-system", group: group.id, item: parts[2], producto: null, raw, valid: true };
+    return { view: "ui-system", group: group.id, item: parts[2], producto: null, raw, query, valid: true };
   }
 
-  return { view: "ui-system", group: null, item: null, producto: null, raw, valid: false };
+  return { view: "ui-system", group: null, item: null, producto: null, raw, query, valid: false };
 }
 
 /** Build a hash for a group/item pair, translating the group id to its slug. */
@@ -117,6 +138,8 @@ export interface UseHashRouteResult {
   goToProducto: (id: string, options?: GoToOptions) => void;
   /** Navigate back to the portfolio (strips the hash). */
   goToPortfolio: (options?: GoToOptions) => void;
+  /** Abre el portafolio de demostración pintado desde JSON (`#demo`). */
+  goToDemo: (options?: GoToOptions) => void;
 }
 
 /**
@@ -171,6 +194,13 @@ export function useHashRoute(): UseHashRouteResult {
     [navigate],
   );
 
+  const goToDemo = useCallback(
+    (options?: GoToOptions) => {
+      navigate("#demo", options);
+    },
+    [navigate],
+  );
+
   const goToPortfolio = useCallback((options?: GoToOptions) => {
     const url = `${window.location.pathname}${window.location.search}`;
     if (options?.replace) {
@@ -181,5 +211,5 @@ export function useHashRoute(): UseHashRouteResult {
     setRoute(parseHash(""));
   }, []);
 
-  return { route, goToItem, goToLanding, goToProducto, goToPortfolio };
+  return { route, goToItem, goToLanding, goToProducto, goToPortfolio, goToDemo };
 }

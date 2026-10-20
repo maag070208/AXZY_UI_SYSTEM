@@ -1,0 +1,159 @@
+{
+  "$schema": "axzy/screen",
+  "version": 1,
+  "id": "demo.reportes",
+  "title": {
+    "i18n": "sandbox.app.reportes.title"
+  },
+  "description": {
+    "i18n": "sandbox.app.reportes.lead"
+  },
+  "content": [
+    {
+      "type": "ITStack",
+      "props": {
+        "direction": "column",
+        "spacing": 8,
+        "alignItems": "stretch"
+      },
+      "children": [
+        {
+          "type": "ITGrid",
+          "props": {
+            "container": true,
+            "spacing": 4
+          },
+          "children": [
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.app.statRevenue"
+                    },
+                    "value": "$48,920"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.app.statOrders"
+                    },
+                    "value": "42"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.app.reportes.ticket"
+                    },
+                    "value": "$1,164"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.app.reportes.conversion"
+                    },
+                    "value": "3.8%"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ITDivider",
+          "props": {
+            "orientation": "horizontal"
+          }
+        },
+        {
+          "type": "ITDataTable",
+          "id": "tabla-reportes",
+          "props": {
+            "columns": [
+              {
+                "key": "folio",
+                "label": "Folio",
+                "type": "string",
+                "sortable": true
+              },
+              {
+                "key": "cliente",
+                "label": "Cliente",
+                "type": "string",
+                "filter": "catalog"
+              },
+              {
+                "key": "total",
+                "label": "Total",
+                "type": "number",
+                "sortable": true,
+                "currencyMX": true
+              },
+              {
+                "key": "fecha",
+                "label": "Fecha",
+                "type": "date",
+                "sortable": true
+              }
+            ],
+            "fetchData": {
+              "$source": "pedidos"
+            },
+            "defaultItemsPerPage": 8,
+            "itemsPerPageOptions": [
+              8,
+              16,
+              32
+            ],
+            "density": "normal",
+            "variant": "striped",
+            "layout": "fixed"
+          }
+        }
+      ]
+    }
+  ]
+}

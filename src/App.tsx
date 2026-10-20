@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { ITLayout, ITThemeProvider, ITI18nProvider, useITTranslation, useDebouncedSearch } from "./index";
+import { DEFAULT_AXZY_CONFIG, mergeAxzyConfig, type AxzyConfig } from "./sandbox/axzyConfig";
 import type { ITNavigationItem } from "./index";
 
 // Import Showcases
@@ -67,6 +68,9 @@ import {
 } from "./showcases/FeedbackShowcases";
 import JsonRendererShowcase from "./showcases/JsonRendererShowcase";
 import JsonEditorShowcase from "./showcases/JsonEditorShowcase";
+import JsonScreenShowcase from "./showcases/JsonScreenShowcase";
+import DemoJsonPortfolio from "./showcases/DemoJsonPortfolio";
+import DemoJsonDashboard, { DEMO_APP_PAGES, type DemoAppPage } from "./showcases/DemoJsonDashboard";
 
 // Sandbox routing / landing (dev-only, never published)
 import {
@@ -90,7 +94,15 @@ import { GROUP_ICONS } from "./sandbox/icons";
  */
 function AppShell() {
   const { t } = useITTranslation();
-  const { route, goToItem, goToLanding, goToPortfolio } = useHashRoute();
+  const { route, goToItem, goToLanding, goToPortfolio, goToDemo } = useHashRoute();
+  // Configuración global del sandbox: `public/axzy.json`.
+  const [configGlobal, setConfigGlobal] = useState<AxzyConfig>(DEFAULT_AXZY_CONFIG);
+  useEffect(() => {
+    fetch("/axzy.json")
+      .then((r) => r.json())
+      .then((json: unknown) => setConfigGlobal(mergeAxzyConfig(json)))
+      .catch(() => setConfigGlobal(DEFAULT_AXZY_CONFIG));
+  }, []);
   const [subitemConnector] = useState<"dot" | "|" | "none">("dot");
 
   // Debounced term drives filtering; `searchValue` is the live input value.
@@ -208,10 +220,16 @@ function AppShell() {
         label: t("sandbox.nav.portfolio"),
         action: () => goToPortfolio(),
       },
+      {
+        id: "demo",
+        label: t("sandbox.nav.demo"),
+        action: () => goToDemo(),
+      },
     ],
     onNavItemClick: (id: string) => {
       if (id === "ui-system") goToLanding();
       else if (id === "portfolio") goToPortfolio();
+      else if (id === "demo") goToDemo();
     },
     // Sin `userMenu`: el sandbox no tiene sesión. Antes mostraba un usuario
     // inventado ("Alex Dev / alex@axzy.dev") en un portafolio real.
@@ -319,6 +337,8 @@ function AppShell() {
         return <JsonRendererShowcase />;
       case "jsoneditor":
         return <JsonEditorShowcase />;
+      case "jsonscreen":
+        return <JsonScreenShowcase />;
       default:
         return (
           <NotFoundShowcase
@@ -331,7 +351,14 @@ function AppShell() {
   };
 
   return (
-    <ITThemeProvider showFab={false} density={0.98} radius={10} shadow={2}>
+    <ITThemeProvider
+      showFab={configGlobal.showFab}
+      density={configGlobal.density}
+      radius={configGlobal.radius}
+      shadow={configGlobal.shadow}
+      appearance={configGlobal.appearance}
+      theme={configGlobal.theme}
+    >
         {route.view === "producto" ? (
           <div className="min-h-[100dvh] bg-[#fafafa] dark:bg-[#0b0d10]">
             {route.valid ? (
@@ -347,6 +374,37 @@ function AppShell() {
               />
             )}
           </div>
+        ) : route.view === "demo" ? (
+          route.group === "app" ? (
+            <DemoJsonDashboard
+              page={(DEMO_APP_PAGES.includes((route.item ?? "inicio") as DemoAppPage)
+                ? route.item
+                : "inicio") as DemoAppPage}
+              onNavigate={(pagina) => {
+                window.location.hash = `#demo/app/${pagina}`;
+              }}
+              onExit={() => {
+                window.location.hash = "#demo";
+              }}
+              filterEstado={route.query.estado ?? "Todos"}
+              onFilterChange={(estado) => {
+                const base = `#demo/app/${route.item ?? "inicio"}`;
+                window.location.hash = estado === "Todos" ? base : `${base}?estado=${encodeURIComponent(estado)}`;
+              }}
+            />
+          ) : (
+            <div className="min-h-[100dvh] bg-[#fafafa] dark:bg-[#0b0d10]">
+              <DemoJsonPortfolio
+                onBack={() => goToLanding()}
+                onOpenProject={(id) => {
+                  window.location.hash = `#proyecto/${id}`;
+                }}
+                onOpenPanel={() => {
+                  window.location.hash = "#demo/app/inicio";
+                }}
+              />
+            </div>
+          )
         ) : route.view === "home" ? (
           <div className="min-h-[100dvh] bg-[#fafafa] dark:bg-[#0b0d10]">
             <HomeShowcase />

@@ -104,6 +104,7 @@ export const SANDBOX_GROUPS: SandboxGroup[] = [
       { id: "toast", label: "ITToast" },
       { id: "loader", label: "ITLoader" },
       { id: "themeprovider", label: "ITThemeProvider" },
+      { id: "jsonscreen", label: "Motor de pantallas (nuevo)" },
       { id: "jsonrenderer", label: "ITJsonRenderer (PoC)" },
       { id: "jsoneditor", label: "ITJSONEditor" },
     ],

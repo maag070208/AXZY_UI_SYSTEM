@@ -1,0 +1,209 @@
+{
+  "$schema": "axzy/screen",
+  "version": 1,
+  "id": "demo.usuarios",
+  "content": [
+    {
+      "type": "ITStack",
+      "props": {
+        "direction": "column",
+        "spacing": 8,
+        "alignItems": "stretch"
+      },
+      "children": [
+        {
+          "type": "ITFlex",
+          "props": {
+            "wrap": "wrap",
+            "gap": 2
+          },
+          "children": [
+            {
+              "type": "ITButton",
+              "props": {
+                "label": {
+                  "i18n": "sandbox.app.usuarios.new"
+                },
+                "size": "md",
+                "onClick": {
+                  "action": "nuevo-registro",
+                  "args": {
+                    "tipo": "usuario"
+                  }
+                }
+              }
+            },
+            {
+              "type": "ITButton",
+              "props": {
+                "label": {
+                  "i18n": "sandbox.app.back"
+                },
+                "size": "md",
+                "onClick": {
+                  "action": "ir-pagina",
+                  "args": {
+                    "pagina": "inicio"
+                  }
+                },
+                "variant": "text",
+                "color": "gray"
+              }
+            }
+          ]
+        },
+        {
+          "type": "ITGrid",
+          "props": {
+            "container": true,
+            "spacing": 4
+          },
+          "children": [
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.app.statUsers"
+                    },
+                    "value": "25"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.app.usuarios.active"
+                    },
+                    "value": "21"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.app.usuarios.admins"
+                    },
+                    "value": "7"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "ITGrid",
+              "props": {
+                "item": true,
+                "xs": 6,
+                "md": 3
+              },
+              "children": [
+                {
+                  "type": "ITStatCard",
+                  "props": {
+                    "label": {
+                      "i18n": "sandbox.app.usuarios.inactive"
+                    },
+                    "value": "4"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ITDivider",
+          "props": {
+            "orientation": "horizontal"
+          }
+        },
+        {
+          "type": "ITDataTable",
+          "id": "tabla-usuarios",
+          "props": {
+            "columns": [
+              {
+                "key": "nombre",
+                "label": "Nombre",
+                "type": "string",
+                "sortable": true,
+                "filter": true
+              },
+              {
+                "key": "correo",
+                "label": "Correo",
+                "type": "string"
+              },
+              {
+                "key": "rol",
+                "label": "Rol",
+                "type": "string",
+                "sortable": true,
+                "filter": "catalog"
+              },
+              {
+                "key": "estado",
+                "label": "Estado",
+                "type": "string",
+                "filter": "catalog"
+              },
+              {
+                "key": "alta",
+                "label": "Alta",
+                "type": "date",
+                "sortable": true
+              }
+            ],
+            "fetchData": {
+              "$source": "usuarios"
+            },
+            "defaultItemsPerPage": 10,
+            "itemsPerPageOptions": [
+              5,
+              10,
+              20
+            ],
+            "density": "normal",
+            "variant": "striped",
+            "layout": "fixed",
+            "onRowClick": {
+              "action": "editar-usuario"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "title": {
+    "i18n": "sandbox.app.usuarios.title"
+  },
+  "description": {
+    "i18n": "sandbox.app.usuarios.lead"
+  }
+}
