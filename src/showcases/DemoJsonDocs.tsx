@@ -45,7 +45,7 @@ const GUIA: { titulo: string; parrafos: string[]; codigo?: string }[] = [
     parrafos: [
       "El host (TSX, dev-only) es dueño del chrome: monta ITLayout e ITPage, traduce etiquetas, resuelve iconos, datos y acciones. Vive en src/showcases/DemoJsonDashboard.tsx.",
       "El motor (src/json-renderer/) pinta el cuerpo de cada página desde JSON. Nunca toca red, funciones ni nodos React.",
-      "El JSON describe: public/demo/app/layout.json (shell) y public/demo/app/<página>.json (cuerpo).",
+      "El JSON describe: public/demo/app/layout.json (marca), public/demo/app/routes.json (rutas y menú) y public/demo/app/<página>.json (cuerpo).",
     ],
   },
   {
@@ -53,25 +53,25 @@ const GUIA: { titulo: string; parrafos: string[]; codigo?: string }[] = [
     parrafos: [
       "DemoJsonDashboard.tsx:356 monta <ITLayout topBar sidebar>; :398 monta <ITPage>; :340 monta <ITSchemaRenderer>.",
       "ITLayout no puede ser un nodo del esquema: topBar.logo es un ReactNode, navigationItems[].action es una función y icon es un componente. El motor prohíbe las tres.",
-      "Por eso el JSON nombra (icon: \"users\", page: \"usuarios\", query: {estado: \"Activo\"}) y el host resuelve con el registro ICONOS y la navegación.",
+      "Por eso el JSON nombra (icon: \"users\", page: \"usuarios\", query: {estado: \"Activo\"}) y el host resuelve con el registro ICONOS y el árbol que sale de routes.json.",
     ],
-    codigo: '<ITLayout\n  topBar={{ logo: <AxzyLogo/>, logoText: shell.brand.text }}\n  sidebar={{ modules: shell.modules.map(\u2026) }}\n>',
+    codigo: '<ITLayout\n  topBar={{ logo: <AxzyLogo/>, logoText: shell.brand.text }}\n  sidebar={{ navigationItems: arbol.map(\u2026) }}\n>',
   },
   {
-    titulo: "3 · Añadir un módulo",
+    titulo: "3 · Añadir una ruta",
     parrafos: [
-      "Edita public/demo/app/layout.json y añade un objeto a layout.modules. No hay que tocar TSX.",
-      "Si el módulo no tiene página propia, apunta page a una existente: la verás navegar igual.",
+      "Edita public/demo/app/routes.json y añade una ruta con path, page y nav. Sin nav, la ruta existe pero no aparece en el menú. No hay que tocar TSX.",
+      "Si la página no tiene JSON propio, apunta page a una existente: la verás navegar igual.",
     ],
-    codigo: '{\n  "id": "ajustes",\n  "label": { "i18n": "sandbox.app.nav.ajustes" },\n  "icon": "box",\n  "page": "ajustes"\n}',
+    codigo: '{\n  "id": "ajustes",\n  "path": "/ajustes",\n  "page": "ajustes",\n  "nav": { "label": { "i18n": "sandbox.app.nav.ajustes" }, "icon": "box" }\n}',
   },
   {
     titulo: "4 · Sub-items que filtran de verdad",
     parrafos: [
-      "Cada sub-item puede llevar query. El host lo traduce a ?estado= en la URL y la tabla se refiltra.",
-      "Sin query, el sub-item solo navega. Nada de botones decorativos.",
+      "Un sub-item es una ruta hija con query. Navegar a ella cambia la dirección (?estado=) y la tabla se refiltra.",
+      "Sin query, el sub-item es la ruta base del grupo. Nada de botones decorativos.",
     ],
-    codigo: '{\n  "label": "Activos",\n  "page": "usuarios",\n  "query": { "estado": "Activo" }\n}',
+    codigo: '{\n  "id": "u-activos",\n  "page": "usuarios",\n  "query": { "estado": "Activo" },\n  "nav": { "label": { "i18n": "sandbox.app.sub.activos" } }\n}',
   },
   {
     titulo: "5 · Iconos y marca",
@@ -85,7 +85,7 @@ const GUIA: { titulo: string; parrafos: string[]; codigo?: string }[] = [
     titulo: "6 · Una pantalla que NO es JSON",
     parrafos: [
       "Soportado a propósito: hay pantallas que necesitan código (un editor, un mapa, un flujo con estado propio). El motor no las debe impedir.",
-      "Ruta 1: página del host. Crea el componente, regístralo en DEMO_APP_PAGES y en el router, y renderízalo en lugar de ITSchemaRenderer cuando la página sea esa.",
+      "Ruta 1: página del host. Crea el componente, regístralo en DEMO_APP_PAGES y en routes.json, y renderízalo en lugar de ITSchemaRenderer cuando la página sea esa.",
       "Ruta 2: híbrido. El esquema pinta el 90% y un nodo con acción abre la parte TSX (diálogo, editor, visor). Es lo que hace el CRUD con su formulario.",
       "Ruta 3: contenido embebido. El host expone un componente del catálogo que internamente ya es TSX (ITDataTable, ITJSONEditor). El esquema solo lo nombra.",
       "La regla: si la pantalla necesita funciones, es del host; si solo describe, es JSON.",

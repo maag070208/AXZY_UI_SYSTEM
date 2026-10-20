@@ -1,0 +1,70 @@
+{
+  "$schema": "axzy/screen",
+  "version": 1,
+  "id": "demo.usuario-detalle",
+  "title": {
+    "i18n": "sandbox.app.detail.title"
+  },
+  "description": {
+    "i18n": "sandbox.app.detail.lead"
+  },
+  "content": [
+    {
+      "type": "ITStack",
+      "props": {
+        "direction": "column",
+        "spacing": 6,
+        "alignItems": "stretch"
+      },
+      "children": [
+        {
+          "type": "ITFlex",
+          "props": {
+            "wrap": "wrap",
+            "gap": 2
+          },
+          "children": [
+            {
+              "type": "ITButton",
+              "props": {
+                "label": {
+                  "i18n": "sandbox.app.detail.back"
+                },
+                "size": "sm",
+                "variant": "outlined",
+                "color": "gray",
+                "onClick": {
+                  "action": "ir-pagina",
+                  "args": {
+                    "pagina": "usuarios"
+                  }
+                }
+              }
+            },
+            {
+              "type": "ITButton",
+              "props": {
+                "label": {
+                  "i18n": "sandbox.app.form.edit"
+                },
+                "size": "sm",
+                "onClick": {
+                  "action": "editar-usuario"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "slot",
+          "props": {
+            "name": "usuarioDetalle",
+            "id": {
+              "$param": "id"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

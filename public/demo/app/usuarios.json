@@ -2,6 +2,11 @@
   "$schema": "axzy/screen",
   "version": 1,
   "id": "demo.usuarios",
+  "data": {
+    "usuarios": {
+      "handler": "usuarios"
+    }
+  },
   "content": [
     {
       "type": "ITStack",
@@ -145,7 +150,6 @@
         },
         {
           "type": "ITDataTable",
-          "id": "tabla-usuarios",
           "props": {
             "columns": [
               {
@@ -193,7 +197,7 @@
             "variant": "striped",
             "layout": "fixed",
             "onRowClick": {
-              "action": "editar-usuario"
+              "action": "ver-usuario"
             }
           }
         }

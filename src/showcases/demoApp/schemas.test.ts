@@ -10,7 +10,9 @@ function leerJson(nombre: string): unknown {
   return JSON.parse(readFileSync(join(DIR, nombre), "utf8"));
 }
 
-const paginas = readdirSync(DIR).filter((archivo) => archivo.endsWith(".json") && archivo !== "layout.json");
+// layout.json (marca) y routes.json (rutas) no son pantallas: se prueban aparte.
+const NO_SON_PAGINAS = ["layout.json", "routes.json"];
+const paginas = readdirSync(DIR).filter((archivo) => archivo.endsWith(".json") && !NO_SON_PAGINAS.includes(archivo));
 
 describe("JSON del demo", () => {
   it("hay páginas y un layout", () => {
@@ -25,23 +27,10 @@ describe("JSON del demo", () => {
     expect(informe.pendingNodes).toBe(0);
   });
 
-  it("el layout declara marca, módulos y páginas existentes", () => {
-    const layout = leerJson("layout.json") as {
-      layout: { brand?: { text?: string }; modules: { id: string; page: string; icon?: string }[] };
-    };
+  it("el layout declara la marca; el menú vive en routes.json", () => {
+    const layout = leerJson("layout.json") as { layout: { brand?: { text?: string }; modules?: unknown } };
     expect(layout.layout.brand?.text).toBeTruthy();
-    expect(layout.layout.modules.length).toBeGreaterThanOrEqual(6);
-    for (const modulo of layout.layout.modules) {
-      expect(modulo.id, "cada módulo necesita id").toBeTruthy();
-      expect(modulo.page, `${modulo.id} necesita page`).toBeTruthy();
-    }
-    // Todo módulo apunta a una página que existe (docs no tiene archivo propio).
-    const ids = new Set(layout.layout.modules.map((modulo) => modulo.page));
-    expect(ids.has("docs")).toBe(true);
-    for (const pagina of ids) {
-      if (pagina === "docs") continue;
-      expect(paginas, `falta ${pagina}.json`).toContain(`${pagina}.json`);
-    }
+    expect(layout.layout.modules, "los módulos ya no van en layout.json").toBeUndefined();
   });
 
   it("las páginas declaran título y descripción traducibles", () => {

@@ -69,7 +69,8 @@ export function parseHash(hash: string): HashRoute {
 
   if (parts[0] === "demo") {
     if (parts[1] === "app") {
-      return { view: "demo", group: "app", item: parts[2] ?? "inicio", producto: null, raw, query, valid: parts.length <= 3 };
+      // El resto del path lo casa `routes.json` (puede tener varios segmentos): aquí solo se separa.
+      return { view: "demo", group: "app", item: parts.slice(2).join("/"), producto: null, raw, query, valid: true };
     }
     return { view: "demo", group: null, item: null, producto: null, raw, query, valid: parts.length === 1 };
   }
