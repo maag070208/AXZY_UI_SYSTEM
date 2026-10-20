@@ -3334,3 +3334,45 @@ export default function BuilderPlayground() {
   publica como `--it-json-editor-line`; de ahí que gutter, capa resaltada y textarea
   queden alineados al píxel con cualquier tipografía.
 - El CSS scoped vive en `src/index.css` bajo `@layer components` con prefijo `it-json-editor-*`.
+
+
+================================================================================
+MOTOR DE PANTALLAS DECLARATIVAS: ITSchemaRenderer
+================================================================================
+
+Pinta un documento JSON (formato "axzy/screen") contra el catálogo de componentes.
+El JSON nombra componentes, datos, acciones, efectos y slots; el host registra lo que
+cada nombre significa. No hay código, HTML ni URLs en el JSON.
+
+Documentación:
+  - Guía paso a paso ........ docs/json-renderer/GUIA-PANTALLAS.md
+  - Referencia del formato .. docs/json-renderer/REFERENCIA.md
+  - Vocabulario (catálogo) .. docs/json-renderer/VOCABULARIO.md
+  - Seguridad ............... docs/json-renderer/SEGURIDAD.md
+  - Schema (editor y tester). docs/json-renderer/screen.schema.json
+
+Props principales:
+  schema          Documento JSON ya parseado.
+  catalog         Catálogo de componentes (por defecto, el de AXZY).
+  params          Valores de $param (parámetros de ruta).
+  dataHandlers    Fuentes $source: nombre -> función del host.
+  resolveAction   Acciones: (nodo, prop, acción) -> función del host.
+  effects         Efectos del host: toast, navigate, refresh, openOverlay, closeOverlay.
+  slots           Bloques JSX del host: nombre -> componente.
+  resolveValue    Textos { i18n } y el resto de valores que no resuelve el motor.
+  pendingFallback Qué pintar mientras un nodo llega por streaming.
+  onIssue         Recibe los avisos JR0xx con su ruta.
+  limits          Límites de nodos y profundidad.
+  className       Clases del contenedor raíz.
+
+Códigos de aviso: JR010 tipo desconocido, JR011 prop no admitida, JR012 componente que
+lanzó (aislado), JR013 límite de nodos, JR014 id que no llegó al DOM, JR021 nodo mal
+formado, JR030 fuente o handler no registrado, JR032 referencia sin valor, JR040 acción
+o efecto no registrado, JR042 encadenado demasiado profundo.
+
+Ejemplo mínimo:
+  <ITSchemaRenderer
+    schema={{ $schema: "axzy/screen", version: 1, id: "demo",
+      content: { type: "ITText", text: { i18n: "saludo" } } }}
+    resolveValue={(valor) => (valor?.i18n ? t(valor.i18n) : valor)}
+  />

@@ -2,13 +2,49 @@
 
 El componente **ITJsonRenderer** permite renderizar componentes del AXZY UI System a partir de una estructura JSON.
 
-> **En construcción.** El PoC actual (8 tipos de nodo) se está convirtiendo en un **motor
-> declarativo de pantallas**. El alcance aprobado y el plan por fases viven en:
+> Esta ficha describe **`ITJsonRenderer`**, el PoC retrocompatible de 8 tipos de nodo.
+> El motor declarativo nuevo es **`ITSchemaRenderer`** (sección siguiente). Si vas a
+> construir pantallas, empieza por ese motor.
 >
-> - [`docs/json-renderer/ALCANCE.md`](../json-renderer/ALCANCE.md) — qué entra, qué no y el modelo de seguridad.
-> - [`docs/json-renderer/PLAN-IMPLEMENTACION.md`](../json-renderer/PLAN-IMPLEMENTACION.md) — fases, entregables y criterios.
->
-> Hasta que llegue la fase 1, esta ficha describe el comportamiento **actual** (retrocompatible).
+> - [`GUIA-PANTALLAS.md`](../json-renderer/GUIA-PANTALLAS.md) — guía paso a paso para armar una pantalla.
+> - [`REFERENCIA.md`](../json-renderer/REFERENCIA.md) — formato, nodos, acciones, efectos y formularios.
+> - [`SEGURIDAD.md`](../json-renderer/SEGURIDAD.md) — qué protege el motor y qué no.
+> - [`ALCANCE.md`](../json-renderer/ALCANCE.md) y [`PLAN-IMPLEMENTACION.md`](../json-renderer/PLAN-IMPLEMENTACION.md) — alcance y fases.
+
+## Motor declarativo: `ITSchemaRenderer`
+
+Pinta un documento JSON (`axzy/screen`) contra el catálogo de componentes. El JSON nombra
+componentes, datos, acciones y slots; el host registra lo que cada nombre significa.
+
+```tsx
+import { ITSchemaRenderer } from "@axzydev/axzy_ui_system";
+
+<ITSchemaRenderer
+  schema={schema}                 // documento JSON ya parseado
+  params={{ id: "42" }}           // valores de $param (ruta)
+  dataHandlers={{ usuarios: fetchUsuarios }}   // fuentes $source
+  resolveAction={(node, prop, action) => acciones[action.action]}
+  effects={{ toast: (aviso) => mostrarToast(aviso) }}
+  slots={{ graficaVentas: GraficaVentas }}     // bloques JSX del host
+  resolveValue={(valor) => (esI18n(valor) ? t(valor.i18n) : valor)}
+  onIssue={(aviso) => console.warn(aviso.code, aviso.path)}
+/>
+```
+
+Props principales: `schema`, `catalog`, `params`, `dataHandlers`, `resolveAction`,
+`effects`, `slots`, `resolveValue`, `pendingFallback`, `onIssue`, `limits`, `className`.
+La lista completa y sus tipos está en `ITSchemaRenderer` (`kernel/schemaRenderer.props.ts`).
+
+Qué puede declarar el JSON (resumen; detalle en la guía):
+
+- Componentes del catálogo, más `slot` (bloque del host) y `form` (formulario del motor).
+- Datos con `data` y `{ "$source": "…" }`; estado con `state` y `{ "$state": "…" }`;
+  parámetros de ruta con `{ "$param": "…" }`.
+- Acciones por nombre, con `then` y `onError` para sus efectos (`toast`, `navigate`…).
+- Textos siempre como `{ "i18n": "clave" }`.
+
+Los avisos llegan por `onIssue` con código `JR0xx` y ruta exacta. Tabla de códigos en
+[`REFERENCIA.md`](../json-renderer/REFERENCIA.md).
 
 ## Uso básico
 
