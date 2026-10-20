@@ -34,6 +34,7 @@ export default function ITSegmentedControl({
 
   return (
     <div
+      role="group"
       className={clsx(
         "inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700",
         container,
@@ -46,6 +47,8 @@ export default function ITSegmentedControl({
         return (
           <button
             key={opt.value}
+            type="button"
+            aria-pressed={isActive}
             onClick={() => !disabled && onChange(opt.value)}
             disabled={disabled}
             className={clsx(

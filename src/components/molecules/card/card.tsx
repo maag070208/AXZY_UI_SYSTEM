@@ -73,6 +73,18 @@ export default function ITCard({
       onClick={onClick}
       onMouseEnter={() => onClick && setIsHovered(true)}
       onMouseLeave={() => onClick && setIsHovered(false)}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
       className={clsx("overflow-hidden flex flex-col", className)}
       style={containerStyle}
     >

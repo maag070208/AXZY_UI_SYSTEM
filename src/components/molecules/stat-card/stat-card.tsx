@@ -36,6 +36,16 @@ export default function ITStatCard({
       onClick={onClick}
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
     >
       <div className="flex items-start justify-between mb-1">
         <ITText as="span" className="text-xs font-medium text-slate-400 dark:text-slate-500">{label}</ITText>
