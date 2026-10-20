@@ -11,6 +11,8 @@ export interface ITDialogProps {
   title?: string;
   /** When true and `title` is provided, renders an ITFormHeader instead of the default title bar. @default false */
   useFormHeader?: boolean;
+  /** When false, the card has no padding: the title row and body are flush to the edges, so the content can draw its own sections. @default true */
+  padded?: boolean;
   /** Makes the dialog fill the entire viewport. @default false */
   fullScreen?: boolean;
 }

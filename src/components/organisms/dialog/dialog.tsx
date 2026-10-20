@@ -42,6 +42,7 @@ export default function ITDialog({
   title,
   useFormHeader = false,
   fullScreen = false,
+  padded = true,
 }: ITDialogProps) {
   const { t } = useITTranslation();
   const modalRef = useRef<HTMLDivElement>(null);
@@ -79,7 +80,7 @@ export default function ITDialog({
         className={`overflow-hidden relative ${
           fullScreen
             ? "w-screen h-screen max-w-none rounded-none m-0 flex flex-col"
-            : `${className || ""} ${useFormHeader ? "p-0" : "p-6"}`
+            : `${className || ""} ${!padded || useFormHeader ? "p-0" : "p-6"}`
         }`}
         style={{
              backgroundColor: theme.card.backgroundColor,
@@ -106,8 +107,8 @@ export default function ITDialog({
             >
               <FaRegTimesCircle />
             </button>
-            {title && <ITText as="h2" className="text-xl font-semibold mb-4">{title}</ITText>}
-            <div>{children}</div>
+            {title && (padded ? <ITText as="h2" className="text-xl font-semibold mb-4">{title}</ITText> : <div className="flex items-center justify-between gap-3 px-6 py-4 border-b border-slate-200"><ITText as="h2" className="text-lg font-medium">{title}</ITText></div>)}
+            <div className={padded ? undefined : "min-h-0 flex-1 flex flex-col"}>{children}</div>
           </>
         )}
       </div>

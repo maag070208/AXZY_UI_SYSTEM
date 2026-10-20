@@ -7,6 +7,8 @@ export interface ITImageProps {
   className?: string;
   /** Fallback image URL shown when the primary `src` fails to load */
   fallback?: string;
+  /** How the image fills its box: "cover" crops to fill (default), "contain" shows the whole image */
+  fit?: "cover" | "contain";
   /** Click handler */
   onClick?: () => void;
 }
