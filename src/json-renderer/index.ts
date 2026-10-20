@@ -31,6 +31,10 @@ export type { RouteMatch } from "./routing/match";
 export { buildNavigationTree, navContainsRoute } from "./routing/navigation";
 export type { NavNode } from "./routing/navigation";
 
+/* ── Efectos de acción (lo que el host cumple tras una acción) ─────────── */
+export { wrapAction } from "./actions/effects";
+export type { EffectRegistry, EffectContext, ToastVariant } from "./actions/effects";
+
 /* ── Slots (bloques JSX que registra el host) ──────────────────────────── */
 export type { SlotComponent, SlotRegistry } from "./kernel/slots";
 

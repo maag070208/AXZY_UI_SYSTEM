@@ -16,6 +16,19 @@ import { isSlotNode, slotName, type SlotRegistry } from "./slots";
 import type { NodeSchema } from "./types";
 import { FormNode } from "../form/FormNode";
 import { readFormFields, type FormField } from "../form/rules";
+import { wrapAction, type EffectContext, type EffectRegistry } from "../actions/effects";
+
+/** Contexto de efectos de un nodo: el registro del host, la traducción y los avisos. */
+function effectContext(options: RenderNodeOptions, path: SchemaPath, node: NodeSchema): EffectContext {
+  return {
+    effects: options.effects,
+    path,
+    resolveText: (value, valuePath) => textoDe(options.resolveValue ? options.resolveValue(value, valuePath) : value),
+    report: (aviso) => options.issues.push(aviso),
+    // Una acción encadenada desde un efecto se resuelve con el mismo `resolveAction` del host.
+    resolveChained: (name) => options.resolveAction?.(node, "chain", { action: name }, path),
+  };
+}
 
 /** `true` cuando el nodo es un formulario del motor. */
 function isFormNode(node: NodeSchema): boolean {
@@ -46,6 +59,8 @@ export interface RenderNodeOptions {
   ) => ((...args: unknown[]) => void) | undefined;
   /** Slots que registra el host. Un nodo `slot` monta el componente con su nombre. */
   slots?: SlotRegistry;
+  /** Efectos que cumple el host (`toast`, `navigate`…) tras una acción. */
+  effects?: EffectRegistry;
   /** Renderiza los hijos de un nodo (lo aporta el recorrido del árbol). */
   renderChildren?: (node: NodeSchema, path: SchemaPath) => React.ReactNode;
   /** Qué pintar mientras un nodo está pendiente (streaming). */
@@ -137,13 +152,14 @@ function renderForm(node: NodeSchema, options: RenderNodeOptions): React.ReactNo
   // Sin texto declarado, el nodo usa `jsonRenderer.form.submit` (lo resuelve FormNode).
   const submitLabel = textoDe(resolveValue ? resolveValue(textoEnvio, path) : textoEnvio) || undefined;
   const accion = resolveAction?.(node, "onSubmit", node.props?.onSubmit, path);
+  const conEfectos = accion ? wrapAction(accion, node.props?.onSubmit, effectContext(options, path, node)) : undefined;
 
   return React.createElement(FormNode, {
     key: node.id ?? path.join("-"),
     id: node.id,
     fields: campos,
     submitLabel,
-    onSubmit: accion ? (valores: Record<string, string>) => accion(valores) : undefined,
+    onSubmit: conEfectos ? (valores: Record<string, string>) => conEfectos(valores) : undefined,
   });
 }
 
@@ -193,7 +209,7 @@ export function renderNode(node: NodeSchema, options: RenderNodeOptions): React.
   // Las acciones se traducen a handlers del host; las no registradas se avisan.
   for (const [name, action] of Object.entries(actions)) {
     const handler = options.resolveAction?.(node, name, action, path);
-    if (typeof handler === "function") finalProps[name] = handler;
+    if (typeof handler === "function") finalProps[name] = wrapAction(handler, action, effectContext(options, path, node));
   }
 
   // Contenido: `children` declarados y, si el componente acepta texto, el atajo.

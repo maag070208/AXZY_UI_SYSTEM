@@ -106,7 +106,17 @@
               "i18n": "sandbox.app.contact.send"
             },
             "onSubmit": {
-              "action": "enviar-contacto"
+              "action": "enviar-contacto",
+              "then": [
+                {
+                  "toast": {
+                    "variant": "success",
+                    "message": {
+                      "i18n": "sandbox.app.contact.sent"
+                    }
+                  }
+                }
+              ]
             }
           }
         },

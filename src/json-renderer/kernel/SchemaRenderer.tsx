@@ -10,6 +10,7 @@ import { auditTree } from "./partial";
 import { childList, renderNode } from "./renderNode";
 import type { ITJsonRenderEngineProps } from "./schemaRenderer.props";
 import type { SlotRegistry } from "./slots";
+import type { EffectRegistry } from "../actions/effects";
 import type { NodeSchema } from "./types";
 
 /** Contexto que comparten los nodos durante un render. */
@@ -24,6 +25,7 @@ interface RenderContext {
   resolveAction?: ITJsonRenderEngineProps["resolveAction"];
   pendingFallback?: React.ReactNode;
   slots?: SlotRegistry;
+  effects?: EffectRegistry;
 }
 
 /**
@@ -57,6 +59,7 @@ function renderTree(node: NodeSchema, path: SchemaPath, context: RenderContext, 
     resolveAction: context.resolveAction,
     pendingFallback: context.pendingFallback,
     slots: context.slots,
+    effects: context.effects,
     renderChildren: (current, currentPath) => {
       const children = childList(current);
       if (children.length === 0) return undefined;
@@ -118,6 +121,7 @@ export function ITSchemaRenderer({
   params,
   dataHandlers,
   slots,
+  effects,
   resolveValue,
   resolveAction,
   pendingFallback,
@@ -156,11 +160,12 @@ export function ITSchemaRenderer({
       resolveAction,
       pendingFallback,
       slots,
+      effects,
     }),
     // `issues` es un array nuevo en cada render a propósito: acumular avisos
     // entre renders duplicaría los avisos de esquemas que no han cambiado.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [schema, params, dataHandlers, slots, catalog, resolvedLimits, onIssue, resolveValue, resolveAction, pendingFallback]
+    [schema, params, dataHandlers, slots, effects, catalog, resolvedLimits, onIssue, resolveValue, resolveAction, pendingFallback]
   );
 
   const content = schema

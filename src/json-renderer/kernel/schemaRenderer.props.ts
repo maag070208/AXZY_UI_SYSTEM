@@ -5,6 +5,7 @@ import type { EngineLimits } from "../shared/limits";
 import type { SchemaPath } from "../shared/paths";
 import type { DataHandler } from "../binding/resolveValue";
 import type { SlotRegistry } from "./slots";
+import type { EffectRegistry } from "../actions/effects";
 import type { NodeSchema, ScreenSchema, SchemaValue } from "./types";
 
 /**
@@ -32,6 +33,11 @@ export interface ITJsonRenderEngineProps {
    * monta el componente con ese nombre; el esquema no puede elegir otro.
    */
   slots?: SlotRegistry;
+  /**
+   * Efectos que cumple el host. Una acción con `then`, `onError` o efectos sueltos
+   * los ejecuta después de su handler; `toast` y `navigate` son los más comunes.
+   */
+  effects?: EffectRegistry;
   /**
    * Resuelve los valores que no son referencias del motor (por ejemplo, textos
    * `{ i18n }`). Las referencias `$source`, `$state` y `$param` las resuelve el motor.

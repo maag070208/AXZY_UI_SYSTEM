@@ -29,6 +29,7 @@ import {
   useITTranslation,
   validateSchema,
   type DataHandler,
+  type EffectRegistry,
   type ITLineBarDatum,
   type ITDataTableFetchParams,
   type NavNode,
@@ -276,6 +277,14 @@ export const DemoJsonDashboard: React.FC<DemoJsonDashboardProps> = ({ path, quer
     setAviso({ mensaje, tipo });
     window.setTimeout(() => setAviso(null), 3000);
   }, []);
+  // Efectos que cumple el host cuando una acción del JSON lo pide (`then`, `toast`, `navigate`).
+  const efectosDemo = useMemo<EffectRegistry>(
+    () => ({
+      toast: ({ variant, message }) => toast(message, variant === "error" || variant === "warning" ? "danger" : "success"),
+      navigate: (href) => onNavigate(href),
+    }),
+    [toast, onNavigate]
+  );
   const url = `/demo/app/${pagina}.json`;
 
 
@@ -401,8 +410,7 @@ export const DemoJsonDashboard: React.FC<DemoJsonDashboardProps> = ({ path, quer
             setExportando(true);
             return;
           case "enviar-contacto":
-            // El motor ya validó los campos: aquí el host decide qué hacer con los valores.
-            toast(t("sandbox.app.contact.sent"));
+            // Los campos ya los validó el motor, y el aviso de éxito lo declara el JSON (`then`).
             return;
           case "nuevo-registro":
             abrirFormulario();
@@ -458,6 +466,7 @@ export const DemoJsonDashboard: React.FC<DemoJsonDashboardProps> = ({ path, quer
         params={parametros}
         dataHandlers={dataHandlers}
         slots={DEMO_SLOTS}
+        effects={efectosDemo}
         resolveValue={resolveValue}
         resolveAction={resolveAction}
         onIssue={(aviso) =>
