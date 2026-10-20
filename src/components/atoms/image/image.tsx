@@ -28,7 +28,6 @@ const ITImage = ({
   fallback = "",
   fit = "cover",
 }: ITImageProps) => {
-  const fitClass = fit === "contain" ? "object-contain" : "object-cover";
   const [imageError, setImageError] = useState(false);
   const { t } = useITTranslation();
 
@@ -44,14 +43,14 @@ const ITImage = ({
         <img
           src={fallback}
           alt={t("image.fallbackAlt")}
-          className={`w-full h-full ${fitClass}`}
+          className="w-full h-full" style={{ objectFit: fit }}
         />
       ) : (
         <img
           src={src}
           alt={alt}
           onError={handleImageError}
-          className={`w-full h-full ${fitClass}`}
+          className="w-full h-full" style={{ objectFit: fit }}
         />
       )}
     </div>
