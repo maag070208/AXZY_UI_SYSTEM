@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Catalog } from "../catalog/catalog.props";
 import { axzyCatalog } from "../catalog/axzyCatalog";
 import { createBindingResolver } from "../binding/resolveValue";
@@ -12,7 +12,7 @@ import { childList, renderNode } from "./renderNode";
 import type { ITJsonRenderEngineProps } from "./schemaRenderer.props";
 import type { SlotRegistry } from "./slots";
 import type { EffectRegistry } from "../actions/effects";
-import type { NodeSchema } from "./types";
+import type { NodeSchema, SchemaValue } from "./types";
 
 /** Contexto que comparten los nodos durante un render. */
 interface RenderContext {
@@ -29,6 +29,8 @@ interface RenderContext {
   effects?: EffectRegistry;
   /** Capacidades que concede el host. Un `requires` sin concesión no se pinta. */
   capabilities?: readonly string[];
+  /** Escribe en el estado de la pantalla (efecto `set`). */
+  setState?: (cambios: Record<string, unknown>) => void;
 }
 
 /**
@@ -78,6 +80,8 @@ function renderTree(node: NodeSchema, path: SchemaPath, context: RenderContext, 
     effects: context.effects,
     actionTimeoutMs: context.limits.actionTimeoutMs,
     onIssue: context.onIssue,
+    setState: context.setState,
+    capabilities: context.capabilities,
     renderChildren: (current, currentPath) => {
       const children = childList(current);
       if (children.length === 0) return undefined;
@@ -148,6 +152,25 @@ export function ITSchemaRenderer({
   className,
 }: ITJsonRenderEngineProps) {
   const resolvedLimits = useMemo(() => resolveLimits(limits), [limits]);
+
+  // Estado de la pantalla: el inicial del esquema más lo que escriben las acciones (efecto
+  // `set`). Va ligado a la identidad del esquema: una pantalla nueva empieza limpia.
+  const [escrito, setEscrito] = useState<{ origen: unknown; valores: Record<string, unknown> }>({
+    origen: schema,
+    valores: {},
+  });
+  const valoresPantalla = useMemo<Record<string, unknown>>(
+    () => ({ ...(schema?.state ?? {}), ...(escrito.origen === schema ? escrito.valores : {}) }),
+    [schema, escrito]
+  );
+  const escribirEstado = useCallback(
+    (cambios: Record<string, unknown>) =>
+      setEscrito((previo) => ({
+        origen: schema,
+        valores: { ...(previo.origen === schema ? previo.valores : {}), ...cambios },
+      })),
+    [schema]
+  );
   // Un único array de avisos por render: el resolutor y los boundaries escriben
   // en él, así que no se pierde ninguno por el camino.
   const issues: JsonEngineIssue[] = [];
@@ -170,7 +193,7 @@ export function ITSchemaRenderer({
       // El binding escribe sus avisos (JR030, JR032) en el mismo array que el resto del render.
       resolveValue: createBindingResolver({
         data: schema?.data,
-        state: schema?.state,
+        state: valoresPantalla as Record<string, SchemaValue>,
         params,
         handlers: dataHandlers,
         report: (aviso) => issues.push(aviso),
@@ -181,11 +204,12 @@ export function ITSchemaRenderer({
       slots,
       effects,
       capabilities,
+      setState: escribirEstado,
     }),
     // `issues` es un array nuevo en cada render a propósito: acumular avisos
     // entre renders duplicaría los avisos de esquemas que no han cambiado.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [schema, params, dataHandlers, slots, effects, capabilities, catalog, resolvedLimits, onIssue, resolveValue, resolveAction, pendingFallback]
+    [schema, params, valoresPantalla, escribirEstado, dataHandlers, slots, effects, capabilities, catalog, resolvedLimits, onIssue, resolveValue, resolveAction, pendingFallback]
   );
 
   // Una pantalla que exige una capacidad no concedida no se pinta en absoluto.

@@ -58,6 +58,11 @@ const ACTION: JsonSchema = {
     openOverlay: { type: "string", description: "Overlay a abrir." },
     closeOverlay: { type: "string", description: "Overlay a cerrar." },
     refresh: { type: "string", description: "Fuente de datos a refrescar." },
+    set: { type: "object", description: "Escribe en el estado de la pantalla: `{ clave: valor }`. Admite referencias." },
+    requires: {
+      anyOf: [{ type: "string" }, { type: "array", items: { type: "string" } }],
+      description: "Capacidad que exige la acción. Sin concesión, no se ejecuta (JR061).",
+    },
   },
   additionalProperties: false,
 };

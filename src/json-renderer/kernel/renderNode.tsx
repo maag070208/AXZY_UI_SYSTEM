@@ -17,6 +17,8 @@ import type { NodeSchema } from "./types";
 import { FormNode } from "../form/FormNode";
 import { readFormFields, type FormField } from "../form/rules";
 import { wrapAction, type EffectContext, type EffectRegistry } from "../actions/effects";
+import { faltanCapacidades } from "./capabilities";
+import ITButton from "../../components/atoms/button/button";
 
 /** Contexto de efectos de un nodo: el registro del host, la traducción y los avisos. */
 function effectContext(options: RenderNodeOptions, path: SchemaPath, node: NodeSchema): EffectContext {
@@ -29,6 +31,8 @@ function effectContext(options: RenderNodeOptions, path: SchemaPath, node: NodeS
     resolveChained: (name) => options.resolveAction?.(node, "chain", { action: name }, path),
     timeoutMs: options.actionTimeoutMs,
     reportRuntime: options.onIssue,
+    setState: options.setState,
+    resolveRaw: (value, valuePath) => (options.resolveValue ? options.resolveValue(value, valuePath) : value),
   };
 }
 
@@ -71,6 +75,10 @@ export interface RenderNodeOptions {
   effects?: EffectRegistry;
   /** Milisegundos que una acción puede tardar antes de considerarla colgada (`JR041`). */
   actionTimeoutMs?: number;
+  /** Escribe en el estado de la pantalla (efecto `set`). */
+  setState?: (cambios: Record<string, unknown>) => void;
+  /** Capacidades que concede el host (para las acciones con `requires`). */
+  capabilities?: readonly string[];
   /** Recibe los avisos que se producen fuera del render (por ejemplo, un timeout). */
   onIssue?: (aviso: JsonEngineIssue) => void;
   /** Renderiza los hijos de un nodo (lo aporta el recorrido del árbol). */
@@ -184,6 +192,88 @@ function renderForm(node: NodeSchema, options: RenderNodeOptions): React.ReactNo
 }
 
 /**
+ * Convierte las columnas `type: "actions"` con `rowActions` en columnas reales de la
+ * tabla. Cada botón de fila llama a la acción del host con la fila como primer argumento,
+ * igual que `onRowClick`. El JSON nunca da una función: solo nombra la acción.
+ *
+ * Un botón sin handler, sin permiso o mal formado no se pinta y avisa (JR040, JR061, JR021).
+ */
+function prepararColumnas(columnas: unknown, node: NodeSchema, options: RenderNodeOptions, path: SchemaPath): unknown {
+  if (!Array.isArray(columnas)) return columnas;
+
+  return columnas.map((columna, indice) => {
+    if (!columna || typeof columna !== "object") return columna;
+    const declarada = columna as Record<string, unknown>;
+    if (declarada.type !== "actions" || !Array.isArray(declarada.rowActions)) return columna;
+
+    const colPath = [...path, "props", "columns", indice];
+    const botones = declarada.rowActions.flatMap((raw, indiceAccion) => {
+      const accion = raw as Record<string, unknown> | null;
+      const rutaAccion = [...colPath, "rowActions", indiceAccion];
+      if (!accion || typeof accion.action !== "string" || accion.action === "") {
+        options.issues.push(issue("JR021", "Un botón de fila no declara `action`.", formatPath(rutaAccion), { severity: "error" }));
+        return [];
+      }
+      const faltan = faltanCapacidades(accion.requires, options.capabilities);
+      if (faltan.length > 0) {
+        options.issues.push(
+          issue("JR061", `El botón de fila "${accion.action}" exige ${faltan.join(", ")}, que no está concedido.`, formatPath(rutaAccion), {
+            severity: "warning",
+            hint: "Concede la capacidad con la prop `capabilities` del renderizador.",
+          })
+        );
+        return [];
+      }
+      const handler = options.resolveAction?.(node, `fila:${accion.action}`, accion, rutaAccion);
+      if (typeof handler !== "function") {
+        options.issues.push(
+          issue("JR040", `La acción de fila "${accion.action}" no está registrada por el host.`, formatPath(rutaAccion), {
+            severity: "warning",
+            hint: "Regístrala en `resolveAction` del host, o quita el botón del esquema.",
+          })
+        );
+        return [];
+      }
+      const etiqueta = textoDe(options.resolveValue ? options.resolveValue(accion.label, rutaAccion) : accion.label);
+      return [
+        {
+          clave: String(indiceAccion),
+          etiqueta: etiqueta || accion.action,
+          color: typeof accion.color === "string" ? accion.color : "secondary",
+          variante: typeof accion.variant === "string" ? accion.variant : "outlined",
+          ejecutar: wrapAction(handler, accion, effectContext(options, rutaAccion, node)),
+        },
+      ];
+    });
+
+    const copia: Record<string, unknown> = { ...declarada };
+    delete copia.rowActions;
+    const etiquetaColumna = textoDe(options.resolveValue ? options.resolveValue(copia.label, colPath) : copia.label);
+    const Boton = ITButton as unknown as React.ComponentType<Record<string, unknown>>;
+
+    return {
+      ...copia,
+      label: etiquetaColumna || String(copia.key ?? ""),
+      actions: (fila: unknown) =>
+        React.createElement(
+          React.Fragment,
+          null,
+          botones.map((boton) =>
+            React.createElement(Boton, {
+              key: boton.clave,
+              label: boton.etiqueta,
+              size: "sm",
+              variant: boton.variante,
+              color: boton.color,
+              onClick: () => boton.ejecutar(fila),
+            })
+          )
+        ),
+    };
+  });
+}
+
+/**
  * Pinta un nodo del esquema.
  *
  * @example
@@ -225,9 +315,24 @@ export function renderNode(node: NodeSchema, options: RenderNodeOptions): React.
   for (const [name, value] of Object.entries(props)) {
     finalProps[name] = options.resolveValue ? options.resolveValue(value, path) : value;
   }
+  // Las tablas reciben las columnas con sus botones de fila ya convertidos en funciones.
+  if (node.type === "ITDataTable" && finalProps.columns !== undefined) {
+    finalProps.columns = prepararColumnas(finalProps.columns, node, options, path);
+  }
 
   // Las acciones se traducen a handlers del host; las no registradas se avisan.
   for (const [name, action] of Object.entries(actions)) {
+    // Permisos por acción: una acción que exige algo no concedido no se ejecuta (JR061).
+    const faltan = faltanCapacidades((action as { requires?: unknown } | null)?.requires, options.capabilities);
+    if (faltan.length > 0) {
+      issues.push(
+        issue("JR061", `La acción "${nombreDeAccion(action)}" exige ${faltan.join(", ")}, que no está concedido.`, formatPath(propPath(path, name)), {
+          severity: "warning",
+          hint: "Concede la capacidad con la prop `capabilities` del renderizador. Sin ella, la acción no se ejecuta.",
+        })
+      );
+      continue;
+    }
     const handler = options.resolveAction?.(node, name, action, path);
     if (typeof handler === "function") {
       finalProps[name] = wrapAction(handler, action, effectContext(options, path, node));

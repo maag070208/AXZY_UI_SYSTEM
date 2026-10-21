@@ -64,13 +64,20 @@ export interface EffectContext {
   timeoutMs?: number;
   /** Recibe los avisos que se producen después del render (un timeout, por ejemplo). */
   reportRuntime?: (aviso: JsonEngineIssue) => void;
+  /** Escribe en el estado de la pantalla (efecto `set`). */
+  setState?: (cambios: Record<string, unknown>) => void;
+  /** Resuelve referencias del esquema (`$state`, `$param`…) de un valor. */
+  resolveRaw?: (value: unknown, path: SchemaPath) => unknown;
 }
 
 /** Un paso que se ejecuta cuando la acción termina, con el resultado del handler. */
 type Paso = (resultado: unknown) => void;
 
 /** Nombres de efecto que el motor conoce. */
-const EFFECT_KEYS = ["toast", "navigate", "refresh", "openOverlay", "closeOverlay"] as const;
+const EFFECT_KEYS = ["toast", "navigate", "refresh", "openOverlay", "closeOverlay", "set"] as const;
+
+/** Efectos que cumple el host. `set` lo cumple el propio motor, así que no se pide al registro. */
+const EFFECT_KEYS_DEL_HOST = ["toast", "navigate", "refresh", "openOverlay", "closeOverlay"] as const;
 
 /** Forma de una acción con efectos, tal como la escribe el JSON. */
 interface ActionWithEffects extends EffectSchema {
@@ -124,7 +131,7 @@ function efectosSueltos(declarada: ActionWithEffects): EffectSchema | null {
 
 /** Avisa de los efectos de registro que el esquema pide y el host no implementa. Se llama al pintar. */
 function comprobarRegistro(efecto: EffectSchema, context: EffectContext): void {
-  for (const clave of EFFECT_KEYS) {
+  for (const clave of EFFECT_KEYS_DEL_HOST) {
     if (efecto[clave] === undefined) continue;
     if (typeof context.effects?.[clave] !== "function") {
       context.report(
@@ -139,6 +146,16 @@ function comprobarRegistro(efecto: EffectSchema, context: EffectContext): void {
 
 /** Cumple un efecto de registro con el resultado del handler. */
 function cumplirEfecto(efecto: EffectSchema, context: EffectContext, resultado: unknown): void {
+  // `set` lo cumple el motor: escribe en el estado de la pantalla, con el resultado ya aplicado.
+  if (efecto.set && context.setState) {
+    const cambios: Record<string, unknown> = {};
+    for (const [clave, valor] of Object.entries(efecto.set)) {
+      const conResultado = resolverResultado(valor, resultado);
+      cambios[clave] = context.resolveRaw ? context.resolveRaw(conResultado, context.path) : conResultado;
+    }
+    context.setState(cambios);
+  }
+
   const registro = context.effects;
   if (!registro) return;
 
