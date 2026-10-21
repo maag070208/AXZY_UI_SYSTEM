@@ -55,8 +55,49 @@ const { tree, status, pendingNodes } = parsePartialSchema(texto);
 - El render pinta el primer nodo y, cuando llega el resto, añade el segundo sin
   perder el primero.
 
+## `useSchemaStream`: el hook que consume el stream
+
+Acepta una fuente completa (`string`), un iterable asíncrono o un `ReadableStream` de texto.
+Acumula el texto, lo parsea en modo tolerante con cada trozo y devuelve el último árbol válido.
+
+```tsx
+import { useSchemaStream, ITSchemaRenderer, ITSkeleton } from "@axzydev/axzy_ui_system";
+
+function Respuesta({ stream }: { stream: AsyncIterable<string> }) {
+  const { tree, streaming, status, pendingNodes, issues } = useSchemaStream(stream);
+  return (
+    <ITSchemaRenderer
+      schema={tree}
+      pendingFallback={<ITSkeleton />}
+      onIssue={(aviso) => console.warn(aviso.code, aviso.path)}
+    />
+  );
+}
+```
+
+Lo que devuelve (`StreamState`):
+
+| Campo | Qué es |
+|---|---|
+| `tree` | Árbol pintable. Si el texto deja de ser recuperable, se queda el último válido. |
+| `streaming` | `true` mientras la fuente sigue emitiendo. |
+| `status` | `complete` si el documento está entero; `pending` si falta cerrar algo. |
+| `broken` | `true` si el texto no es recuperable (basura al principio). |
+| `pendingNodes` | Nodos aún sin cerrar. Lo que no está cerrado no se pinta a medias. |
+| `text` | Texto acumulado hasta ahora. |
+| `issues` | Avisos del stream: `JR080` si la fuente falla, o si termina con el JSON sin cerrar. |
+
+Garantías:
+
+- **Sin pérdida con StrictMode:** el texto acumulado vive en un registro asociado a la
+  fuente. Si React monta dos veces, el segundo montaje continúa donde quedó el primero.
+- **Cancelación:** si el componente deja de usar la fuente, se devuelve el control a ella
+  (`return()` del iterable, `cancel()` del stream).
+- **Fuente estable:** crea el iterable o el stream una vez (en un estado, o fuera del
+  componente). Crearlo dentro del render arranca un stream nuevo en cada render.
+
 ## Pendiente (fase 9)
 
-- `useSchemaStream` con `AsyncIterable`/`ReadableStream`.
-- Reutilización de nodos por identidad entre fragmentos (memoización real).
+- Reutilización de nodos por identidad entre fragmentos (memoización real). Hoy cada
+  fragmento vuelve a parsear el texto completo.
 - Medición de trabajo por fragmento y diferido al siguiente frame (`JR081`).

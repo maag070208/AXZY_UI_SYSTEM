@@ -15,6 +15,7 @@
  */
 
 import type { NodeSchema, NodeStatus, ScreenSchema } from "../kernel/types";
+import type { JsonEngineIssue } from "../shared/errors";
 
 /** Resultado de parsear un texto posiblemente incompleto. */
 export interface PartialParseResult {
@@ -441,6 +442,10 @@ export interface StreamState {
   pendingNodes: number;
   /** `true` cuando el emisor está activo. */
   streaming: boolean;
+  /** Texto acumulado hasta ahora. */
+  text: string;
+  /** Avisos del stream (`JR080`: falló, o terminó sin cerrar el JSON). */
+  issues: JsonEngineIssue[];
 }
 
 /** `true` cuando un nodo está pendiente según el parser. */

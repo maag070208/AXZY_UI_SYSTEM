@@ -79,6 +79,8 @@ export type { VocabularyContract, ComponentContract, PropContract } from "./voca
 /* ── Streaming ─────────────────────────────────────────────────────────── */
 export { parsePartialSchema, isNodePending } from "./stream/tolerantParse";
 export type { PartialParseResult, StreamState } from "./stream/tolerantParse";
+export { useSchemaStream } from "./stream/useSchemaStream";
+export type { StreamSource } from "./stream/useSchemaStream";
 
 /* ── Compartido ────────────────────────────────────────────────────────── */
 export { JsonEngineError, issue } from "./shared/errors";
