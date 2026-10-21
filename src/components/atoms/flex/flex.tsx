@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { forwardRef } from "react";
 import {
   ITFlexProps,
   FlexDirection,
@@ -52,7 +53,7 @@ const wrapMap: Record<FlexWrap, string> = {
  *   <main>Content</main>
  * </ITFlex>
  */
-export default function ITFlex({
+const ITFlex = forwardRef<HTMLDivElement, ITFlexProps>(function ITFlex({
   children,
   direction = "row",
   align,
@@ -66,7 +67,8 @@ export default function ITFlex({
   style,
   as: Component = "div",
   onClick,
-}: ITFlexProps) {
+  onScroll,
+}, ref) {
   const resolvedStyle: React.CSSProperties = {
     gap: gap > 0 ? `${gap * 0.25}rem` : undefined,
     flexGrow: typeof grow === "boolean" ? (grow ? 1 : 0) : grow,
@@ -77,6 +79,7 @@ export default function ITFlex({
 
   return (
     <Component
+      ref={ref}
       className={clsx(
         "flex",
         directionMap[direction],
@@ -87,8 +90,13 @@ export default function ITFlex({
       )}
       style={resolvedStyle}
       onClick={onClick}
+      onScroll={onScroll}
     >
       {children}
     </Component>
   );
-}
+});
+
+ITFlex.displayName = "ITFlex";
+
+export default ITFlex;

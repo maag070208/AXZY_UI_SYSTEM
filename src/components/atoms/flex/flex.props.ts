@@ -1,4 +1,4 @@
-import { ReactNode, CSSProperties, ElementType } from "react";
+import { ReactNode, CSSProperties, ElementType, UIEvent } from "react";
 
 export type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
 export type FlexAlign = "start" | "end" | "center" | "stretch" | "baseline";
@@ -32,4 +32,6 @@ export interface ITFlexProps {
   as?: ElementType;
   /** Click handler */
   onClick?: (e: React.MouseEvent) => void;
+  /** Scroll handler (useful for scrollable chat/log panels) */
+  onScroll?: (e: UIEvent<HTMLElement>) => void;
 }

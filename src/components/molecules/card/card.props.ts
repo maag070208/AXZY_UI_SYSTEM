@@ -3,6 +3,8 @@ export interface ITCardProps {
   onClick?: () => void;
   /** Card title displayed in the header area. */
   title?: string;
+  /** Optional actions rendered at the right of the title row (e.g. a play button). */
+  headerActions?: React.ReactNode;
   /** Image source URL displayed at the top of the card. */
   image?: string;
   /** Alt text for the card image. @default "Card Image" */

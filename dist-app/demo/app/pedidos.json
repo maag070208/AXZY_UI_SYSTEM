@@ -2,6 +2,11 @@
   "$schema": "axzy/screen",
   "version": 1,
   "id": "demo.pedidos",
+  "data": {
+    "pedidos": {
+      "handler": "pedidos"
+    }
+  },
   "content": [
     {
       "type": "ITStack",
@@ -145,7 +150,6 @@
         },
         {
           "type": "ITDataTable",
-          "id": "tabla-pedidos",
           "props": {
             "columns": [
               {
