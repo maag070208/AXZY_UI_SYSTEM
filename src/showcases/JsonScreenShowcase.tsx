@@ -54,7 +54,7 @@ const EJEMPLO: ScreenSchema = {
               props: { title: "Listo para pintar" },
               children: [
                 { type: "ITText", text: "Este árbol viene de un JSON, no de TSX." },
-                { type: "ITProgress", props: { value: 64, max: 100, size: "sm" } },
+                { type: "ITText", props: { muted: true }, text: "Progreso: 64 de 100" },
               ],
             },
           ],
