@@ -301,3 +301,16 @@ silencio. Para una sección con ancla, pon el `id` en el nodo de su título.
 
 El catálogo completo, incluidos los códigos de fases posteriores, está en
 [`PLAN-IMPLEMENTACION.md`](./PLAN-IMPLEMENTACION.md) §11.
+
+## Estado, permisos por acción y botones de fila
+
+- **`set` (efecto):** escribe en el estado de la pantalla. Las claves son las de `state`;
+  los valores admiten referencias (`{ "$result": "campo" }`, `{ "$state": "otra" }`).
+  Ejemplo: `"then": [{ "set": { "folio": { "$result": "id" } } }]`. Al cambiar de esquema,
+  el estado vuelve al inicial del nuevo esquema.
+- **`requires` en una acción:** la acción solo se ejecuta si el host concede la capacidad
+  (prop `capabilities`). Sin concesión, no se ejecuta y avisa con `JR061`.
+- **`rowActions` en columnas `type: "actions"`:** botones por fila de una tabla. Cada uno
+  declara `label`, `action` y, opcionalmente, `variant`, `color` y `requires`. La acción
+  recibe la fila como primer argumento. Sin `action` avisa con `JR021`; sin handler en el
+  host, `JR040`.

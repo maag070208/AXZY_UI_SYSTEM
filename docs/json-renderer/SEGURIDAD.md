@@ -99,7 +99,9 @@ Estas capas del alcance **no están implementadas**. No hay que asumir que prote
 Por orden de prioridad:
 
 1. Implementar `redact` (recorte de campos antes del render).
-2. Permisos por acción (`JR061`): hoy `requires` solo se evalúa en nodos y en la pantalla.
+2. Permisos por acción: `requires` en una acción ya se evalúa (`JR061`). Pendiente: que
+   los botones de fila y los `onSubmit` de formularios se comprueben igual, y una lista de
+   capacidades que el host pueda auditar.
 3. Validar el documento con el JSON Schema dentro del renderizador, en un modo estricto opcional.
 
 Ya cerrados en esta revisión: aviso de acción no registrada (`JR040`), `requires` con
