@@ -2,9 +2,10 @@ import React, { useEffect, useMemo, useRef } from "react";
 import type { Catalog } from "../catalog/catalog.props";
 import { axzyCatalog } from "../catalog/axzyCatalog";
 import { createBindingResolver } from "../binding/resolveValue";
-import type { JsonEngineIssue } from "../shared/errors";
+import { issue, type JsonEngineIssue } from "../shared/errors";
 import { resolveLimits, type EngineLimits } from "../shared/limits";
-import type { SchemaPath } from "../shared/paths";
+import { formatPath, type SchemaPath } from "../shared/paths";
+import { faltanCapacidades } from "./capabilities";
 import { NodeBoundary } from "./NodeBoundary";
 import { auditTree } from "./partial";
 import { childList, renderNode } from "./renderNode";
@@ -26,6 +27,8 @@ interface RenderContext {
   pendingFallback?: React.ReactNode;
   slots?: SlotRegistry;
   effects?: EffectRegistry;
+  /** Capacidades que concede el host. Un `requires` sin concesión no se pinta. */
+  capabilities?: readonly string[];
 }
 
 /**
@@ -49,6 +52,19 @@ function renderTree(node: NodeSchema, path: SchemaPath, context: RenderContext, 
     context.onIssue?.(issue);
   };
 
+  // Capacidades: un nodo que exige algo que el host no concede no se pinta. Si tiene
+  // `fallback`, se pinta el fallback en su lugar; si no, el nodo desaparece con aviso.
+  const faltan = faltanCapacidades(node.requires, context.capabilities);
+  if (faltan.length > 0) {
+    reportIssue(
+      issue("JR060", `Falta la capacidad ${faltan.join(", ")} para pintar \`${node.type}\`.`, formatPath(path), {
+        severity: "warning",
+        hint: "El host debe conceder la capacidad con la prop `capabilities`, o el nodo debe declarar un `fallback`.",
+      })
+    );
+    return node.fallback ? renderTree(node.fallback, [...path, "fallback"], context, level + 1) : null;
+  }
+
   const issuesBefore = issues.length;
 
   const element = renderNode(node, {
@@ -60,6 +76,8 @@ function renderTree(node: NodeSchema, path: SchemaPath, context: RenderContext, 
     pendingFallback: context.pendingFallback,
     slots: context.slots,
     effects: context.effects,
+    actionTimeoutMs: context.limits.actionTimeoutMs,
+    onIssue: context.onIssue,
     renderChildren: (current, currentPath) => {
       const children = childList(current);
       if (children.length === 0) return undefined;
@@ -122,6 +140,7 @@ export function ITSchemaRenderer({
   dataHandlers,
   slots,
   effects,
+  capabilities,
   resolveValue,
   resolveAction,
   pendingFallback,
@@ -161,14 +180,26 @@ export function ITSchemaRenderer({
       pendingFallback,
       slots,
       effects,
+      capabilities,
     }),
     // `issues` es un array nuevo en cada render a propósito: acumular avisos
     // entre renders duplicaría los avisos de esquemas que no han cambiado.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [schema, params, dataHandlers, slots, effects, catalog, resolvedLimits, onIssue, resolveValue, resolveAction, pendingFallback]
+    [schema, params, dataHandlers, slots, effects, capabilities, catalog, resolvedLimits, onIssue, resolveValue, resolveAction, pendingFallback]
   );
 
-  const content = schema
+  // Una pantalla que exige una capacidad no concedida no se pinta en absoluto.
+  const faltanRaiz = schema ? faltanCapacidades(schema.requires, capabilities) : [];
+  if (faltanRaiz.length > 0) {
+    issues.push(
+      issue("JR060", `Falta la capacidad ${faltanRaiz.join(", ")} para esta pantalla.`, "requires", {
+        severity: "error",
+        hint: "Concede la capacidad con la prop `capabilities` del renderizador.",
+      })
+    );
+  }
+
+  const content = schema && faltanRaiz.length === 0
     ? (Array.isArray(schema.content) ? schema.content : [schema.content]).filter(
         (node): node is NodeSchema => Boolean(node) && typeof node === "object"
       )

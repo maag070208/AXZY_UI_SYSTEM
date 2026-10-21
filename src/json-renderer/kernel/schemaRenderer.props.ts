@@ -39,6 +39,12 @@ export interface ITJsonRenderEngineProps {
    */
   effects?: EffectRegistry;
   /**
+   * Capacidades que concede el host (`["usuarios.leer", …]`). Un nodo o la pantalla que
+   * declara `requires` solo se pinta si todas están concedidas; si no, avisa con `JR060`.
+   * Sin esta prop, cualquier `requires` se deniega.
+   */
+  capabilities?: readonly string[];
+  /**
    * Resuelve los valores que no son referencias del motor (por ejemplo, textos
    * `{ i18n }`). Las referencias `$source`, `$state` y `$param` las resuelve el motor.
    */

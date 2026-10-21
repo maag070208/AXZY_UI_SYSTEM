@@ -43,6 +43,9 @@ export interface BindingScope {
 /** Resolutor de valores que consume el kernel al pintar cada prop. */
 export type BindingResolver = (value: unknown, path: SchemaPath) => unknown;
 
+/** Claves que una fuente no puede declarar: cualquiera de ellas sería una petición de red. */
+const CLAVES_DE_RED = ["url", "endpoint", "href", "src"];
+
 /** Operadores que el binding mínimo sabe resolver. */
 const SUPPORTED_REFERENCES = ["$source", "$state", "$param"] as const;
 
@@ -139,6 +142,17 @@ export function createBindingResolver(scope: BindingScope): BindingResolver {
       );
     }
     const declared = scope.data![name];
+    // Una fuente nunca pide red: si el esquema intenta declarar una URL, se rechaza y se avisa.
+    const claveDeRed = Object.keys(declared).find((clave) => CLAVES_DE_RED.includes(clave));
+    if (claveDeRed) {
+      scope.report(
+        issue("JR031", `El esquema declara \`${claveDeRed}\` en la fuente "${name}": las fuentes no pueden pedir red.`, formatPath(path), {
+          severity: "error",
+          hint: "Una fuente solo nombra un `handler` que registra el host.",
+        })
+      );
+      return () => Promise.reject(new Error(`La fuente "${name}" no puede pedir red.`));
+    }
     const handler = own(scope.handlers, declared.handler) ? scope.handlers![declared.handler] : undefined;
     if (typeof handler !== "function") {
       return failingLoader(

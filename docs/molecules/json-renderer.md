@@ -32,7 +32,9 @@ import { ITSchemaRenderer } from "@axzydev/axzy_ui_system";
 ```
 
 Props principales: `schema`, `catalog`, `params`, `dataHandlers`, `resolveAction`,
-`effects`, `slots`, `resolveValue`, `pendingFallback`, `onIssue`, `limits`, `className`.
+`effects`, `slots`, `capabilities`, `resolveValue`, `pendingFallback`, `onIssue`, `limits`,
+`className`. `capabilities` es la lista de permisos que concede el host: un nodo con
+`requires` solo se pinta si todos están concedidos.
 La lista completa y sus tipos está en `ITSchemaRenderer` (`kernel/schemaRenderer.props.ts`).
 
 Qué puede declarar el JSON (resumen; detalle en la guía):

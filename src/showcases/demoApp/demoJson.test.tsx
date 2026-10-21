@@ -206,6 +206,13 @@ describe.each(PAGINAS)("%s", (archivo) => {
       <ITSchemaRenderer
         schema={pagina as never}
         params={ejemplo?.params ?? {}}
+        // Como el host real: todos los efectos del demo están implementados.
+        effects={{ toast: () => undefined, navigate: () => undefined, refresh: () => undefined, openOverlay: () => undefined, closeOverlay: () => undefined }}
+        // Como el host real: solo las acciones de DEMO_ACTIONS tienen handler.
+        resolveAction={(_node, _prop, accion) => {
+          const nombre = (accion as { action?: unknown } | null)?.action;
+          return typeof nombre === "string" && (DEMO_ACTIONS as readonly string[]).includes(nombre) ? () => undefined : undefined;
+        }}
         slots={slots}
         dataHandlers={{
           usuarios: async () => ({ data: [], total: 0 }),

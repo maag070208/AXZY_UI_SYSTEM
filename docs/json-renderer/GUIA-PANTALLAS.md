@@ -240,6 +240,20 @@ apunte.
 
 ---
 
+### Permisos: `requires`
+
+Un nodo (o la pantalla entera) puede exigir una capacidad con `requires`:
+
+```json
+{ "type": "ITButton", "props": { "label": { "i18n": "sandbox.app.borrar" } },
+  "requires": "usuarios.eliminar",
+  "fallback": { "type": "ITText", "text": { "i18n": "sandbox.app.sinPermiso" } } }
+```
+
+El host decide qué capacidades concede, con la prop `capabilities` del renderizador. Sin
+concesión, el nodo no se pinta (o pinta su `fallback`) y se avisa con `JR060`. El JSON solo
+nombra la capacidad: nunca decide si el usuario la tiene.
+
 ## 8. Paso 7 · Acciones: botones que hacen algo
 
 Un botón **nombra** una acción. El host la resuelve por nombre:

@@ -288,7 +288,12 @@ silencio. Para una sección con ancla, pon el `id` en el nodo de su título.
 | `JR013` | presupuesto de nodos/profundidad excedido |
 | `JR014` | el `id` de un nodo no llegó al DOM (el componente no reenvía props) |
 | `JR030` | fuente de datos no declarada en `data`, o handler no registrado por el host |
+| `JR031` | una fuente declara `url`, `endpoint`, `href` o `src`: las fuentes no pueden pedir red |
 | `JR032` | referencia sin valor (`$state`/`$param`) u operador de binding no soportado todavía |
+| `JR040` | acción, `onSubmit` o efecto que el host no registra |
+| `JR041` | una acción del host excedió `actionTimeoutMs` y se trata como fallida |
+| `JR042` | encadenado de acciones desde efectos demasiado profundo (máximo 5 niveles) |
+| `JR060` | falta una capacidad de `requires` (nodo, pantalla o `requires` no válido) |
 | `JR020` | esquema inválido (versión, `id`, `content`) |
 | `JR021` | nodo inválido (no es objeto, o `content` vacío) |
 | `JR070` | falta la migración de versión |

@@ -27,7 +27,15 @@ function effectContext(options: RenderNodeOptions, path: SchemaPath, node: NodeS
     report: (aviso) => options.issues.push(aviso),
     // Una acción encadenada desde un efecto se resuelve con el mismo `resolveAction` del host.
     resolveChained: (name) => options.resolveAction?.(node, "chain", { action: name }, path),
+    timeoutMs: options.actionTimeoutMs,
+    reportRuntime: options.onIssue,
   };
+}
+
+/** Nombre de una acción declarada, para los avisos. */
+function nombreDeAccion(action: unknown): string {
+  const nombre = (action as { action?: unknown } | null)?.action;
+  return typeof nombre === "string" ? nombre : "(sin nombre)";
 }
 
 /** `true` cuando el nodo es un formulario del motor. */
@@ -61,6 +69,10 @@ export interface RenderNodeOptions {
   slots?: SlotRegistry;
   /** Efectos que cumple el host (`toast`, `navigate`…) tras una acción. */
   effects?: EffectRegistry;
+  /** Milisegundos que una acción puede tardar antes de considerarla colgada (`JR041`). */
+  actionTimeoutMs?: number;
+  /** Recibe los avisos que se producen fuera del render (por ejemplo, un timeout). */
+  onIssue?: (aviso: JsonEngineIssue) => void;
   /** Renderiza los hijos de un nodo (lo aporta el recorrido del árbol). */
   renderChildren?: (node: NodeSchema, path: SchemaPath) => React.ReactNode;
   /** Qué pintar mientras un nodo está pendiente (streaming). */
@@ -152,6 +164,14 @@ function renderForm(node: NodeSchema, options: RenderNodeOptions): React.ReactNo
   // Sin texto declarado, el nodo usa `jsonRenderer.form.submit` (lo resuelve FormNode).
   const submitLabel = textoDe(resolveValue ? resolveValue(textoEnvio, path) : textoEnvio) || undefined;
   const accion = resolveAction?.(node, "onSubmit", node.props?.onSubmit, path);
+  if (node.props?.onSubmit !== undefined && typeof accion !== "function") {
+    issues.push(
+      issue("JR040", `La acción "${nombreDeAccion(node.props.onSubmit)}" no está registrada por el host.`, formatPath(propPath(path, "onSubmit")), {
+        severity: "warning",
+        hint: "Regístrala en `resolveAction` del host. Sin ella, enviar el formulario no hace nada.",
+      })
+    );
+  }
   const conEfectos = accion ? wrapAction(accion, node.props?.onSubmit, effectContext(options, path, node)) : undefined;
 
   return React.createElement(FormNode, {
@@ -209,7 +229,17 @@ export function renderNode(node: NodeSchema, options: RenderNodeOptions): React.
   // Las acciones se traducen a handlers del host; las no registradas se avisan.
   for (const [name, action] of Object.entries(actions)) {
     const handler = options.resolveAction?.(node, name, action, path);
-    if (typeof handler === "function") finalProps[name] = wrapAction(handler, action, effectContext(options, path, node));
+    if (typeof handler === "function") {
+      finalProps[name] = wrapAction(handler, action, effectContext(options, path, node));
+    } else {
+      // Sin handler, el botón no hace nada: que se note en vez de fallar en silencio.
+      issues.push(
+        issue("JR040", `La acción "${nombreDeAccion(action)}" no está registrada por el host.`, formatPath(propPath(path, name)), {
+          severity: "warning",
+          hint: "Regístrala en `resolveAction` del host, o quita la prop del esquema.",
+        })
+      );
+    }
   }
 
   // Contenido: `children` declarados y, si el componente acepta texto, el atajo.

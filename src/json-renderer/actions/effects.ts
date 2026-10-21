@@ -60,6 +60,10 @@ export interface EffectContext {
   resolveChained?: (name: string) => ((...args: unknown[]) => unknown) | undefined;
   /** Profundidad de encadenado. La acción del nodo es 0. */
   depth?: number;
+  /** Milisegundos que una promesa del host puede tardar antes de considerarla colgada (`JR041`). */
+  timeoutMs?: number;
+  /** Recibe los avisos que se producen después del render (un timeout, por ejemplo). */
+  reportRuntime?: (aviso: JsonEngineIssue) => void;
 }
 
 /** Un paso que se ejecuta cuando la acción termina, con el resultado del handler. */
@@ -228,9 +232,38 @@ export function wrapAction(
     }
 
     if (resultado && typeof (resultado as PromiseLike<unknown>).then === "function") {
+      // Una promesa que no resuelve a tiempo cuenta como fallo: se aplica onError y el
+      // resultado tardío se ignora. Así una acción colgada no deja el botón esperando.
+      let resuelta = false;
+      const limite = context.timeoutMs;
+      const temporizador =
+        limite !== undefined && Number.isFinite(limite)
+          ? setTimeout(() => {
+              if (resuelta) return;
+              resuelta = true;
+              context.reportRuntime?.(
+                issue("JR041", `La acción excedió ${limite} ms y se considera fallida.`, formatPath(context.path), {
+                  severity: "error",
+                  hint: "El host debe responder o rechazar la acción a tiempo.",
+                })
+              );
+              pasoError?.(undefined);
+            }, limite)
+          : undefined;
+
       (resultado as Promise<unknown>).then(
-        (valor) => aplicar(valor),
-        () => pasoError?.(undefined)
+        (valor) => {
+          if (resuelta) return;
+          resuelta = true;
+          clearTimeout(temporizador);
+          aplicar(valor);
+        },
+        () => {
+          if (resuelta) return;
+          resuelta = true;
+          clearTimeout(temporizador);
+          pasoError?.(undefined);
+        }
       );
       return resultado;
     }

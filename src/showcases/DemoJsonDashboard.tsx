@@ -397,7 +397,8 @@ export const DemoJsonDashboard: React.FC<DemoJsonDashboardProps> = ({ path, quer
     (node: NodeSchema, _prop: string, action: unknown) => {
       const declarada = action as { action?: string; args?: Record<string, SchemaValue> } | undefined;
       const nombre = declarada?.action;
-      if (!nombre) return undefined;
+      // Solo las acciones de DEMO_ACTIONS existen: lo demás avisa con JR040 en lugar de no hacer nada.
+      if (!nombre || !(DEMO_ACTIONS as readonly string[]).includes(nombre)) return undefined;
 
       return (...args: unknown[]) => {
         switch (nombre) {
