@@ -16,6 +16,8 @@ export function ITLineBarChart({
   barLabel,
   lineColor = "#10b981",
   barColor = "#3b82f6",
+  showLine = true,
+  showBars = true,
   height = 240,
   formatValue,
   formatAxis,
@@ -40,8 +42,12 @@ export function ITLineBarChart({
   const plotHeight = height - padding.top - padding.bottom;
 
   const max = useMemo(
-    () => Math.max(...data.flatMap((d) => [d.line, d.bar]), 1),
-    [data]
+    () =>
+      Math.max(
+        ...data.flatMap((d) => [showLine ? d.line : 0, showBars ? d.bar : 0]),
+        1
+      ),
+    [data, showLine, showBars]
   );
   const gridValues = [0, 0.25, 0.5, 0.75, 1].map((f) => max * f);
   const step = data.length > 0 ? plotWidth / data.length : plotWidth;
@@ -103,21 +109,22 @@ export function ITLineBarChart({
           </g>
         ))}
 
-        {data.map((d, i) => (
-          <rect
-            key={`bar-${d.label}`}
-            x={x(i) - barWidth / 2}
-            y={y(d.bar)}
-            width={barWidth}
-            height={Math.max(padding.top + plotHeight - y(d.bar), 1)}
-            rx={3}
-            fill={barColor}
-            opacity={hover === null || hover === i ? 0.85 : 0.35}
-          />
-        ))}
+        {showBars &&
+          data.map((d, i) => (
+            <rect
+              key={`bar-${d.label}`}
+              x={x(i) - barWidth / 2}
+              y={y(d.bar)}
+              width={barWidth}
+              height={Math.max(padding.top + plotHeight - y(d.bar), 1)}
+              rx={3}
+              fill={barColor}
+              opacity={hover === null || hover === i ? 0.85 : 0.35}
+            />
+          ))}
 
-        {areaPath && <path d={areaPath} fill={`url(#area-${gradientId})`} />}
-        {data.length > 0 && (
+        {showLine && areaPath && <path d={areaPath} fill={`url(#area-${gradientId})`} />}
+        {showLine && data.length > 0 && (
           <polyline
             points={linePoints}
             fill="none"
@@ -127,17 +134,18 @@ export function ITLineBarChart({
             strokeLinejoin="round"
           />
         )}
-        {data.map((d, i) => (
-          <circle
-            key={`dot-${d.label}`}
-            cx={x(i)}
-            cy={y(d.line)}
-            r={hover === i ? 4.5 : 3}
-            fill="#ffffff"
-            stroke={lineColor}
-            strokeWidth={2}
-          />
-        ))}
+        {showLine &&
+          data.map((d, i) => (
+            <circle
+              key={`dot-${d.label}`}
+              cx={x(i)}
+              cy={y(d.line)}
+              r={hover === i ? 4.5 : 3}
+              fill="#ffffff"
+              stroke={lineColor}
+              strokeWidth={2}
+            />
+          ))}
 
         {data.map((d, i) => (
           <g key={`hit-${d.label}`} onMouseEnter={() => setHover(i)}>
@@ -157,24 +165,32 @@ export function ITLineBarChart({
           role="status"
         >
           <p className="text-[10px] font-semibold" style={{ color: "#e2e8f0" }}>{active.label}</p>
-          <p className="text-[11px] tabular-nums" style={{ color: lineColor }}>
-            {resolvedLineLabel}: {resolvedFormatValue(active.line)}
-          </p>
-          <p className="text-[11px] tabular-nums" style={{ color: "#93c5fd" }}>
-            {resolvedBarLabel}: {resolvedFormatValue(active.bar)}
-          </p>
+          {showLine && (
+            <p className="text-[11px] tabular-nums" style={{ color: lineColor }}>
+              {resolvedLineLabel}: {resolvedFormatValue(active.line)}
+            </p>
+          )}
+          {showBars && (
+            <p className="text-[11px] tabular-nums" style={{ color: "#93c5fd" }}>
+              {resolvedBarLabel}: {resolvedFormatValue(active.bar)}
+            </p>
+          )}
         </div>
       )}
 
       <ul className="flex flex-wrap items-center gap-4 text-[11px]" style={{ color: "#475569" }}>
-        <li>
-          <span className="h-2.5 w-2.5 rounded-sm" style={{ background: lineColor }} aria-hidden />
-          {resolvedLineLabel}
-        </li>
-        <li>
-          <span className="h-2.5 w-2.5 rounded-sm" style={{ background: barColor }} aria-hidden />
-          {resolvedBarLabel}
-        </li>
+        {showLine && (
+          <li>
+            <span className="h-2.5 w-2.5 rounded-sm" style={{ background: lineColor }} aria-hidden />
+            {resolvedLineLabel}
+          </li>
+        )}
+        {showBars && (
+          <li>
+            <span className="h-2.5 w-2.5 rounded-sm" style={{ background: barColor }} aria-hidden />
+            {resolvedBarLabel}
+          </li>
+        )}
       </ul>
     </div>
   );

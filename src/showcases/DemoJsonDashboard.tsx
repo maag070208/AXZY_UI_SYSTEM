@@ -4,6 +4,8 @@ import { FiHome } from "react-icons/fi";
 import { AxzyLogo } from "../sandbox/AxzyLogo";
 import {
   ITAlert,
+  ITConfirmDialog,
+  ITLineBarChart,
   ITButton,
   ITDialog,
   ITFlex,
@@ -26,6 +28,18 @@ import {
   parsePartialSchema,
   useITTranslation,
   validateSchema,
+  type DataHandler,
+  type EffectRegistry,
+  type ITLineBarDatum,
+  type ITDataTableFetchParams,
+  type NavNode,
+  type RoutesSchema,
+  buildNavigationTree,
+  flattenRoutes,
+  matchRoute,
+  navContainsRoute,
+  type SlotComponent,
+  type SlotRegistry,
   type JsonEngineIssue,
   type NodeSchema,
   type SchemaValue,
@@ -36,16 +50,16 @@ import {
   actualizarUsuario,
   crearUsuario,
   createDemoFetcher,
+  PEDIDOS,
   setEstadoFiltro,
   eliminarUsuario,
-  isDemoSource,
   obtenerUsuario,
   type DemoUsuario,
   type DemoUsuarioInput,
 } from "./demoApp/demoData";
 
 /** Páginas del dashboard, en orden de navegación. */
-export const DEMO_APP_PAGES = ["inicio", "usuarios", "pedidos", "productos", "reportes", "docs"] as const;
+export const DEMO_APP_PAGES = ["inicio", "usuarios", "pedidos", "productos", "reportes", "docs", "usuario-detalle"] as const;
 
 /** Nombre de una página del dashboard. */
 export type DemoAppPage = (typeof DEMO_APP_PAGES)[number];
@@ -58,6 +72,7 @@ const PAGE_LABEL: Record<DemoAppPage, string> = {
   productos: "sandbox.app.nav.productos",
   reportes: "sandbox.app.nav.reportes",
   docs: "sandbox.app.nav.docs",
+  "usuario-detalle": "sandbox.app.detail.title",
 };
 
 /** Registro de iconos: el JSON nombra, el host decide qué componente es. */
@@ -70,48 +85,117 @@ const ICONOS: Record<string, React.ReactNode> = {
   book: <FaBook size={12} />,
 };
 
-/** Módulo del sidebar tal como lo declara `layout.json`. */
-interface LayoutModule {
-  id: string;
-  label: string | { i18n: string };
-  icon?: string;
-  page: string;
-  badge?: number | string;
-  subitems?: { id: string; label: string | { i18n: string }; page: string; query?: Record<string, string> }[];
-}
-
-/** Shell declarado en JSON. */
-interface LayoutFile {
-  layout: { brand?: { logo?: string; text?: string }; topBarNav?: string[]; modules: LayoutModule[] };
-}
-
 /** Estado del formulario de usuario. */
 const ROLES = ["Admin", "Operador", "Auditor", "Soporte"];
 const ESTADOS = ["Activo", "Inactivo"];
 const EMPRESAS = ["CYC ERP", "Puerto Nuevo", "CheckApp", "Grupo Delta", "Nova Salud", "Ferretería Sur"];
 const FORM_VACIO: DemoUsuarioInput = { nombre: "", correo: "", rol: "Operador", estado: "Activo", edad: 30, empresa: "CheckApp", turno: "09:00", alta: new Date().toISOString().slice(0, 10) };
 
-/** `true` cuando el valor es una referencia de fuente (`{ $source }`). */
-function isSourceRef(value: unknown): value is { $source: string } {
-  return Boolean(value) && typeof value === "object" && typeof (value as { $source?: unknown }).$source === "string";
-}
-
 /** `true` cuando el valor es una clave de traducción (`{ i18n }`). */
 function isI18nRef(value: unknown): value is { i18n: string; params?: Record<string, SchemaValue> } {
   return Boolean(value) && typeof value === "object" && typeof (value as { i18n?: unknown }).i18n === "string";
 }
 
+/**
+ * Slot del host: un bloque JSX que el JSON nombra (`{ "type": "slot", "props": { "name": "avisoInicio" } }`).
+ * Los textos llegan ya traducidos por `resolveValue`.
+ */
+const AvisoInicio: SlotComponent = ({ titulo, mensaje }) => (
+  <ITAlert variant="info" title={String(titulo ?? "")}>
+    {String(mensaje ?? "")}
+  </ITAlert>
+);
+
+/**
+ * Slot del host para `/usuarios/:id`: busca el usuario por id y pinta sus datos.
+ * El id llega ya resuelto desde `$param`; el JSON no puede elegir qué usuario mostrar más allá de la dirección.
+ */
+const UsuarioDetalle: SlotComponent = ({ id }) => {
+  const { t } = useITTranslation();
+  const usuario = obtenerUsuario(Number(id));
+  if (!usuario) {
+    return <ITAlert variant="warning" title={t("sandbox.app.detail.notFound")} />;
+  }
+  const campos: [string, unknown][] = [
+    [t("sandbox.app.form.email"), usuario.correo],
+    [t("sandbox.app.form.role"), usuario.rol],
+    [t("sandbox.app.form.status"), usuario.estado],
+    [t("sandbox.app.form.company"), usuario.empresa],
+    [t("sandbox.app.form.since"), usuario.alta],
+  ];
+  return (
+    <ITStack direction="column" spacing={3}>
+      <ITText as="span" className="text-lg font-semibold">
+        {String(usuario.nombre)}
+      </ITText>
+      {campos.map(([etiqueta, valor]) => (
+        <ITFlex key={etiqueta} gap={3} align="center">
+          <ITText as="span" muted className="w-28">
+            {etiqueta}
+          </ITText>
+          <ITText as="span">{String(valor)}</ITText>
+        </ITFlex>
+      ))}
+    </ITStack>
+  );
+};
+
+/** Gráfica de ingresos y pedidos por mes, calculada sobre los pedidos del demo. */
+const GraficaIngresos: SlotComponent = () => {
+  const { t, formatCurrency } = useITTranslation();
+  const datos = useMemo<ITLineBarDatum[]>(() => {
+    const meses = new Map<string, ITLineBarDatum>();
+    for (const pedido of PEDIDOS) {
+      const mes = String(pedido.fecha).slice(0, 7);
+      const acumulado = meses.get(mes) ?? { label: mes.slice(5), line: 0, bar: 0 };
+      acumulado.line += Number(pedido.total);
+      acumulado.bar += 1;
+      meses.set(mes, acumulado);
+    }
+    return [...meses.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([, dato]) => dato);
+  }, []);
+
+  return (
+    <ITStack direction="column" spacing={2}>
+      <ITText as="span" className="font-semibold">
+        {t("sandbox.app.reportes.chartTitle")}
+      </ITText>
+      <ITLineBarChart
+        data={datos}
+        ariaLabel={t("sandbox.app.reportes.chartAria")}
+        lineLabel={t("sandbox.app.reportes.chartLine")}
+        barLabel={t("sandbox.app.reportes.chartBar")}
+        formatValue={(valor) => formatCurrency(valor)}
+        height={220}
+      />
+    </ITStack>
+  );
+};
+
+/** Slots que registra el host para las páginas del demo. Constante: identidad estable. */
+const DEMO_SLOTS: SlotRegistry = {
+  avisoInicio: AvisoInicio,
+  usuarioDetalle: UsuarioDetalle,
+  graficaIngresos: GraficaIngresos,
+};
+
+/** Nombres de slot que registra el host. El JSON solo puede nombrar estos. */
+export const DEMO_SLOT_NAMES = Object.keys(DEMO_SLOTS);
+
+/** Acciones que el host resuelve por nombre. El JSON solo puede usar estas. */
+export const DEMO_ACTIONS = ["ir-pagina", "nuevo-registro", "ver-usuario", "editar-usuario", "exportar-reporte", "enviar-contacto"] as const;
+
 /** Props del dashboard. */
 export interface DemoJsonDashboardProps {
-  /** Página activa. */
-  page: DemoAppPage;
-  /** Navega a otra página del dashboard. */
-  onNavigate: (page: DemoAppPage) => void;
+  /** Dirección dentro del dashboard (`/usuarios`). La casa `routes.json`. */
+  path: string;
+  /** Query de la dirección (`{ estado: "Activo" }`). */
+  query: Record<string, string>;
+  /** Navega a una dirección del árbol de navegación (`/usuarios?estado=Activo`). */
+  onNavigate: (href: string) => void;
   /** Vuelve al portafolio de demostración. */
   onExit: () => void;
-  /** Filtro de estado leído de la URL (`?estado=`). */
-  filterEstado: string;
-  /** Escribe el filtro en la URL. */
+  /** Escribe el filtro de estado en la URL. */
   onFilterChange: (estado: string) => void;
 }
 
@@ -123,16 +207,50 @@ export interface DemoJsonDashboardProps {
  * 1. Carga el JSON de la página (`/demo/app/<página>.json`).
  * 2. Lo valida y muestra el veredicto.
  * 3. Resuelve textos (`{ i18n }`).
- * 4. Resuelve fuentes de datos (`{ $source }` → `fetchData`).
- * 5. Resuelve acciones por nombre (`ir-pagina`, `nuevo-registro`, `editar-usuario`).
+ * 4. Registra los handlers de datos; el motor resuelve `{ $source }` contra `data`.
+ * 5. Resuelve acciones por nombre (`ir-pagina`, `nuevo-registro`, `ver-usuario`, `editar-usuario`).
  * 6. Guarda: el formulario es del host, porque escribir es autoridad del host.
  *
  * @example
- * // Ruta: #demo/app/usuarios
- * <DemoJsonDashboard page="usuarios" onNavigate={setPage} onExit={goToDemo} />
+ * // Ruta: #demo/app/usuarios?estado=Activo
+ * <DemoJsonDashboard path="/usuarios" query={{ estado: "Activo" }} onNavigate={go} onExit={goToDemo} />
  */
-export const DemoJsonDashboard: React.FC<DemoJsonDashboardProps> = ({ page, onNavigate, onExit, filterEstado, onFilterChange }) => {
+export const DemoJsonDashboard: React.FC<DemoJsonDashboardProps> = ({ path, query, onNavigate, onExit, onFilterChange }) => {
   const { t } = useITTranslation();
+
+  /** Rutas declaradas en JSON: de ellas salen el menú y la página de cada dirección. */
+  const [rutas, setRutas] = useState<RoutesSchema | null>(null);
+  useEffect(() => {
+    fetch("/demo/app/routes.json")
+      .then((respuesta) => respuesta.json() as Promise<RoutesSchema>)
+      .then(setRutas)
+      .catch(() => setRutas(null));
+  }, []);
+  const planas = useMemo(() => (rutas ? flattenRoutes(rutas.routes) : []), [rutas]);
+  const arbol = useMemo(() => (rutas ? buildNavigationTree(rutas.routes) : []), [rutas]);
+  const coincidencia = useMemo(() => matchRoute(planas, path.split("/").filter(Boolean), query), [planas, path, query]);
+  /** Parámetros de la dirección (`:id`), que el motor expone como `$param`. */
+  const parametros = useMemo(() => coincidencia?.params ?? {}, [coincidencia]);
+  /** Id de la ruta activa. Una dirección que no casa muestra el inicio. */
+  const rutaActiva = coincidencia?.route.id ?? "inicio";
+  const pagina: DemoAppPage = DEMO_APP_PAGES.includes(coincidencia?.route.page as DemoAppPage)
+    ? (coincidencia!.route.page as DemoAppPage)
+    : "inicio";
+  /** Filtro de estado: lo marca la query de la dirección. */
+  const filterEstado = query.estado ?? "Todos";
+
+  /** Etiqueta de una entrada: `{ i18n }` se traduce, el texto literal pasa tal cual. */
+  const etiqueta = (valor: unknown) => (isI18nRef(valor) ? t(valor.i18n) : String(valor));
+  /** Entrada del sidebar a partir del árbol. Solo el primer nivel lleva icono. */
+  const aItemSidebar = (entrada: NavNode, primerNivel: boolean) => ({
+    id: entrada.id,
+    label: etiqueta(entrada.label),
+    icon: primerNivel ? ICONOS[entrada.icon ?? "box"] : undefined,
+    isActive: navContainsRoute(entrada, rutaActiva),
+    badge: entrada.badge,
+    action: () => onNavigate(entrada.href ?? "/inicio"),
+    subitems: entrada.children?.map((hijo) => aItemSidebar(hijo, false)),
+  });
   const [esquema, setEsquema] = useState<ScreenSchema | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [avisos, setAvisos] = useState<JsonEngineIssue[]>([]);
@@ -140,43 +258,35 @@ export const DemoJsonDashboard: React.FC<DemoJsonDashboardProps> = ({ page, onNa
   // CRUD: el esquema pide; el host escribe.
   const [formulario, setFormulario] = useState<DemoUsuarioInput | null>(null);
   // El sidebar se colapsa solo en pantallas estrechas y se puede alternar.
-  const [colapsado, setColapsado] = useState(false);
+  // El sidebar empieza colapsado (solo logo) y se abre al pasar el cursor.
+  const [colapsado, setColapsado] = useState(true);
   const [filtroEstado, setFiltroEstado] = useState<string>(filterEstado);
   // La URL manda: si cambia el `?estado=`, la tabla se ajusta.
   useEffect(() => {
     setFiltroEstado(filterEstado);
   }, [filterEstado]);
-  const [shell, setShell] = useState<LayoutFile["layout"] | null>(null);
   const [aviso, setAviso] = useState<{ mensaje: string; tipo: "success" | "danger" } | null>(null);
+  // Diálogo de confirmación que abre la acción `exportar-reporte` del JSON.
+  const [exportando, setExportando] = useState(false);
   const [editandoId, setEditandoId] = useState<number | null>(null);
   const [version, setVersion] = useState(0);
 
-  const pagina: DemoAppPage = DEMO_APP_PAGES.includes(page) ? page : "inicio";
-
-  /** Auto-colapso: en cuanto el ancho baja de 1100px, el rail pasa a iconos. */
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const media = window.matchMedia("(max-width: 1100px)");
-    const aplicar = () => setColapsado(media.matches);
-    aplicar();
-    media.addEventListener("change", aplicar);
-    return () => media.removeEventListener("change", aplicar);
-  }, []);
 
   /** Muestra un aviso y lo retira solo. */
   const toast = useCallback((mensaje: string, tipo: "success" | "danger" = "success") => {
     setAviso({ mensaje, tipo });
     window.setTimeout(() => setAviso(null), 3000);
   }, []);
+  // Efectos que cumple el host cuando una acción del JSON lo pide (`then`, `toast`, `navigate`).
+  const efectosDemo = useMemo<EffectRegistry>(
+    () => ({
+      toast: ({ variant, message }) => toast(message, variant === "error" || variant === "warning" ? "danger" : "success"),
+      navigate: (href) => onNavigate(href),
+    }),
+    [toast, onNavigate]
+  );
   const url = `/demo/app/${pagina}.json`;
 
-  /** 0. El shell también es JSON: se carga una vez. */
-  useEffect(() => {
-    fetch("/demo/app/layout.json")
-      .then((r) => r.json() as Promise<LayoutFile>)
-      .then((archivo) => setShell(archivo.layout))
-      .catch(() => setShell(null));
-  }, []);
 
   /** 1. Carga del JSON de la página. */
   useEffect(() => {
@@ -253,24 +363,24 @@ export const DemoJsonDashboard: React.FC<DemoJsonDashboardProps> = ({ page, onNa
   /** El filtro triple se aplica en el fetcher y se remonta la tabla. */
   useEffect(() => {
     setEstadoFiltro(pagina === "docs" ? null : filtroEstado);
+    setVersion((n) => n + 1);
   }, [filtroEstado, pagina]);
 
-  /** Fetchers estables: uno por fuente, no uno por render. */
-  const fetchers = useMemo(
-    () => ({
-      usuarios: createDemoFetcher("usuarios"),
-      pedidos: createDemoFetcher("pedidos"),
-      productos: createDemoFetcher("productos"),
-    }),
-    []
-  );
+  /** Handlers estables: el motor los referencia por nombre desde `data` del esquema. */
+  const dataHandlers = useMemo<Record<string, DataHandler>>(() => {
+    const usuarios = createDemoFetcher("usuarios");
+    const pedidos = createDemoFetcher("pedidos");
+    const productos = createDemoFetcher("productos");
+    return {
+      usuarios: (query) => usuarios(query as ITDataTableFetchParams),
+      pedidos: (query) => pedidos(query as ITDataTableFetchParams),
+      productos: (query) => productos(query as ITDataTableFetchParams),
+    };
+  }, []);
 
-  /** 3 y 4. Textos y fuentes de datos. */
+  /** 3. Textos. Las fuentes de datos (`$source`) las resuelve el motor. */
   const resolveValue = useCallback(
     (value: unknown): unknown => {
-      if (isSourceRef(value)) {
-        return isDemoSource(value.$source) ? fetchers[value.$source] : () => Promise.resolve({ data: [], total: 0 });
-      }
       if (isI18nRef(value)) {
         const params = value.params
           ? Object.fromEntries(Object.entries(value.params).map(([clave, dato]) => [clave, String(dato)]))
@@ -279,7 +389,7 @@ export const DemoJsonDashboard: React.FC<DemoJsonDashboardProps> = ({ page, onNa
       }
       return value;
     },
-    [t, fetchers]
+    [t]
   );
 
   /** 5. Acciones por nombre. La navegación y la escritura son del host. */
@@ -287,22 +397,36 @@ export const DemoJsonDashboard: React.FC<DemoJsonDashboardProps> = ({ page, onNa
     (node: NodeSchema, _prop: string, action: unknown) => {
       const declarada = action as { action?: string; args?: Record<string, SchemaValue> } | undefined;
       const nombre = declarada?.action;
-      if (!nombre) return undefined;
+      // Solo las acciones de DEMO_ACTIONS existen: lo demás avisa con JR040 en lugar de no hacer nada.
+      if (!nombre || !(DEMO_ACTIONS as readonly string[]).includes(nombre)) return undefined;
 
       return (...args: unknown[]) => {
         switch (nombre) {
           case "ir-pagina": {
             const destino = String(declarada?.args?.pagina ?? "");
-            if (DEMO_APP_PAGES.includes(destino as DemoAppPage)) onNavigate(destino as DemoAppPage);
+            if (DEMO_APP_PAGES.includes(destino as DemoAppPage)) onNavigate(`/${destino}`);
             return;
           }
+          case "exportar-reporte":
+            setExportando(true);
+            return;
+          case "enviar-contacto":
+            // Los campos ya los validó el motor, y el aviso de éxito lo declara el JSON (`then`).
+            return;
           case "nuevo-registro":
             abrirFormulario();
             return;
-          case "editar-usuario": {
-            // La tabla pasa la fila como primer argumento.
+          case "ver-usuario": {
+            // La tabla pasa la fila como primer argumento: su detalle vive en la dirección /usuarios/:id.
             const fila = args[0] as DemoUsuario | undefined;
-            const usuario = fila && typeof fila.id === "number" ? obtenerUsuario(fila.id) : undefined;
+            if (fila && typeof fila.id === "number") onNavigate(`/usuarios/${fila.id}`);
+            return;
+          }
+          case "editar-usuario": {
+            // Desde la tabla llega la fila; desde el detalle, el id de la dirección.
+            const fila = args[0] as DemoUsuario | undefined;
+            const id = fila && typeof fila.id === "number" ? fila.id : Number(parametros.id);
+            const usuario = Number.isFinite(id) ? obtenerUsuario(id) : undefined;
             if (usuario) abrirFormulario(usuario);
             return;
           }
@@ -311,7 +435,7 @@ export const DemoJsonDashboard: React.FC<DemoJsonDashboardProps> = ({ page, onNa
         }
       };
     },
-    [onNavigate, abrirFormulario, pagina, onFilterChange]
+    [onNavigate, abrirFormulario, pagina, onFilterChange, parametros, toast, t]
   );
 
   const cuerpo = error ? (
@@ -340,6 +464,10 @@ export const DemoJsonDashboard: React.FC<DemoJsonDashboardProps> = ({ page, onNa
       <ITSchemaRenderer
         key={version}
         schema={esquema}
+        params={parametros}
+        dataHandlers={dataHandlers}
+        slots={DEMO_SLOTS}
+        effects={efectosDemo}
         resolveValue={resolveValue}
         resolveAction={resolveAction}
         onIssue={(aviso) =>
@@ -356,42 +484,16 @@ export const DemoJsonDashboard: React.FC<DemoJsonDashboardProps> = ({ page, onNa
       <ITLayout
         topBar={{
           logo: <AxzyLogo variante="icono" tamano={20} />,
-          logoText: shell?.brand?.text ?? "AXZY · demo",
-          navItems: DEMO_APP_PAGES.map((item) => ({
-            id: item,
-            label: t(PAGE_LABEL[item]),
-            isActive: item === pagina,
-            action: () => onNavigate(item),
-          })),
           children: (
             <ITButton label={t("sandbox.app.exit")} size="sm" variant="outlined" color="gray" onClick={onExit} />
           ),
         }}
         sidebar={{
           isCollapsed: colapsado,
+          expandOnHover: true,
           onToggleCollapse: () => setColapsado((previo) => !previo),
-          brand: {
-            logo: <AxzyLogo variante="icono" tamano={20} />,
-            text: shell?.brand?.text ?? "AXZY · demo",
-          },
-          navigationItems: (shell?.modules ?? []).map((modulo) => ({
-            id: modulo.id,
-            label: isI18nRef(modulo.label) ? t(modulo.label.i18n) : String(modulo.label),
-            icon: ICONOS[modulo.icon ?? "box"],
-            isActive: modulo.page === pagina,
-            badge: modulo.badge,
-            action: () => onNavigate(modulo.page as DemoAppPage),
-            // Los sub-items llevan `query`: filtran de verdad, no son decoración.
-            subitems: modulo.subitems?.map((sub) => ({
-              id: sub.id,
-              label: isI18nRef(sub.label) ? t(sub.label.i18n) : String(sub.label),
-              action: () => {
-                if (sub.page !== pagina) onNavigate(sub.page as DemoAppPage);
-                onFilterChange(sub.query?.estado ?? "Todos");
-                setVersion((n) => n + 1);
-              },
-            })),
-          })),
+          // Los sub-items son rutas con `query`: navegar a ellas filtra de verdad.
+          navigationItems: arbol.map((entrada) => aItemSidebar(entrada, true)),
         }}
       >
         <ITPage
@@ -403,7 +505,7 @@ export const DemoJsonDashboard: React.FC<DemoJsonDashboardProps> = ({ page, onNa
           ]}
         >
           <ITStack direction="column" spacing={4}>
-            {pagina !== "docs" && (
+            {(pagina === "usuarios" || pagina === "pedidos") && (
             <ITTripleFilter
               value={filtroEstado}
               onChange={(valor) => {
@@ -472,6 +574,19 @@ export const DemoJsonDashboard: React.FC<DemoJsonDashboardProps> = ({ page, onNa
           </div>
         )}
       </ITDialog>
+
+      <ITConfirmDialog
+        isOpen={exportando}
+        onClose={() => setExportando(false)}
+        onConfirm={() => {
+          setExportando(false);
+          toast(t("sandbox.app.export.done"));
+        }}
+        title={t("sandbox.app.export.title")}
+        message={t("sandbox.app.export.message")}
+        confirmLabel={t("sandbox.app.export.confirm")}
+        cancelLabel={t("sandbox.app.form.cancel")}
+      />
 
       {aviso && (
         <ITToast

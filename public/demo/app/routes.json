@@ -1,0 +1,102 @@
+{
+  "$schema": "axzy/routes",
+  "version": 1,
+  "routes": [
+    {
+      "id": "inicio",
+      "path": "/inicio",
+      "page": "inicio",
+      "nav": {
+        "label": { "i18n": "sandbox.app.nav.inicio" },
+        "icon": "home"
+      }
+    },
+    {
+      "id": "usuarios",
+      "path": "/usuarios",
+      "nav": {
+        "label": { "i18n": "sandbox.app.nav.usuarios" },
+        "icon": "users"
+      },
+      "children": [
+        {
+          "id": "u-todos",
+          "page": "usuarios",
+          "nav": { "label": { "i18n": "sandbox.app.sub.todos" } }
+        },
+        {
+          "id": "u-activos",
+          "page": "usuarios",
+          "query": { "estado": "Activo" },
+          "nav": { "label": { "i18n": "sandbox.app.sub.activos" } }
+        },
+        {
+          "id": "u-inactivos",
+          "page": "usuarios",
+          "query": { "estado": "Inactivo" },
+          "nav": { "label": { "i18n": "sandbox.app.sub.inactivos" } }
+        }
+      ]
+    },
+    {
+      "id": "pedidos",
+      "path": "/pedidos",
+      "nav": {
+        "label": { "i18n": "sandbox.app.nav.pedidos" },
+        "icon": "cart",
+        "badge": 11
+      },
+      "children": [
+        {
+          "id": "p-todos",
+          "page": "pedidos",
+          "nav": { "label": { "i18n": "sandbox.app.sub.todos" } }
+        },
+        {
+          "id": "p-pagados",
+          "page": "pedidos",
+          "query": { "estado": "Pagado" },
+          "nav": { "label": { "i18n": "sandbox.app.sub.pagados" } }
+        },
+        {
+          "id": "p-pendientes",
+          "page": "pedidos",
+          "query": { "estado": "Pendiente" },
+          "nav": { "label": { "i18n": "sandbox.app.sub.pendientes" } }
+        }
+      ]
+    },
+    {
+      "id": "productos",
+      "path": "/productos",
+      "page": "productos",
+      "nav": {
+        "label": { "i18n": "sandbox.app.nav.productos" },
+        "icon": "box"
+      }
+    },
+    {
+      "id": "reportes",
+      "path": "/reportes",
+      "page": "reportes",
+      "nav": {
+        "label": { "i18n": "sandbox.app.nav.reportes" },
+        "icon": "chart"
+      }
+    },
+    {
+      "id": "docs",
+      "path": "/docs",
+      "page": "docs",
+      "nav": {
+        "label": { "i18n": "sandbox.app.nav.docs" },
+        "icon": "book"
+      }
+    },
+    {
+      "id": "usuario-detalle",
+      "path": "/usuarios/:id",
+      "page": "usuario-detalle"
+    }
+  ]
+}

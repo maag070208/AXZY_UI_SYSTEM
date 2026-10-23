@@ -9,10 +9,48 @@
 import React from "react";
 import type { Catalog } from "../catalog/catalog.props";
 import { resolveNode } from "../catalog/resolve";
-import type { JsonEngineIssue } from "../shared/errors";
-import type { SchemaPath } from "../shared/paths";
+import { issue, type JsonEngineIssue } from "../shared/errors";
+import { formatPath, propPath, type SchemaPath } from "../shared/paths";
 import { isNodePending } from "../stream/tolerantParse";
+import { isSlotNode, slotName, type SlotRegistry } from "./slots";
 import type { NodeSchema } from "./types";
+import { FormNode } from "../form/FormNode";
+import { readFormFields, type FormField } from "../form/rules";
+import { wrapAction, type EffectContext, type EffectRegistry } from "../actions/effects";
+import { faltanCapacidades } from "./capabilities";
+import ITButton from "../../components/atoms/button/button";
+
+/** Contexto de efectos de un nodo: el registro del host, la traducción y los avisos. */
+function effectContext(options: RenderNodeOptions, path: SchemaPath, node: NodeSchema): EffectContext {
+  return {
+    effects: options.effects,
+    path,
+    resolveText: (value, valuePath) => textoDe(options.resolveValue ? options.resolveValue(value, valuePath) : value),
+    report: (aviso) => options.issues.push(aviso),
+    // Una acción encadenada desde un efecto se resuelve con el mismo `resolveAction` del host.
+    resolveChained: (name) => options.resolveAction?.(node, "chain", { action: name }, path),
+    timeoutMs: options.actionTimeoutMs,
+    reportRuntime: options.onIssue,
+    setState: options.setState,
+    resolveRaw: (value, valuePath) => (options.resolveValue ? options.resolveValue(value, valuePath) : value),
+  };
+}
+
+/** Nombre de una acción declarada, para los avisos. */
+function nombreDeAccion(action: unknown): string {
+  const nombre = (action as { action?: unknown } | null)?.action;
+  return typeof nombre === "string" ? nombre : "(sin nombre)";
+}
+
+/** `true` cuando el nodo es un formulario del motor. */
+function isFormNode(node: NodeSchema): boolean {
+  return node.type === "form";
+}
+
+/** Texto de un valor ya resuelto: solo los primitivos se muestran. */
+function textoDe(value: unknown): string {
+  return typeof value === "string" || typeof value === "number" || typeof value === "boolean" ? String(value) : "";
+}
 
 /** Opciones de render de un nodo. */
 export interface RenderNodeOptions {
@@ -31,6 +69,18 @@ export interface RenderNodeOptions {
     action: unknown,
     path: SchemaPath
   ) => ((...args: unknown[]) => void) | undefined;
+  /** Slots que registra el host. Un nodo `slot` monta el componente con su nombre. */
+  slots?: SlotRegistry;
+  /** Efectos que cumple el host (`toast`, `navigate`…) tras una acción. */
+  effects?: EffectRegistry;
+  /** Milisegundos que una acción puede tardar antes de considerarla colgada (`JR041`). */
+  actionTimeoutMs?: number;
+  /** Escribe en el estado de la pantalla (efecto `set`). */
+  setState?: (cambios: Record<string, unknown>) => void;
+  /** Capacidades que concede el host (para las acciones con `requires`). */
+  capabilities?: readonly string[];
+  /** Recibe los avisos que se producen fuera del render (por ejemplo, un timeout). */
+  onIssue?: (aviso: JsonEngineIssue) => void;
   /** Renderiza los hijos de un nodo (lo aporta el recorrido del árbol). */
   renderChildren?: (node: NodeSchema, path: SchemaPath) => React.ReactNode;
   /** Qué pintar mientras un nodo está pendiente (streaming). */
@@ -56,6 +106,174 @@ export function childList(node: NodeSchema | null | undefined): NodeSchema[] {
 }
 
 /**
+ * Monta un slot: el componente que el host registró con el nombre del nodo.
+ *
+ * Se monta como componente (no se llama como función) para que pueda usar hooks.
+ * Los props del nodo pasan por `resolveValue`, igual que los del resto de nodos.
+ */
+function renderSlot(node: NodeSchema, options: RenderNodeOptions): React.ReactNode {
+  const { path, issues, slots, resolveValue } = options;
+  const name = slotName(node);
+
+  if (!name) {
+    issues.push(
+      issue("JR011", "El slot no declara `props.name`.", formatPath(propPath(path, "name")), {
+        severity: "error",
+        hint: 'Declara el nombre que el host registró, por ejemplo { "type": "slot", "props": { "name": "resumen" } }.',
+      })
+    );
+    return null;
+  }
+
+  const Component = slots && Object.prototype.hasOwnProperty.call(slots, name) ? slots[name] : undefined;
+  if (!Component) {
+    issues.push(
+      issue("JR010", `El slot \`${name}\` no está registrado por el host.`, formatPath(path), {
+        severity: "error",
+        hint: "El host debe registrarlo en `slots` del renderizador.",
+      })
+    );
+    return null;
+  }
+
+  const props: Record<string, unknown> = {};
+  for (const [key, raw] of Object.entries(node.props ?? {})) {
+    if (key === "name") continue;
+    props[key] = resolveValue ? resolveValue(raw, path) : raw;
+  }
+
+  return React.createElement(Component, { key: node.id ?? path.join("-"), ...props });
+}
+
+/**
+ * Pinta un nodo `form`: campos declarados en JSON, validación y envío por la acción del host.
+ *
+ * Los campos se leen con las mismas reglas que el validador (`readFormFields`). Los
+ * textos (etiquetas, botón) pasan por `resolveValue`, así que pueden ser `{ i18n }`.
+ */
+function renderForm(node: NodeSchema, options: RenderNodeOptions): React.ReactNode {
+  const { path, issues, resolveValue, resolveAction } = options;
+  const { fields: declarados, issues: avisos } = readFormFields(node.props?.fields, [...path, "props", "fields"]);
+  issues.push(...avisos);
+
+  const campos: FormField[] = declarados.map((campo, index) => {
+    const etiqueta = resolveValue ? resolveValue(campo.label, [...path, "props", "fields", index]) : campo.label;
+    return {
+      name: campo.name,
+      kind: campo.kind,
+      required: campo.required,
+      minLength: campo.minLength,
+      maxLength: campo.maxLength,
+      label: textoDe(etiqueta) || campo.name,
+    };
+  });
+
+  const textoEnvio = node.props?.submitLabel;
+  // Sin texto declarado, el nodo usa `jsonRenderer.form.submit` (lo resuelve FormNode).
+  const submitLabel = textoDe(resolveValue ? resolveValue(textoEnvio, path) : textoEnvio) || undefined;
+  const accion = resolveAction?.(node, "onSubmit", node.props?.onSubmit, path);
+  if (node.props?.onSubmit !== undefined && typeof accion !== "function") {
+    issues.push(
+      issue("JR040", `La acción "${nombreDeAccion(node.props.onSubmit)}" no está registrada por el host.`, formatPath(propPath(path, "onSubmit")), {
+        severity: "warning",
+        hint: "Regístrala en `resolveAction` del host. Sin ella, enviar el formulario no hace nada.",
+      })
+    );
+  }
+  const conEfectos = accion ? wrapAction(accion, node.props?.onSubmit, effectContext(options, path, node)) : undefined;
+
+  return React.createElement(FormNode, {
+    key: node.id ?? path.join("-"),
+    id: node.id,
+    fields: campos,
+    submitLabel,
+    onSubmit: conEfectos ? (valores: Record<string, string>) => conEfectos(valores) : undefined,
+  });
+}
+
+/**
+ * Convierte las columnas `type: "actions"` con `rowActions` en columnas reales de la
+ * tabla. Cada botón de fila llama a la acción del host con la fila como primer argumento,
+ * igual que `onRowClick`. El JSON nunca da una función: solo nombra la acción.
+ *
+ * Un botón sin handler, sin permiso o mal formado no se pinta y avisa (JR040, JR061, JR021).
+ */
+function prepararColumnas(columnas: unknown, node: NodeSchema, options: RenderNodeOptions, path: SchemaPath): unknown {
+  if (!Array.isArray(columnas)) return columnas;
+
+  return columnas.map((columna, indice) => {
+    if (!columna || typeof columna !== "object") return columna;
+    const declarada = columna as Record<string, unknown>;
+    if (declarada.type !== "actions" || !Array.isArray(declarada.rowActions)) return columna;
+
+    const colPath = [...path, "props", "columns", indice];
+    const botones = declarada.rowActions.flatMap((raw, indiceAccion) => {
+      const accion = raw as Record<string, unknown> | null;
+      const rutaAccion = [...colPath, "rowActions", indiceAccion];
+      if (!accion || typeof accion.action !== "string" || accion.action === "") {
+        options.issues.push(issue("JR021", "Un botón de fila no declara `action`.", formatPath(rutaAccion), { severity: "error" }));
+        return [];
+      }
+      const faltan = faltanCapacidades(accion.requires, options.capabilities);
+      if (faltan.length > 0) {
+        options.issues.push(
+          issue("JR061", `El botón de fila "${accion.action}" exige ${faltan.join(", ")}, que no está concedido.`, formatPath(rutaAccion), {
+            severity: "warning",
+            hint: "Concede la capacidad con la prop `capabilities` del renderizador.",
+          })
+        );
+        return [];
+      }
+      const handler = options.resolveAction?.(node, `fila:${accion.action}`, accion, rutaAccion);
+      if (typeof handler !== "function") {
+        options.issues.push(
+          issue("JR040", `La acción de fila "${accion.action}" no está registrada por el host.`, formatPath(rutaAccion), {
+            severity: "warning",
+            hint: "Regístrala en `resolveAction` del host, o quita el botón del esquema.",
+          })
+        );
+        return [];
+      }
+      const etiqueta = textoDe(options.resolveValue ? options.resolveValue(accion.label, rutaAccion) : accion.label);
+      return [
+        {
+          clave: String(indiceAccion),
+          etiqueta: etiqueta || accion.action,
+          color: typeof accion.color === "string" ? accion.color : "secondary",
+          variante: typeof accion.variant === "string" ? accion.variant : "outlined",
+          ejecutar: wrapAction(handler, accion, effectContext(options, rutaAccion, node)),
+        },
+      ];
+    });
+
+    const copia: Record<string, unknown> = { ...declarada };
+    delete copia.rowActions;
+    const etiquetaColumna = textoDe(options.resolveValue ? options.resolveValue(copia.label, colPath) : copia.label);
+    const Boton = ITButton as unknown as React.ComponentType<Record<string, unknown>>;
+
+    return {
+      ...copia,
+      label: etiquetaColumna || String(copia.key ?? ""),
+      actions: (fila: unknown) =>
+        React.createElement(
+          React.Fragment,
+          null,
+          botones.map((boton) =>
+            React.createElement(Boton, {
+              key: boton.clave,
+              label: boton.etiqueta,
+              size: "sm",
+              variant: boton.variante,
+              color: boton.color,
+              onClick: () => boton.ejecutar(fila),
+            })
+          )
+        ),
+    };
+  });
+}
+
+/**
  * Pinta un nodo del esquema.
  *
  * @example
@@ -73,6 +291,16 @@ export function renderNode(node: NodeSchema, options: RenderNodeOptions): React.
     return options.pendingFallback ?? null;
   }
 
+  // Los slots no están en el catálogo: los registra el host.
+  if (isSlotNode(node)) {
+    return renderSlot(node, options);
+  }
+
+  // El formulario lo compila el motor: campos, validación y envío por acción.
+  if (isFormNode(node)) {
+    return renderForm(node, options);
+  }
+
   const resolved = resolveNode(node, catalog, path);
   issues.push(...resolved.issues);
 
@@ -87,11 +315,36 @@ export function renderNode(node: NodeSchema, options: RenderNodeOptions): React.
   for (const [name, value] of Object.entries(props)) {
     finalProps[name] = options.resolveValue ? options.resolveValue(value, path) : value;
   }
+  // Las tablas reciben las columnas con sus botones de fila ya convertidos en funciones.
+  if (node.type === "ITDataTable" && finalProps.columns !== undefined) {
+    finalProps.columns = prepararColumnas(finalProps.columns, node, options, path);
+  }
 
   // Las acciones se traducen a handlers del host; las no registradas se avisan.
   for (const [name, action] of Object.entries(actions)) {
+    // Permisos por acción: una acción que exige algo no concedido no se ejecuta (JR061).
+    const faltan = faltanCapacidades((action as { requires?: unknown } | null)?.requires, options.capabilities);
+    if (faltan.length > 0) {
+      issues.push(
+        issue("JR061", `La acción "${nombreDeAccion(action)}" exige ${faltan.join(", ")}, que no está concedido.`, formatPath(propPath(path, name)), {
+          severity: "warning",
+          hint: "Concede la capacidad con la prop `capabilities` del renderizador. Sin ella, la acción no se ejecuta.",
+        })
+      );
+      continue;
+    }
     const handler = options.resolveAction?.(node, name, action, path);
-    if (typeof handler === "function") finalProps[name] = handler;
+    if (typeof handler === "function") {
+      finalProps[name] = wrapAction(handler, action, effectContext(options, path, node));
+    } else {
+      // Sin handler, el botón no hace nada: que se note en vez de fallar en silencio.
+      issues.push(
+        issue("JR040", `La acción "${nombreDeAccion(action)}" no está registrada por el host.`, formatPath(propPath(path, name)), {
+          severity: "warning",
+          hint: "Regístrala en `resolveAction` del host, o quita la prop del esquema.",
+        })
+      );
+    }
   }
 
   // Contenido: `children` declarados y, si el componente acepta texto, el atajo.

@@ -20,6 +20,7 @@ import { useITTranslation } from "@/i18n";
  */
 export default function ITCard({
   title,
+  headerActions,
   image,
   alt,
   children,
@@ -97,14 +98,26 @@ export default function ITCard({
       )}
 
       <div className={clsx(contentClassName)} style={bodyStyle}>
-        {title && (
+        {headerActions ? (
+          <div className="mb-2 flex items-center justify-between gap-3">
+            {title && (
+              <ITText
+                as="h3"
+                className={clsx(flat ? "text-base font-semibold" : "text-xl font-semibold", titleClassName)}
+              >
+                {title}
+              </ITText>
+            )}
+            {headerActions}
+          </div>
+        ) : title ? (
           <ITText
             as="h3"
             className={clsx(flat ? "text-base font-semibold mb-3" : "text-xl font-semibold mb-2", titleClassName)}
           >
             {title}
           </ITText>
-        )}
+        ) : null}
         <ITText as="div" className="text-secondary-600">{children}</ITText>
       </div>
       {actions && (

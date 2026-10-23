@@ -8,6 +8,11 @@
   "description": {
     "i18n": "sandbox.app.productos.lead"
   },
+  "data": {
+    "productos": {
+      "handler": "productos"
+    }
+  },
   "content": [
     {
       "type": "ITStack",
@@ -19,7 +24,6 @@
       "children": [
         {
           "type": "ITDataTable",
-          "id": "tabla-productos",
           "props": {
             "columns": [
               {

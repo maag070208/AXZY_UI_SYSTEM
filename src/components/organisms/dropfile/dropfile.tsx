@@ -43,6 +43,7 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
   onFileSelect,
   onCancel,
   onSubmit,
+  autoUpload = false,
   contentClassName,
   containerClassName,
   acceptedFileTypes = [FileTypeEnum.PDF, FileTypeEnum.XLS, FileTypeEnum.XLSX, FileTypeEnum.JPG, FileTypeEnum.PNG, FileTypeEnum.JPEG],
@@ -207,6 +208,20 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
     );
   };
 
+  /** Subida automática: corre `onSubmit` al elegir el archivo y sigue su estado. */
+  const runAutoUpload = async (file: File) => {
+    setIsConfirmed(true);
+    setUploadStatus(UploadStatus.UPLOADING);
+    try {
+      onFileSelect(file);
+      await onSubmit?.(file);
+      setUploadStatus(UploadStatus.UPLOADED);
+    } catch (error) {
+      setUploadStatus(UploadStatus.ERROR);
+      console.error("Error al subir archivo:", error);
+    }
+  };
+
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (file) {
@@ -224,6 +239,8 @@ const ITDropfile: React.FC<ITDropfileProps> = ({
           const previewUrl = URL.createObjectURL(file);
           setImagePreview(previewUrl);
         }
+
+        if (autoUpload) void runAutoUpload(file);
       } else {
         alert(t("dropfile.fileTypeNotAllowed"));
         setSelectedFile(null);

@@ -8,6 +8,11 @@
   "description": {
     "i18n": "sandbox.app.reportes.lead"
   },
+  "data": {
+    "pedidos": {
+      "handler": "pedidos"
+    }
+  },
   "content": [
     {
       "type": "ITStack",
@@ -103,6 +108,33 @@
           ]
         },
         {
+          "type": "ITFlex",
+          "props": {
+            "wrap": "wrap",
+            "gap": 2
+          },
+          "children": [
+            {
+              "type": "ITButton",
+              "props": {
+                "label": {
+                  "i18n": "sandbox.app.reportes.export"
+                },
+                "size": "sm",
+                "onClick": {
+                  "action": "exportar-reporte"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "slot",
+          "props": {
+            "name": "graficaIngresos"
+          }
+        },
+        {
           "type": "ITDivider",
           "props": {
             "orientation": "horizontal"
@@ -110,7 +142,6 @@
         },
         {
           "type": "ITDataTable",
-          "id": "tabla-reportes",
           "props": {
             "columns": [
               {

@@ -531,9 +531,9 @@ pantalla real del sandbox construida **solo** con el motor.
 | 1 | Kernel **con nodo pendiente** + catálogo mínimo + laboratorio con stream | 5–7 | 0 | ✅ entregada |
 | 2 | Validación en modo parcial, códigos, versionado, **contrato de vocabulario** | 5–7 | 0, 1 | ✅ entregada |
 | 3 | Catálogo completo (63) generado | 6–8 | 1, 2 | pendiente |
-| 4 | Binding, estado y datos | 6–8 | 1 | pendiente |
+| 4 | Binding, estado y datos | 6–8 | 1 | 🟡 mínimo entregado (`$source`, `$state`, `$param`; faltan `$row`, `$form`, operadores, `refreshOn`) |
 | 5 | Acciones y efectos | 5–7 | 1, 4 | pendiente |
-| 6 | Router, layouts y guards | 6–8 | 1, 5 | pendiente |
+| 6 | Router, layouts y guards | 6–8 | 1, 5 | 🟡 parcial: `routes.json` con match por path/query y árbol de navegación; faltan guards, layouts anidados y adapter |
 | 7 | Permisos y redacción | 4–6 | 1 | pendiente |
 | 8 | Formularios y tablas | 7–9 | 4, 5 | pendiente |
 | 9 | Entry point, devtools, observabilidad | 5–7 | 1–8 | pendiente |
@@ -617,6 +617,7 @@ Una fase está terminada cuando:
 | `JR021` | Nodo inválido (forma o `type` ausente) |
 | `JR030` | Fuente de datos sin `handler` registrado |
 | `JR031` | El esquema intenta provocar red (prohibido) |
+| `JR032` | Referencia sin valor (`$state`/`$param`) u operador de binding no soportado todavía |
 | `JR040` | Acción no registrada |
 | `JR041` | Acción excedió su timeout |
 | `JR042` | Encadenado de efectos demasiado profundo |

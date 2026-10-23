@@ -28,8 +28,14 @@ export interface ITDropfileProps {
   onFileSelect: (file: File | null) => void;
   /** Called when the user cancels the current selection. */
   onCancel?: () => void;
-  /** Called when the user confirms and submits the file. */
-  onSubmit?: (file: File) => void;
+  /** Called when the user confirms and submits the file. With `autoUpload`, it runs right after selection and may return a promise that drives the status. */
+  onSubmit?: (file: File) => void | Promise<void>;
+  /**
+   * Sube en cuanto se elige el archivo, sin paso de confirmar. Usa `onSubmit` como la subida:
+   * el estado pasa a subiendo y luego a subido, o a error si la promesa falla.
+   * @default false
+   */
+  autoUpload?: boolean;
   /** List of accepted MIME types. */
   acceptedFileTypes?: FileTypeEnum[];
   /** Additional classes for the preview/content area. */

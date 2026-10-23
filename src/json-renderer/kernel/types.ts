@@ -76,6 +76,10 @@ export interface EffectSchema {
   openOverlay?: string;
   /** Cierra el overlay indicado, o el que esté abierto si se omite. */
   closeOverlay?: string;
+  /** Escribe en el estado de la pantalla: `{ "clave": valor }`. Los valores admiten referencias. */
+  set?: Record<string, SchemaValue>;
+  /** Capacidad que exige la acción. Sin concesión, la acción no se ejecuta (`JR061`). */
+  requires?: string | string[];
   /** Refresca una fuente de datos. */
   refresh?: string;
 }

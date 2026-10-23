@@ -1,14 +1,18 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Catalog } from "../catalog/catalog.props";
 import { axzyCatalog } from "../catalog/axzyCatalog";
-import type { JsonEngineIssue } from "../shared/errors";
+import { createBindingResolver } from "../binding/resolveValue";
+import { issue, type JsonEngineIssue } from "../shared/errors";
 import { resolveLimits, type EngineLimits } from "../shared/limits";
-import type { SchemaPath } from "../shared/paths";
+import { formatPath, type SchemaPath } from "../shared/paths";
+import { faltanCapacidades } from "./capabilities";
 import { NodeBoundary } from "./NodeBoundary";
 import { auditTree } from "./partial";
 import { childList, renderNode } from "./renderNode";
 import type { ITJsonRenderEngineProps } from "./schemaRenderer.props";
-import type { NodeSchema } from "./types";
+import type { SlotRegistry } from "./slots";
+import type { EffectRegistry } from "../actions/effects";
+import type { NodeSchema, SchemaValue } from "./types";
 
 /** Contexto que comparten los nodos durante un render. */
 interface RenderContext {
@@ -21,6 +25,12 @@ interface RenderContext {
   resolveValue?: ITJsonRenderEngineProps["resolveValue"];
   resolveAction?: ITJsonRenderEngineProps["resolveAction"];
   pendingFallback?: React.ReactNode;
+  slots?: SlotRegistry;
+  effects?: EffectRegistry;
+  /** Capacidades que concede el host. Un `requires` sin concesión no se pinta. */
+  capabilities?: readonly string[];
+  /** Escribe en el estado de la pantalla (efecto `set`). */
+  setState?: (cambios: Record<string, unknown>) => void;
 }
 
 /**
@@ -44,6 +54,19 @@ function renderTree(node: NodeSchema, path: SchemaPath, context: RenderContext, 
     context.onIssue?.(issue);
   };
 
+  // Capacidades: un nodo que exige algo que el host no concede no se pinta. Si tiene
+  // `fallback`, se pinta el fallback en su lugar; si no, el nodo desaparece con aviso.
+  const faltan = faltanCapacidades(node.requires, context.capabilities);
+  if (faltan.length > 0) {
+    reportIssue(
+      issue("JR060", `Falta la capacidad ${faltan.join(", ")} para pintar \`${node.type}\`.`, formatPath(path), {
+        severity: "warning",
+        hint: "El host debe conceder la capacidad con la prop `capabilities`, o el nodo debe declarar un `fallback`.",
+      })
+    );
+    return node.fallback ? renderTree(node.fallback, [...path, "fallback"], context, level + 1) : null;
+  }
+
   const issuesBefore = issues.length;
 
   const element = renderNode(node, {
@@ -53,6 +76,12 @@ function renderTree(node: NodeSchema, path: SchemaPath, context: RenderContext, 
     resolveValue: context.resolveValue,
     resolveAction: context.resolveAction,
     pendingFallback: context.pendingFallback,
+    slots: context.slots,
+    effects: context.effects,
+    actionTimeoutMs: context.limits.actionTimeoutMs,
+    onIssue: context.onIssue,
+    setState: context.setState,
+    capabilities: context.capabilities,
     renderChildren: (current, currentPath) => {
       const children = childList(current);
       if (children.length === 0) return undefined;
@@ -111,6 +140,11 @@ export function ITSchemaRenderer({
   schema,
   catalog = axzyCatalog,
   limits,
+  params,
+  dataHandlers,
+  slots,
+  effects,
+  capabilities,
   resolveValue,
   resolveAction,
   pendingFallback,
@@ -118,6 +152,25 @@ export function ITSchemaRenderer({
   className,
 }: ITJsonRenderEngineProps) {
   const resolvedLimits = useMemo(() => resolveLimits(limits), [limits]);
+
+  // Estado de la pantalla: el inicial del esquema más lo que escriben las acciones (efecto
+  // `set`). Va ligado a la identidad del esquema: una pantalla nueva empieza limpia.
+  const [escrito, setEscrito] = useState<{ origen: unknown; valores: Record<string, unknown> }>({
+    origen: schema,
+    valores: {},
+  });
+  const valoresPantalla = useMemo<Record<string, unknown>>(
+    () => ({ ...(schema?.state ?? {}), ...(escrito.origen === schema ? escrito.valores : {}) }),
+    [schema, escrito]
+  );
+  const escribirEstado = useCallback(
+    (cambios: Record<string, unknown>) =>
+      setEscrito((previo) => ({
+        origen: schema,
+        valores: { ...(previo.origen === schema ? previo.valores : {}), ...cambios },
+      })),
+    [schema]
+  );
   // Un único array de avisos por render: el resolutor y los boundaries escriben
   // en él, así que no se pierde ninguno por el camino.
   const issues: JsonEngineIssue[] = [];
@@ -137,17 +190,40 @@ export function ITSchemaRenderer({
       limits: resolvedLimits,
       issues,
       onIssue,
-      resolveValue,
+      // El binding escribe sus avisos (JR030, JR032) en el mismo array que el resto del render.
+      resolveValue: createBindingResolver({
+        data: schema?.data,
+        state: valoresPantalla as Record<string, SchemaValue>,
+        params,
+        handlers: dataHandlers,
+        report: (aviso) => issues.push(aviso),
+        host: resolveValue,
+      }),
       resolveAction,
       pendingFallback,
+      slots,
+      effects,
+      capabilities,
+      setState: escribirEstado,
     }),
     // `issues` es un array nuevo en cada render a propósito: acumular avisos
     // entre renders duplicaría los avisos de esquemas que no han cambiado.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [catalog, resolvedLimits, onIssue, resolveValue, resolveAction, pendingFallback]
+    [schema, params, valoresPantalla, escribirEstado, dataHandlers, slots, effects, capabilities, catalog, resolvedLimits, onIssue, resolveValue, resolveAction, pendingFallback]
   );
 
-  const content = schema
+  // Una pantalla que exige una capacidad no concedida no se pinta en absoluto.
+  const faltanRaiz = schema ? faltanCapacidades(schema.requires, capabilities) : [];
+  if (faltanRaiz.length > 0) {
+    issues.push(
+      issue("JR060", `Falta la capacidad ${faltanRaiz.join(", ")} para esta pantalla.`, "requires", {
+        severity: "error",
+        hint: "Concede la capacidad con la prop `capabilities` del renderizador.",
+      })
+    );
+  }
+
+  const content = schema && faltanRaiz.length === 0
     ? (Array.isArray(schema.content) ? schema.content : [schema.content]).filter(
         (node): node is NodeSchema => Boolean(node) && typeof node === "object"
       )

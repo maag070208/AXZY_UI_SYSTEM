@@ -2,6 +2,11 @@
   "$schema": "axzy/screen",
   "version": 1,
   "id": "demo.usuarios",
+  "data": {
+    "usuarios": {
+      "handler": "usuarios"
+    }
+  },
   "content": [
     {
       "type": "ITStack",
@@ -145,7 +150,6 @@
         },
         {
           "type": "ITDataTable",
-          "id": "tabla-usuarios",
           "props": {
             "columns": [
               {
@@ -178,6 +182,25 @@
                 "label": "Alta",
                 "type": "date",
                 "sortable": true
+              },
+              {
+                "key": "acciones",
+                "label": "Acciones",
+                "type": "actions",
+                "rowActions": [
+                  {
+                    "label": { "i18n": "sandbox.app.usuarios.verFila" },
+                    "action": "ver-usuario",
+                    "variant": "outlined",
+                    "color": "secondary"
+                  },
+                  {
+                    "label": { "i18n": "sandbox.app.form.edit" },
+                    "action": "editar-usuario",
+                    "variant": "outlined",
+                    "color": "primary"
+                  }
+                ]
               }
             ],
             "fetchData": {
@@ -193,7 +216,7 @@
             "variant": "striped",
             "layout": "fixed",
             "onRowClick": {
-              "action": "editar-usuario"
+              "action": "ver-usuario"
             }
           }
         }

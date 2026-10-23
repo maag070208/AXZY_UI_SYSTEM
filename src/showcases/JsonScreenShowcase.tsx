@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FaBolt, FaBug, FaCheck, FaTrashAlt } from "react-icons/fa";
 import {
   ITAlert,
@@ -11,8 +11,9 @@ import {
   ITText,
   type JsonEngineIssue,
   type ScreenSchema,
-  parsePartialSchema,
+  type StreamSource,
   axzyCatalogTypes,
+  useSchemaStream,
 } from "../index";
 import { ShowcaseLayout } from "./ShowcaseLayout";
 
@@ -53,7 +54,7 @@ const EJEMPLO: ScreenSchema = {
               props: { title: "Listo para pintar" },
               children: [
                 { type: "ITText", text: "Este árbol viene de un JSON, no de TSX." },
-                { type: "ITProgress", props: { value: 64, max: 100, size: "sm" } },
+                { type: "ITText", props: { muted: true }, text: "Progreso: 64 de 100" },
               ],
             },
           ],
@@ -77,8 +78,16 @@ const EJEMPLO: ScreenSchema = {
 /** Texto inicial del editor: el esquema anterior, formateado. */
 const TEXTO_INICIAL = JSON.stringify(EJEMPLO, null, 2);
 
-/** Velocidad del stream simulado (caracteres por tick). */
+/** Velocidad del stream simulado (caracteres por trozo). */
 const CHUNK = 6;
+
+/** Emite un texto en trozos de `CHUNK` caracteres, con una pausa entre ellos, como haría un modelo. */
+async function* emitir(total: string): AsyncGenerator<string> {
+  for (let cursor = 0; cursor < total.length; cursor += CHUNK) {
+    await new Promise((resolve) => window.setTimeout(resolve, 24));
+    yield total.slice(cursor, cursor + CHUNK);
+  }
+}
 
 /**
  * Laboratorio del motor de pantallas declarativas.
@@ -92,63 +101,40 @@ const CHUNK = 6;
  */
 export const JsonScreenShowcase: React.FC = () => {
   const [texto, setTexto] = useState(TEXTO_INICIAL);
-  const [streaming, setStreaming] = useState(false);
-  const [emitido, setEmitido] = useState(TEXTO_INICIAL.length);
   const [avisos, setAvisos] = useState<JsonEngineIssue[]>([]);
-  const timer = useRef<number | null>(null);
+  /** Fuente del stream simulado. Mientras existe, el laboratorio está emitiendo. */
+  const [fuente, setFuente] = useState<StreamSource | null>(null);
+  const stream = useSchemaStream(fuente);
+  const streaming = fuente !== null;
+  const emitido = stream.text.length;
 
-  /** Estado del esquema: mientras se emite, se parsea en modo tolerante. */
+  /** Estado del esquema: mientras se emite, lo da el hook; si no, se lee el texto del editor. */
   const estado = useMemo(() => {
-    if (!streaming) {
-      try {
-        const completo = JSON.parse(texto) as ScreenSchema;
-        return { tree: completo, status: "complete" as const, pending: 0, roto: false };
-      } catch {
-        return { tree: null, status: "complete" as const, pending: 0, roto: true };
-      }
+    if (streaming) {
+      return { tree: stream.tree, status: stream.status, pending: stream.pendingNodes, roto: stream.broken };
     }
-    const parcial = parsePartialSchema(texto);
-    return {
-      tree: parcial.tree,
-      status: parcial.status,
-      pending: parcial.pendingNodes,
-      roto: parcial.broken,
-    };
-  }, [texto, streaming]);
-
-  /** Detiene el stream y limpia el temporizador. */
-  const detener = useCallback(() => {
-    if (timer.current !== null) {
-      window.clearInterval(timer.current);
-      timer.current = null;
+    try {
+      const completo = JSON.parse(texto) as ScreenSchema;
+      return { tree: completo, status: "complete" as const, pending: 0, roto: false };
+    } catch {
+      return { tree: null, status: "complete" as const, pending: 0, roto: true };
     }
-    setStreaming(false);
-  }, []);
+  }, [texto, streaming, stream]);
 
-  useEffect(() => () => detener(), [detener]);
+  /** Al terminar la emisión, el texto completo pasa al editor y el laboratorio vuelve a ser editable. */
+  useEffect(() => {
+    if (fuente !== null && !stream.streaming && stream.text.length > 0) {
+      setTexto(stream.text);
+      setFuente(null);
+    }
+  }, [fuente, stream.streaming, stream.text]);
 
-  /** Emite el esquema carácter a carácter, como haría un modelo. */
+  /** Emite el esquema por trozos, como haría un modelo. */
   const emitirStream = useCallback(() => {
-    detener();
     setAvisos([]);
-    setEmitido(0);
     setTexto("");
-    setStreaming(true);
-
-    const total = TEXTO_INICIAL;
-    let cursor = 0;
-
-    timer.current = window.setInterval(() => {
-      cursor = Math.min(total.length, cursor + CHUNK);
-      setTexto(total.slice(0, cursor));
-      setEmitido(cursor);
-      if (cursor >= total.length) {
-        window.clearInterval(timer.current as number);
-        timer.current = null;
-        setStreaming(false);
-      }
-    }, 24);
-  }, [detener]);
+    setFuente(emitir(TEXTO_INICIAL));
+  }, []);
 
   /** Registro de acciones del host: el esquema solo puede pedir estos nombres. */
   const resolveAction = useCallback(
@@ -165,6 +151,11 @@ export const JsonScreenShowcase: React.FC = () => {
         : [...previos, issue].slice(-8)
     );
   }, []);
+
+  /** Los avisos del stream (JR080: falló, o terminó sin cerrar) pasan al panel de avisos. */
+  useEffect(() => {
+    stream.issues.forEach(registrarAviso);
+  }, [stream.issues, registrarAviso]);
 
   const codigo = `<ITSchemaRenderer
   schema={parsePartialSchema(texto).tree}
@@ -246,9 +237,8 @@ export const JsonScreenShowcase: React.FC = () => {
                   variant="outlined"
                   color="gray"
                   onClick={() => {
-                    detener();
+                    setFuente(null);
                     setTexto(TEXTO_INICIAL);
-                    setEmitido(TEXTO_INICIAL.length);
                     setAvisos([]);
                   }}
                 />

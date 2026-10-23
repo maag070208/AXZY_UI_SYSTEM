@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { forwardRef } from "react";
 import { ITTextareaProps } from "./textarea.props";
 import { inputLabel, inputError } from "@/utils/styles";
 import ITText from "@/components/atoms/text/text";
@@ -26,7 +27,7 @@ const resizeMap = {
  *   error={bio.length > 500 ? "Max 500 characters" : undefined}
  * />
  */
-export default function ITTextarea({
+const ITTextarea = forwardRef<HTMLTextAreaElement, ITTextareaProps>(function ITTextarea({
   value,
   onChange,
   label,
@@ -38,7 +39,9 @@ export default function ITTextarea({
   name,
   maxLength,
   resize = "vertical",
-}: ITTextareaProps) {
+  onKeyDown,
+  autoFocus = false,
+}, ref) {
   return (
     <div className={clsx("flex flex-col gap-1.5", className)}>
       {label && (
@@ -47,6 +50,7 @@ export default function ITTextarea({
         </ITText>
       )}
       <textarea
+        ref={ref}
         id={name}
         name={name}
         value={value}
@@ -55,6 +59,8 @@ export default function ITTextarea({
         rows={rows}
         disabled={disabled}
         maxLength={maxLength}
+        onKeyDown={onKeyDown}
+        autoFocus={autoFocus}
         className={clsx(
           "w-full border border-solid transition-all duration-200 rounded-lg px-3 py-2 text-sm outline-none",
           "focus:ring-2",
@@ -68,4 +74,8 @@ export default function ITTextarea({
       {error && <ITText as="span" className={inputError}>{error}</ITText>}
     </div>
   );
-}
+});
+
+ITTextarea.displayName = "ITTextarea";
+
+export default ITTextarea;

@@ -336,6 +336,9 @@ alucinaciones con esta librería.
 Además de componentes sueltos, la librería trae un **motor declarativo**: una pantalla
 descrita en JSON que se valida contra una lista blanca y se pinta sin ejecutar código.
 
+Para construir una pantalla, sigue [`docs/json-renderer/GUIA-PANTALLAS.md`](../json-renderer/GUIA-PANTALLAS.md),
+paso a paso. Seguridad y límites: [`docs/json-renderer/SEGURIDAD.md`](../json-renderer/SEGURIDAD.md).
+
 ```tsx
 import { ITSchemaRenderer, validateSchema, parsePartialSchema } from "@axzydev/axzy_ui_system";
 

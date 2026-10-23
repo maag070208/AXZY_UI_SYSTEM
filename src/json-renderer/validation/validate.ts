@@ -12,6 +12,8 @@ import type { Catalog } from "../catalog/catalog.props";
 import { axzyCatalog } from "../catalog/axzyCatalog";
 import { resolveNode } from "../catalog/resolve";
 import type { NodeSchema, ScreenSchema } from "../kernel/types";
+import { isSlotNode, slotName } from "../kernel/slots";
+import { readFormFields } from "../form/rules";
 import { isNodePending } from "../stream/tolerantParse";
 
 /** Veredicto de la validación. */
@@ -57,6 +59,21 @@ function validateNodes(
 
   // Un nodo pendiente no es un error: aún no ha llegado.
   if (isNodePending(node)) return 1;
+
+  // El formulario lo compila el motor: sus campos se validan con las mismas reglas que al pintar.
+  if (node.type === "form") {
+    const { issues: avisos } = readFormFields(node.props?.fields, [...path, "props", "fields"]);
+    for (const item of avisos) (item.severity === "error" ? errors : warnings).push(item);
+    return 0;
+  }
+
+  // Un slot no está en el catálogo: su nombre lo registra el host y se comprueba al pintar.
+  if (isSlotNode(node)) {
+    if (!slotName(node)) {
+      errors.push(issue("JR011", "El slot no declara `props.name`.", formatPath([...path, "props", "name"]), { severity: "error" }));
+    }
+    return 0;
+  }
 
   const resolved = resolveNode(node, catalog, path);
   for (const item of resolved.issues) {

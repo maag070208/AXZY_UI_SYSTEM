@@ -21,4 +21,8 @@ export interface ITTextareaProps {
   maxLength?: number;
   /** Resize behavior of the textarea: "none" | "vertical" | "horizontal" | "both". */
   resize?: "none" | "vertical" | "horizontal" | "both";
+  /** Keydown handler (e.g. Enter to send in a chat composer). */
+  onKeyDown?: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+  /** Autofocus the textarea. */
+  autoFocus?: boolean;
 }

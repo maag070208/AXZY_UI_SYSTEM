@@ -1,0 +1,12 @@
+{
+  "json.schemas": [
+    {
+      "fileMatch": ["/public/demo/app/routes.json"],
+      "url": "./docs/json-renderer/routes.schema.json"
+    },
+    {
+      "fileMatch": ["/public/demo/app/*.json", "!/public/demo/app/layout.json", "!/public/demo/app/routes.json"],
+      "url": "./docs/json-renderer/screen.schema.json"
+    }
+  ]
+}

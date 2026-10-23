@@ -19,6 +19,10 @@ export interface ITLineBarChartProps {
   lineColor?: string;
   /** Color de las barras. */
   barColor?: string;
+  /** Muestra la serie de línea. @default true */
+  showLine?: boolean;
+  /** Muestra la serie de barras. @default true */
+  showBars?: boolean;
   height?: number;
   /** Formatea los valores del tooltip; por defecto número con separadores. */
   formatValue?: (value: number) => string;

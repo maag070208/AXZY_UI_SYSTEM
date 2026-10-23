@@ -606,6 +606,25 @@ Drift conocido (no tocar sin decisión): `ITTableProps.className` no se aplica; 
 
 ---
 
+## Motor de pantallas desde JSON (`ITSchemaRenderer`)
+
+Si te piden una **pantalla escrita en JSON**, usa el motor declarativo, no `ITJsonRenderer`
+(ese es el PoC retrocompatible).
+
+- Guía paso a paso: `docs/json-renderer/GUIA-PANTALLAS.md`. **Léela entera antes de escribir.**
+- Componentes y props permitidos: `docs/json-renderer/VOCABULARIO.md` (o `vocabulario.json`).
+- Schema para validar: `docs/json-renderer/screen.schema.json`. Comprueba con `pnpm schema:check`.
+
+Reglas duras al escribir el JSON:
+
+1. Forma: `{ "$schema": "axzy/screen", "version": 1, "id": "…", "content": [ … ] }`.
+2. Cada nodo tiene `type` del catálogo, o `slot` (bloque del host) o `form` (formulario del motor).
+3. Solo props declaradas para ese `type`.
+4. Textos visibles como `{ "i18n": "clave" }`. Nunca texto suelto en el código.
+5. Cero código, HTML, URLs, `fetch` o expresiones. Datos con `data` + `{ "$source": "…" }`.
+6. Acciones por nombre (`{ "action": "…" }`); efectos con `then`/`onError` (`toast`, `navigate`…).
+7. Rutas en `routes.json`, no en la página.
+
 ## Reglas Esenciales para LLMs
 
 1. **TODO texto debe usar `<ITText>`** — sin excepción. `<span>, <p>, <h1-6>, <label>` → `<ITText as="...">`

@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import * as React$1 from 'react';
-import React__default, { CSSProperties, RefObject, ReactNode, ElementType, ChangeEvent, FocusEvent, KeyboardEvent, HTMLAttributes } from 'react';
+import React__default, { CSSProperties, RefObject, ReactNode, ElementType, UIEvent, ChangeEvent, FocusEvent, KeyboardEvent, HTMLAttributes, ComponentType } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { Locale } from 'date-fns';
 
@@ -763,6 +763,8 @@ interface ITCardProps {
     onClick?: () => void;
     /** Card title displayed in the header area. */
     title?: string;
+    /** Optional actions rendered at the right of the title row (e.g. a play button). */
+    headerActions?: React.ReactNode;
     /** Image source URL displayed at the top of the card. */
     image?: string;
     /** Alt text for the card image. @default "Card Image" */
@@ -796,7 +798,7 @@ interface ITCardProps {
  *   Clickable card with hover shadow.
  * </ITCard>
  */
-declare function ITCard({ title, image, alt, children, actions, className, imageClassName, titleClassName, contentClassName, actionClassName, onClick, }: ITCardProps): react_jsx_runtime.JSX.Element;
+declare function ITCard({ title, headerActions, image, alt, children, actions, className, imageClassName, titleClassName, contentClassName, actionClassName, onClick, }: ITCardProps): react_jsx_runtime.JSX.Element;
 
 interface ITCheckboxProps {
     /** Controlled checked state. @default false */
@@ -1892,6 +1894,8 @@ interface ITFlexProps {
     as?: ElementType;
     /** Click handler */
     onClick?: (e: React.MouseEvent) => void;
+    /** Scroll handler (useful for scrollable chat/log panels) */
+    onScroll?: (e: UIEvent<HTMLElement>) => void;
 }
 
 /**
@@ -1909,7 +1913,7 @@ interface ITFlexProps {
  *   <main>Content</main>
  * </ITFlex>
  */
-declare function ITFlex({ children, direction, align, justify, wrap, gap, grow, shrink, basis, className, style, as: Component, onClick, }: ITFlexProps): react_jsx_runtime.JSX.Element;
+declare const ITFlex: React$1.ForwardRefExoticComponent<ITFlexProps & React$1.RefAttributes<HTMLDivElement>>;
 
 /** @deprecated Legacy (V1) field definition consumed by `ITFormBuilder`'s `fields` prop. Prefer `FieldConfigV2` via the `config` prop for new forms. */
 interface FieldConfig {
@@ -3547,6 +3551,10 @@ interface ITLineBarChartProps {
     lineColor?: string;
     /** Color de las barras. */
     barColor?: string;
+    /** Muestra la serie de línea. @default true */
+    showLine?: boolean;
+    /** Muestra la serie de barras. @default true */
+    showBars?: boolean;
     height?: number;
     /** Formatea los valores del tooltip; por defecto número con separadores. */
     formatValue?: (value: number) => string;
@@ -3562,7 +3570,7 @@ interface ITLineBarChartProps {
  * el cursor. El SVG escala con `viewBox`, así que el trazo y el texto no se
  * deforman al cambiar el ancho del contenedor.
  */
-declare function ITLineBarChart({ data, ariaLabel, lineLabel, barLabel, lineColor, barColor, height, formatValue, formatAxis, className, }: ITLineBarChartProps): react_jsx_runtime.JSX.Element;
+declare function ITLineBarChart({ data, ariaLabel, lineLabel, barLabel, lineColor, barColor, showLine, showBars, height, formatValue, formatAxis, className, }: ITLineBarChartProps): react_jsx_runtime.JSX.Element;
 
 /**
  * A feature-rich data table with per-column filtering, sortable columns,
@@ -3632,6 +3640,10 @@ interface ITTextareaProps {
     maxLength?: number;
     /** Resize behavior of the textarea: "none" | "vertical" | "horizontal" | "both". */
     resize?: "none" | "vertical" | "horizontal" | "both";
+    /** Keydown handler (e.g. Enter to send in a chat composer). */
+    onKeyDown?: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+    /** Autofocus the textarea. */
+    autoFocus?: boolean;
 }
 
 /**
@@ -3650,7 +3662,7 @@ interface ITTextareaProps {
  *   error={bio.length > 500 ? "Max 500 characters" : undefined}
  * />
  */
-declare function ITTextarea({ value, onChange, label, placeholder, rows, disabled, error, className, name, maxLength, resize, }: ITTextareaProps): react_jsx_runtime.JSX.Element;
+declare const ITTextarea: React$1.ForwardRefExoticComponent<ITTextareaProps & React$1.RefAttributes<HTMLTextAreaElement>>;
 
 interface ITTabItem {
     /** Unique identifier for the tab. */
@@ -4044,7 +4056,7 @@ declare function getExclusionReason(catalog: Catalog, type: string): string | un
 /** Gravedad de un aviso del motor. */
 type JsonEngineSeverity = "error" | "warning" | "info";
 /** Códigos de aviso del motor. Contrato estable. */
-type JsonEngineCode = "JR010" | "JR011" | "JR012" | "JR013" | "JR014" | "JR020" | "JR021" | "JR030" | "JR031" | "JR040" | "JR041" | "JR042" | "JR050" | "JR060" | "JR061" | "JR070" | "JR080" | "JR081";
+type JsonEngineCode = "JR010" | "JR011" | "JR012" | "JR013" | "JR014" | "JR020" | "JR021" | "JR030" | "JR031" | "JR032" | "JR040" | "JR041" | "JR042" | "JR050" | "JR060" | "JR061" | "JR070" | "JR080" | "JR081";
 /** Aviso del motor: lo que pasó, dónde y qué hacer. */
 interface JsonEngineIssue {
     /** Código estable (`JR010`…). */
@@ -4221,6 +4233,10 @@ interface EffectSchema {
     openOverlay?: string;
     /** Cierra el overlay indicado, o el que esté abierto si se omite. */
     closeOverlay?: string;
+    /** Escribe en el estado de la pantalla: `{ "clave": valor }`. Los valores admiten referencias. */
+    set?: Record<string, SchemaValue>;
+    /** Capacidad que exige la acción. Sin concesión, la acción no se ejecuta (`JR061`). */
+    requires?: string | string[];
     /** Refresca una fuente de datos. */
     refresh?: string;
 }
@@ -4295,6 +4311,119 @@ interface ScreenSchema {
 }
 
 /**
+ * Binding mínimo del motor: resuelve las referencias declarativas del esquema
+ * (`$source`, `$state`, `$param`) antes de pintar cada prop.
+ *
+ * Solo lee y nunca hace red. Una fuente es un **loader**: el componente lo invoca
+ * cuando necesita datos (una tabla, al paginar o filtrar) y la función que lo
+ * atiende es un `handler` que registra el host por nombre. El esquema no puede
+ * nombrar una URL ni un endpoint.
+ *
+ * Escribir estado llega con las acciones (fase 5); `$row` y `$form` llegan con las
+ * tablas y los formularios (fase 8). Hasta entonces avisan con `JR032`.
+ */
+
+/**
+ * Handler que registra el host. Recibe la query que pide el componente (por ejemplo,
+ * página y filtros de una tabla) y los parámetros declarados en la fuente.
+ */
+type DataHandler = (query: unknown, params: Record<string, SchemaValue>) => unknown;
+/** Función de carga que recibe el componente. Siempre devuelve una promesa. */
+type DataLoader = (query?: unknown) => Promise<unknown>;
+/** Lo que el binding necesita del esquema, del host y del render en curso. */
+interface BindingScope {
+    /** Fuentes declaradas por la pantalla (`ScreenSchema.data`). */
+    data?: Record<string, DataSourceSchema>;
+    /** Estado inicial de la pantalla (`ScreenSchema.state`). */
+    state?: Record<string, SchemaValue>;
+    /** Parámetros de la ruta, aportados por el host (`$param`). */
+    params?: Record<string, SchemaValue>;
+    /** Handlers que registra el host, por nombre. */
+    handlers?: Record<string, DataHandler>;
+    /** Recibe los avisos del binding (`JR030`, `JR032`). */
+    report: (aviso: JsonEngineIssue) => void;
+    /** Resuelve el resto de valores (por ejemplo, textos `{ i18n }`). Lo aporta el host. */
+    host?: (value: unknown, path: SchemaPath) => unknown;
+}
+/** Resolutor de valores que consume el kernel al pintar cada prop. */
+type BindingResolver = (value: unknown, path: SchemaPath) => unknown;
+/**
+ * Crea el resolutor de valores de una pantalla.
+ *
+ * Las referencias se resuelven aquí; el resto de valores pasa al `host`. Los
+ * loaders de fuente no llaman a ningún handler hasta que el componente los invoca.
+ *
+ * @example
+ * const resolve = createBindingResolver({
+ *   data: { usuarios: { handler: "usuarios" } },
+ *   handlers: { usuarios: (query) => fetchUsuarios(query) },
+ *   report: (aviso) => issues.push(aviso),
+ * });
+ * resolve({ $source: "usuarios" }, ["content", 0]); // loader (no se llama aún)
+ */
+declare function createBindingResolver(scope: BindingScope): BindingResolver;
+
+/**
+ * Slots: bloques que registra el **host** y el esquema solo nombra.
+ *
+ * Un nodo `{ "type": "slot", "props": { "name": "…", … } }` monta el componente que
+ * el host registró con ese nombre en `slots`. El esquema no puede elegir el
+ * componente ni inyectar código: solo pasa valores (ya resueltos por el binding)
+ * como props. Es la vía para reutilizar pantallas JSX existentes dentro de un JSON.
+ *
+ * Los slots no están en el catálogo: son autoridad del host, igual que los handlers
+ * de datos. Un nombre que el host no registró avisa con `JR010` y no se pinta nada.
+ */
+
+/** Componente que el host registra como slot. Recibe los props del nodo ya resueltos. */
+type SlotComponent = ComponentType<Record<string, unknown>>;
+/** Slots que registra el host, por nombre. */
+type SlotRegistry = Record<string, SlotComponent>;
+
+/**
+ * Efectos de acción: lo que el esquema pide que pase después de una acción.
+ *
+ * Una acción declara su efecto en el JSON; el host decide cómo se cumple. El motor:
+ *
+ * - ejecuta el handler del host (la acción en sí);
+ * - si termina bien, aplica `then` (y los efectos sueltos de la acción);
+ * - si falla o rechaza, aplica `onError`.
+ *
+ * Los efectos (`toast`, `navigate`, `refresh`, `openOverlay`, `closeOverlay`) los
+ * cumple el registro `effects` que pasa el host. Un efecto también puede ser otra
+ * acción (`{ action, args, then, onError }`): el motor la resuelve con el handler del
+ * host y aplica sus propios efectos. Como el JSON es finito, el encadenado termina;
+ * `MAX_EFFECT_DEPTH` lo limita de todos modos (`JR042`).
+ *
+ * Los textos y rutas pueden leer el resultado del handler con `{ "$result": "campo" }`
+ * o `{campo}` dentro de una dirección.
+ *
+ * Si el esquema pide un efecto que el host no implementa, o una acción encadenada que
+ * no existe, el motor avisa al pintar (`JR040`), nunca al ejecutar.
+ *
+ * Sin `then`, `onError` ni efectos, el handler se devuelve tal cual: no cambia nada.
+ */
+
+/** Variante de un aviso (`toast`). */
+type ToastVariant = "success" | "error" | "info" | "warning";
+/** Lo que el host implementa. Cada efecto es opcional: el motor avisa si falta uno que se usa. */
+interface EffectRegistry {
+    /** Muestra un aviso al usuario. */
+    toast?: (aviso: {
+        variant: ToastVariant;
+        message: string;
+    }) => void;
+    /** Navega a una dirección. */
+    navigate?: (href: string) => void;
+    /** Refresca una fuente de datos. */
+    refresh?: (source: string) => void;
+    /** Abre un overlay declarado. */
+    openOverlay?: (name: string) => void;
+    /** Cierra un overlay; sin nombre, el que esté abierto. */
+    closeOverlay?: (name?: string) => void;
+}
+
+/**
  * Props de `ITSchemaRenderer`.
  *
  * El renderizador es el núcleo del motor: pinta un esquema contra un catálogo y
@@ -4307,9 +4436,32 @@ interface ITJsonRenderEngineProps {
     catalog?: Catalog;
     /** Presupuesto de nodos, profundidad y tiempos. */
     limits?: Partial<EngineLimits>;
+    /** Valores de la ruta para `$param`. Los pone el host; el esquema no puede crearlos. */
+    params?: Record<string, SchemaValue>;
     /**
-     * Resuelve un valor declarativo del esquema (`$state`, `$param`, `$source`…) al
-     * valor real. Sin esta prop, los valores se pasan tal cual (útil para pruebas).
+     * Handlers de datos que registra el host, por nombre. Las fuentes de `data` los
+     * referencian con `handler`. Conviene memoizarlo: cada fuente se resuelve contra él.
+     */
+    dataHandlers?: Record<string, DataHandler>;
+    /**
+     * Bloques JSX que registra el host, por nombre. Un nodo `{ "type": "slot", "props": { "name": "…" } }`
+     * monta el componente con ese nombre; el esquema no puede elegir otro.
+     */
+    slots?: SlotRegistry;
+    /**
+     * Efectos que cumple el host. Una acción con `then`, `onError` o efectos sueltos
+     * los ejecuta después de su handler; `toast` y `navigate` son los más comunes.
+     */
+    effects?: EffectRegistry;
+    /**
+     * Capacidades que concede el host (`["usuarios.leer", …]`). Un nodo o la pantalla que
+     * declara `requires` solo se pinta si todas están concedidas; si no, avisa con `JR060`.
+     * Sin esta prop, cualquier `requires` se deniega.
+     */
+    capabilities?: readonly string[];
+    /**
+     * Resuelve los valores que no son referencias del motor (por ejemplo, textos
+     * `{ i18n }`). Las referencias `$source`, `$state` y `$param` las resuelve el motor.
      */
     resolveValue?: (value: unknown, path: SchemaPath) => unknown;
     /**
@@ -4337,7 +4489,7 @@ interface ITJsonRenderEngineProps {
  * @example
  * <ITSchemaRenderer schema={schema} onIssue={(issue) => console.warn(issue.code, issue.path)} />
  */
-declare function ITSchemaRenderer({ schema, catalog, limits, resolveValue, resolveAction, pendingFallback, onIssue, className, }: ITJsonRenderEngineProps): react_jsx_runtime.JSX.Element;
+declare function ITSchemaRenderer({ schema, catalog, limits, params, dataHandlers, slots, effects, capabilities, resolveValue, resolveAction, pendingFallback, onIssue, className, }: ITJsonRenderEngineProps): react_jsx_runtime.JSX.Element;
 
 /** Props de `NodeBoundary`. */
 interface NodeBoundaryProps {
@@ -4391,6 +4543,18 @@ interface RenderNodeOptions {
     resolveValue?: (value: unknown, path: SchemaPath) => unknown;
     /** Resuelve el handler de una acción declarada. */
     resolveAction?: (node: NodeSchema, prop: string, action: unknown, path: SchemaPath) => ((...args: unknown[]) => void) | undefined;
+    /** Slots que registra el host. Un nodo `slot` monta el componente con su nombre. */
+    slots?: SlotRegistry;
+    /** Efectos que cumple el host (`toast`, `navigate`…) tras una acción. */
+    effects?: EffectRegistry;
+    /** Milisegundos que una acción puede tardar antes de considerarla colgada (`JR041`). */
+    actionTimeoutMs?: number;
+    /** Escribe en el estado de la pantalla (efecto `set`). */
+    setState?: (cambios: Record<string, unknown>) => void;
+    /** Capacidades que concede el host (para las acciones con `requires`). */
+    capabilities?: readonly string[];
+    /** Recibe los avisos que se producen fuera del render (por ejemplo, un timeout). */
+    onIssue?: (aviso: JsonEngineIssue) => void;
     /** Renderiza los hijos de un nodo (lo aporta el recorrido del árbol). */
     renderChildren?: (node: NodeSchema, path: SchemaPath) => React__default.ReactNode;
     /** Qué pintar mientras un nodo está pendiente (streaming). */
@@ -4439,6 +4603,148 @@ interface TreeAudit {
 declare function auditTree(schema: ScreenSchema, limits: EngineLimits): TreeAudit;
 /** Cuenta los nodos pendientes de un esquema ya parseado. */
 declare function countPendingNodes(schema: ScreenSchema | null): number;
+
+/**
+ * Contrato de rutas declarativas: un `routes.json` describe qué pantalla pinta cada
+ * dirección, con qué parámetros y query, y qué entradas aparecen en la navegación.
+ *
+ * Como el resto del motor, es entrada no confiable: no hay código ni URLs externas,
+ * solo nombres de pantalla (`page`) que el host resuelve. Las rutas con `children`
+ * son grupos (agrupan entradas de menú); solo las hojas se pueden pintar.
+ */
+
+/** Entrada de menú asociada a una ruta. Sin `nav`, la ruta existe pero no se muestra. */
+interface RouteNavSchema {
+    /** Texto de la entrada; admite `{ i18n }`. */
+    label: SchemaValue;
+    /** Nombre de icono del registro del host. */
+    icon?: string;
+    /** Contador visible junto a la entrada. */
+    badge?: number | string;
+}
+/** Ruta tal como la escribe el JSON. */
+interface RouteSchema {
+    /** Identificador estable: lo usa la navegación para marcar la entrada activa. */
+    id: string;
+    /**
+     * Segmentos de la ruta, relativos al padre (`usuarios`, `:id`). Los hijos sin `path`
+     * heredan el del padre. Las rutas raíz empiezan por `/`.
+     */
+    path?: string;
+    /** Pantalla JSON que pinta la ruta. Obligatoria en las hojas; prohibida en los grupos. */
+    page?: string;
+    /** Query que exige la ruta (`{ estado: "Activo" }`). Más claves = más específica. */
+    query?: Record<string, string>;
+    /** Entrada de menú. */
+    nav?: RouteNavSchema;
+    /** Rutas hijas. Si existen, la ruta es un grupo. */
+    children?: RouteSchema[];
+}
+/** Documento de rutas completo. */
+interface RoutesSchema {
+    /** Identificador del formato. */
+    $schema?: "axzy/routes";
+    /** Versión del formato. */
+    version: number;
+    /** Rutas raíz. */
+    routes: RouteSchema[];
+}
+/** Ruta aplanada y lista para casarla: solo hojas, con su path completo. */
+interface FlatRoute {
+    /** Identificador de la ruta. */
+    id: string;
+    /** Segmentos completos, sin barras (`["usuarios", ":id"]`). Vacío para la raíz. */
+    segments: string[];
+    /** Pantalla que pinta. */
+    page: string;
+    /** Query que exige la ruta. */
+    query: Record<string, string>;
+    /** Entrada de menú, si la tiene. */
+    nav?: RouteNavSchema;
+    /** Ids de los grupos a los que pertenece, de fuera a dentro. */
+    groups: string[];
+}
+/** Une un path de padre con el propio y normaliza las barras. */
+declare function joinRoutePath(parent: string, own: unknown): string;
+/**
+ * Valida un documento de rutas. Nunca lanza: devuelve los avisos con su código y su ruta.
+ *
+ * @example
+ * validateRoutes({ version: 1, routes: [{ id: "inicio", path: "/inicio", page: "inicio" }] }); // []
+ */
+declare function validateRoutes(input: unknown): JsonEngineIssue[];
+/**
+ * Aplana las rutas en hojas con su path completo. Asume un documento válido
+ * (ver `validateRoutes`); las ramas sin `page` se descartan.
+ */
+declare function flattenRoutes(routes: RouteSchema[]): FlatRoute[];
+
+/**
+ * Casa una dirección (path + query) con una ruta declarada.
+ *
+ * Reglas, de más a menos específica:
+ * 1. Más segmentos estáticos gana a un `:param` en la misma posición
+ *    (`/usuarios/nuevo` antes que `/usuarios/:id`).
+ * 2. Con el mismo path, gana la ruta que exige más claves de query
+ *    (`?estado=Activo` antes que la ruta sin query).
+ * 3. Empate: la primera declarada.
+ *
+ * Nunca lanza: una dirección que no casa devuelve `null`.
+ */
+
+/** Resultado de casar una dirección. */
+interface RouteMatch {
+    /** Ruta que casa. */
+    route: FlatRoute;
+    /** Valores de los `:param` de la ruta, por nombre (sin los dos puntos). */
+    params: Record<string, string>;
+}
+/**
+ * Busca la ruta que corresponde a una dirección.
+ *
+ * @example
+ * matchRoute(flattenRoutes(routes), ["usuarios"], { estado: "Activo" })?.route.id; // "u-activos"
+ */
+declare function matchRoute(routes: FlatRoute[], segments: string[], query?: Record<string, string>): RouteMatch | null;
+/**
+ * Dirección (`/usuarios/42?estado=Activo`) de una ruta, con sus `:param` rellenos.
+ * Los `:param` sin valor se dejan tal cual para que se vean en el menú.
+ */
+declare function routeHref(route: FlatRoute, params?: Record<string, string>): string;
+
+/**
+ * Árbol de navegación derivado de `routes.json`.
+ *
+ * Solo entran las rutas con `nav`. Un grupo con `nav` se convierte en una entrada con
+ * hijos y, como enlace, apunta a su primera hija con dirección. Un grupo sin `nav` no
+ * aparece: sus hijos suben de nivel. El host decide cómo pintar el árbol (sidebar, top
+ * bar…); el motor solo entrega la forma y las direcciones.
+ */
+
+/** Entrada del árbol de navegación. */
+interface NavNode {
+    /** Id de la ruta (o del grupo) de origen. */
+    id: string;
+    /** Texto de la entrada; puede ser una referencia `{ i18n }` que resuelve el host. */
+    label: SchemaValue;
+    /** Icono, tal como lo declara el JSON. */
+    icon?: string;
+    /** Contador de la entrada. */
+    badge?: number | string;
+    /** Dirección a la que lleva la entrada. Los grupos apuntan a su primera hija con dirección. */
+    href?: string;
+    /** Entradas hijas. Presentes solo en los grupos. */
+    children?: NavNode[];
+}
+/**
+ * Construye el árbol de navegación a partir de las rutas declaradas.
+ *
+ * @example
+ * buildNavigationTree(routes.routes)[0]; // { id: "inicio", label: {...}, href: "/inicio" }
+ */
+declare function buildNavigationTree(routes: RouteSchema[]): NavNode[];
+/** `true` cuando la entrada, o alguno de sus hijos, es la ruta indicada. */
+declare function navContainsRoute(entry: NavNode, routeId: string): boolean;
 
 /** Entradas del catálogo por defecto. */
 declare const AXZY_CATALOG_ENTRIES: CatalogEntry[];
@@ -4689,9 +4995,51 @@ interface StreamState {
     pendingNodes: number;
     /** `true` cuando el emisor está activo. */
     streaming: boolean;
+    /** Texto acumulado hasta ahora. */
+    text: string;
+    /** Avisos del stream (`JR080`: falló, o terminó sin cerrar el JSON). */
+    issues: JsonEngineIssue[];
 }
 /** `true` cuando un nodo está pendiente según el parser. */
 declare function isNodePending(node: NodeSchema | undefined): boolean;
+
+/**
+ * `useSchemaStream`: pinta un esquema mientras llega por trozos.
+ *
+ * Acepta una fuente completa (`string`), un iterable asíncrono o un `ReadableStream` de
+ * texto. Acumula el texto, lo parsea en modo tolerante con cada trozo y devuelve el último
+ * árbol válido. Lo que aún no está cerrado no se pinta a medias (ver `pendingFallback`).
+ *
+ * Garantías:
+ *
+ * - **Sin pérdida con StrictMode:** el texto acumulado vive en un registro asociado a la
+ *   fuente, no en el efecto. Si React monta dos veces, el segundo montaje continúa donde
+ *   quedó el primero; ningún fragmento se pierde ni se duplica.
+ * - **Cancelación:** si el componente deja de usar la fuente, el registro se cierra y se
+ *   devuelve el control a la fuente (`return()` del iterable, `cancel()` del stream).
+ * - **Sin árbol roto:** si el texto deja de ser recuperable, se conserva el último árbol
+ *   válido. Un stream que falla o termina sin cerrar avisa con `JR080`.
+ *
+ * **La fuente debe ser estable entre renders.** Crea el iterable o el stream una vez
+ * (en un estado, o fuera del componente) y pásalo tal cual. Crearlo dentro del render
+ * arranca un stream nuevo en cada render.
+ *
+ * @example
+ * const { tree, streaming, issues } = useSchemaStream(respuestaDelModelo);
+ * <ITSchemaRenderer schema={tree} onIssue={registrar} pendingFallback={<ITSkeleton />} />
+ */
+
+/** Fuente de un esquema que llega por trozos. */
+type StreamSource = string | AsyncIterable<string> | ReadableStream<string>;
+/**
+ * Devuelve el estado de un esquema que llega por trozos.
+ *
+ * @example
+ * const estado = useSchemaStream(stream);
+ * estado.tree;      // árbol pintable, o null si aún no hay nada válido
+ * estado.streaming; // true mientras la fuente sigue emitiendo
+ */
+declare function useSchemaStream(source: StreamSource | null | undefined): StreamState;
 
 /** Allowed file MIME types for the dropzone */
 declare enum FileTypeEnum {
@@ -5412,4 +5760,4 @@ declare const es: ITMessages;
  */
 declare const en: ITMessages;
 
-export { AXZY_CATALOG_ENTRIES, AXZY_EXCLUDED_TYPES, type ActionSchema, CURRENT_SCHEMA_VERSION, type Catalog, type CatalogEntry, type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type ComponentContract, DEFAULT_LIMITS, DEFAULT_MIGRATIONS, type DataSourceSchema, type EffectSchema, type EngineLimits, type FieldConfig, type FieldConfigV2, FileTypeEnum, GLOBALLY_FORBIDDEN_PROPS, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITI18nProvider, type ITI18nProviderProps, type ITI18nValue, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITJSONEditor, type ITJSONEditorProps, type ITJsonRenderEngineProps, ITJsonRenderer, type ITJsonRendererProps, ITLayout, type ITLayoutProps, ITLineBarChart, type ITLineBarChartProps, type ITLineBarDatum, ITLoader, type LoaderProps as ITLoaderProps, type ITLocale, ITMaskedInput, type ITMaskedInputProps, type ITMessages, type ITMessagesByLocale, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSchemaRenderer, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarBrand, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeAppearance, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type JsonComponentNode, type JsonComponentType, type JsonEngineCode, JsonEngineError, type JsonEngineIssue, type JsonEngineSeverity, type LimitTracker, type MigrationRegistry, type MigrationResult, NodeBoundary, type NodeSchema, type NodeStatus, type PartialParseResult, type PathSegment, type PropContract, type PropKind, type PropSpec, type ResolvedNode, type SchemaMigration, type SchemaPath, type SchemaReference, type SchemaValue, type ScreenSchema, type StreamState, type TableColors, type TableDensity, type TableDesign, type TableDesignProps, type TableDesignSlot, type UnresolvedNode, UploadStatus, type UseTableStateOptions, type UseTableStateResult, type ValidateOptions, type ValidationReport, type ValidationVerdict, type VocabularyContract, type WhenSchema, auditTree, axzyCatalog, axzyCatalogTypes, buildVocabularyContract, countPendingNodes, createCatalog, createLimitTracker, createValidationSchema, en as enMessages, es as esMessages, formatPath, formatVocabularyForPrompt, getCatalogEntry, getContrastTextColor, getExclusionReason, hasPath, isExcludedType, isLightColor, isNodePending, issue, migrateSchema, parsePartialSchema, parsePath, propPath, pushPath, readPath, renderNode, resolveCssColor, resolveLimits, resolveNode, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITFlatAppearance, useITTheme, useITThemeSafe, useITTranslation, useJsonRender, useTableState, validateSchema };
+export { AXZY_CATALOG_ENTRIES, AXZY_EXCLUDED_TYPES, type ActionSchema, type BindingResolver, type BindingScope, CURRENT_SCHEMA_VERSION, type Catalog, type CatalogEntry, type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type ComponentContract, DEFAULT_LIMITS, DEFAULT_MIGRATIONS, type DataHandler, type DataLoader, type DataSourceSchema, type EffectRegistry, type EffectSchema, type EngineLimits, type FieldConfig, type FieldConfigV2, FileTypeEnum, type FlatRoute, GLOBALLY_FORBIDDEN_PROPS, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITI18nProvider, type ITI18nProviderProps, type ITI18nValue, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITJSONEditor, type ITJSONEditorProps, type ITJsonRenderEngineProps, ITJsonRenderer, type ITJsonRendererProps, ITLayout, type ITLayoutProps, ITLineBarChart, type ITLineBarChartProps, type ITLineBarDatum, ITLoader, type LoaderProps as ITLoaderProps, type ITLocale, ITMaskedInput, type ITMaskedInputProps, type ITMessages, type ITMessagesByLocale, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSchemaRenderer, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarBrand, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeAppearance, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type JsonComponentNode, type JsonComponentType, type JsonEngineCode, JsonEngineError, type JsonEngineIssue, type JsonEngineSeverity, type LimitTracker, type MigrationRegistry, type MigrationResult, type NavNode, NodeBoundary, type NodeSchema, type NodeStatus, type PartialParseResult, type PathSegment, type PropContract, type PropKind, type PropSpec, type ResolvedNode, type RouteMatch, type RouteNavSchema, type RouteSchema, type RoutesSchema, type SchemaMigration, type SchemaPath, type SchemaReference, type SchemaValue, type ScreenSchema, type SlotComponent, type SlotRegistry, type StreamSource, type StreamState, type TableColors, type TableDensity, type TableDesign, type TableDesignProps, type TableDesignSlot, type ToastVariant, type UnresolvedNode, UploadStatus, type UseTableStateOptions, type UseTableStateResult, type ValidateOptions, type ValidationReport, type ValidationVerdict, type VocabularyContract, type WhenSchema, auditTree, axzyCatalog, axzyCatalogTypes, buildNavigationTree, buildVocabularyContract, countPendingNodes, createBindingResolver, createCatalog, createLimitTracker, createValidationSchema, en as enMessages, es as esMessages, flattenRoutes, formatPath, formatVocabularyForPrompt, getCatalogEntry, getContrastTextColor, getExclusionReason, hasPath, isExcludedType, isLightColor, isNodePending, issue, joinRoutePath, matchRoute, migrateSchema, navContainsRoute, parsePartialSchema, parsePath, propPath, pushPath, readPath, renderNode, resolveCssColor, resolveLimits, resolveNode, routeHref, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITFlatAppearance, useITTheme, useITThemeSafe, useITTranslation, useJsonRender, useSchemaStream, useTableState, validateRoutes, validateSchema };

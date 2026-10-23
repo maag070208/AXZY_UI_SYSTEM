@@ -70,7 +70,7 @@ import JsonRendererShowcase from "./showcases/JsonRendererShowcase";
 import JsonEditorShowcase from "./showcases/JsonEditorShowcase";
 import JsonScreenShowcase from "./showcases/JsonScreenShowcase";
 import DemoJsonPortfolio from "./showcases/DemoJsonPortfolio";
-import DemoJsonDashboard, { DEMO_APP_PAGES, type DemoAppPage } from "./showcases/DemoJsonDashboard";
+import DemoJsonDashboard from "./showcases/DemoJsonDashboard";
 
 // Sandbox routing / landing (dev-only, never published)
 import {
@@ -377,18 +377,16 @@ function AppShell() {
         ) : route.view === "demo" ? (
           route.group === "app" ? (
             <DemoJsonDashboard
-              page={(DEMO_APP_PAGES.includes((route.item ?? "inicio") as DemoAppPage)
-                ? route.item
-                : "inicio") as DemoAppPage}
-              onNavigate={(pagina) => {
-                window.location.hash = `#demo/app/${pagina}`;
+              path={`/${route.item || "inicio"}`}
+              query={route.query}
+              onNavigate={(href) => {
+                window.location.hash = `#demo/app${href}`;
               }}
               onExit={() => {
                 window.location.hash = "#demo";
               }}
-              filterEstado={route.query.estado ?? "Todos"}
               onFilterChange={(estado) => {
-                const base = `#demo/app/${route.item ?? "inicio"}`;
+                const base = `#demo/app/${route.item || "inicio"}`;
                 window.location.hash = estado === "Todos" ? base : `${base}?estado=${encodeURIComponent(estado)}`;
               }}
             />
