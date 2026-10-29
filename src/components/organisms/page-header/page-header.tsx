@@ -2,7 +2,7 @@ import { FaChevronLeft } from "react-icons/fa";
 import { ITPageHeaderProps } from "./page-header.props";
 import ITBreadcrumbs from "@/components/molecules/breadcrumbs/breadcrumbs";
 import ITText from "@/components/atoms/text/text";
-import { useITFlatAppearance } from "@/theme/theme-context";
+import { useITAppearance } from "@/theme/theme-context";
 import { useITTranslation } from "@/i18n";
 
 /**
@@ -33,7 +33,10 @@ export default function ITPageHeader({
   const { t } = useITTranslation();
   const showTopRow = breadcrumbs?.length || backAction;
   // Flat appearance: compact title, no decorative icon tile.
-  const flat = useITFlatAppearance();
+  // Bento: no icon tile either, but a larger tight title and a borderless round back button.
+  const appearance = useITAppearance();
+  const bento = appearance === "bento";
+  const flat = appearance === "flat";
 
   return (
     <div className={`${className} space-y-3`}>
@@ -44,7 +47,16 @@ export default function ITPageHeader({
             {backAction && (
               <button
                 onClick={backAction}
-                className="flex items-center justify-center w-9 h-9 rounded-full border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-all duration-200 flex-shrink-0"
+                className={
+                  bento
+                    ? "flex items-center justify-center w-10 h-10 rounded-full hover:opacity-80 transition-opacity duration-200 flex-shrink-0"
+                    : "flex items-center justify-center w-9 h-9 rounded-full border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-all duration-200 flex-shrink-0"
+                }
+                style={
+                  bento
+                    ? { backgroundColor: "var(--it-bento-control-bg, #f1f5f9)", color: "var(--it-bento-control-text, #475569)" }
+                    : undefined
+                }
                 aria-label={t("pageHeader.back")}
               >
                 <FaChevronLeft size={14} />
@@ -65,7 +77,7 @@ export default function ITPageHeader({
       {/* Fila principal: icono + título + descripción + (acciones si no hay top row) */}
       <div className="flex items-start justify-between gap-6">
         <div className="flex items-start gap-4 min-w-0">
-          {icon && !flat && (
+          {icon && !flat && !bento && (
             <div
               className="flex items-center justify-center w-12 h-12 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 flex-shrink-0 transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-500 hover:shadow-sm"
               style={iconColor ? { color: iconColor } : undefined}
@@ -77,7 +89,9 @@ export default function ITPageHeader({
             <ITText
               as="h1"
               className={
-                flat
+                bento
+                  ? "text-3xl font-bold text-slate-900 dark:text-white tracking-tighter leading-tight"
+                  : flat
                   ? "text-[1.625rem] font-bold text-slate-900 dark:text-white tracking-tight leading-tight"
                   : "text-3xl font-bold text-slate-800 dark:text-white tracking-tight leading-tight"
               }
@@ -88,7 +102,9 @@ export default function ITPageHeader({
               <ITText
                 as="p"
                 className={
-                  flat
+                  bento
+                    ? "text-sm font-normal text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed"
+                    : flat
                     ? "text-sm font-normal text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed"
                     : "text-sm font-light text-slate-500 dark:text-slate-400 mt-1 leading-relaxed"
                 }

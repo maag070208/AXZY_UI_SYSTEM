@@ -35,7 +35,7 @@ import { ITLayout } from "@axzydev/axzy_ui_system";
 | `centerContent` | `ReactNode` | — | Contenido central (p. ej. buscador); solo desde `lg`. |
 | `children` | `ReactNode` | — | Acciones a la derecha, justo antes del menú de usuario. |
 | `userMenu` | `{ userName: string; userEmail: string; userImage?: string; menuItems: { label: string; onClick: () => void }[] }` | — | Menú de usuario. |
-| `navItems` | `ITTopBarNavItem[]` (`{ id; label; icon?; action }`) | — | Ítems de navegación en desktop. |
+| `navItems` | `ITTopBarNavItem[]` (`{ id; label; icon?; isActive?; action }`) | — | Ítems de navegación en desktop. `isActive` marca el actual (`aria-current="page"`); en `bento` se pinta como píldora tinta. |
 | `onNavItemClick` | `(id: string) => void` | — | Se dispara al pulsar un ítem (recibe su `id`). |
 | `showMobileMenuButton` | `boolean` | `false` | Muestra el botón de menú (declarado; `ITLayout` lo pasa siempre). |
 | `onToggleMobileMenu` | `() => void` | — | Se dispara al pulsar el botón de menú. |
@@ -76,6 +76,7 @@ export function Shell() {
 - El JSDoc de `showMobileMenuButton` declara `@default false`, pero el componente no asigna valor por defecto: el botón solo se renderiza cuando es truthy. Dentro de `ITLayout` siempre se pasa, así que siempre aparece; fuera del layout hay que pasarlo explícitamente.
 - `centerContent` se renderiza solo desde `lg`, en un contenedor de máx. `420px`; `children` se coloca justo antes del menú de usuario.
 - Aviso destructivo: un ítem de `userMenu.menuItems` cuyo `label` (en minúsculas) contenga `"salir"`, `"cerrar"` o `"logout"` se pinta en color de peligro y añade un separador si es el último.
+- Aspecto `bento` (`appearance="bento"`): sin blur, sombra ni borde inferior (se funde con el lienzo `--it-layout-bg`), ítems de navegación como píldoras neutras (`--it-bento-control-*`), el activo como píldora tinta (`--it-bento-ink-*`) y los botones de icono como círculos neutros.
 - `navItems` pinta botones de navegación en desktop y llama a `onNavItemClick(item.id)`. El campo `action` del ítem es legacy y no se usa en el render.
 - `hideBrandOnDesktop` oculta logo y texto desde `lg` y alinea `centerContent` a la izquierda.
 - Colores por variables CSS (`--it-topbar-bg`, `--it-topbar-border`, `--it-topbar-icon`, `--it-topbar-text`, `--it-topbar-user-*`). Aspecto flat: sin sombra/blur, altura `h-[64px]` (vs `h-[72px]`) y avatar con iniciales.

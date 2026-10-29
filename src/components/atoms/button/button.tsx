@@ -9,6 +9,7 @@ import { useState } from "react";
 import { theme } from "@/theme/theme";
 import { ITButtonProps } from "./button.props";
 import ITText from "@/components/atoms/text/text";
+import { useITAppearance } from "@/theme/theme-context";
 
 /**
  * Highly configurable action button supporting 8 visual variants, theme colors, 3 sizes, icons, and hover/focus states.
@@ -37,6 +38,8 @@ export default function ITButton({
 }: ITButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  // Bento: pill buttons. The radius token is only defined when the provider has no explicit `radius`.
+  const bento = useITAppearance() === "bento";
 
   /** La variante `icon-only` siempre es un cuadrado con padding simétrico. */
   const isIconOnly = variant === "icon-only";
@@ -71,6 +74,10 @@ export default function ITButton({
       borderRadius: themeConfig.borderRadius, // Default from theme
       transition: themeConfig.transition || 'all 0.2s',
     };
+
+    if (bento) {
+      style.borderRadius = `var(--it-bento-pill-radius, ${themeConfig.borderRadius})`;
+    }
 
     if (variant === "rounded") {
       style.borderRadius = "9999px";

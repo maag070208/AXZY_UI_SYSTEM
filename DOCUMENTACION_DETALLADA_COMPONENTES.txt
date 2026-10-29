@@ -92,8 +92,12 @@ export interface ITThemeConfig {
 export interface ITThemeProviderProps {
   theme?: Partial<ITThemeConfig>;
   children: React.ReactNode;
+  /** Lenguaje visual: "soft" (default) | "flat" | "bento". */
+  appearance?: 'soft' | 'flat' | 'bento';
 }
 ```
+
+> Aspecto `bento` (`<ITThemeProvider appearance="bento">`): lienzo gris claro, `ITCard` blanca sin borde con sombra difusa y radio 24px, botones/inputs en píldora, `ITTopBar` sin borde con navegación en píldoras (activa = píldora tinta vía `navItems[].isActive`), sidebar liso con activo en píldora neutra y `ITPageHeader` con título grande. Un `radius`/`shadow` explícito gana. `ITCard` acepta además `tone` (`primary | secondary | ternary | success | info | warning | danger`) para tarjetas pastel con el token `--color-<tone>-soft`. Hook: `useITAppearance()`.
 
 ### Ejemplo Real
 ```tsx
@@ -453,7 +457,7 @@ export interface ITTopBarProps {
     userImage?: string;
     menuItems: Array<{ label: string; onClick: () => void }>;
   };
-  navItems?: Array<{ id: string; label: string; icon?: ReactNode; action: () => void }>;
+  navItems?: Array<{ id: string; label: string; icon?: ReactNode; isActive?: boolean; action: () => void }>;
   onNavItemClick?: (id: string) => void;
   showMobileMenuButton?: boolean;
   onToggleMobileMenu?: () => void;

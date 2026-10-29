@@ -362,6 +362,7 @@ export const ThemeProviderShowcase = () => {
           '<ITThemeProvider><App /></ITThemeProvider>',
           '<ITThemeProvider theme={{ primary: "#3b82f6", layout: { sidebarBg: "#0f172a" } }} showFab={false}><App /></ITThemeProvider>',
           '<ITThemeProvider density={0.9} radius={8} shadow={1} appearance="flat"><App /></ITThemeProvider>',
+          '<ITThemeProvider appearance="bento"><App /></ITThemeProvider>',
         ],
         props: [
           { name: "theme", type: "Partial<ITThemePalette>", description: "Overrides de paleta fusionados (deep merge) con el tema por defecto: `primary`, `secondary`, `ternary`, `danger`, `success`, `info`, `alert`, `warning`, `layout` y `table`." },
@@ -370,7 +371,7 @@ export const ThemeProviderShowcase = () => {
           { name: "density", type: "number", default: "1", description: "Factor de densidad global: escala el `font-size` raíz para compactar todo lo basado en `rem`. Se limita a `0.5`–`1.5`." },
           { name: "radius", type: "number", default: "—", description: "Radio global en px aplicado a toda la escala `--radius-*`; `0` deja las esquinas totalmente cuadradas." },
           { name: "shadow", type: "number", default: "—", description: "Fuerza global de sombras: `0` ninguna, `1` sutiles, `2` look actual, `3` marcadas." },
-          { name: "appearance", type: '"soft" | "flat"', default: '"soft"', description: "Lenguaje visual del sistema; `\"flat\"` usa superficies planas con bordes de 1 px y fija `data-it-appearance` en `<html>`." },
+          { name: "appearance", type: '"soft" | "flat" | "bento"', default: '"soft"', description: "Lenguaje visual del sistema; `\"flat\"` usa superficies planas con bordes de 1 px; `\"bento\"` usa lienzo gris claro, tarjetas blancas sin borde con sombra difusa y radio de 24 px, controles en píldora y navegación con píldora tinta. Fija `data-it-appearance` en `<html>`; un `radius`/`shadow` explícito gana sobre los valores bento." },
         ],
         notes: [
           "`useITTheme()` lanza error si se usa fuera del provider; `useITThemeSafe()` devuelve `undefined` en ese caso.",

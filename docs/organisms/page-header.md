@@ -53,6 +53,7 @@ export function UsersHeader() {
 
 - La fila superior (`showTopRow = breadcrumbs?.length || backAction`) contiene el botón de volver y los breadcrumbs a la izquierda, y `actions` a la derecha. Si **no** hay fila superior, las acciones se colocan en la fila principal, a la derecha.
 - Diseño con `space-y-3`. El título es un `<h1>` (`text-3xl`, o `text-[1.625rem]` en aspecto flat).
+- Aspecto `bento`: título `text-3xl` con tracking ajustado, descripción atenuada, sin recuadro de icono y botón de volver como círculo neutro de 40 px sin borde.
 - El recuadro del icono (`w-12 h-12 rounded-full`, con borde y fondo) **no** se renderiza en aspecto flat (`useITFlatAppearance()`); `iconColor` se aplica como `style.color` de ese recuadro.
 - El botón de volver es un círculo `w-9 h-9` con `FaChevronLeft`.
 - `breadcrumbs` se delega a `ITBreadcrumbs`.

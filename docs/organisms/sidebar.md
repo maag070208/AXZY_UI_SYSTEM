@@ -87,6 +87,7 @@ export function Nav() {
 - `header` se oculta al colapsar pero **reserva su altura** (se maqueta invisible, con el ancho expandido y recortado) para que la navegación no se desplace verticalmente al abrir/cerrar; usa un header compacto si te importa el hueco que deja en el riel.
 - Geometría estable: riel y panel comparten columna de iconos y alto de fila (`h-10`; `px-5` en soft, `px-3` en flat; nav `px-4` en ambos estados), así que ningún icono cambia de posición al expandir.
 - Los badges usan `ITBadget`: `item.badge` con color `primary` y el contador de `notification` con color `danger` (`size="sm"`). `badge` es un **contador**: en el riel colapsado solo caben valores cortos (≤3 caracteres: `12`, `99+`); un texto más largo se dibuja como punto en la esquina, así no deforma el riel ni tapa el icono (el nombre completo sigue en el tooltip).
+- Aspecto bento (`appearance="bento"`): misma estructura que flat (sin glow ni barra de acento, sin borde derecho) y el item activo es una píldora neutra (`--it-bento-nav-active-bg`) con texto en negrita tinta (`--it-bento-nav-active-text`).
 - Aspecto flat (`appearance="flat"`): sin sombra/glow, sin barra de acento, ancho menor y tooltips simples.
 - Accesibilidad: `<nav aria-label="Componentes de la librería">`; los ítems son `role="button"` con `tabIndex={0}`, `aria-expanded`/`aria-controls` cuando tienen submenú y responden a Enter/Space; el submenú es `role="group"`; el subítem activo lleva `aria-current="page"`; notification expone `aria-label`/`title={label}`.
 

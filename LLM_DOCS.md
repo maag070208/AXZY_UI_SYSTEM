@@ -79,10 +79,12 @@ Es el componente raíz que envuelve la app. Inyecta un tag `<style>` en `<head>`
 | Valor | Qué hace |
 |---|---|
 | `"soft"` (default) | Aspecto actual: tarjetas flotantes, sombras tintadas, sidebar/topbar tipo cristal. |
+| `"bento"` | Dashboards pastel: lienzo gris claro (`#F4F4F6`, oscuro slate-950) · `ITCard` blanca sin borde, sombra difusa, radio 24px, padding 1.5rem y título `text-lg font-bold` · `ITButton` e inputs/selects (una línea) en píldora con relleno neutro y anillo primario al foco · `ITTopBar` sin blur/sombra/borde, navegación en píldoras y activo (`navItems[].isActive`) como píldora tinta · `ITSidebar` liso con activo en píldora neutra · `ITPageHeader` con título `text-3xl` y botón atrás circular · `ITTabs` `variant="pill"` y `ITSegmentedControl` con píldora tinta activa. Un `radius`/`shadow` explícito en el provider gana sobre los valores bento. |
 | `"flat"` | Superficies planas: `ITCard` con borde fino y sin sombra · `ITSidebar` liso (sin blur/sombra, 248px, activo como píldora primaria suave, sin barra de acento) · `ITTopBar` liso de 64px (sin sombra, avatar con iniciales, nombre antes del avatar, sin punto verde) · `ITPageHeader` compacto y **sin el recuadro del icono**. |
 
-- También pone `data-it-appearance="soft|flat"` en `<html>` para que el CSS de la app lo siga (`:root[data-it-appearance="flat"] { --it-layout-bg: #f5f6fa; }`).
-- Componentes propios leen el aspecto con `useITFlatAppearance()` (devuelve `false` fuera del provider).
+- También pone `data-it-appearance="soft|flat|bento"` en `<html>` para que el CSS de la app lo siga (`:root[data-it-appearance="flat"] { --it-layout-bg: #f5f6fa; }`).
+- Componentes propios leen el aspecto con `useITAppearance()` (`"soft" | "flat" | "bento"`, `"soft"` fuera del provider); `useITFlatAppearance()` sigue disponible (`true` solo con `"flat"`).
+- `ITCard` acepta `tone` (`"primary" | "secondary" | "ternary" | "success" | "info" | "warning" | "danger"`) para tarjetas pastel: tiñe el fondo con `--color-<tone>-soft` en cualquier aspecto (en soft/flat también `--color-<tone>-soft-border`). Ejemplo: `<ITCard tone="success" title="Ingresos">+12 %</ITCard>`.
 - Para la barra lateral de alto completo con la marca arriba usa `<ITLayout sidebarFullHeight …>` (independiente del aspecto).
 - Colapso por botón en vez de hover: `sidebar={{ isCollapsed, onToggleCollapse, expandOnHover: false }}`. El topbar muestra el botón de menú también en desktop; colapsado queda un riel de solo iconos (72px en flat, 88px en soft) con el nombre en tooltip, y un clic en un padre con subitems abre el sidebar con ese grupo. Sin `isCollapsed`, `ITLayout` lleva el estado él solo.
 - En flat y expandido, un padre con subitem activo queda sin resaltar: el resaltado lo lleva el subitem (con `subitemConnector="|"` va la línea vertical sin barra de acento).
@@ -549,7 +551,7 @@ Drift conocido (no tocar sin decisión): `ITTableProps.className` no se aplica; 
 | `ITBreadcrumbs` | Breadcrumbs de navegación |
 | `ITButton` | Botón con variants (filled, outlined, text, raised, rounded, icon-only) y sizes. `icon-only` + `icon` = cuadrado centrado (`buttonIconPadding` por tamaño; usa `ariaLabel`) |
 | `ITCalendar` | Calendario completo con eventos |
-| `ITCard` | Tarjeta con título, imagen, contenido y acciones |
+| `ITCard` | Tarjeta con título, imagen, contenido y acciones; `tone` para tarjetas pastel |
 | `ITCheckbox` | Checkbox con label |
 | `ITChip` | Etiqueta/pill (soft, filled, outlined, removable, selected) |
 | `ITChipInput` | Entrada de etiquetas (tags) con delimitadores y validación |

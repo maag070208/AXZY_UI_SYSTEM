@@ -7,6 +7,8 @@ export interface ITTopBarNavItem {
   label: string;
   /** Optional icon element rendered beside the label. */
   icon?: any;
+  /** Marks the item as the current one. Sets `aria-current="page"`; with `appearance="bento"` it renders as the ink pill (dark fill, white text), in the other appearances as a subtle highlight. @default false */
+  isActive?: boolean;
   /** Click handler for this navigation item (legacy, prefer onNavItemClick). */
   action: () => void;
 }

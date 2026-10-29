@@ -3,7 +3,7 @@ import useClickOutside from "@/hooks/useClickOutside";
 import { useRef, useState } from "react";
 import { ITTopBarProps } from "./topbar.props";
 import ITText from "@/components/atoms/text/text";
-import { useITFlatAppearance } from "@/theme/theme-context";
+import { useITAppearance } from "@/theme/theme-context";
 import { useITTranslation } from "@/i18n";
 
 /**
@@ -73,7 +73,10 @@ export default function ITTopBar({
   showDesktopMenuButton = false,
 }: ITTopBarProps) {
   // Flat appearance: plain bar (no shadow/blur), initials avatar, name before it.
-  const flat = useITFlatAppearance();
+  // Bento: same plain structure, blended with the canvas, pill nav and round icon buttons.
+  const appearance = useITAppearance();
+  const bento = appearance === "bento";
+  const flat = appearance === "flat" || bento;
   const { t } = useITTranslation();
   const initials = (userMenu?.userName ?? "")
     .trim()
@@ -81,6 +84,8 @@ export default function ITTopBar({
     .slice(0, 2)
     .map((word) => word.charAt(0).toUpperCase())
     .join("");
+  const userRestBg = bento ? "var(--it-bento-control-bg, #f1f5f9)" : "transparent";
+  const userHoverBg = bento ? "var(--it-bento-control-bg-hover, #e2e8f0)" : "var(--it-topbar-user-hover, #f1f5f9)";
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -90,8 +95,10 @@ export default function ITTopBar({
     <header 
       className={`sticky top-0 z-40 transition-all duration-300 ${flat ? "" : "backdrop-blur-md"}`}
       style={{
-        backgroundColor: "var(--it-topbar-bg, rgba(255, 255, 255, 0.9))",
-        borderBottom: "1px solid var(--it-topbar-border, rgba(15, 23, 42, 0.06))",
+        backgroundColor: bento
+          ? "var(--it-layout-bg, #f4f4f6)"
+          : "var(--it-topbar-bg, rgba(255, 255, 255, 0.9))",
+        borderBottom: bento ? "none" : "1px solid var(--it-topbar-border, rgba(15, 23, 42, 0.06))",
         boxShadow: flat ? "none" : "var(--shadow-xs)",
       }}
     >
@@ -105,12 +112,13 @@ export default function ITTopBar({
             <button
               type="button"
               aria-label={t("common.menu")}
-              className={`${showDesktopMenuButton ? "" : "lg:hidden"} p-2.5 -ml-2.5 rounded-xl transition-colors duration-200`}
+              className={`${showDesktopMenuButton ? "" : "lg:hidden"} ${bento ? "w-10 h-10 flex items-center justify-center rounded-full" : "p-2.5 -ml-2.5 rounded-xl"} transition-colors duration-200`}
               style={{
-                 color: "var(--it-topbar-icon, #64748b)",
+                 color: bento ? "var(--it-bento-control-text, #475569)" : "var(--it-topbar-icon, #64748b)",
+                 backgroundColor: bento ? "var(--it-bento-control-bg, #f1f5f9)" : undefined,
               }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--it-topbar-user-hover, #f1f5f9)"}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = bento ? "var(--it-bento-control-bg-hover, #e2e8f0)" : "var(--it-topbar-user-hover, #f1f5f9)"}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = bento ? "var(--it-bento-control-bg, #f1f5f9)" : "transparent"}
               onClick={onToggleMobileMenu}
             >
               <FaBars className="w-[1.125rem] h-[1.125rem]" />
@@ -137,28 +145,42 @@ export default function ITTopBar({
 
           {/* Top Navigation Items (Desktop) */}
           {navItems && navItems.length > 0 && (
-            <nav className="hidden md:flex ml-8 space-x-1 border-l pl-8" style={{ borderColor: "var(--it-topbar-border, rgba(15, 23, 42, 0.06))" }}>
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => onNavItemClick?.(item.id)}
-                  className="px-4 py-2 rounded-lg font-medium text-[0.9rem] transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)]"
-                  style={{ color: "var(--it-topbar-text, #475569)" }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = "var(--it-topbar-text, #0f172a)";
-                    e.currentTarget.style.backgroundColor = "var(--it-topbar-user-hover, #f1f5f9)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = "var(--it-topbar-text, #475569)";
-                    e.currentTarget.style.backgroundColor = "transparent";
-                  }}
-                >
-                  <div className="flex items-center gap-2">
-                    {item.icon && <span className="opacity-70">{item.icon}</span>}
-                    <ITText as="span">{item.label}</ITText>
-                  </div>
-                </button>
-              ))}
+            <nav
+              className={bento ? "hidden md:flex ml-4 gap-2" : "hidden md:flex ml-8 space-x-1 border-l pl-8"}
+              style={bento ? undefined : { borderColor: "var(--it-topbar-border, rgba(15, 23, 42, 0.06))" }}
+            >
+              {navItems.map((item) => {
+                // Resting look per appearance; the active item is the ink pill in bento.
+                const restBg = bento
+                  ? item.isActive ? "var(--it-bento-ink-bg, #0f172a)" : "var(--it-bento-control-bg, #f1f5f9)"
+                  : item.isActive ? "var(--it-topbar-user-hover, #f1f5f9)" : "transparent";
+                const restColor = bento
+                  ? item.isActive ? "var(--it-bento-ink-text, #ffffff)" : "var(--it-bento-control-text, #475569)"
+                  : "var(--it-topbar-text, #475569)";
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => onNavItemClick?.(item.id)}
+                    aria-current={item.isActive ? "page" : undefined}
+                    className={`px-4 py-2 ${bento ? "rounded-full" : "rounded-lg"} font-medium text-[0.9rem] transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)]`}
+                    style={{ color: restColor, backgroundColor: restBg }}
+                    onMouseEnter={(e) => {
+                      if (bento && item.isActive) return;
+                      e.currentTarget.style.color = bento ? "var(--it-bento-control-text, #0f172a)" : "var(--it-topbar-text, #0f172a)";
+                      e.currentTarget.style.backgroundColor = bento ? "var(--it-bento-control-bg-hover, #e2e8f0)" : "var(--it-topbar-user-hover, #f1f5f9)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = restColor;
+                      e.currentTarget.style.backgroundColor = restBg;
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      {item.icon && <span className="opacity-70">{item.icon}</span>}
+                      <ITText as="span">{item.label}</ITText>
+                    </div>
+                  </button>
+                );
+              })}
             </nav>
           )}
         </div>
@@ -184,15 +206,15 @@ export default function ITTopBar({
               <div className="relative">
                 <button
                   type="button"
-                  className={`flex items-center gap-3 rounded-full py-1.5 transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] border border-transparent hover:border-secondary-200 ${flat ? "flex-row-reverse pl-4 pr-2" : "pl-2 pr-4"}`}
+                  className={`flex items-center gap-3 rounded-full py-1.5 transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] border border-transparent ${bento ? "" : "hover:border-secondary-200"} ${flat ? "flex-row-reverse pl-4 pr-2" : "pl-2 pr-4"}`}
                   style={{
-                    backgroundColor: isUserMenuOpen ? "var(--it-topbar-user-hover, #f1f5f9)" : "transparent",
+                    backgroundColor: isUserMenuOpen ? userHoverBg : userRestBg,
                   }}
                   onMouseEnter={(e) => {
-                    if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = "var(--it-topbar-user-hover, #f1f5f9)";
+                    if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = userHoverBg;
                   }}
                   onMouseLeave={(e) => {
-                    if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = "transparent";
+                    if (!isUserMenuOpen) e.currentTarget.style.backgroundColor = userRestBg;
                   }}
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 >

@@ -951,6 +951,26 @@
                       }
                     ]
                   },
+                  "tone": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "primary",
+                          "secondary",
+                          "ternary",
+                          "success",
+                          "info",
+                          "warning",
+                          "danger"
+                        ]
+                      },
+                      {
+                        "$ref": "#/$defs/reference"
+                      }
+                    ],
+                    "description": "Tinte pastel de la tarjeta (token --color-<tone>-soft)."
+                  },
                   "image": {
                     "anyOf": [
                       {

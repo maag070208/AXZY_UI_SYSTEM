@@ -322,7 +322,7 @@ export const components = {
   input: {
     backgroundColor: 'var(--it-input-bg, #ffffff)',
     borderColor: `var(--it-input-border, ${semanticColors.gray[300]})`,
-    borderRadius: 'var(--radius-md)',
+    borderRadius: 'var(--it-input-radius, var(--radius-md))',
     focus: {
       borderColor: `var(--it-input-focus-border, ${semanticColors.primary[500]})`,
       ring: `var(--it-input-focus-ring, 0 0 0 3px ${semanticColors.primary[100]})`,

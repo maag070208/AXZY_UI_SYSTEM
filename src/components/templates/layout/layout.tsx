@@ -4,7 +4,7 @@ import ITTopBar from "@/components/organisms/topbar/topbar";
 import ITSidebar from "@/components/organisms/sidebar/sidebar";
 import { ITLayoutProps } from "./layout.props";
 import { theme } from "@/theme/theme";
-import { useITFlatAppearance } from "@/theme/theme-context";
+import { useITAppearance } from "@/theme/theme-context";
 
 /**
  * Main application shell with sidebar, topbar, and content area.
@@ -49,7 +49,8 @@ export default function ITLayout({
 }: ITLayoutProps) {
   const [internalCollapsed, setInternalCollapsed] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const flat = useITFlatAppearance();
+  // Bento shares the flat sidebar structure (narrow panel, no drop shadow).
+  const flat = useITAppearance() !== "soft";
 
   const isControlled = sidebar.isCollapsed !== undefined;
   const desktopCollapsed = isControlled ? sidebar.isCollapsed : internalCollapsed;

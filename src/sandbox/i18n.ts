@@ -698,6 +698,9 @@ export const sandboxMessages: ITMessagesByLocale = {
       "Layouts de card listos para producción construidos con ITCard",
     "showcase.structure.patternCourseProgress": "Progreso del curso",
     "showcase.structure.patternPricing": "Plan de precios destacado",
+    "showcase.structure.cardToneTitle": "Tarjetas pastel (tone)",
+    "showcase.structure.cardToneSubtitle": "La prop tone tiñe el fondo con el token --color-<tone>-soft; funciona en soft, flat y bento.",
+    "showcase.structure.cardToneBody": "Fondo tintado con el token suave del color.",
     "showcase.structure.patternActivity": "Item de feed de actividad",
     "showcase.structure.patternTeamMember": "Perfil de miembro del equipo",
     "showcase.structure.textDesc":
@@ -1770,6 +1773,9 @@ export const sandboxMessages: ITMessagesByLocale = {
       "Production-ready card layouts built with ITCard",
     "showcase.structure.patternCourseProgress": "Course progress",
     "showcase.structure.patternPricing": "Featured pricing plan",
+    "showcase.structure.cardToneTitle": "Pastel cards (tone)",
+    "showcase.structure.cardToneSubtitle": "The tone prop tints the background with the --color-<tone>-soft token; it works in soft, flat and bento.",
+    "showcase.structure.cardToneBody": "Background tinted with the soft color token.",
     "showcase.structure.patternActivity": "Activity feed item",
     "showcase.structure.patternTeamMember": "Team member profile",
     "showcase.structure.textDesc":

@@ -373,6 +373,19 @@ export const CardShowcase = () => {
       gallery={
         <ITStack spacing={8}>
           <GallerySection
+            title={t("showcase.structure.cardToneTitle")}
+            subtitle={t("showcase.structure.cardToneSubtitle")}
+          >
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {(["primary", "secondary", "ternary", "success", "info", "warning", "danger"] as const).map((tone) => (
+                <ITCard key={tone} tone={tone} title={tone}>
+                  {t("showcase.structure.cardToneBody")}
+                </ITCard>
+              ))}
+            </div>
+          </GallerySection>
+
+          <GallerySection
             title={t("showcase.structure.galleryRealCases")}
             subtitle={t("showcase.structure.galleryCardsSubtitle")}
           >
@@ -537,13 +550,14 @@ export const CardShowcase = () => {
       }
       doc={{
         summary: "Contenedor de tarjeta con imagen, título, cuerpo y pie de acciones opcionales; con onClick se vuelve interactivo.",
-        description: "Pieza base de composición para agrupar contenido relacionado. Borde, radio y sombra se adaptan al aspecto del tema (flat / soft).",
+        description: "Pieza base de composición para agrupar contenido relacionado. Borde, radio y sombra se adaptan al aspecto del tema (soft / flat / bento).",
         examples: [
           '<ITCard title="Ingresos del mes" actions={<ITButton label="Ver detalle" size="sm" />}>$48.230</ITCard>',
           '<ITCard title="Curso" image="/courses/ts.jpg" imageClassName="h-32" onClick={() => open(course.id)}>…</ITCard>',
           '<ITCard className="max-w-sm"><ITText muted>Tarjeta estática, sin cabecera ni acciones.</ITText></ITCard>',
         ],
         props: [
+          { name: "tone", type: '"primary" | "secondary" | "ternary" | "success" | "info" | "warning" | "danger"', default: "—", description: "Tarjeta pastel: tiñe el fondo con el token --color-<tone>-soft (sustituye al blanco). En soft/flat usa --color-<tone>-soft-border como borde; en bento sigue sin borde." },
           { name: "onClick", type: "() => void", default: "—", description: "Al recibirlo la tarjeta se vuelve clicable: cursor pointer, transición de sombra y elevación en hover. Sin él es estática." },
           { name: "title", type: "string", default: "—", description: "Título de la cabecera; se renderiza como h3 mediante ITText." },
           { name: "image", type: "string", default: "—", description: "URL de la imagen superior, a ancho completo con h-48 object-cover." },
@@ -559,7 +573,8 @@ export const CardShowcase = () => {
         notes: [
           "El aspecto del tema decide borde y sombra: en flat el borde es un hairline y solo hay sombra en hover si la tarjeta es clicable; en soft flota con --shadow-sm y sube a --shadow-lg con translateY(-2px).",
           "Variables CSS: --it-card-bg, --it-card-border, --it-card-flat-border y --it-card-radius.",
-          "El padding es fijo (cuerpo 1.25rem, pie 1rem): no hay prop de tamaño.",
+          "En bento la tarjeta no tiene borde, usa --it-bento-card-shadow (más marcada en hover si es clicable, sin translateY), radio de 24 px y padding de 1.5rem; un radius/shadow explícito en el provider gana.",
+          "El padding es fijo (cuerpo 1.25rem, 1.5rem en bento; pie 1rem): no hay prop de tamaño.",
         ],
       }}
     />
