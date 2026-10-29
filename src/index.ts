@@ -10,6 +10,19 @@ import useJsonRender from "./hooks/useJsonRender";
 
 // COMPONENTES
 import ITAccordion from "./components/molecules/accordion/accordion";
+import {
+  ITBentoGrid,
+  ITBentoTile,
+  ITBentoGauge,
+  ITBentoWaves,
+  ITBentoSpark,
+  ITBentoSegments,
+  ITBentoWeekBars,
+  ITBentoDonut,
+  ITBentoFeed,
+  ITBentoLive,
+  useITBentoCountUp,
+} from "./components/organisms/bento/bento";
 import ITAlert from "./components/molecules/alert/alert";
 import ITAvatar from "./components/atoms/avatar/avatar";
 import ITBadget from "./components/atoms/badget/badget";
@@ -251,6 +264,8 @@ export {
   createValidationSchema,
   // Components
   ITAccordion,
+  ITBentoGrid, ITBentoTile, ITBentoGauge, ITBentoWaves, ITBentoSpark, ITBentoSegments,
+  ITBentoWeekBars, ITBentoDonut, ITBentoFeed, ITBentoLive, useITBentoCountUp,
   ITAlert, ITAvatar, ITBadget, ITBreadcrumbs, ITButton,
   ITCalendar,
   ITCard, ITCheckbox, ITChip, ITChipInput, ITConfirmDialog, ITDataTable, ITDatePicker,

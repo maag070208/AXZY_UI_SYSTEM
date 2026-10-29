@@ -388,6 +388,137 @@ interface ITAccordionProps {
  */
 declare function ITAccordion({ items, allowMultiple, defaultOpenIds, openIds, onChange, variant, className, itemClassName, }: ITAccordionProps): react_jsx_runtime.JSX.Element;
 
+/** Tono de superficie del mosaico: blanco por defecto o uno de marca. */
+type ITBentoTone = "plain" | "sea" | "lavender" | "mint" | "sun";
+interface ITBentoTileProps {
+    label: ReactNode;
+    /** Ícono de línea a la izquierda de la etiqueta. */
+    icon?: ReactNode;
+    /** Cuántas columnas del mosaico ocupa (1–12). */
+    cols?: number;
+    /** Cuántas filas de 84 px ocupa. */
+    rows?: number;
+    tone?: ITBentoTone;
+    /** Valor principal, grande y tabular. */
+    value?: ReactNode;
+    /** Texto de apoyo junto al valor. */
+    caption?: ReactNode;
+    /** Contenido a la derecha del pie (p. ej. un segundo número). */
+    aside?: ReactNode;
+    /** Visual al centro (medidor, ola, segmentos…); crece para llenar la tarjeta. */
+    children?: ReactNode;
+    /** En pantallas chicas ocupa las 6 columnas en vez de 3. */
+    wide?: boolean;
+    onClick?: () => void;
+    className?: string;
+    style?: CSSProperties;
+}
+/**
+ * Tarjeta del mosaico bento: superficie de radio 20 px con etiqueta, un visual
+ * opcional que llena el centro y un pie con el valor grande y su contexto.
+ * El tono elige la superficie (`sea` oscura, `lavender`, `mint`, `sun` o blanca);
+ * el mosaico lo arma `ITBentoGrid`.
+ */
+declare function ITBentoTile({ label, icon, cols, rows, tone, value, caption, aside, children, wide, onClick, className, style, }: ITBentoTileProps): react_jsx_runtime.JSX.Element;
+interface ITBentoGridProps {
+    children: ReactNode;
+    className?: string;
+}
+/** Mosaico de 12 columnas con filas de 84 px (6 columnas y alto automático en móvil). */
+declare function ITBentoGrid({ children, className }: ITBentoGridProps): react_jsx_runtime.JSX.Element;
+interface ITBentoGaugeProps {
+    /** Proporción 0..1 del arco. */
+    value: number;
+    color?: string;
+    trackColor?: string;
+    /** Ancho del SVG (el alto es proporcional). */
+    size?: number;
+    /** Tamaño del número de los deciles (para reducir el ruido). */
+    strokeWidth?: number;
+}
+/** Medidor semicircular con el arco dibujándose al montar. */
+declare function ITBentoGauge({ value, color, trackColor, size, strokeWidth, }: ITBentoGaugeProps): react_jsx_runtime.JSX.Element;
+interface ITBentoWavesProps {
+    /** Proporción 0..1 que define la altura de las bandas. */
+    level: number;
+    color?: string;
+    /** Altura de la zona de olas (%). */
+    height?: number;
+}
+/** Dos bandas de agua animadas, ancladas al pie de la tarjeta. */
+declare function ITBentoWaves({ level, color, height }: ITBentoWavesProps): react_jsx_runtime.JSX.Element;
+interface ITBentoSparkProps {
+    /** Serie real de valores; con menos de 2 puntos no se dibuja. */
+    data: number[];
+    color?: string;
+    height?: number;
+}
+/** Línea de tendencia que se dibuja al montar. */
+declare function ITBentoSpark({ data, color, height }: ITBentoSparkProps): react_jsx_runtime.JSX.Element;
+interface ITBentoSegmentsProps {
+    /** Total de segmentos. */
+    total: number;
+    /** Segmentos encendidos. */
+    done: number;
+    color?: string;
+    idleColor?: string;
+}
+/** Tira de segmentos que se levantan uno tras otro (tareas, piezas, avance). */
+declare function ITBentoSegments({ total, done, color, idleColor, }: ITBentoSegmentsProps): react_jsx_runtime.JSX.Element;
+interface ITBentoWeekBarsProps {
+    items: {
+        label: string;
+        value: number;
+        tone?: "today" | "future" | "past";
+    }[];
+    color?: string;
+    todayColor?: string;
+}
+/** Barras por día de la semana; el día de hoy va en el color de acento. */
+declare function ITBentoWeekBars({ items, color, todayColor, }: ITBentoWeekBarsProps): react_jsx_runtime.JSX.Element;
+interface ITBentoDonutProps {
+    segments: {
+        label: string;
+        value: number;
+        color: string;
+    }[];
+    /** Texto central y su bajada. */
+    center?: ReactNode;
+    caption?: string;
+    size?: number;
+}
+/** Dona de segmentos con texto al centro (la leyenda va aparte). */
+declare function ITBentoDonut({ segments, center, caption, size }: ITBentoDonutProps): react_jsx_runtime.JSX.Element;
+interface ITBentoFeedItem {
+    id: string;
+    /** Ícono dentro del cuadro de color. */
+    icon?: ReactNode;
+    title: string;
+    meta?: string;
+    tone?: "success" | "violet" | "neutral";
+    href?: string;
+}
+interface ITBentoFeedProps {
+    groups: {
+        key: string;
+        label: string;
+        items: ITBentoFeedItem[];
+    }[];
+    onItemClick?: (item: ITBentoFeedItem) => void;
+    /** Alto máximo del hilo; hace scroll a partir de ahí. */
+    maxHeight?: number;
+}
+/** Actividad agrupada por día, con cuadro de ícono y hora. */
+declare function ITBentoFeed({ groups, onItemClick, maxHeight }: ITBentoFeedProps): react_jsx_runtime.JSX.Element;
+interface ITBentoLiveProps {
+    label: string;
+    className?: string;
+}
+/** Píldora "En vivo" con punto que late. */
+declare function ITBentoLive({ label, className }: ITBentoLiveProps): react_jsx_runtime.JSX.Element;
+/** Contador que sube de 0 al valor al montar (para el número grande de la tarjeta). */
+declare function useITBentoCountUp(target: number, duration?: number, decimals?: number): number;
+
 type AlertVariant = "info" | "success" | "warning" | "error";
 interface ITAlertProps {
     /** Alert visual style. Valid values: `"info"`, `"success"`, `"warning"`, `"error"`. @default "info" */
@@ -5783,4 +5914,4 @@ declare const es: ITMessages;
  */
 declare const en: ITMessages;
 
-export { AXZY_CATALOG_ENTRIES, AXZY_EXCLUDED_TYPES, type ActionSchema, type BindingResolver, type BindingScope, CURRENT_SCHEMA_VERSION, type Catalog, type CatalogEntry, type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type ComponentContract, DEFAULT_LIMITS, DEFAULT_MIGRATIONS, type DataHandler, type DataLoader, type DataSourceSchema, type EffectRegistry, type EffectSchema, type EngineLimits, type FieldConfig, type FieldConfigV2, FileTypeEnum, type FlatRoute, GLOBALLY_FORBIDDEN_PROPS, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, type ITCardTone, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITI18nProvider, type ITI18nProviderProps, type ITI18nValue, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITJSONEditor, type ITJSONEditorProps, type ITJsonRenderEngineProps, ITJsonRenderer, type ITJsonRendererProps, ITLayout, type ITLayoutProps, ITLineBarChart, type ITLineBarChartProps, type ITLineBarDatum, ITLoader, type LoaderProps as ITLoaderProps, type ITLocale, ITMaskedInput, type ITMaskedInputProps, type ITMessages, type ITMessagesByLocale, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSchemaRenderer, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarBrand, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeAppearance, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type JsonComponentNode, type JsonComponentType, type JsonEngineCode, JsonEngineError, type JsonEngineIssue, type JsonEngineSeverity, type LimitTracker, type MigrationRegistry, type MigrationResult, type NavNode, NodeBoundary, type NodeSchema, type NodeStatus, type PartialParseResult, type PathSegment, type PropContract, type PropKind, type PropSpec, type ResolvedNode, type RouteMatch, type RouteNavSchema, type RouteSchema, type RoutesSchema, type SchemaMigration, type SchemaPath, type SchemaReference, type SchemaValue, type ScreenSchema, type SlotComponent, type SlotRegistry, type StreamSource, type StreamState, type TableColors, type TableDensity, type TableDesign, type TableDesignProps, type TableDesignSlot, type ToastVariant, type UnresolvedNode, UploadStatus, type UseTableStateOptions, type UseTableStateResult, type ValidateOptions, type ValidationReport, type ValidationVerdict, type VocabularyContract, type WhenSchema, auditTree, axzyCatalog, axzyCatalogTypes, buildNavigationTree, buildVocabularyContract, countPendingNodes, createBindingResolver, createCatalog, createLimitTracker, createValidationSchema, en as enMessages, es as esMessages, flattenRoutes, formatPath, formatVocabularyForPrompt, getCatalogEntry, getContrastTextColor, getExclusionReason, hasPath, isExcludedType, isLightColor, isNodePending, issue, joinRoutePath, matchRoute, migrateSchema, navContainsRoute, parsePartialSchema, parsePath, propPath, pushPath, readPath, renderNode, resolveCssColor, resolveLimits, resolveNode, routeHref, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITAppearance, useITFlatAppearance, useITTheme, useITThemeSafe, useITTranslation, useJsonRender, useSchemaStream, useTableState, validateRoutes, validateSchema };
+export { AXZY_CATALOG_ENTRIES, AXZY_EXCLUDED_TYPES, type ActionSchema, type BindingResolver, type BindingScope, CURRENT_SCHEMA_VERSION, type Catalog, type CatalogEntry, type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type ComponentContract, DEFAULT_LIMITS, DEFAULT_MIGRATIONS, type DataHandler, type DataLoader, type DataSourceSchema, type EffectRegistry, type EffectSchema, type EngineLimits, type FieldConfig, type FieldConfigV2, FileTypeEnum, type FlatRoute, GLOBALLY_FORBIDDEN_PROPS, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, ITBentoDonut, ITBentoFeed, ITBentoGauge, ITBentoGrid, ITBentoLive, ITBentoSegments, ITBentoSpark, ITBentoTile, ITBentoWaves, ITBentoWeekBars, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, type ITCardTone, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITI18nProvider, type ITI18nProviderProps, type ITI18nValue, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITJSONEditor, type ITJSONEditorProps, type ITJsonRenderEngineProps, ITJsonRenderer, type ITJsonRendererProps, ITLayout, type ITLayoutProps, ITLineBarChart, type ITLineBarChartProps, type ITLineBarDatum, ITLoader, type LoaderProps as ITLoaderProps, type ITLocale, ITMaskedInput, type ITMaskedInputProps, type ITMessages, type ITMessagesByLocale, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSchemaRenderer, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarBrand, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeAppearance, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type JsonComponentNode, type JsonComponentType, type JsonEngineCode, JsonEngineError, type JsonEngineIssue, type JsonEngineSeverity, type LimitTracker, type MigrationRegistry, type MigrationResult, type NavNode, NodeBoundary, type NodeSchema, type NodeStatus, type PartialParseResult, type PathSegment, type PropContract, type PropKind, type PropSpec, type ResolvedNode, type RouteMatch, type RouteNavSchema, type RouteSchema, type RoutesSchema, type SchemaMigration, type SchemaPath, type SchemaReference, type SchemaValue, type ScreenSchema, type SlotComponent, type SlotRegistry, type StreamSource, type StreamState, type TableColors, type TableDensity, type TableDesign, type TableDesignProps, type TableDesignSlot, type ToastVariant, type UnresolvedNode, UploadStatus, type UseTableStateOptions, type UseTableStateResult, type ValidateOptions, type ValidationReport, type ValidationVerdict, type VocabularyContract, type WhenSchema, auditTree, axzyCatalog, axzyCatalogTypes, buildNavigationTree, buildVocabularyContract, countPendingNodes, createBindingResolver, createCatalog, createLimitTracker, createValidationSchema, en as enMessages, es as esMessages, flattenRoutes, formatPath, formatVocabularyForPrompt, getCatalogEntry, getContrastTextColor, getExclusionReason, hasPath, isExcludedType, isLightColor, isNodePending, issue, joinRoutePath, matchRoute, migrateSchema, navContainsRoute, parsePartialSchema, parsePath, propPath, pushPath, readPath, renderNode, resolveCssColor, resolveLimits, resolveNode, routeHref, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITAppearance, useITBentoCountUp, useITFlatAppearance, useITTheme, useITThemeSafe, useITTranslation, useJsonRender, useSchemaStream, useTableState, validateRoutes, validateSchema };
