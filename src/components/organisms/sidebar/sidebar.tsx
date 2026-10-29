@@ -10,7 +10,7 @@ import {
 } from "./sidebar.props";
 import ITBadget from "@/components/atoms/badget/badget";
 import ITText from "@/components/atoms/text/text";
-import { useITFlatAppearance } from "@/theme/theme-context";
+import { useITAppearance } from "@/theme/theme-context";
 import { useITTranslation } from "@/i18n";
 
 /** Narrows a submenu entry to a titled group. */
@@ -95,7 +95,10 @@ export default function ITSidebar({
   expandOnHover = true,
 }: ITSidebarProps) {
   // Flat appearance: plain surface, no glow/accent bar, narrower panel.
-  const flat = useITFlatAppearance();
+  // Bento shares that structure; its tokens make the active item a neutral pill with bold ink text.
+  const appearance = useITAppearance();
+  const bento = appearance === "bento";
+  const flat = appearance === "flat" || bento;
   const { t } = useITTranslation();
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [isHovering, setIsHovering] = useState(false);
@@ -202,7 +205,7 @@ export default function ITSidebar({
           color: subitem.isActive ? "var(--it-sidebar-active-color, var(--color-secondary-900))" : "var(--it-sidebar-label-color, var(--color-secondary-600))",
           backgroundColor: subitem.isActive ? "var(--it-sidebar-active-bg, var(--color-secondary-50))" : 'transparent',
           fontSize: flat ? '0.84rem' : '0.78rem',
-          fontWeight: subitem.isActive ? 600 : 500,
+          fontWeight: subitem.isActive ? (bento ? 700 : 600) : 500,
           letterSpacing: '0.01em',
           marginLeft: subitemConnector === '|' ? '-1px' : '0',
         }}
@@ -365,7 +368,7 @@ export default function ITSidebar({
       style={{
         zIndex: 50,
         backgroundColor: "var(--it-sidebar-bg, rgba(255, 255, 255, 0.90))",
-        borderRight: "1px solid var(--it-sidebar-border, var(--color-secondary-200))",
+        borderRight: bento ? "none" : "1px solid var(--it-sidebar-border, var(--color-secondary-200))",
         ...(flat ? {} : { WebkitBackdropFilter: 'blur(12px)', backdropFilter: 'blur(12px)' }),
       }}
     >
@@ -480,7 +483,7 @@ export default function ITSidebar({
                       style={{
                         color: active ? "var(--it-sidebar-active-color, #ffffff)" : "var(--it-sidebar-label-color, var(--color-secondary-300))",
                         fontSize: flat ? '0.875rem' : '0.8rem',
-                        fontWeight: active ? '600' : '500'
+                        fontWeight: active ? (bento ? '700' : '600') : '500'
                       }}
                     >
                       {item.label}

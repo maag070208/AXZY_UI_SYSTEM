@@ -22,6 +22,7 @@ import { ITCard } from "@axzydev/axzy_ui_system";
 
 | Prop | Tipo | Por defecto | Descripción |
 | --- | --- | --- | --- |
+| `tone` | `"primary" \| "secondary" \| "ternary" \| "success" \| "info" \| "warning" \| "danger"` | — | Tarjeta pastel: tiñe el fondo con `--color-<tone>-soft` (sustituye al blanco). En `soft`/`flat` el borde usa `--color-<tone>-soft-border`; en `bento` sigue sin borde. Funciona en cualquier aspecto y en modo oscuro. |
 | `onClick` | `() => void` | — | Handler de click; activa el estado interactivo con hover. |
 | `title` | `string` | — | Título mostrado en la cabecera de la tarjeta. |
 | `image` | `string` | — | URL de la imagen superior. |
@@ -57,11 +58,13 @@ export default function Welcome() {
 ## Notas
 
 - Sin `onClick` la tarjeta es estática (`cursor: default`, transición `none`). Con `onClick` gana `cursor: pointer`, transición de `box-shadow`/`transform` y elevación en hover.
-- Adapta borde, radio y sombra al aspecto del tema mediante `useITFlatAppearance()`: en `"flat"` el borde es `--it-card-flat-border` (hairline) y solo hay sombra al hacer hover si es clicable; en `"soft"` la tarjeta flota con `--shadow-sm` y sube a `--shadow-lg` en hover (`translateY(-2px)`).
+- Adapta borde, radio y sombra al aspecto del tema mediante `useITAppearance()`: en `"flat"` el borde es `--it-card-flat-border` (hairline) y solo hay sombra al hacer hover si es clicable; en `"soft"` la tarjeta flota con `--shadow-sm` y sube a `--shadow-lg` en hover (`translateY(-2px)`).
+- En `"bento"` la tarjeta no tiene borde, usa la sombra difusa `--it-bento-card-shadow` (más marcada con `--it-bento-card-shadow-hover` si es clicable, sin `translateY`), radio de 24 px (`--it-bento-card-radius`), padding `--it-bento-card-padding` (1.5rem) y título `text-lg font-bold`. Un `radius`/`shadow` explícito en el provider gana sobre estos valores.
+- `tone` pone el tinte como `background-image` (capa del token translúcido `--color-<tone>-soft`) sobre `--it-card-bg`, de modo que la tarjeta sigue siendo opaca en claro y oscuro.
 - Variables CSS usadas: `--it-card-bg`, `--it-card-border`, `--it-card-flat-border`, `--it-card-radius` (con fallbacks `#ffffff`, `rgba(15,23,42,0.06)`, `--color-secondary-200`, `--radius-lg`/`--radius-2xl`).
 - La imagen ocupa el ancho completo con `h-48 object-cover` salvo que `imageClassName` la sobreescriba.
 - El cuerpo tiene `padding: 1.25rem`; el pie usa `p-4`, `border-t` y `mt-auto` (se ancla al fondo si la tarjeta es columna).
-- El título se renderiza con `ITText as="h3"`; el tamaño cambia según el aspecto (flat `text-base`, soft `text-xl`).
+- El título se renderiza con `ITText as="h3"`; el tamaño cambia según el aspecto (bento `text-lg font-bold`, flat `text-base`, soft `text-xl`).
 - El contenido declarativo va envuelto en `ITText as="div"` (`text-secondary-600`).
 
 ## Textos (i18n)

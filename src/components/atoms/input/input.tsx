@@ -91,6 +91,11 @@ export default function ITInput({
   const getStyle = () => {
     const style = inputFieldStyle(inputTheme, size);
 
+    // Textarea is multi-line: in bento it keeps a soft radius instead of the single-line pill.
+    if (isTextArea) {
+      style.borderRadius = "var(--it-bento-field-radius, var(--radius-md))";
+    }
+
     if (disabled) {
       style.backgroundColor = inputTheme.disabled?.backgroundColor || style.backgroundColor;
       style.borderColor = inputTheme.disabled?.borderColor || style.borderColor;

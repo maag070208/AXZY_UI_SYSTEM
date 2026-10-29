@@ -91,6 +91,11 @@ export const AXZY_CATALOG_ENTRIES: CatalogEntry[] = [
     summary: "Tarjeta con título, imagen y contenido.",
     props: {
       title: { kind: "string" },
+      tone: {
+        kind: "enum",
+        values: ["primary", "secondary", "ternary", "success", "info", "warning", "danger"],
+        doc: "Tinte pastel de la tarjeta (token --color-<tone>-soft).",
+      },
       image: { kind: "string", doc: "URL de la imagen de cabecera." },
       alt: { kind: "string" },
       onClick: { kind: "action" },

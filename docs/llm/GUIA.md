@@ -198,7 +198,7 @@ drawer en móvil) + `ITTopBar`; `ITNavbar` es la variante todo-en-uno.
 ```tsx
 <ITThemeProvider
   theme={{ primary: "#2563eb", danger: "#dc2626" }}   // se fusiona con la paleta por defecto
-  appearance="flat"      // "soft" (por defecto) | "flat"
+  appearance="flat"      // "soft" (por defecto) | "flat" | "bento"
   radius={10}            // radio global en px para toda la escala rounded-*
   density={0.95}         // 0.5–1.5: comprime tipografía/espaciados basados en rem
   shadow={2}             // 0–3

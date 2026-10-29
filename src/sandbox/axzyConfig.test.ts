@@ -16,6 +16,10 @@ describe("axzy.json", () => {
     expect(config.showFab).toBe(true);
   });
 
+  it("acepta la apariencia bento", () => {
+    expect(mergeAxzyConfig({ appearance: "bento" }).appearance).toBe("bento");
+  });
+
   it("recorta fuera de rango en vez de romper", () => {
     const config = mergeAxzyConfig({ density: 9, radius: 99, shadow: -3 });
     expect(config.density).toBe(1.5);

@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { ITTabsProps } from './tabs.props';
 import { clsx } from 'clsx';
 import ITText from "@/components/atoms/text/text";
+import { useITAppearance } from "@/theme/theme-context";
 
 /**
  * Tabbed navigation component with "line" and "pill" visual variants.
  * Manages its own active state internally via a defaultActiveId.
+ * With `appearance="bento"` the "pill" variant becomes a rounded track with an ink active pill.
  *
  * @example
  * <ITTabs
@@ -25,6 +27,7 @@ const ITTabs: React.FC<ITTabsProps> = ({
   className = '',
   containerClassName = ''
 }) => {
+  const bento = useITAppearance() === "bento" && variant === 'pill';
   const [activeId, setActiveId] = useState(defaultActiveId || items[0]?.id);
 
   const handleTabClick = (id: string, disabled?: boolean) => {
@@ -40,9 +43,10 @@ const ITTabs: React.FC<ITTabsProps> = ({
       {/* HEADER */}
       <div className={clsx(
         "flex border-secondary-200 mb-4",
-        variant === 'line' ? "border-b" : "gap-2 p-1 bg-secondary-100 rounded-lg w-fit",
+        variant === 'line' ? "border-b" : bento ? "gap-2 p-1 rounded-full w-fit" : "gap-2 p-1 bg-secondary-100 rounded-lg w-fit",
         className
-      )}>
+      )}
+      style={bento ? { backgroundColor: "var(--it-bento-control-bg, #f1f5f9)", borderColor: "transparent" } : undefined}>
         {items.map((item) => {
           const isActive = item.id === activeId;
           
@@ -61,14 +65,24 @@ const ITTabs: React.FC<ITTabsProps> = ({
                     : "border-transparent text-secondary-500 hover:text-secondary-700 hover:border-secondary-300",
                 ],
                 // PILL VARIANT
-                variant === 'pill' && [
-                  "rounded-md",
-                  isActive 
-                    ? "bg-white text-primary-600 shadow-sm" 
-                    : "text-secondary-500 hover:text-secondary-700",
-                ],
+                variant === 'pill' && (bento
+                  ? "rounded-full"
+                  : [
+                      "rounded-md",
+                      isActive
+                        ? "bg-white text-primary-600 shadow-sm"
+                        : "text-secondary-500 hover:text-secondary-700",
+                    ]),
                 item.disabled && "opacity-50 cursor-not-allowed"
               )}
+              style={
+                bento
+                  ? {
+                      backgroundColor: isActive ? "var(--it-bento-ink-bg, #0f172a)" : "transparent",
+                      color: isActive ? "var(--it-bento-ink-text, #ffffff)" : "var(--it-bento-control-text, #475569)",
+                    }
+                  : undefined
+              }
             >
               {item.icon && <span className="w-4 h-4">{item.icon}</span>}
               <ITText as="span">{item.label}</ITText>

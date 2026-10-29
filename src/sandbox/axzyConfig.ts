@@ -71,7 +71,7 @@ export function mergeAxzyConfig(raw: unknown): AxzyConfig {
     density: clamp(entrada.density, 0.5, 1.5, DEFAULT_AXZY_CONFIG.density),
     radius: clamp(entrada.radius, 0, 24, DEFAULT_AXZY_CONFIG.radius, 0),
     shadow: clamp(entrada.shadow, 0, 3, DEFAULT_AXZY_CONFIG.shadow, 0),
-    appearance: entrada.appearance === "flat" || entrada.appearance === "soft" ? entrada.appearance : DEFAULT_AXZY_CONFIG.appearance,
+    appearance: entrada.appearance === "flat" || entrada.appearance === "soft" || entrada.appearance === "bento" ? entrada.appearance : DEFAULT_AXZY_CONFIG.appearance,
     showFab: typeof entrada.showFab === "boolean" ? entrada.showFab : DEFAULT_AXZY_CONFIG.showFab,
   };
 }

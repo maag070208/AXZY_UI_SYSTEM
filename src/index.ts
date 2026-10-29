@@ -171,7 +171,7 @@ import type { ITBadgetProps } from "./components/atoms/badget/badget.props";
 import type { ITBreadcrumbsProps, ITBreadcrumbItem } from "./components/molecules/breadcrumbs/breadcrumbs.props";
 import type { ITButtonProps } from "./components/atoms/button/button.props";
 import type { ITCalendarProps } from "./components/molecules/calendar/calendar.props";
-import type { ITCardProps } from "./components/molecules/card/card.props";
+import type { ITCardProps, ITCardTone } from "./components/molecules/card/card.props";
 import type { ITCheckboxProps } from "./components/atoms/checkbox/checkbox.props";
 import type { ITChipProps } from "./components/atoms/chip/chip.props";
 import type { ITChipInputProps } from "./components/molecules/chip-input/chip-input.props";
@@ -232,7 +232,7 @@ import ITLoader from "./components/atoms/loader/loader";
 import type { LoaderProps as ITLoaderProps } from "./components/atoms/loader/loader.props";
 import ITStepper from "./components/molecules/stepper/stepper";
 import type { ITStepperProps } from "./components/molecules/stepper/stepper.props";
-import ITThemeProvider, { useITTheme, useITThemeSafe, useITFlatAppearance } from "./components/theme-provider/themeProvider";
+import ITThemeProvider, { useITTheme, useITThemeSafe, useITFlatAppearance, useITAppearance } from "./components/theme-provider/themeProvider";
 import type { ITThemeProviderProps, ITThemePalette, ITThemeAppearance } from "./components/theme-provider/themeProvider.props";
 import ITTimePicker from "./components/molecules/time-picker/timePicker";
 import type { ITTimePickerProps } from "./components/molecules/time-picker/timePicker.props";
@@ -262,7 +262,7 @@ export {
   ITSearchTable,
   ITSegmentedControl, ITSidebar, ITSkeleton, ITSlideToggle, ITSlider, ITStack, ITStatCard, ITStepper, ITLineBarChart,
   ITTable, ITTabs, ITText, ITTextarea, ITTripleFilter, ITThemeProvider,
-  useITTheme, useITThemeSafe, useITFlatAppearance, ITTimePicker, ITToast, ITWysiwyg,
+  useITTheme, useITThemeSafe, useITFlatAppearance, useITAppearance, ITTimePicker, ITToast, ITWysiwyg,
   UploadStatus, FileTypeEnum,
   getContrastTextColor, isLightColor, resolveCssColor,
   ITI18nProvider, useITTranslation, esMessages, enMessages,
@@ -288,7 +288,7 @@ export {
     ITAlertProps, ITAvatarProps, ITBadgetProps,
     ITBreadcrumbItem, ITBreadcrumbsProps, ITButtonProps,
     ITCalendarProps,
-    ITCardProps, ITCheckboxProps, ITChipProps, ITChipInputProps, ITConfirmDialogProps,
+    ITCardProps, ITCardTone, ITCheckboxProps, ITChipProps, ITChipInputProps, ITConfirmDialogProps,
     ITDropdownMenuItem, ITDropdownMenuProps, ITFieldProps, ITMaskedInputProps, ITMultiSelectOption, ITMultiSelectProps,
     ITDataTableFetchParams, ITDataTableProps, ITDataTableResponse, ITDatePickerProps,
     ITDialogProps, ITDividerProps, ITDrawerProps,

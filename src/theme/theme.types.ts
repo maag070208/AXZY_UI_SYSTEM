@@ -16,8 +16,9 @@ export type ColorScale = {
  * Visual language of the whole system.
  * - `"soft"`: soft depth — floating cards, tinted shadows, glass sidebar and top bar (default).
  * - `"flat"`: flat surfaces — hairline borders instead of shadows, plain sidebar and top bar, compact page headers.
+ * - `"bento"`: modern pastel "bento" dashboards — light-gray canvas, borderless white cards with a diffuse shadow and 24px radius, pill controls (buttons, inputs), ink-pill navigation and pastel tiles via `ITCard` `tone`.
  */
-export type ITThemeAppearance = "soft" | "flat";
+export type ITThemeAppearance = "soft" | "flat" | "bento";
 
 export interface ITThemePalette {
   /** Main brand accent color (hex). Drives primary buttons, active nav items, focus rings, links, and the `--color-primary` CSS variable. @default "#06b6d4" */

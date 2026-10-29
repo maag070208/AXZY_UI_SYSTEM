@@ -70,6 +70,8 @@ export default function ITChipInput({
     style.alignItems = "center";
     style.gap = "0.375rem";
     style.minHeight = "2.5rem";
+    // Multi-line control: bento rounds it with a softer radius than the single-line pill.
+    style.borderRadius = "var(--it-bento-field-radius, var(--radius-md))";
 
     if (disabled) {
       style.backgroundColor = inputTheme.disabled?.backgroundColor || style.backgroundColor;

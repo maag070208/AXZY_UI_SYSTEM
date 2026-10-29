@@ -39,9 +39,17 @@ export const useITThemeSafe = (): ITThemeContextType | undefined => {
 };
 
 /**
+ * Lenguaje visual activo (`"soft"` | `"flat"` | `"bento"`).
+ * Fuera de un ITThemeProvider devuelve `"soft"` (aspecto por defecto).
+ */
+export const useITAppearance = (): ITThemeAppearance => {
+  return useContext(ITThemeContext)?.appearance ?? "soft";
+};
+
+/**
  * `true` cuando el provider pide el lenguaje visual plano (`appearance="flat"`).
  * Fuera de un ITThemeProvider devuelve `false` (aspecto por defecto).
  */
 export const useITFlatAppearance = (): boolean => {
-  return useContext(ITThemeContext)?.appearance === "flat";
+  return useITAppearance() === "flat";
 };

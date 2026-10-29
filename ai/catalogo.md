@@ -2,7 +2,7 @@
 
 # Catálogo de componentes (para IA)
 
-Generado desde el código con el compilador de TypeScript: **64 componentes**, 761 props, 10 hooks. Versión de la librería: `1.6.0`.
+Generado desde el código con el compilador de TypeScript: **64 componentes**, 779 props, 12 hooks. Versión de la librería: `1.7.2`.
 
 Para regenerarlo: `pnpm docs:llm`.
 
@@ -13,7 +13,7 @@ Para regenerarlo: `pnpm docs:llm`.
 - **Organisms** (12): `ITConfirmDialog`, `ITDataTable`, `ITDialog`, `ITDrawer`, `ITDropfile`, `ITFormBuilder`, `ITNavbar`, `ITPageHeader`, `ITSearchTable`, `ITSidebar`, `ITToast`, `ITTripleFilter`
 - **Templates** (2): `ITLayout`, `ITPage`
 - **Providers y otros** (3): `ITI18nProvider`, `ITSchemaRenderer`, `ITThemeProvider`
-- **Hooks** (10): `useClickOutside`, `useDebouncedSearch`, `useEditableRow`, `useFloatingPanel`, `useTableState`, `useJsonRender`, `useITTheme`, `useITThemeSafe`, `useITFlatAppearance`, `useITTranslation`
+- **Hooks** (12): `useClickOutside`, `useDebouncedSearch`, `useEditableRow`, `useFloatingPanel`, `useTableState`, `useJsonRender`, `useITTheme`, `useITThemeSafe`, `useITFlatAppearance`, `useITAppearance`, `useITTranslation`, `useSchemaStream`
 
 ## Atoms
 
@@ -200,6 +200,7 @@ Para regenerarlo: `pnpm docs:llm`.
 | `style` | `React.CSSProperties` | — | Inline styles |
 | `as` | `React.ElementType` | — | Custom HTML element type to render instead of the default `div` |
 | `onClick` | `(e: React.MouseEvent) => void` | — | Click handler |
+| `onScroll` | `(e: React.UIEvent<HTMLElement>) => void` | — | Scroll handler (useful for scrollable chat/log panels) |
 
 `*` = obligatorio.
 
@@ -258,6 +259,7 @@ Para regenerarlo: `pnpm docs:llm`.
 | `alt` | `string` | — | Alt text for accessibility |
 | `className` | `string` | — | Additional CSS classes |
 | `fallback` | `string` | — | Fallback image URL shown when the primary `src` fails to load |
+| `fit` | `"contain" \| "cover"` | — | How the image fills its box: "cover" crops to fill (default), "contain" shows the whole image |
 | `onClick` | `() => void` | — | Click handler |
 
 `*` = obligatorio.
@@ -699,6 +701,8 @@ Para regenerarlo: `pnpm docs:llm`.
 | `name` | `string` | — | Name attribute for form submission and label association via `htmlFor`. |
 | `maxLength` | `number` | — | Maximum number of characters allowed. |
 | `resize` | `"none" \| "both" \| "horizontal" \| "vertical"` | — | Resize behavior of the textarea: "none" \| "vertical" \| "horizontal" \| "both". |
+| `onKeyDown` | `(event: React.KeyboardEvent<HTMLTextAreaElement>) => void` | — | Keydown handler (e.g. Enter to send in a chat composer). |
+| `autoFocus` | `boolean` | — | Autofocus the textarea. |
 
 `*` = obligatorio.
 
@@ -821,7 +825,7 @@ Para regenerarlo: `pnpm docs:llm`.
 
 - **Capa:** Molecules
 - **Fuente:** `src/components/molecules/card/card.tsx`
-- **Qué es:** Versatile card container with optional image, title, body content, and action footer. Supports interactive hover states.
+- **Qué es:** Versatile card container with optional image, title, body content, and action footer. Supports interactive hover states and pastel `tone` tiles. Follows the provider `appearance` (`soft`, `flat`, `bento`).
 
 ```tsx
 <ITCard title="Welcome" image="/hero.jpg" actions={<ITButton label="Learn more" />}>
@@ -833,8 +837,10 @@ Para regenerarlo: `pnpm docs:llm`.
 
 | Prop | Tipo | Por defecto | Descripción |
 | --- | --- | --- | --- |
+| `tone` | `ITCardTone` | — | Pastel tile: tints the card background with the `--color-<tone>-soft` token of the palette, overriding the default white surface. In `soft`/`flat` appearances it also uses `--color-<tone>-soft-border` for the border; in `bento` the card stays borderless. Works in every appearance and in dark mode. Omit it for the regular surface. |
 | `onClick` | `() => void` | — | Click handler. When provided, the card becomes interactive with hover shadow effect. |
 | `title` | `string` | — | Card title displayed in the header area. |
+| `headerActions` | `React.ReactNode` | — | Optional actions rendered at the right of the title row (e.g. a play button). |
 | `image` | `string` | — | Image source URL displayed at the top of the card. |
 | `alt` | `string` | `"Card Image"` | Alt text for the card image. |
 | `children` | `React.ReactNode` | — | Card body content. Rendered below the title. |
@@ -1117,6 +1123,8 @@ Para regenerarlo: `pnpm docs:llm`.
 | `barLabel` | `string` | `i18n `lineBarChart.barLabel` ("Serie B")` | Nombre de la serie de barras (leyenda y tooltip). |
 | `lineColor` | `string` | — | Color de la línea (por defecto el verde de la casa). |
 | `barColor` | `string` | — | Color de las barras. |
+| `showLine` | `boolean` | `true` | Muestra la serie de línea. |
+| `showBars` | `boolean` | `true` | Muestra la serie de barras. |
 | `height` | `number` | — | — |
 | `formatValue` | `(value: number) => string` | — | Formatea los valores del tooltip; por defecto número con separadores. |
 | `formatAxis` | `(value: number) => string` | — | Texto del eje Y; por defecto número compacto. |
@@ -1372,6 +1380,9 @@ Para regenerarlo: `pnpm docs:llm`.
 | `label` **\*** | `string` | — | The metric label displayed above the value. |
 | `value` **\*** | `string \| number` | — | The primary numeric or string value shown in the card. |
 | `trend` | `string` | — | Optional trend indicator text (e.g. "+12%", "-3"). |
+| `hint` | `string` | — | Optional secondary line under the value (context, not a trend). |
+| `progress` | `number` | — | Optional progress 0–100 rendered under the hint. |
+| `progressColor` | `"gray" \| "purple" \| "info" \| "success" \| "warning" \| "error" \| "primary" \| "secondary" \| "danger"` | `"primary"` | Semantic color for the progress bar. |
 | `trendDirection` | `"up" \| "down" \| "neutral"` | — | Direction of the trend, used to color the trend badge. |
 | `icon` | `React.ReactNode` | — | Icon element rendered next to the label in the top-right corner. |
 | `color` | `string` | — | Background color class for the card (e.g. "bg-primary-50 dark:bg-primary-950/20"). |
@@ -1490,7 +1501,7 @@ Para regenerarlo: `pnpm docs:llm`.
 
 - **Capa:** Molecules
 - **Fuente:** `src/components/molecules/tabs/tabs.tsx`
-- **Qué es:** Tabbed navigation component with "line" and "pill" visual variants. Manages its own active state internally via a defaultActiveId.
+- **Qué es:** Tabbed navigation component with "line" and "pill" visual variants. Manages its own active state internally via a defaultActiveId. With `appearance="bento"` the "pill" variant becomes a rounded track with an ink active pill.
 
 ```tsx
 <ITTabs
@@ -1729,6 +1740,7 @@ Para regenerarlo: `pnpm docs:llm`.
 | `className` | `string` | — | Additional CSS classes for the dialog panel. |
 | `title` | `string` | — | Optional heading displayed at the top of the dialog. |
 | `useFormHeader` | `boolean` | `false` | When true and `title` is provided, renders an ITFormHeader instead of the default title bar. |
+| `padded` | `boolean` | `true` | When false, the card has no padding: the title row and body are flush to the edges, so the content can draw its own sections. |
 | `fullScreen` | `boolean` | `false` | Makes the dialog fill the entire viewport. |
 
 `*` = obligatorio.
@@ -1791,7 +1803,8 @@ Para regenerarlo: `pnpm docs:llm`.
 | --- | --- | --- | --- |
 | `onFileSelect` **\*** | `(file: File \| null) => void` | — | Called when a file is selected or cleared. |
 | `onCancel` | `() => void` | — | Called when the user cancels the current selection. |
-| `onSubmit` | `(file: File) => void` | — | Called when the user confirms and submits the file. |
+| `onSubmit` | `(file: File) => void \| Promise<void>` | — | Called when the user confirms and submits the file. With `autoUpload`, it runs right after selection and may return a promise that drives the status. |
+| `autoUpload` | `boolean` | `false` | Sube en cuanto se elige el archivo, sin paso de confirmar. Usa `onSubmit` como la subida: el estado pasa a subiendo y luego a subido, o a error si la promesa falla. |
 | `acceptedFileTypes` | `FileTypeEnum[]` | — | List of accepted MIME types. |
 | `contentClassName` | `string` | — | Additional classes for the preview/content area. |
 | `containerClassName` | `string` | — | Additional classes for the outermost container. |
@@ -2206,7 +2219,12 @@ errors={formik.errors}
 | `schema` **\*** | `ScreenSchema` | — | Esquema de pantalla a pintar. Admite un árbol parcial (streaming). |
 | `catalog` | `Catalog` | — | Catálogo de componentes permitidos. Por defecto, el de AXZY. |
 | `limits` | `Partial<EngineLimits>` | — | Presupuesto de nodos, profundidad y tiempos. |
-| `resolveValue` | `(value: unknown, path: SchemaPath) => unknown` | — | Resuelve un valor declarativo del esquema (`$state`, `$param`, `$source`…) al valor real. Sin esta prop, los valores se pasan tal cual (útil para pruebas). |
+| `params` | `Record<string, SchemaValue>` | — | Valores de la ruta para `$param`. Los pone el host; el esquema no puede crearlos. |
+| `dataHandlers` | `Record<string, DataHandler>` | — | Handlers de datos que registra el host, por nombre. Las fuentes de `data` los referencian con `handler`. Conviene memoizarlo: cada fuente se resuelve contra él. |
+| `slots` | `SlotRegistry` | — | Bloques JSX que registra el host, por nombre. Un nodo `{ "type": "slot", "props": { "name": "…" } }` monta el componente con ese nombre; el esquema no puede elegir otro. |
+| `effects` | `EffectRegistry` | — | Efectos que cumple el host. Una acción con `then`, `onError` o efectos sueltos los ejecuta después de su handler; `toast` y `navigate` son los más comunes. |
+| `capabilities` | `readonly string[]` | — | Capacidades que concede el host (`["usuarios.leer", …]`). Un nodo o la pantalla que declara `requires` solo se pinta si todas están concedidas; si no, avisa con `JR060`. Sin esta prop, cualquier `requires` se deniega. |
+| `resolveValue` | `(value: unknown, path: SchemaPath) => unknown` | — | Resuelve los valores que no son referencias del motor (por ejemplo, textos `{ i18n }`). Las referencias `$source`, `$state` y `$param` las resuelve el motor. |
 | `resolveAction` | `(node: NodeSchema, prop: string, action: unknown, path: SchemaPath) => ((...args: unknown[]) => void) \| undefined` | — | Traduce una acción declarada a un handler ejecutable. Sin esta prop, las acciones se ignoran y se avisa una sola vez por nodo. |
 | `pendingFallback` | `React.ReactNode` | — | Qué pintar mientras un nodo está pendiente (streaming). |
 | `onIssue` | `(issue: JsonEngineIssue) => void` | — | Se llama por cada aviso del motor, con código y ruta. |
@@ -2290,6 +2308,12 @@ errors={formik.errors}
 - **Fuente:** `src/theme/theme-context.ts`
 - **Qué hace:** `true` cuando el provider pide el lenguaje visual plano (`appearance="flat"`). Fuera de un ITThemeProvider devuelve `false` (aspecto por defecto).
 
+### `useITAppearance`
+
+- **Firma:** `(): ITThemeAppearance`
+- **Fuente:** `src/theme/theme-context.ts`
+- **Qué hace:** Lenguaje visual activo (`"soft"` \| `"flat"` \| `"bento"`). Fuera de un ITThemeProvider devuelve `"soft"` (aspecto por defecto).
+
 ### `useITTranslation`
 
 - **Firma:** `(): ITI18nValue`
@@ -2303,7 +2327,19 @@ return <ITButton label={t("common.cancel")} onClick={onCancel} />;
 ```
 ```
 
+### `useSchemaStream`
+
+- **Firma:** `(source: StreamSource \| null \| undefined): StreamState`
+- **Fuente:** `src/json-renderer/stream/useSchemaStream.ts`
+- **Qué hace:** Devuelve el estado de un esquema que llega por trozos.
+
+```tsx
+const estado = useSchemaStream(stream);
+estado.tree;      // árbol pintable, o null si aún no hay nada válido
+estado.streaming; // true mientras la fuente sigue emitiendo
+```
+
 ## Otros exports (tipos y utilidades)
 
-`AXZY_CATALOG_ENTRIES`, `AXZY_EXCLUDED_TYPES`, `ActionSchema`, `CURRENT_SCHEMA_VERSION`, `Catalog`, `CatalogEntry`, `Column`, `ColumnFilterMode`, `ColumnFilterValue`, `ColumnFilters`, `ComponentContract`, `DEFAULT_LIMITS`, `DEFAULT_MIGRATIONS`, `DataSourceSchema`, `EffectSchema`, `EngineLimits`, `FieldConfig`, `FieldConfigV2`, `FileTypeEnum`, `GLOBALLY_FORBIDDEN_PROPS`, `ITAccordionItem`, `ITAccordionProps`, `ITAlertProps`, `ITAvatarProps`, `ITBadgetProps`, `ITBreadcrumbItem`, `ITBreadcrumbsProps`, `ITButtonProps`, `ITCalendarProps`, `ITCardProps`, `ITCheckboxProps`, `ITChipInputProps`, `ITChipProps`, `ITConfirmDialogProps`, `ITDataTableFetchParams`, `ITDataTableProps`, `ITDataTableResponse`, `ITDatePickerProps`, `ITDialogProps`, `ITDividerProps`, `ITDrawerProps`, `ITDropdownMenuItem`, `ITDropdownMenuProps`, `ITEmptyStateProps`, `ITFieldProps`, `ITFlexProps`, `ITFormBuilderProps`, `ITFormHeaderProps`, `ITGridProps`, `ITI18nProviderProps`, `ITI18nValue`, `ITImageProps`, `ITInputNumberProps`, `ITInputProps`, `ITJSONEditorProps`, `ITJsonRenderEngineProps`, `ITJsonRendererProps`, `ITLayoutProps`, `ITLineBarChartProps`, `ITLineBarDatum`, `ITLoaderProps`, `ITLocale`, `ITMaskedInputProps`, `ITMessages`, `ITMessagesByLocale`, `ITMultiSelectOption`, `ITMultiSelectProps`, `ITNavbarProps`, `ITNavigationItem`, `ITNavigationSubItem`, `ITNavigationSubItemEntry`, `ITNavigationSubItemGroup`, `ITPageHeaderProps`, `ITPageProps`, `ITPaginationProps`, `ITPopoverProps`, `ITProgressProps`, `ITRadioGroupProps`, `ITRadioOption`, `ITSearchSelectProps`, `ITSearchTableProps`, `ITSegmentedControlProps`, `ITSelectProps`, `ITSidebarBrand`, `ITSidebarNotification`, `ITSidebarProps`, `ITSkeletonProps`, `ITSlideToggleProps`, `ITSliderProps`, `ITStackProps`, `ITStatCardProps`, `ITStepperProps`, `ITTabItem`, `ITTableProps`, `ITTabsProps`, `ITTextProps`, `ITTextareaProps`, `ITThemeAppearance`, `ITThemeConfig`, `ITThemePalette`, `ITThemeProviderProps`, `ITTimePickerProps`, `ITToastProps`, `ITTripleFilterOption`, `ITTripleFilterProps`, `ITWysiwygProps`, `JsonComponentNode`, `JsonComponentType`, `JsonEngineCode`, `JsonEngineError`, `JsonEngineIssue`, `JsonEngineSeverity`, `LimitTracker`, `MigrationRegistry`, `MigrationResult`, `NodeBoundary`, `NodeSchema`, `NodeStatus`, `PartialParseResult`, `PathSegment`, `PropContract`, `PropKind`, `PropSpec`, `ResolvedNode`, `SchemaMigration`, `SchemaPath`, `SchemaReference`, `SchemaValue`, `ScreenSchema`, `StreamState`, `TableColors`, `TableDensity`, `TableDesign`, `TableDesignProps`, `TableDesignSlot`, `UnresolvedNode`, `UploadStatus`, `UseTableStateOptions`, `UseTableStateResult`, `ValidateOptions`, `ValidationReport`, `ValidationVerdict`, `VocabularyContract`, `WhenSchema`, `auditTree`, `axzyCatalog`, `axzyCatalogTypes`, `buildVocabularyContract`, `countPendingNodes`, `createCatalog`, `createLimitTracker`, `createValidationSchema`, `enMessages`, `esMessages`, `formatPath`, `formatVocabularyForPrompt`, `getCatalogEntry`, `getContrastTextColor`, `getExclusionReason`, `hasPath`, `isExcludedType`, `isLightColor`, `isNodePending`, `issue`, `migrateSchema`, `parsePartialSchema`, `parsePath`, `propPath`, `pushPath`, `readPath`, `renderNode`, `resolveCssColor`, `resolveLimits`, `resolveNode`, `validateSchema`
+`AXZY_CATALOG_ENTRIES`, `AXZY_EXCLUDED_TYPES`, `ActionSchema`, `BindingResolver`, `BindingScope`, `CURRENT_SCHEMA_VERSION`, `Catalog`, `CatalogEntry`, `Column`, `ColumnFilterMode`, `ColumnFilterValue`, `ColumnFilters`, `ComponentContract`, `DEFAULT_LIMITS`, `DEFAULT_MIGRATIONS`, `DataHandler`, `DataLoader`, `DataSourceSchema`, `EffectRegistry`, `EffectSchema`, `EngineLimits`, `FieldConfig`, `FieldConfigV2`, `FileTypeEnum`, `FlatRoute`, `GLOBALLY_FORBIDDEN_PROPS`, `ITAccordionItem`, `ITAccordionProps`, `ITAlertProps`, `ITAvatarProps`, `ITBadgetProps`, `ITBreadcrumbItem`, `ITBreadcrumbsProps`, `ITButtonProps`, `ITCalendarProps`, `ITCardProps`, `ITCardTone`, `ITCheckboxProps`, `ITChipInputProps`, `ITChipProps`, `ITConfirmDialogProps`, `ITDataTableFetchParams`, `ITDataTableProps`, `ITDataTableResponse`, `ITDatePickerProps`, `ITDialogProps`, `ITDividerProps`, `ITDrawerProps`, `ITDropdownMenuItem`, `ITDropdownMenuProps`, `ITEmptyStateProps`, `ITFieldProps`, `ITFlexProps`, `ITFormBuilderProps`, `ITFormHeaderProps`, `ITGridProps`, `ITI18nProviderProps`, `ITI18nValue`, `ITImageProps`, `ITInputNumberProps`, `ITInputProps`, `ITJSONEditorProps`, `ITJsonRenderEngineProps`, `ITJsonRendererProps`, `ITLayoutProps`, `ITLineBarChartProps`, `ITLineBarDatum`, `ITLoaderProps`, `ITLocale`, `ITMaskedInputProps`, `ITMessages`, `ITMessagesByLocale`, `ITMultiSelectOption`, `ITMultiSelectProps`, `ITNavbarProps`, `ITNavigationItem`, `ITNavigationSubItem`, `ITNavigationSubItemEntry`, `ITNavigationSubItemGroup`, `ITPageHeaderProps`, `ITPageProps`, `ITPaginationProps`, `ITPopoverProps`, `ITProgressProps`, `ITRadioGroupProps`, `ITRadioOption`, `ITSearchSelectProps`, `ITSearchTableProps`, `ITSegmentedControlProps`, `ITSelectProps`, `ITSidebarBrand`, `ITSidebarNotification`, `ITSidebarProps`, `ITSkeletonProps`, `ITSlideToggleProps`, `ITSliderProps`, `ITStackProps`, `ITStatCardProps`, `ITStepperProps`, `ITTabItem`, `ITTableProps`, `ITTabsProps`, `ITTextProps`, `ITTextareaProps`, `ITThemeAppearance`, `ITThemeConfig`, `ITThemePalette`, `ITThemeProviderProps`, `ITTimePickerProps`, `ITToastProps`, `ITTripleFilterOption`, `ITTripleFilterProps`, `ITWysiwygProps`, `JsonComponentNode`, `JsonComponentType`, `JsonEngineCode`, `JsonEngineError`, `JsonEngineIssue`, `JsonEngineSeverity`, `LimitTracker`, `MigrationRegistry`, `MigrationResult`, `NavNode`, `NodeBoundary`, `NodeSchema`, `NodeStatus`, `PartialParseResult`, `PathSegment`, `PropContract`, `PropKind`, `PropSpec`, `ResolvedNode`, `RouteMatch`, `RouteNavSchema`, `RouteSchema`, `RoutesSchema`, `SchemaMigration`, `SchemaPath`, `SchemaReference`, `SchemaValue`, `ScreenSchema`, `SlotComponent`, `SlotRegistry`, `StreamSource`, `StreamState`, `TableColors`, `TableDensity`, `TableDesign`, `TableDesignProps`, `TableDesignSlot`, `ToastVariant`, `UnresolvedNode`, `UploadStatus`, `UseTableStateOptions`, `UseTableStateResult`, `ValidateOptions`, `ValidationReport`, `ValidationVerdict`, `VocabularyContract`, `WhenSchema`, `auditTree`, `axzyCatalog`, `axzyCatalogTypes`, `buildNavigationTree`, `buildVocabularyContract`, `countPendingNodes`, `createBindingResolver`, `createCatalog`, `createLimitTracker`, `createValidationSchema`, `enMessages`, `esMessages`, `flattenRoutes`, `formatPath`, `formatVocabularyForPrompt`, `getCatalogEntry`, `getContrastTextColor`, `getExclusionReason`, `hasPath`, `isExcludedType`, `isLightColor`, `isNodePending`, `issue`, `joinRoutePath`, `matchRoute`, `migrateSchema`, `navContainsRoute`, `parsePartialSchema`, `parsePath`, `propPath`, `pushPath`, `readPath`, `renderNode`, `resolveCssColor`, `resolveLimits`, `resolveNode`, `routeHref`, `validateRoutes`, `validateSchema`
 

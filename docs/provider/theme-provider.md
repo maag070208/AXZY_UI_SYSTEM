@@ -12,7 +12,7 @@ Provider raíz del tema. Inyecta las variables CSS `--color-*` de toda la librer
 densidad, radio y sombras globales, resuelve el modo claro/oscuro y, opcionalmente, expone un
 botón flotante (FAB) con un diseñador de temas en vivo. Debe envolver la aplicación (o la parte
 que usa componentes AXZY) una sola vez. Re-exporta los hooks `useITTheme`, `useITThemeSafe` y
-`useITFlatAppearance`, y los tipos `ITThemePalette` y `ITThemeAppearance`.
+`useITFlatAppearance`, `useITAppearance`, y los tipos `ITThemePalette` y `ITThemeAppearance`.
 
 ## Import
 
@@ -32,7 +32,7 @@ import { ITThemeProvider } from "@axzydev/axzy_ui_system";
 | `density` | `number` | `1` | Factor global de densidad. Escala el `font-size` raíz (así compacta todo lo basado en `rem`). Se limita a `0.5`–`1.5`. |
 | `radius` | `number` | — | Radio global en px aplicado a toda la escala (`--radius-xs`…`--radius-3xl`). `2` ⇒ 2 px, `8` ⇒ 8 px, `0` ⇒ esquinas totalmente cuadradas. Si se omite, no hay override (valores de Tailwind). |
 | `shadow` | `number` | — | Fuerza global de sombras. `0` ⇒ sin sombras, `1` ⇒ sutiles, `2` ⇒ look actual, `3` ⇒ marcadas. Si se omite, no hay override (se mantiene el look actual, equivalente al nivel 2). |
-| `appearance` | `ITThemeAppearance` | `"soft"` | Lenguaje visual del sistema. `"soft"` mantiene el look actual (tarjetas flotantes, sombras teñidas, sidebar/topbar con glass). `"flat"` usa superficies planas (bordes de 1 px, sidebar y topbar planas, `ITPageHeader` compacto sin tile de icono). Fija `data-it-appearance` en `<html>`. |
+| `appearance` | `ITThemeAppearance` | `"soft"` | Lenguaje visual del sistema. `"soft"` mantiene el look actual (tarjetas flotantes, sombras teñidas, sidebar/topbar con glass). `"flat"` usa superficies planas (bordes de 1 px, sidebar y topbar planas, `ITPageHeader` compacto sin tile de icono). `"bento"` es el estilo de dashboards pastel: lienzo gris claro (`#F4F4F6`; oscuro `slate-950`), tarjetas blancas sin borde con sombra difusa y radio de 24 px, botones e inputs en píldora, `ITTopBar` sin borde ni blur con navegación en píldoras (activa = píldora tinta), sidebar liso con activo en píldora neutra, `ITPageHeader` con título grande y botón atrás circular, y tarjetas pastel con `ITCard` `tone`. Un `radius`/`shadow` explícito gana sobre los valores bento. Fija `data-it-appearance` en `<html>`. |
 
 ### `ITThemePalette`
 
@@ -62,7 +62,19 @@ export interface ITThemePalette {
 }
 ```
 
-`ITThemeAppearance` es `"soft" | "flat"`.
+`ITThemeAppearance` es `"soft" | "flat" | "bento"`.
+
+### Aspecto `bento`
+
+Los tokens bento se inyectan como variables `--it-bento-*` en `<html>` solo cuando `appearance="bento"` (y se adaptan a modo claro/oscuro): `--it-bento-card-shadow`, `--it-bento-card-shadow-hover`, `--it-bento-card-radius`, `--it-bento-card-padding`, `--it-bento-pill-radius`, `--it-bento-field-radius` (textarea, multi-select, chip-input), `--it-bento-control-bg`/`-hover`/`-text`, `--it-bento-ink-bg`/`-text` y `--it-bento-nav-active-bg`/`-text`. También ajusta `--it-layout-bg`, `--it-card-bg`, `--it-input-bg`, `--it-input-border`, `--it-input-radius` y los tokens `--it-sidebar-active-*`. Si pasas `radius` no se definen los de radio y si pasas `shadow` no se definen los de sombra, así que gana la escala global.
+
+```tsx
+<ITThemeProvider appearance="bento" showFab={false}>
+  <ITCard tone="success" title="Ingresos">+12,4 %</ITCard>
+</ITThemeProvider>
+```
+
+Hook: `useITAppearance()` devuelve `"soft" | "flat" | "bento"` (`"soft"` fuera del provider); `useITFlatAppearance()` sigue disponible (`true` solo con `"flat"`).
 
 ## Ejemplo
 

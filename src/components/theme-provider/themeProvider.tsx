@@ -83,7 +83,7 @@ const PRESET_I18N_KEY: Record<string, string> = {
 // Contexto y hooks (useITTheme / useITThemeSafe) viven en @/theme/theme-context.
 // Re-exportados desde aquí para mantener compatibilidad de la API pública.
 // eslint-disable-next-line react-refresh/only-export-components
-export { useITTheme, useITThemeSafe, useITFlatAppearance } from "@/theme/theme-context";
+export { useITTheme, useITThemeSafe, useITFlatAppearance, useITAppearance } from "@/theme/theme-context";
 
 const getNestedValue = (obj: any, path: string) => {
   return path.split(".").reduce((acc, part) => acc && acc[part], obj);
@@ -342,6 +342,59 @@ export default function ITThemeProvider({
       surfaceStyle?.remove();
     };
   }, [radius, shadow]);
+
+  // Tokens del lenguaje "bento": solo se inyectan con appearance="bento".
+  // Los componentes leen estos vars (con fallback al aspecto base), así que un
+  // `radius`/`shadow` explícito gana: en ese caso no se definen los vars de
+  // radio/sombra y los componentes caen a la escala global.
+  useLayoutEffect(() => {
+    const STYLE_ID = "it-theme-bento-tokens";
+    let tag = document.getElementById(STYLE_ID) as HTMLStyleElement | null;
+    if (appearance !== "bento") {
+      tag?.remove();
+      return;
+    }
+    if (!tag) {
+      tag = document.createElement("style");
+      tag.id = STYLE_ID;
+      document.head.appendChild(tag);
+    }
+    const hasRadius = typeof radius === "number" && isFinite(radius);
+    const hasShadow = shadowLevel(shadow) !== null;
+    const shapeLight = hasRadius
+      ? ""
+      : "--it-bento-card-radius:24px;--it-bento-pill-radius:9999px;--it-bento-field-radius:1rem;--it-input-radius:var(--it-bento-pill-radius);";
+    const shadowLight = hasShadow
+      ? ""
+      : "--it-bento-card-shadow:0 1px 2px rgba(16,24,40,.04),0 12px 32px -16px rgba(16,24,40,.10);--it-bento-card-shadow-hover:0 1px 2px rgba(16,24,40,.06),0 18px 40px -16px rgba(16,24,40,.18);";
+    const shadowDark = hasShadow
+      ? ""
+      : "--it-bento-card-shadow:0 1px 2px rgba(0,0,0,.4),0 12px 32px -16px rgba(0,0,0,.55);--it-bento-card-shadow-hover:0 1px 2px rgba(0,0,0,.5),0 18px 40px -16px rgba(0,0,0,.7);";
+    // El item activo del sidebar sigue los tokens bento (píldora neutra, texto tinta).
+    const navTokens =
+      "--it-sidebar-active-bg:var(--it-bento-nav-active-bg);--it-sidebar-active-color:var(--it-bento-nav-active-text);--it-sidebar-active-icon:var(--it-bento-nav-active-text);";
+    const light =
+      "--it-layout-bg:#f4f4f6;--it-card-bg:#ffffff;--it-bento-card-padding:1.5rem;" +
+      "--it-input-bg:#f1f5f9;--it-input-border:transparent;" +
+      "--it-input-focus-ring:0 0 0 2px color-mix(in srgb,var(--color-primary) 50%,transparent);" +
+      "--it-bento-control-bg:#f1f5f9;--it-bento-control-bg-hover:#e2e8f0;--it-bento-control-text:#475569;" +
+      "--it-bento-ink-bg:#0f172a;--it-bento-ink-text:#ffffff;" +
+      "--it-bento-nav-active-bg:#f1f5f9;--it-bento-nav-active-text:#0f172a;" + navTokens;
+    const dark =
+      "--it-layout-bg:#020617;--it-card-bg:#0f172a;" +
+      "--it-input-bg:#1e293b;--it-input-border:transparent;" +
+      "--it-bento-control-bg:#1e293b;--it-bento-control-bg-hover:#334155;--it-bento-control-text:#cbd5e1;" +
+      "--it-bento-ink-bg:#ffffff;--it-bento-ink-text:#0f172a;" +
+      "--it-bento-nav-active-bg:#1e293b;--it-bento-nav-active-text:#ffffff;" + navTokens;
+    const A = '[data-it-appearance="bento"]';
+    tag.textContent =
+      `:root${A}{${light}${shapeLight}${shadowLight}}` +
+      `:root${A}.dark,:root${A} .dark,:root${A} [data-theme="dark"]{${dark}${shadowDark}}` +
+      `:root${A} [data-theme="light"]{${light}${shadowLight}}`;
+    return () => {
+      tag?.remove();
+    };
+  }, [appearance, radius, shadow]);
 
   // Inyectar variables CSS en el :root al cambiar la paleta o tema resuelto
   useEffect(() => {

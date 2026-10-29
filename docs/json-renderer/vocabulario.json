@@ -298,6 +298,21 @@
           "required": false
         },
         {
+          "name": "tone",
+          "kind": "enum",
+          "required": false,
+          "values": [
+            "primary",
+            "secondary",
+            "ternary",
+            "success",
+            "info",
+            "warning",
+            "danger"
+          ],
+          "doc": "Tinte pastel de la tarjeta (token --color-<tone>-soft)."
+        },
+        {
           "name": "image",
           "kind": "string",
           "required": false,

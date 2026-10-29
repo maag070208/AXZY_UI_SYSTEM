@@ -1,4 +1,16 @@
+/** Pastel tint applied to a card through the `--color-<tone>-soft` token. */
+export type ITCardTone =
+  | "primary"
+  | "secondary"
+  | "ternary"
+  | "success"
+  | "info"
+  | "warning"
+  | "danger";
+
 export interface ITCardProps {
+  /** Pastel tile: tints the card background with the `--color-<tone>-soft` token of the palette, overriding the default white surface. In `soft`/`flat` appearances it also uses `--color-<tone>-soft-border` for the border; in `bento` the card stays borderless. Works in every appearance and in dark mode. Omit it for the regular surface. */
+  tone?: ITCardTone;
   /** Click handler. When provided, the card becomes interactive with hover shadow effect. */
   onClick?: () => void;
   /** Card title displayed in the header area. */

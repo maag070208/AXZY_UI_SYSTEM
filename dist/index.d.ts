@@ -758,7 +758,11 @@ interface ITCalendarProps {
  */
 declare const ITCalendar: React__default.FC<ITCalendarProps>;
 
+/** Pastel tint applied to a card through the `--color-<tone>-soft` token. */
+type ITCardTone = "primary" | "secondary" | "ternary" | "success" | "info" | "warning" | "danger";
 interface ITCardProps {
+    /** Pastel tile: tints the card background with the `--color-<tone>-soft` token of the palette, overriding the default white surface. In `soft`/`flat` appearances it also uses `--color-<tone>-soft-border` for the border; in `bento` the card stays borderless. Works in every appearance and in dark mode. Omit it for the regular surface. */
+    tone?: ITCardTone;
     /** Click handler. When provided, the card becomes interactive with hover shadow effect. */
     onClick?: () => void;
     /** Card title displayed in the header area. */
@@ -786,7 +790,8 @@ interface ITCardProps {
 }
 
 /**
- * Versatile card container with optional image, title, body content, and action footer. Supports interactive hover states.
+ * Versatile card container with optional image, title, body content, and action footer. Supports interactive hover states
+ * and pastel `tone` tiles. Follows the provider `appearance` (`soft`, `flat`, `bento`).
  *
  * @example
  * <ITCard title="Welcome" image="/hero.jpg" actions={<ITButton label="Learn more" />}>
@@ -794,11 +799,14 @@ interface ITCardProps {
  * </ITCard>
  *
  * @example
+ * <ITCard tone="success" title="Revenue">+12.4%</ITCard>
+ *
+ * @example
  * <ITCard onClick={() => {}} className="max-w-sm">
  *   Clickable card with hover shadow.
  * </ITCard>
  */
-declare function ITCard({ title, headerActions, image, alt, children, actions, className, imageClassName, titleClassName, contentClassName, actionClassName, onClick, }: ITCardProps): react_jsx_runtime.JSX.Element;
+declare function ITCard({ title, tone, headerActions, image, alt, children, actions, className, imageClassName, titleClassName, contentClassName, actionClassName, onClick, }: ITCardProps): react_jsx_runtime.JSX.Element;
 
 interface ITCheckboxProps {
     /** Controlled checked state. @default false */
@@ -3694,6 +3702,7 @@ interface ITTabsProps {
 /**
  * Tabbed navigation component with "line" and "pill" visual variants.
  * Manages its own active state internally via a defaultActiveId.
+ * With `appearance="bento"` the "pill" variant becomes a rounded track with an ink active pill.
  *
  * @example
  * <ITTabs
@@ -5069,8 +5078,14 @@ interface ITDropfileProps {
     onFileSelect: (file: File | null) => void;
     /** Called when the user cancels the current selection. */
     onCancel?: () => void;
-    /** Called when the user confirms and submits the file. */
-    onSubmit?: (file: File) => void;
+    /** Called when the user confirms and submits the file. With `autoUpload`, it runs right after selection and may return a promise that drives the status. */
+    onSubmit?: (file: File) => void | Promise<void>;
+    /**
+     * Sube en cuanto se elige el archivo, sin paso de confirmar. Usa `onSubmit` como la subida:
+     * el estado pasa a subiendo y luego a subido, o a error si la promesa falla.
+     * @default false
+     */
+    autoUpload?: boolean;
     /** List of accepted MIME types. */
     acceptedFileTypes?: FileTypeEnum[];
     /** Additional classes for the preview/content area. */
@@ -5143,6 +5158,8 @@ interface ITTopBarNavItem {
     label: string;
     /** Optional icon element rendered beside the label. */
     icon?: any;
+    /** Marks the item as the current one. Sets `aria-current="page"`; with `appearance="bento"` it renders as the ink pill (dark fill, white text), in the other appearances as a subtle highlight. @default false */
+    isActive?: boolean;
     /** Click handler for this navigation item (legacy, prefer onNavItemClick). */
     action: () => void;
 }
@@ -5366,8 +5383,9 @@ type ColorScale = {
  * Visual language of the whole system.
  * - `"soft"`: soft depth — floating cards, tinted shadows, glass sidebar and top bar (default).
  * - `"flat"`: flat surfaces — hairline borders instead of shadows, plain sidebar and top bar, compact page headers.
+ * - `"bento"`: modern pastel "bento" dashboards — light-gray canvas, borderless white cards with a diffuse shadow and 24px radius, pill controls (buttons, inputs), ink-pill navigation and pastel tiles via `ITCard` `tone`.
  */
-type ITThemeAppearance = "soft" | "flat";
+type ITThemeAppearance = "soft" | "flat" | "bento";
 interface ITThemePalette$1 {
     /** Main brand accent color (hex). Drives primary buttons, active nav items, focus rings, links, and the `--color-primary` CSS variable. @default "#06b6d4" */
     primary: string;
@@ -5547,7 +5565,7 @@ interface ITThemeProviderProps {
     radius?: number;
     /** Global shadow strength level. `0` ⇒ no shadows, `1` ⇒ subtle, `2` ⇒ default current look, `3` ⇒ pronounced. Shadows are injected as `--shadow-*`/`.shadow-*` overrides so cards, dropdowns and dialogs follow the level. @default 2 (keeps current default when omitted) */
     shadow?: number;
-    /** Visual language of the whole system. `"soft"` keeps the current look (floating cards, tinted shadows, glass sidebar/top bar). `"flat"` switches the app shell and surfaces to flat ones: hairline borders instead of shadows on `ITCard`, a plain `ITSidebar` (no glow, no accent bar, narrower), a plain `ITTopBar` (no shadow, initials avatar) and a compact `ITPageHeader` without the icon tile. It also sets `data-it-appearance` on `<html>` so app CSS can follow it. Combine it with `shadow` and `radius` to finish the look. @default "soft" */
+    /** Visual language of the whole system. `"soft"` keeps the current look (floating cards, tinted shadows, glass sidebar/top bar). `"flat"` switches the app shell and surfaces to flat ones: hairline borders instead of shadows on `ITCard`, a plain `ITSidebar` (no glow, no accent bar, narrower), a plain `ITTopBar` (no shadow, initials avatar) and a compact `ITPageHeader` without the icon tile. It also sets `data-it-appearance` on `<html>` so app CSS can follow it. `"bento"` gives a modern pastel dashboard: light-gray canvas, borderless white cards with a diffuse shadow and 24px radius, pill buttons and inputs, an ink-pill active item in `ITTopBar` and a neutral-pill one in `ITSidebar`, a large `ITPageHeader` title and pastel tiles through `ITCard` `tone`; an explicit `radius`/`shadow` prop wins over the bento defaults. Combine it with `shadow` and `radius` to finish the look. @default "soft" */
     appearance?: ITThemeAppearance;
 }
 
@@ -5575,6 +5593,11 @@ declare const useITTheme: () => ITThemeContextType;
  * si se usa fuera de ITThemeProvider (no lanza error).
  */
 declare const useITThemeSafe: () => ITThemeContextType | undefined;
+/**
+ * Lenguaje visual activo (`"soft"` | `"flat"` | `"bento"`).
+ * Fuera de un ITThemeProvider devuelve `"soft"` (aspecto por defecto).
+ */
+declare const useITAppearance: () => ITThemeAppearance;
 /**
  * `true` cuando el provider pide el lenguaje visual plano (`appearance="flat"`).
  * Fuera de un ITThemeProvider devuelve `false` (aspecto por defecto).
@@ -5760,4 +5783,4 @@ declare const es: ITMessages;
  */
 declare const en: ITMessages;
 
-export { AXZY_CATALOG_ENTRIES, AXZY_EXCLUDED_TYPES, type ActionSchema, type BindingResolver, type BindingScope, CURRENT_SCHEMA_VERSION, type Catalog, type CatalogEntry, type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type ComponentContract, DEFAULT_LIMITS, DEFAULT_MIGRATIONS, type DataHandler, type DataLoader, type DataSourceSchema, type EffectRegistry, type EffectSchema, type EngineLimits, type FieldConfig, type FieldConfigV2, FileTypeEnum, type FlatRoute, GLOBALLY_FORBIDDEN_PROPS, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITI18nProvider, type ITI18nProviderProps, type ITI18nValue, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITJSONEditor, type ITJSONEditorProps, type ITJsonRenderEngineProps, ITJsonRenderer, type ITJsonRendererProps, ITLayout, type ITLayoutProps, ITLineBarChart, type ITLineBarChartProps, type ITLineBarDatum, ITLoader, type LoaderProps as ITLoaderProps, type ITLocale, ITMaskedInput, type ITMaskedInputProps, type ITMessages, type ITMessagesByLocale, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSchemaRenderer, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarBrand, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeAppearance, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type JsonComponentNode, type JsonComponentType, type JsonEngineCode, JsonEngineError, type JsonEngineIssue, type JsonEngineSeverity, type LimitTracker, type MigrationRegistry, type MigrationResult, type NavNode, NodeBoundary, type NodeSchema, type NodeStatus, type PartialParseResult, type PathSegment, type PropContract, type PropKind, type PropSpec, type ResolvedNode, type RouteMatch, type RouteNavSchema, type RouteSchema, type RoutesSchema, type SchemaMigration, type SchemaPath, type SchemaReference, type SchemaValue, type ScreenSchema, type SlotComponent, type SlotRegistry, type StreamSource, type StreamState, type TableColors, type TableDensity, type TableDesign, type TableDesignProps, type TableDesignSlot, type ToastVariant, type UnresolvedNode, UploadStatus, type UseTableStateOptions, type UseTableStateResult, type ValidateOptions, type ValidationReport, type ValidationVerdict, type VocabularyContract, type WhenSchema, auditTree, axzyCatalog, axzyCatalogTypes, buildNavigationTree, buildVocabularyContract, countPendingNodes, createBindingResolver, createCatalog, createLimitTracker, createValidationSchema, en as enMessages, es as esMessages, flattenRoutes, formatPath, formatVocabularyForPrompt, getCatalogEntry, getContrastTextColor, getExclusionReason, hasPath, isExcludedType, isLightColor, isNodePending, issue, joinRoutePath, matchRoute, migrateSchema, navContainsRoute, parsePartialSchema, parsePath, propPath, pushPath, readPath, renderNode, resolveCssColor, resolveLimits, resolveNode, routeHref, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITFlatAppearance, useITTheme, useITThemeSafe, useITTranslation, useJsonRender, useSchemaStream, useTableState, validateRoutes, validateSchema };
+export { AXZY_CATALOG_ENTRIES, AXZY_EXCLUDED_TYPES, type ActionSchema, type BindingResolver, type BindingScope, CURRENT_SCHEMA_VERSION, type Catalog, type CatalogEntry, type Column, type ColumnFilterMode, type ColumnFilterValue, type ColumnFilters, type ComponentContract, DEFAULT_LIMITS, DEFAULT_MIGRATIONS, type DataHandler, type DataLoader, type DataSourceSchema, type EffectRegistry, type EffectSchema, type EngineLimits, type FieldConfig, type FieldConfigV2, FileTypeEnum, type FlatRoute, GLOBALLY_FORBIDDEN_PROPS, ITAccordion, type ITAccordionItem, type ITAccordionProps, ITAlert, type ITAlertProps, ITAvatar, type ITAvatarProps, ITBadget, type ITBadgetProps, type ITBreadcrumbItem, ITBreadcrumbs, type ITBreadcrumbsProps, ITButton, type ITButtonProps, ITCalendar, type ITCalendarProps, ITCard, type ITCardProps, type ITCardTone, ITCheckbox, type ITCheckboxProps, ITChip, ITChipInput, type ITChipInputProps, type ITChipProps, ITConfirmDialog, type ITConfirmDialogProps, ITDataTable, type ITDataTableFetchParams, type ITDataTableProps, type ITDataTableResponse, ITDatePicker, type ITDatePickerProps, ITDialog, type ITDialogProps, ITDivider, type ITDividerProps, ITDrawer, type ITDrawerProps, ITDropdownMenu, type ITDropdownMenuItem, type ITDropdownMenuProps, ITDropfile, ITEmptyState, type ITEmptyStateProps, ITField, type ITFieldProps, ITFlex, type ITFlexProps, ITFormBuilder, type ITFormBuilderProps, ITFormHeader, type ITFormHeaderProps, ITGrid, type ITGridProps, ITI18nProvider, type ITI18nProviderProps, type ITI18nValue, ITImage, type ITImageProps, ITInput, ITInputNumber, type ITInputNumberProps, type ITInputProps, ITJSONEditor, type ITJSONEditorProps, type ITJsonRenderEngineProps, ITJsonRenderer, type ITJsonRendererProps, ITLayout, type ITLayoutProps, ITLineBarChart, type ITLineBarChartProps, type ITLineBarDatum, ITLoader, type LoaderProps as ITLoaderProps, type ITLocale, ITMaskedInput, type ITMaskedInputProps, type ITMessages, type ITMessagesByLocale, ITMultiSelect, type ITMultiSelectOption, type ITMultiSelectProps, ITNavbar, type ITNavbarProps, type ITNavigationItem, type ITNavigationSubItem, type ITNavigationSubItemEntry, type ITNavigationSubItemGroup, ITPage, ITPageHeader, type ITPageHeaderProps, type ITPageProps, ITPagination, type ITPaginationProps, ITPopover, type ITPopoverProps, ITProgress, type ITProgressProps, ITRadioGroup, type ITRadioGroupProps, type ITRadioOption, ITSchemaRenderer, ITSearchSelect, type ITSearchSelectProps, ITSearchTable, type ITSearchTableProps, ITSegmentedControl, type ITSegmentedControlProps, ITSelect, type ITSelectProps, ITSidebar, type ITSidebarBrand, type ITSidebarNotification, type ITSidebarProps, ITSkeleton, type ITSkeletonProps, ITSlideToggle, type ITSlideToggleProps, ITSlider, type ITSliderProps, ITStack, type ITStackProps, ITStatCard, type ITStatCardProps, ITStepper, type ITStepperProps, type ITTabItem, ITTable, type ITTableProps, ITTabs, type ITTabsProps, ITText, type ITTextProps, ITTextarea, type ITTextareaProps, type ITThemeAppearance, type ITThemeConfig, type ITThemePalette, ITThemeProvider, type ITThemeProviderProps, ITTimePicker, type ITTimePickerProps, ITToast, type ITToastProps, ITTripleFilter, type ITTripleFilterOption, type ITTripleFilterProps, ITWysiwyg, type ITWysiwygProps, type JsonComponentNode, type JsonComponentType, type JsonEngineCode, JsonEngineError, type JsonEngineIssue, type JsonEngineSeverity, type LimitTracker, type MigrationRegistry, type MigrationResult, type NavNode, NodeBoundary, type NodeSchema, type NodeStatus, type PartialParseResult, type PathSegment, type PropContract, type PropKind, type PropSpec, type ResolvedNode, type RouteMatch, type RouteNavSchema, type RouteSchema, type RoutesSchema, type SchemaMigration, type SchemaPath, type SchemaReference, type SchemaValue, type ScreenSchema, type SlotComponent, type SlotRegistry, type StreamSource, type StreamState, type TableColors, type TableDensity, type TableDesign, type TableDesignProps, type TableDesignSlot, type ToastVariant, type UnresolvedNode, UploadStatus, type UseTableStateOptions, type UseTableStateResult, type ValidateOptions, type ValidationReport, type ValidationVerdict, type VocabularyContract, type WhenSchema, auditTree, axzyCatalog, axzyCatalogTypes, buildNavigationTree, buildVocabularyContract, countPendingNodes, createBindingResolver, createCatalog, createLimitTracker, createValidationSchema, en as enMessages, es as esMessages, flattenRoutes, formatPath, formatVocabularyForPrompt, getCatalogEntry, getContrastTextColor, getExclusionReason, hasPath, isExcludedType, isLightColor, isNodePending, issue, joinRoutePath, matchRoute, migrateSchema, navContainsRoute, parsePartialSchema, parsePath, propPath, pushPath, readPath, renderNode, resolveCssColor, resolveLimits, resolveNode, routeHref, useClickOutside, useDebouncedSearch, useEditableRow, useFloatingPanel, useITAppearance, useITFlatAppearance, useITTheme, useITThemeSafe, useITTranslation, useJsonRender, useSchemaStream, useTableState, validateRoutes, validateSchema };
