@@ -147,6 +147,29 @@ export default function ITDataTable<T extends Record<string, unknown>>({
   const isTableVirtual = virtualized && effectiveView === "table";
   const isStickyHeader = stickyHeader && isTableVirtual;
   const resolvedRowHeight = rowHeight ?? getRowHeight(size, density);
+
+  // La virtualización espacios filas de `resolvedRowHeight`; si el contenedor
+  // corta a una altura arbitraria, la última fila sale partida. Medimos el
+  // encabezado y recortamos a un múltiplo exacto de fila.
+  const headRef = useRef<HTMLTableSectionElement | null>(null);
+  const [headHeight, setHeadHeight] = useState(0);
+  useEffect(() => {
+    if (!isTableVirtual) return;
+    const el = headRef.current;
+    if (!el) return;
+    const measure = () => setHeadHeight(el.getBoundingClientRect().height);
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [isTableVirtual, resolvedRowHeight]);
+
+  const snappedMaxHeight =
+    isTableVirtual && headHeight > 0
+      ? headHeight +
+        Math.max(1, Math.floor((virtualizedMaxHeight - headHeight) / resolvedRowHeight)) * resolvedRowHeight
+      : virtualizedMaxHeight;
   const columnCount = columns.length;
   const pinnedMeta = React.useMemo(() => getPinnedColumnMeta(columns), [columns]);
   const scrollOuterClass = isTableVirtual
@@ -507,7 +530,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
           ))}
         </colgroup>
       )}
-      <thead>
+      <thead ref={headRef}>
         <tr
           className={clsx(tableHeaderRow, "dark:text-slate-200", headerSlot.className)}
           style={headerSlot.style}
@@ -590,7 +613,10 @@ export default function ITDataTable<T extends Record<string, unknown>>({
                     onRowClick && !isLoading && tableRowClickable,
                     rowSlot.className
                   )}
-                  style={rowSlot.style}
+                  style={{
+                    ...(isTableVirtual ? { height: resolvedRowHeight } : null),
+                    ...rowSlot.style,
+                  }}
                   tabIndex={onRowClick && !isLoading ? 0 : undefined}
                   onClick={onRowClick && !isLoading ? handleRowClick(row) : undefined}
                   onKeyDown={onRowClick && !isLoading ? handleRowKeyDown(row) : undefined}
@@ -740,7 +766,7 @@ export default function ITDataTable<T extends Record<string, unknown>>({
             <div
               ref={scrollRef}
               className="overflow-x-auto overflow-y-auto"
-              style={{ maxHeight: virtualizedMaxHeight }}
+              style={{ maxHeight: snappedMaxHeight }}
             >
               {tableEl}
             </div>
