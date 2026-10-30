@@ -875,3 +875,142 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Tira de cifras del bento: una tarjeta con N bloques clicables separados por
+   línea fina y, opcionalmente, la barra apilada del mismo dato. */
+.it-bento-statstrip {
+  background: var(--it-card-bg, #ffffff);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgb(15 23 42 / 0.07);
+}
+
+.dark .it-bento-statstrip {
+  box-shadow: inset 0 0 0 1px rgb(229 240 243 / 0.09);
+}
+
+.it-bento-statstrip__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--it-bento-cols, 4), minmax(0, 1fr));
+}
+
+.it-bento-statstrip__item {
+  position: relative;
+  display: block;
+  min-width: 0;
+  padding: 12px 18px;
+  border: 0;
+  background: none;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.it-bento-statstrip__item:hover {
+  background: color-mix(in srgb, currentColor 4%, transparent);
+}
+
+.it-bento-statstrip__item.is-on {
+  background: color-mix(in srgb, currentColor 4%, transparent);
+  box-shadow: inset 0 -3px 0 var(--it-bento-c, currentColor);
+}
+
+.it-bento-statstrip__item:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+.it-bento-statstrip__item + .it-bento-statstrip__item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  border-left: 1px solid rgb(15 23 42 / 0.07);
+}
+
+.dark .it-bento-statstrip__item + .it-bento-statstrip__item::before {
+  border-left-color: rgb(229 240 243 / 0.1);
+}
+
+.it-bento-statstrip__label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-text-muted, #64748b);
+}
+
+.it-bento-statstrip__label i {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  flex: none;
+}
+
+.it-bento-statstrip__row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 5px;
+  min-width: 0;
+}
+
+.it-bento-statstrip__value {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.it-bento-statstrip__caption {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted, #64748b);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.it-bento-statstrip__stack {
+  display: flex;
+  gap: 2px;
+  height: 14px;
+  margin: 6px 20px 14px;
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.it-bento-statstrip__stack i {
+  display: block;
+  height: 100%;
+  transition: width 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s;
+  cursor: pointer;
+}
+
+.it-bento-statstrip__stack.is-dim i {
+  opacity: 0.3;
+}
+
+.it-bento-statstrip__stack.is-dim i.is-on {
+  opacity: 1;
+}
+
+@media (max-width: 760px) {
+  .it-bento-statstrip__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .it-bento-statstrip__item + .it-bento-statstrip__item::before {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .it-bento-statstrip__stack i {
+    transition: none;
+  }
+}

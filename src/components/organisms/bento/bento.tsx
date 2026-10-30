@@ -404,6 +404,87 @@ export function ITBentoFeed({ groups, onItemClick, maxHeight = 330 }: ITBentoFee
   );
 }
 
+export interface ITBentoStatItem {
+  id: string;
+  label: string;
+  value: ReactNode;
+  /** Texto de apoyo junto al número (p. ej. «de 50 tickets»). */
+  caption?: ReactNode;
+  /** Color del punto y del segmento de la barra. */
+  color?: string;
+}
+
+export interface ITBentoStatStripProps {
+  items: ITBentoStatItem[];
+  /** Cifra seleccionada (filtro activo). */
+  activeId?: string;
+  /** Con esto cada bloque filtra al hacer clic. */
+  onSelect?: (id: string) => void;
+  /** Dibuja la barra apilada con la proporción de cada cifra. */
+  stack?: boolean;
+  className?: string;
+}
+
+/**
+ * Tira de cifras del bento: una sola tarjeta con los bloques clicables separados
+ * por línea fina y, si se pide, la barra apilada con la proporción de cada uno.
+ * Al pasar el cursor por un bloque se resalta su segmento de la barra.
+ */
+export function ITBentoStatStrip({ items, activeId, onSelect, stack = false, className }: ITBentoStatStripProps) {
+  const [hovered, setHovered] = useState<string | null>(null);
+  const focus = hovered ?? activeId ?? null;
+  const total = items.reduce((acc, item) => acc + (typeof item.value === "number" ? item.value : 0), 0);
+  const clickable = typeof onSelect === "function";
+
+  return (
+    <div className={clsx("it-bento-statstrip", className)}>
+      <div className="it-bento-statstrip__grid" style={{ ["--it-bento-cols" as string]: Math.min(items.length, 4) }}>
+        {items.map((item) => {
+          const on = item.id === activeId;
+          const Tag = clickable ? "button" : "div";
+          return (
+            <Tag
+              key={item.id}
+              type={clickable ? "button" : undefined}
+              className={clsx("it-bento-statstrip__item", on && "is-on")}
+              style={{ ["--it-bento-c" as string]: item.color ?? "currentColor" } as CSSProperties}
+              onClick={clickable ? () => onSelect?.(item.id) : undefined}
+              onMouseEnter={() => setHovered(item.id)}
+              onMouseLeave={() => setHovered(null)}
+            >
+              <span className="it-bento-statstrip__label">
+                {item.color && <i style={{ background: item.color }} aria-hidden />}
+                {item.label}
+              </span>
+              <span className="it-bento-statstrip__row">
+                <span className="it-bento-statstrip__value">{item.value}</span>
+                {item.caption && <small className="it-bento-statstrip__caption">{item.caption}</small>}
+              </span>
+            </Tag>
+          );
+        })}
+      </div>
+
+      {stack && total > 0 && (
+        <div className={clsx("it-bento-statstrip__stack", focus && "is-dim")} aria-hidden>
+          {items
+            .filter((item) => typeof item.value === "number" && item.value > 0)
+            .map((item) => (
+              <i
+                key={item.id}
+                className={clsx(item.id === focus && "is-on")}
+                style={{ width: `${((Number(item.value) || 0) / total) * 100}%`, background: item.color ?? "currentColor" }}
+                onMouseEnter={() => setHovered(item.id)}
+                onMouseLeave={() => setHovered(null)}
+                onClick={clickable ? () => onSelect?.(item.id) : undefined}
+              />
+            ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export interface ITBentoPillProps {
   /** Contenido de la píldora (texto corto). */
   children: ReactNode;
