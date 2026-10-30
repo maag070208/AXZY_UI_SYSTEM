@@ -446,7 +446,7 @@ export function ITBentoStatStrip({ items, activeId, onSelect, stack = false, sta
 
   return (
     <div className={clsx("it-bento-statstrip", className)}>
-      <div className="it-bento-statstrip__grid" style={{ ["--it-bento-cols" as string]: Math.min(items.length, 4) }}>
+      <div className="it-bento-statstrip__grid" style={{ ["--it-bento-cols" as string]: Math.min(items.length, 6) }}>
         {items.map((item) => {
           const on = item.id === activeId;
           const Tag = clickable ? "button" : "div";

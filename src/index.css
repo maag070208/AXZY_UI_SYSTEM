@@ -1058,6 +1058,14 @@
   opacity: 1;
 }
 
+/* Cinco o seis cifras caben en una fila en escritorio; en pantallas medianas se
+   acomodan de tres y de dos, para que nunca quede una sola tarjeta colgando. */
+@media (max-width: 1400px) {
+  .it-bento-statstrip__grid {
+    grid-template-columns: repeat(min(var(--it-bento-cols, 4), 3), minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 760px) {
   .it-bento-statstrip__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
