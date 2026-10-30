@@ -391,7 +391,8 @@ declare function ITAccordion({ items, allowMultiple, defaultOpenIds, openIds, on
 /** Tono de superficie del mosaico: blanco por defecto o uno de marca. */
 type ITBentoTone = "plain" | "sea" | "lavender" | "mint" | "sun";
 interface ITBentoTileProps {
-    label: ReactNode;
+    /** Etiqueta superior; si se omite, la tarjeta se maqueta con `children`. */
+    label?: ReactNode;
     /** Ícono de línea a la izquierda de la etiqueta. */
     icon?: ReactNode;
     /** Cuántas columnas del mosaico ocupa (1–12). */

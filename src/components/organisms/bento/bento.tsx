@@ -6,7 +6,8 @@ import clsx from "clsx";
 export type ITBentoTone = "plain" | "sea" | "lavender" | "mint" | "sun";
 
 export interface ITBentoTileProps {
-  label: ReactNode;
+  /** Etiqueta superior; si se omite, la tarjeta se maqueta con `children`. */
+  label?: ReactNode;
   /** Ícono de línea a la izquierda de la etiqueta. */
   icon?: ReactNode;
   /** Cuántas columnas del mosaico ocupa (1–12). */
@@ -75,17 +76,17 @@ export function ITBentoTile({
           : undefined
       }
     >
-      <h3 className="it-bento-tile__label">
-        {icon}
-        {label}
-      </h3>
+      {label !== undefined && (
+        <h3 className="it-bento-tile__label">
+          {icon}
+          {label}
+        </h3>
+      )}
       {children}
       {(value !== undefined || caption || aside) && (
         <div className="it-bento-tile__foot">
-          <div className="flex items-baseline gap-2">
-            {value !== undefined && <div className="it-bento-tile__value">{value}</div>}
-            {caption && <small className="it-bento-tile__caption">{caption}</small>}
-          </div>
+          {value !== undefined && <div className="it-bento-tile__value">{value}</div>}
+          {caption && <small className="it-bento-tile__caption ml-auto">{caption}</small>}
           {aside}
         </div>
       )}
@@ -275,7 +276,7 @@ export function ITBentoWeekBars({
           <i
             className="w-full rounded-t-[5px] rounded-b-[2px] transition-[height] duration-700"
             style={{
-              height: `${Math.max(6, Math.round((item.value / max) * BAR_MAX_PX))}px`,
+              height: `${item.value === 0 ? 12 : Math.max(18, Math.round((item.value / max) * BAR_MAX_PX))}px`,
               background:
                 item.tone === "today" ? todayColor : item.tone === "future" ? "color-mix(in srgb, currentColor 14%, transparent)" : color,
               transitionDelay: `${i * 60 + 150}ms`,
