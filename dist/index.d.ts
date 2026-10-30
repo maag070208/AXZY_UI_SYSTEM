@@ -519,6 +519,8 @@ interface ITBentoStatItem {
     caption?: ReactNode;
     /** Color del punto y del segmento de la barra. */
     color?: string;
+    /** Tono del mosaico (fondo tintado), como las tarjetas del inicio. */
+    tone?: "plain" | "sea" | "lavender" | "mint" | "sun" | "rose";
 }
 interface ITBentoStatStripProps {
     items: ITBentoStatItem[];

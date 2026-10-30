@@ -879,59 +879,118 @@
 /* Tira de cifras del bento: una tarjeta con N bloques clicables separados por
    línea fina y, opcionalmente, la barra apilada del mismo dato. */
 .it-bento-statstrip {
-  background: var(--it-card-bg, #ffffff);
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: inset 0 0 0 1px rgb(15 23 42 / 0.07);
-}
-
-.dark .it-bento-statstrip {
-  box-shadow: inset 0 0 0 1px rgb(229 240 243 / 0.09);
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
 }
 
 .it-bento-statstrip__grid {
   display: grid;
   grid-template-columns: repeat(var(--it-bento-cols, 4), minmax(0, 1fr));
+  gap: 10px;
 }
 
 .it-bento-statstrip__item {
   position: relative;
   display: block;
   min-width: 0;
-  padding: 12px 18px;
+  padding: 13px 16px 14px;
   border: 0;
-  background: none;
+  border-radius: 18px;
+  background: var(--it-card-bg, #ffffff);
+  box-shadow: inset 0 0 0 1px rgb(15 23 42 / 0.06);
   text-align: left;
   color: inherit;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
 .it-bento-statstrip__item:hover {
-  background: color-mix(in srgb, currentColor 4%, transparent);
+  transform: translateY(-1px);
+  box-shadow: inset 0 0 0 1px rgb(15 23 42 / 0.1), 0 8px 18px -12px rgb(13 47 64 / 0.5);
 }
 
 .it-bento-statstrip__item.is-on {
-  background: color-mix(in srgb, currentColor 2.5%, transparent);
-  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--it-bento-c, currentColor) 70%, transparent);
+  box-shadow:
+    inset 0 0 0 2px var(--it-bento-c, currentColor),
+    0 10px 22px -16px rgb(13 47 64 / 0.55);
 }
 
 .it-bento-statstrip__item:focus-visible {
   outline: 2px solid var(--color-primary);
-  outline-offset: -2px;
+  outline-offset: 2px;
 }
 
-.it-bento-statstrip__item + .it-bento-statstrip__item::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 14px;
-  bottom: 14px;
-  border-left: 1px solid rgb(15 23 42 / 0.07);
+/* Tonos del mosaico: el mismo lenguaje que las tarjetas del inicio. */
+.it-bento-statstrip__item--sea {
+  background: #0c3b52;
+  color: #eaf6f8;
 }
 
-.dark .it-bento-statstrip__item + .it-bento-statstrip__item::before {
-  border-left-color: rgb(229 240 243 / 0.1);
+.it-bento-statstrip__item--sea .it-bento-statstrip__label,
+.it-bento-statstrip__item--sea .it-bento-statstrip__caption {
+  color: rgb(234 246 248 / 0.78);
+}
+
+.it-bento-statstrip__item--lavender {
+  background: #ece7fa;
+  color: #1c1340;
+}
+
+.it-bento-statstrip__item--lavender .it-bento-statstrip__label,
+.it-bento-statstrip__item--lavender .it-bento-statstrip__caption {
+  color: rgb(28 19 64 / 0.7);
+}
+
+.it-bento-statstrip__item--mint {
+  background: #e2f3ec;
+  color: #0f2e25;
+}
+
+.it-bento-statstrip__item--mint .it-bento-statstrip__label,
+.it-bento-statstrip__item--mint .it-bento-statstrip__caption {
+  color: rgb(15 46 37 / 0.7);
+}
+
+.it-bento-statstrip__item--sun {
+  background: #fbf1d8;
+  color: #3a2a06;
+}
+
+.it-bento-statstrip__item--sun .it-bento-statstrip__label,
+.it-bento-statstrip__item--sun .it-bento-statstrip__caption {
+  color: rgb(58 42 6 / 0.72);
+}
+
+.it-bento-statstrip__item--rose {
+  background: #fbe6e2;
+  color: #4a1d15;
+}
+
+.it-bento-statstrip__item--rose .it-bento-statstrip__label,
+.it-bento-statstrip__item--rose .it-bento-statstrip__caption {
+  color: rgb(74 29 21 / 0.72);
+}
+
+.dark .it-bento-statstrip__item--lavender {
+  background: #241f3d;
+  color: #efeaff;
+}
+
+.dark .it-bento-statstrip__item--mint {
+  background: #12302b;
+  color: #dcf5ea;
+}
+
+.dark .it-bento-statstrip__item--sun {
+  background: #352d17;
+  color: #ffeec4;
+}
+
+.dark .it-bento-statstrip__item--rose {
+  background: #3a1e1b;
+  color: #ffd9d2;
 }
 
 .it-bento-statstrip__label {
@@ -954,12 +1013,12 @@
   display: flex;
   align-items: baseline;
   gap: 8px;
-  margin-top: 5px;
+  margin-top: 6px;
   min-width: 0;
 }
 
 .it-bento-statstrip__value {
-  font-size: 32px;
+  font-size: 34px;
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1;
@@ -979,7 +1038,7 @@
   display: flex;
   gap: 2px;
   height: 9px;
-  margin: 4px 20px 12px;
+  margin: 12px 0 0;
   border-radius: 6px;
   overflow: hidden;
 }

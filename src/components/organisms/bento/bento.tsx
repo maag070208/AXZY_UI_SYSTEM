@@ -412,6 +412,8 @@ export interface ITBentoStatItem {
   caption?: ReactNode;
   /** Color del punto y del segmento de la barra. */
   color?: string;
+  /** Tono del mosaico (fondo tintado), como las tarjetas del inicio. */
+  tone?: "plain" | "sea" | "lavender" | "mint" | "sun" | "rose";
 }
 
 export interface ITBentoStatStripProps {
@@ -452,7 +454,11 @@ export function ITBentoStatStrip({ items, activeId, onSelect, stack = false, sta
             <Tag
               key={item.id}
               type={clickable ? "button" : undefined}
-              className={clsx("it-bento-statstrip__item", on && "is-on")}
+              className={clsx(
+                "it-bento-statstrip__item",
+                item.tone && item.tone !== "plain" && `it-bento-statstrip__item--${item.tone}`,
+                on && "is-on",
+              )}
               style={{ ["--it-bento-c" as string]: item.color ?? "currentColor" } as CSSProperties}
               onClick={clickable ? () => onSelect?.(item.id) : undefined}
               onMouseEnter={() => setHovered(item.id)}
