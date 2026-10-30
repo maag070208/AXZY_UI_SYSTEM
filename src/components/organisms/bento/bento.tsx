@@ -404,6 +404,40 @@ export function ITBentoFeed({ groups, onItemClick, maxHeight = 330 }: ITBentoFee
   );
 }
 
+export interface ITBentoPillProps {
+  /** Contenido de la píldora (texto corto). */
+  children: ReactNode;
+  /** Punto de color a la izquierda; si se omite, no se dibuja. */
+  dot?: string;
+  /** Color del texto (por defecto hereda el de la tarjeta). */
+  color?: string;
+  className?: string;
+}
+
+/**
+ * Píldora de dato dentro de una tarjeta bento: fondo traslúcido del color del
+ * texto y, opcionalmente, un punto de color. Reemplaza los `<span class="…">`
+ * hechos a mano en los héroes (no usa clases sueltas ni estilos por pantalla).
+ */
+export function ITBentoPill({ children, dot, color, className }: ITBentoPillProps) {
+  return (
+    <span className={clsx("it-bento-pill", className)} style={color ? { color } : undefined}>
+      {dot && <i className="it-bento-pill__dot" style={{ background: dot }} aria-hidden />}
+      <span className="it-bento-pill__text">{children}</span>
+    </span>
+  );
+}
+
+export interface ITBentoPillRowProps {
+  children: ReactNode;
+  className?: string;
+}
+
+/** Fila que acomoda las píldoras de una tarjeta y las deja bajar de línea. */
+export function ITBentoPillRow({ children, className }: ITBentoPillRowProps) {
+  return <div className={clsx("flex flex-wrap items-center gap-1.5", className)}>{children}</div>;
+}
+
 export interface ITBentoLiveProps {
   label: string;
   className?: string;

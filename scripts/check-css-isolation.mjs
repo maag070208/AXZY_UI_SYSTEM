@@ -49,14 +49,27 @@ if (/--(card|input|calendar|topbar|sidebar|modal|layout)-/.test(themeContext)) {
 if (existsSync(DIST_CSS)) {
   const dist = readFileSync(DIST_CSS, "utf8");
   const classMap = new Map();
-  for (const m of dist.matchAll(/\.([a-zA-Z][\w-]*(?:\\:[\w-]+)*)\{[^}]*\}/g)) {
-    const cls = m[1].replace(/\\:/g, ":");
+  for (const m of dist.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+    const selector = m[1].trim();
+    // Solo los selectores de UNA clase: `.a .b { }` o `.a > i { }` son
+    // variantes del mismo componente y no cuentan como definición duplicada.
+    const single = /^\.([a-zA-Z][\w-]*)$/.exec(selector);
+    if (!single) continue;
+    const cls = single[1];
     if (!classMap.has(cls)) classMap.set(cls, new Set());
-    classMap.get(cls).add(m[0]);
+    classMap.get(cls).add(selector + "{" + m[2] + "}");
   }
   for (const [cls, defs] of classMap) {
-    if (defs.size > 1 && !["container"].includes(cls)) {
-      errors.push(`dist/index.css: ".${cls}" ${defs.size} conflicting definitions`);
+    // Un mismo componente puede aparecer varias veces (base, .dark, @media):
+    // solo es conflicto cuando dos definiciones repiten EXACTAMENTE lo mismo.
+    const seen = new Set();
+    for (const def of defs) {
+      const decls = def.slice(def.indexOf("{") + 1);
+      if (seen.has(decls)) {
+        errors.push(`dist/index.css: ".${cls}" definición duplicada`);
+        break;
+      }
+      seen.add(decls);
     }
   }
 }

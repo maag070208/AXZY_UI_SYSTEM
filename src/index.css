@@ -845,3 +845,33 @@
     transition: none !important;
   }
 }
+
+/* Píldoras de datos del mosaico bento: chips traslúcidos que heredan el color de
+   la tarjeta (funcionan igual sobre tarjeta oscura o clara) con un punto de color. */
+.it-bento-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.2;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.it-bento-pill__dot {
+  display: inline-block;
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+}
+
+.it-bento-pill__text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

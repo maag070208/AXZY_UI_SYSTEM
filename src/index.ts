@@ -20,6 +20,8 @@ import {
   ITBentoWeekBars,
   ITBentoDonut,
   ITBentoFeed,
+  ITBentoPill,
+  ITBentoPillRow,
   ITBentoLive,
   useITBentoCountUp,
 } from "./components/organisms/bento/bento";
@@ -265,7 +267,7 @@ export {
   // Components
   ITAccordion,
   ITBentoGrid, ITBentoTile, ITBentoGauge, ITBentoWaves, ITBentoSpark, ITBentoSegments,
-  ITBentoWeekBars, ITBentoDonut, ITBentoFeed, ITBentoLive, useITBentoCountUp,
+  ITBentoWeekBars, ITBentoDonut, ITBentoFeed, ITBentoPill, ITBentoPillRow, ITBentoLive, useITBentoCountUp,
   ITAlert, ITAvatar, ITBadget, ITBreadcrumbs, ITButton,
   ITCalendar,
   ITCard, ITCheckbox, ITChip, ITChipInput, ITConfirmDialog, ITDataTable, ITDatePicker,
