@@ -528,6 +528,11 @@ interface ITBentoStatStripProps {
     onSelect?: (id: string) => void;
     /** Dibuja la barra apilada con la proporción de cada cifra. */
     stack?: boolean;
+    /**
+     * Cifras que forman la barra, cuando no todas las de la tira se suman
+     * (p. ej. «sin asignar» es un subconjunto de «abiertos»). Por defecto usa `items`.
+     */
+    stackItems?: ITBentoStatItem[];
     className?: string;
 }
 /**
@@ -535,7 +540,7 @@ interface ITBentoStatStripProps {
  * por línea fina y, si se pide, la barra apilada con la proporción de cada uno.
  * Al pasar el cursor por un bloque se resalta su segmento de la barra.
  */
-declare function ITBentoStatStrip({ items, activeId, onSelect, stack, className }: ITBentoStatStripProps): react_jsx_runtime.JSX.Element;
+declare function ITBentoStatStrip({ items, activeId, onSelect, stack, stackItems, className }: ITBentoStatStripProps): react_jsx_runtime.JSX.Element;
 interface ITBentoPillProps {
     /** Contenido de la píldora (texto corto). */
     children: ReactNode;

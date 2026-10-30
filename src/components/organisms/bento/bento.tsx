@@ -422,6 +422,11 @@ export interface ITBentoStatStripProps {
   onSelect?: (id: string) => void;
   /** Dibuja la barra apilada con la proporción de cada cifra. */
   stack?: boolean;
+  /**
+   * Cifras que forman la barra, cuando no todas las de la tira se suman
+   * (p. ej. «sin asignar» es un subconjunto de «abiertos»). Por defecto usa `items`.
+   */
+  stackItems?: ITBentoStatItem[];
   className?: string;
 }
 
@@ -430,10 +435,11 @@ export interface ITBentoStatStripProps {
  * por línea fina y, si se pide, la barra apilada con la proporción de cada uno.
  * Al pasar el cursor por un bloque se resalta su segmento de la barra.
  */
-export function ITBentoStatStrip({ items, activeId, onSelect, stack = false, className }: ITBentoStatStripProps) {
+export function ITBentoStatStrip({ items, activeId, onSelect, stack = false, stackItems, className }: ITBentoStatStripProps) {
   const [hovered, setHovered] = useState<string | null>(null);
   const focus = hovered ?? activeId ?? null;
-  const total = items.reduce((acc, item) => acc + (typeof item.value === "number" ? item.value : 0), 0);
+  const parts = stackItems ?? items;
+  const total = parts.reduce((acc, item) => acc + (typeof item.value === "number" ? item.value : 0), 0);
   const clickable = typeof onSelect === "function";
 
   return (
@@ -467,7 +473,7 @@ export function ITBentoStatStrip({ items, activeId, onSelect, stack = false, cla
 
       {stack && total > 0 && (
         <div className={clsx("it-bento-statstrip__stack", focus && "is-dim")} aria-hidden>
-          {items
+          {parts
             .filter((item) => typeof item.value === "number" && item.value > 0)
             .map((item) => (
               <i
