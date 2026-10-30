@@ -14,6 +14,12 @@ export interface ITTopBarNavItem {
 }
 
 export interface ITTopBarProps {
+  /**
+   * Aspecto de la barra: `default` va pegada al borde superior; `bento` la
+   * dibuja como una tarjeta flotante con esquinas grandes y sombra suave.
+   * @default "default"
+   */
+  variant?: "default" | "bento";
   /** Optional logo element (e.g. an `<img>` or SVG component). */
   logo?: any;
   /** Text displayed next to the logo. */

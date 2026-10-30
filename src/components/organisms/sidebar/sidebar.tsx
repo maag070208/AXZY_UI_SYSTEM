@@ -91,9 +91,13 @@ export default function ITSidebar({
   header,
   notification,
   brand,
+  profile,
+  variant = "default",
   onToggleCollapse,
   expandOnHover = true,
 }: ITSidebarProps) {
+  // Bento: el panel se dibuja como tarjeta flotante (mismo lenguaje que los mosaicos).
+  const bentoPanel = variant === "bento";
   // Flat appearance: plain surface, no glow/accent bar, narrower panel.
   // Bento shares that structure; its tokens make the active item a neutral pill with bold ink text.
   const appearance = useITAppearance();
@@ -367,11 +371,30 @@ export default function ITSidebar({
       `}
       style={{
         zIndex: 50,
-        backgroundColor: "var(--it-sidebar-bg, rgba(255, 255, 255, 0.90))",
-        borderRight: bento ? "none" : "1px solid var(--it-sidebar-border, var(--color-secondary-200))",
-        ...(flat ? {} : { WebkitBackdropFilter: 'blur(12px)', backdropFilter: 'blur(12px)' }),
+        backgroundColor: bentoPanel
+          ? "transparent"
+          : "var(--it-sidebar-bg, rgba(255, 255, 255, 0.90))",
+        borderRight: bento || bentoPanel ? "none" : "1px solid var(--it-sidebar-border, var(--color-secondary-200))",
+        ...(bentoPanel || !flat
+          ? {}
+          : { WebkitBackdropFilter: 'blur(12px)', backdropFilter: 'blur(12px)' }),
       }}
     >
+      <div
+        className={
+          bentoPanel
+            ? "flex h-full min-h-0 flex-col overflow-hidden rounded-[26px]"
+            : "flex h-full min-h-0 flex-col"
+        }
+        style={
+          bentoPanel
+            ? {
+                backgroundColor: "var(--it-sidebar-bg, var(--it-card-bg, #ffffff))",
+                boxShadow: "0 18px 44px -28px rgba(13, 47, 64, 0.45), inset 0 0 0 1px rgba(13, 47, 64, 0.05)",
+              }
+            : undefined
+        }
+      >
       {brand && (brand.logo || brand.text) && (
         <div
           className={`flex items-center flex-shrink-0 h-[64px] ${isSidebarCollapsed ? "justify-center px-2" : "gap-2.5 px-7"}`}
@@ -598,6 +621,58 @@ export default function ITSidebar({
           );})}
         </ul>
       </nav>
+
+      {/* Persona al pie (bento): tarjeta con foto, nombre y detalle */}
+      {bentoPanel && profile && (
+        <div className="flex-shrink-0 px-3 pb-3">
+          <button
+            type="button"
+            onClick={profile.onClick}
+            aria-label={profile.label ?? profile.name}
+            title={isSidebarCollapsed ? profile.name : undefined}
+            className={`flex w-full items-center gap-2.5 rounded-2xl px-2.5 py-2 text-left transition-colors hover:bg-[var(--it-sidebar-hover-bg,var(--color-secondary-100))] ${
+              isSidebarCollapsed ? "justify-center" : ""
+            }`}
+          >
+            {profile.image ? (
+              <img src={profile.image} alt="" className="h-9 w-9 flex-shrink-0 rounded-full object-cover" />
+            ) : (
+              <span
+                aria-hidden="true"
+                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-[12px] font-bold"
+                style={{
+                  backgroundColor: "var(--color-primary-50)",
+                  color: "var(--color-primary-600)",
+                }}
+              >
+                {profile.name
+                  .split(" ")
+                  .filter(Boolean)
+                  .slice(0, 2)
+                  .map((part) => part[0])
+                  .join("")
+                  .toUpperCase()}
+              </span>
+            )}
+            {!isSidebarCollapsed && (
+              <>
+                <span className="min-w-0 flex-1">
+                  <ITText as="span" className="block truncate text-[13px] font-bold" style={{ color: "var(--it-sidebar-label-color, var(--color-secondary-900))" }}>
+                    {profile.name}
+                  </ITText>
+                  {profile.detail && (
+                    <ITText as="span" className="block truncate text-[11px]" style={{ color: "var(--it-sidebar-icon-color, var(--color-secondary-500))" }}>
+                      {profile.detail}
+                    </ITText>
+                  )}
+                </span>
+                <FaChevronDown className="h-3 w-3 -rotate-90 opacity-50" aria-hidden="true" />
+              </>
+            )}
+          </button>
+        </div>
+      )}
+      </div>
     </aside>
   );
 }

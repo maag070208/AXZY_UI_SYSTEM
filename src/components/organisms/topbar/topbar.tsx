@@ -71,6 +71,7 @@ export default function ITTopBar({
   onNavItemClick,
   hideBrandOnDesktop = false,
   showDesktopMenuButton = false,
+  variant = "default",
 }: ITTopBarProps) {
   // Flat appearance: plain bar (no shadow/blur), initials avatar, name before it.
   // Bento: same plain structure, blended with the canvas, pill nav and round icon buttons.
@@ -91,15 +92,21 @@ export default function ITTopBar({
 
   useClickOutside(userMenuRef, () => setIsUserMenuOpen(false));
 
+  // Barra flotante: tarjeta con margen, esquinas grandes y sombra suave.
+  const floating = variant === "bento";
   return (
     <header 
-      className={`sticky top-0 z-40 transition-all duration-300 ${flat ? "" : "backdrop-blur-md"}`}
+      className={`sticky top-0 z-40 transition-all duration-300 ${
+        floating ? "mx-2 mt-2 rounded-[22px]" : ""
+      } ${flat && !floating ? "" : "backdrop-blur-md"}`}
       style={{
-        backgroundColor: bento
-          ? "var(--it-layout-bg, #f4f4f6)"
-          : "var(--it-topbar-bg, rgba(255, 255, 255, 0.9))",
-        borderBottom: bento ? "none" : "1px solid var(--it-topbar-border, rgba(15, 23, 42, 0.06))",
-        boxShadow: flat ? "none" : "var(--shadow-xs)",
+        backgroundColor: floating
+          ? "var(--it-card-bg, #ffffff)"
+          : bento
+            ? "var(--it-layout-bg, #f4f4f6)"
+            : "var(--it-topbar-bg, rgba(255, 255, 255, 0.9))",
+        borderBottom: floating || bento ? "none" : "1px solid var(--it-topbar-border, rgba(15, 23, 42, 0.06))",
+        boxShadow: floating ? "0 16px 40px -30px rgba(13, 47, 64, 0.45)" : flat ? "none" : "var(--shadow-xs)",
       }}
     >
       <div className={`flex items-center justify-between px-6 lg:px-8 ${flat ? "h-[64px]" : "h-[72px]"}`}>

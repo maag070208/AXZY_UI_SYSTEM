@@ -97,6 +97,23 @@ export interface ITSidebarBrand {
   text?: string;
 }
 
+/**
+ * Tarjeta de la persona al pie del sidebar (estilo bento): nombre, detalle y
+ * foto; en el riel queda solo la foto. El clic suele abrir el menú de la cuenta.
+ */
+export interface ITSidebarProfile {
+  /** Nombre a mostrar (p. ej. "Michael Gabson"). */
+  name: string;
+  /** Línea secundaria (correo, usuario o rol). */
+  detail?: string;
+  /** URL de la foto; sin ella se muestran las iniciales. */
+  image?: string;
+  /** Nombre accesible del botón cuando solo se ve la foto. */
+  label?: string;
+  /** Clic en la tarjeta. */
+  onClick?: () => void;
+}
+
 /** Props for the ITSidebar vertical navigation component. */
 export interface ITSidebarProps {
   /** Navigation structure: top-level items with optional sub-items. */
@@ -124,6 +141,14 @@ export interface ITSidebarProps {
   onSubItemClick?: (subitem: ITNavigationSubItem) => void;
   /** Visual connector style for sub-items: "dot" | "|" | "none". Default: "dot". */
   subitemConnector?: 'dot' | '|' | 'none';
+  /**
+   * Aspecto del panel: `default` es la barra pegada al borde; `bento` la dibuja
+   * como una tarjeta flotante con esquinas grandes y sombra suave, que es el
+   * lenguaje del resto de la app. @default "default"
+   */
+  variant?: "default" | "bento";
+  /** Tarjeta de la persona al pie (solo se usa con `variant="bento"`). */
+  profile?: ITSidebarProfile;
   /** Additional CSS classes on the sidebar `<aside>`. */
   className?: string;
   /**
