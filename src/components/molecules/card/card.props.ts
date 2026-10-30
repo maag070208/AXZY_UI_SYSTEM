@@ -27,6 +27,8 @@ export interface ITCardProps {
   actions?: React.ReactNode;
   /** Additional CSS class names for the card container. */
   className?: string;
+  /** Inline styles for the card container (alturas calculadas, gradientes de datos). */
+  style?: React.CSSProperties;
   /** Additional CSS class names for the image element. */
   imageClassName?: string;
   /** Additional CSS class names for the title element. */

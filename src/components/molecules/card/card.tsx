@@ -36,6 +36,7 @@ export default function ITCard({
   contentClassName,
   actionClassName,
   onClick,
+  style,
 }: ITCardProps) {
   const { t } = useITTranslation();
   const [isHovered, setIsHovered] = useState(false);
@@ -117,7 +118,8 @@ export default function ITCard({
           : undefined
       }
       className={clsx("overflow-hidden flex flex-col", className)}
-      style={containerStyle}
+      // `style` del consumidor se suma al tono calculado (alturas, gradientes de datos).
+      style={style ? { ...containerStyle, ...style } : containerStyle}
     >
       {image && (
         <img

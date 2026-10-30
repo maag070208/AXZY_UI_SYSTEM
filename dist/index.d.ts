@@ -964,6 +964,8 @@ interface ITCardProps {
     actions?: React.ReactNode;
     /** Additional CSS class names for the card container. */
     className?: string;
+    /** Inline styles for the card container (alturas calculadas, gradientes de datos). */
+    style?: React.CSSProperties;
     /** Additional CSS class names for the image element. */
     imageClassName?: string;
     /** Additional CSS class names for the title element. */
@@ -991,7 +993,7 @@ interface ITCardProps {
  *   Clickable card with hover shadow.
  * </ITCard>
  */
-declare function ITCard({ title, tone, headerActions, image, alt, children, actions, className, imageClassName, titleClassName, contentClassName, actionClassName, onClick, }: ITCardProps): react_jsx_runtime.JSX.Element;
+declare function ITCard({ title, tone, headerActions, image, alt, children, actions, className, imageClassName, titleClassName, contentClassName, actionClassName, onClick, style, }: ITCardProps): react_jsx_runtime.JSX.Element;
 
 interface ITCheckboxProps {
     /** Controlled checked state. @default false */
