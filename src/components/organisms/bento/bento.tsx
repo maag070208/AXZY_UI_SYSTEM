@@ -267,14 +267,15 @@ export function ITBentoWeekBars({
   todayColor = "var(--color-warning, #f2c14e)",
 }: ITBentoWeekBarsProps) {
   const max = Math.max(1, ...items.map((i) => i.value));
+  const BAR_MAX_PX = 52;
   return (
     <div className="mt-1 flex min-h-0 flex-1 items-end gap-1.5">
       {items.map((item, i) => (
-        <div key={item.label} className="flex h-full flex-1 flex-col items-center justify-end gap-1 text-[10px]" style={{ color: "var(--it-bento-muted)" }}>
+        <div key={item.label} className="flex flex-1 flex-col items-center justify-end gap-1 text-[10px]" style={{ color: "var(--it-bento-muted)" }}>
           <i
             className="w-full rounded-t-[5px] rounded-b-[2px] transition-[height] duration-700"
             style={{
-              height: `${Math.max(6, (item.value / max) * 100)}%`,
+              height: `${Math.max(6, Math.round((item.value / max) * BAR_MAX_PX))}px`,
               background:
                 item.tone === "today" ? todayColor : item.tone === "future" ? "color-mix(in srgb, currentColor 14%, transparent)" : color,
               transitionDelay: `${i * 60 + 150}ms`,
