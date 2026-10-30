@@ -99,7 +99,7 @@ export default function ITLayout({
           isCollapsed={desktopCollapsed}
           onToggleCollapse={handleToggleCollapse}
           visibleOnMobile={false}
-          className={`h-full ${flat ? "" : "drop-shadow-2xl"} transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] flex-shrink-0`}
+          className={`h-full ${flat ? "" : "drop-shadow-2xl"} transition-all duration-400 ease-[cubic-bezier(0.2,0,0,1)] flex-shrink-0 ${sidebar.className ?? ""}`}
         />
       </div>
     </div>
@@ -119,7 +119,7 @@ export default function ITLayout({
           brand={brand}
           isCollapsed={false}
           visibleOnMobile={true}
-          className="h-full shadow-2xl relative z-[60]"
+          className={`h-full shadow-2xl relative z-[60] ${sidebar.className ?? ""}`}
           onToggleCollapse={() => setMobileSidebarOpen(false)}
           onItemClick={() => setMobileSidebarOpen(false)}
           onSubItemClick={() => setMobileSidebarOpen(false)}
