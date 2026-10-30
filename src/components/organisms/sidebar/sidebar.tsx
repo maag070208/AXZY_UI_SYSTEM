@@ -456,8 +456,9 @@ export default function ITSidebar({
                   transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)]
                   rounded-xl relative overflow-visible
                   h-10
-                  ${flat ? "px-3" : "px-5"}
-                  ${isSidebarCollapsed ? "justify-start" : "justify-between"}
+                  ${isSidebarCollapsed ? "justify-center px-0" : flat ? "px-3" : "px-5"}
+                  ${isSidebarCollapsed ? "" : "justify-between"}
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-primary-500)] focus-visible:ring-inset
                 `}
                 style={{
                   backgroundColor: active ? "var(--it-sidebar-active-bg, var(--color-secondary-50))" : 'transparent',
