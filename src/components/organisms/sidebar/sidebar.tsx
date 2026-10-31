@@ -486,7 +486,7 @@ export default function ITSidebar({
                   />
                 )}
 
-                <div className="flex items-center gap-2.5 relative z-10 w-full">
+                <div className={`flex items-center gap-2.5 relative z-10 w-full ${isSidebarCollapsed ? "justify-center" : ""}`}>
                   {item.icon && (
                     <div
                       className={`transition-all duration-300 flex-shrink-0 flex items-center justify-center`}
